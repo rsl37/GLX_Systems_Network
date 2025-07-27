@@ -27,6 +27,8 @@ interface User {
   created_at?: string;
   phone?: string;
   wallet_address?: string | null;
+  kyc_verified?: boolean;
+  signup_method?: 'email' | 'phone' | 'wallet';
 }
 
 interface AuthContextType {

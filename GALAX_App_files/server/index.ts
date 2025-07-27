@@ -1514,6 +1514,139 @@ app.post('/api/user/change-password', authenticateToken, async (req: AuthRequest
   }
 });
 
+// Privacy settings endpoints
+app.get('/api/user/privacy-settings', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.userId!;
+    
+    // Get privacy settings from user_privacy table (create if doesn't exist)
+    let privacySettings = await db
+      .selectFrom('user_privacy')
+      .select(['show_email', 'show_phone', 'show_wallet', 'wallet_display_mode'])
+      .where('user_id', '=', userId)
+      .executeTakeFirst();
+
+    if (!privacySettings) {
+      // Create default privacy settings
+      await db
+        .insertInto('user_privacy')
+        .values({
+          user_id: userId,
+          show_email: 0,
+          show_phone: 0,
+          show_wallet: 0,
+          wallet_display_mode: 'hidden',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .execute();
+
+      privacySettings = {
+        show_email: 0,
+        show_phone: 0,
+        show_wallet: 0,
+        wallet_display_mode: 'hidden'
+      };
+    }
+
+    res.json({
+      success: true,
+      data: {
+        showEmail: !!privacySettings.show_email,
+        showPhone: !!privacySettings.show_phone,
+        showWallet: !!privacySettings.show_wallet,
+        walletDisplayMode: privacySettings.wallet_display_mode
+      }
+    });
+  } catch (error) {
+    console.error('❌ Privacy settings fetch error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Failed to fetch privacy settings',
+        statusCode: 500
+      }
+    });
+  }
+});
+
+app.put('/api/user/privacy-settings', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.userId!;
+    const { showEmail, showPhone, showWallet, walletDisplayMode } = req.body;
+
+    // Validate input
+    if (typeof showEmail !== 'boolean' || typeof showPhone !== 'boolean' || typeof showWallet !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Invalid privacy settings format',
+          statusCode: 400
+        }
+      });
+    }
+
+    if (walletDisplayMode && !['hidden', 'public', 'tip-button'].includes(walletDisplayMode)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Invalid wallet display mode',
+          statusCode: 400
+        }
+      });
+    }
+
+    // Update or insert privacy settings
+    const existingSettings = await db
+      .selectFrom('user_privacy')
+      .select('user_id')
+      .where('user_id', '=', userId)
+      .executeTakeFirst();
+
+    if (existingSettings) {
+      await db
+        .updateTable('user_privacy')
+        .set({
+          show_email: showEmail ? 1 : 0,
+          show_phone: showPhone ? 1 : 0,
+          show_wallet: showWallet ? 1 : 0,
+          wallet_display_mode: walletDisplayMode || 'hidden',
+          updated_at: new Date().toISOString()
+        })
+        .where('user_id', '=', userId)
+        .execute();
+    } else {
+      await db
+        .insertInto('user_privacy')
+        .values({
+          user_id: userId,
+          show_email: showEmail ? 1 : 0,
+          show_phone: showPhone ? 1 : 0,
+          show_wallet: showWallet ? 1 : 0,
+          wallet_display_mode: walletDisplayMode || 'hidden',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .execute();
+    }
+
+    console.log('✅ Privacy settings updated for user:', userId);
+    res.json({
+      success: true,
+      message: 'Privacy settings updated successfully'
+    });
+  } catch (error) {
+    console.error('❌ Privacy settings update error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Failed to update privacy settings',
+        statusCode: 500
+      }
+    });
+  }
+});
+
 // User statistics endpoint - FIXED
 app.get('/api/user/stats', authenticateToken, async (req: AuthRequest, res) => {
   try {

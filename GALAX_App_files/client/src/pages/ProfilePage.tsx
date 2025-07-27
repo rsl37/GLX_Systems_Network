@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { AccountSettings } from '../components/AccountSettings';
+import { UserBadges } from '../components/UserBadges';
 import { 
   User, 
   Mail, 
@@ -72,6 +73,12 @@ export function ProfilePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [privacySettings, setPrivacySettings] = useState({
+    showEmail: false,
+    showPhone: false,
+    showWallet: false,
+    walletDisplayMode: 'hidden' as 'hidden' | 'public' | 'tip-button'
+  });
   const [editForm, setEditForm] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -106,6 +113,21 @@ export function ProfilePage() {
       if (transactionsResponse.ok) {
         const transactionsData = await transactionsResponse.json();
         setTransactions(transactionsData.data);
+      }
+
+      // Fetch privacy settings
+      const privacyResponse = await fetch('/api/user/privacy-settings', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (privacyResponse.ok) {
+        const privacyData = await privacyResponse.json();
+        setPrivacySettings(privacyData.data || {
+          showEmail: false,
+          showPhone: false,
+          showWallet: false,
+          walletDisplayMode: 'hidden'
+        });
       }
       
     } catch (error) {
@@ -265,24 +287,37 @@ export function ProfilePage() {
                   </div>
                   
                   <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-gray-600 mb-4">
-                    {user.email && (
+                    {user.email && privacySettings.showEmail && (
                       <div className="flex items-center gap-1">
                         <Mail className="h-4 w-4" />
                         {user.email}
                       </div>
                     )}
-                    {user.phone && (
+                    {user.phone && privacySettings.showPhone && (
                       <div className="flex items-center gap-1">
                         <Phone className="h-4 w-4" />
                         {user.phone}
                       </div>
                     )}
-                    {user.wallet_address && (
+                    {user.wallet_address && privacySettings.showWallet && (
                       <div className="flex items-center gap-1">
                         <Wallet className="h-4 w-4" />
-                        <span className="font-mono text-xs">
-                          {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
-                        </span>
+                        {privacySettings.walletDisplayMode === 'public' ? (
+                          <span className="font-mono text-xs">
+                            {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
+                          </span>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-green-100 text-green-800">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Wallet Verified
+                            </Badge>
+                            <Button size="sm" variant="outline" className="h-6 px-2 text-xs">
+                              <DollarSign className="h-3 w-3 mr-1" />
+                              Tip
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
                     <div className="flex items-center gap-1">
@@ -627,23 +662,7 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <Card className="galax-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5" />
-                Achievements & Badges
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                <Award className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No badges earned yet</p>
-                <p className="text-sm mt-2">
-                  Help your community and participate in governance to earn badges!
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <UserBadges user={user} className="galax-card" />
         </motion.div>
       </div>
     </div>

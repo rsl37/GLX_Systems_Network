@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { CountryCodeSelector } from '@/components/CountryCodeSelector';
 import { Country } from '@/data/countries';
+import { PrivacySettings } from './PrivacySettings';
 
 interface AccountSettingsProps {
   trigger?: React.ReactNode;
@@ -58,6 +59,14 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
 
   const [walletForm, setWalletForm] = useState({
     walletAddress: user?.wallet_address || ''
+  });
+
+  // Privacy settings state
+  const [privacySettings, setPrivacySettings] = useState({
+    showEmail: false,
+    showPhone: false,
+    showWallet: false,
+    walletDisplayMode: 'hidden' as 'hidden' | 'public' | 'tip-button'
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -247,6 +256,36 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
     }
   };
 
+  const handleUpdatePrivacySettings = async (newSettings: typeof privacySettings) => {
+    setIsLoading(true);
+    clearMessages();
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/user/privacy-settings', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newSettings)
+      });
+
+      if (response.ok) {
+        setPrivacySettings(newSettings);
+        setSuccess('Privacy settings updated successfully');
+        await refreshUser();
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error?.message || 'Failed to update privacy settings');
+      }
+    } catch (error) {
+      setError('Failed to update privacy settings');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleRemoveEmail = async () => {
     if (!user?.phone && !user?.wallet_address) {
       setError('Cannot remove email - you need at least one authentication method');
@@ -385,7 +424,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
         )}
 
         <Tabs defaultValue="email" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="h-4 w-4" />
               Email
@@ -401,6 +440,10 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
             <TabsTrigger value="password" className="flex items-center gap-2">
               <Key className="h-4 w-4" />
               Password
+            </TabsTrigger>
+            <TabsTrigger value="privacy" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Privacy
             </TabsTrigger>
           </TabsList>
 
@@ -700,6 +743,13 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="privacy" className="space-y-4">
+            <PrivacySettings
+              userPrivacySettings={privacySettings}
+              onUpdatePrivacySettings={handleUpdatePrivacySettings}
+            />
           </TabsContent>
         </Tabs>
       </DialogContent>
