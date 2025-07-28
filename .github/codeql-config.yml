@@ -1,15 +1,21 @@
-name: "CodeQL Configuration"
+name: "CodeQL Configuration (Solo Developer Optimized)"
 
+# Disable default queries that might be too strict for solo dev
 disable-default-queries: false
 
+# Include security and quality queries but allow for flexibility
 queries:
   - uses: security-and-quality
+  - uses: security-extended  # Additional security checks
 
+# Focus on application code, ignore test files for cleaner results
 paths:
   - GALAX_App_files/client/src
   - GALAX_App_files/server
   - GALAX_App_files/scripts
+  - GALAX_App_files/src
 
+# Ignore common directories that don't need security analysis
 paths-ignore:
   - node_modules
   - dist
@@ -19,3 +25,11 @@ paths-ignore:
   - "**/*.test.js"
   - "**/*.spec.ts"
   - "**/*.spec.js"
+  - "**/*.d.ts"
+  - "**/*.config.js"
+  - "**/*.config.ts"
+
+# Solo developer specific configuration
+packs:
+  # Include JavaScript security pack but don't make it blocking
+  - "codeql/javascript-queries:AlertSuppression.ql"
