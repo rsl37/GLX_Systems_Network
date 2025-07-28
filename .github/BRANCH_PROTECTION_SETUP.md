@@ -1,15 +1,25 @@
 # Branch Protection Rules Setup Guide
 
-This document provides step-by-step instructions for configuring branch protection rules to enforce the GitHub Actions status checks.
+This document provides step-by-step instructions for configuring branch protection rules to enforce the GitHub Actions status checks, specifically including the new **Authentication Status Checks**.
 
 ## Quick Setup Checklist
 
 - [ ] Navigate to repository Settings
 - [ ] Go to Branches section
 - [ ] Add protection rule for `main` branch
-- [ ] Configure required status checks
+- [ ] Configure required status checks (including Authentication checks)
 - [ ] Add protection rule for `develop` branch
 - [ ] Test protection rules with a test PR
+
+## Authentication Status Checks Added
+
+The following new authentication-focused status checks are now available:
+
+- ✅ **Account Creation Validation** - Validates user registration without errors
+- ✅ **Login Validation** - Validates user login functionality  
+- ✅ **Account Management** - Validates account management features
+- ✅ **Authentication Security Testing** - Validates security measures
+- ✅ **E2E Authentication Testing** - Validates end-to-end authentication flows
 
 ## Detailed Configuration Steps
 

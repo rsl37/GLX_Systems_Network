@@ -243,6 +243,16 @@ export interface DatabaseSchema {
     new_supply: number;
     timestamp: string;
   };
+  user_privacy: {
+    id: number;
+    user_id: number;
+    show_email: number;
+    show_phone: number;
+    show_wallet: number;
+    wallet_display_mode: string;
+    created_at: string;
+    updated_at: string;
+  };
 }
 
 // Database configuration - supports both PostgreSQL and SQLite
@@ -553,6 +563,28 @@ async function initializeDatabase() {
         // Add indexes
         tempDb.exec(`CREATE INDEX idx_kyc_verifications_user_id ON kyc_verifications(user_id)`);
         tempDb.exec(`CREATE INDEX idx_kyc_verifications_status ON kyc_verifications(verification_status)`);
+      }
+
+      // Check if user_privacy table exists
+      const userPrivacyCheck = tempDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='user_privacy'").get();
+      if (!userPrivacyCheck) {
+        console.log('📝 Creating user_privacy table');
+        tempDb.exec(`
+          CREATE TABLE user_privacy (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL UNIQUE,
+            show_email INTEGER DEFAULT 0,
+            show_phone INTEGER DEFAULT 0,
+            show_wallet INTEGER DEFAULT 0,
+            wallet_display_mode TEXT DEFAULT 'hidden',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+          )
+        `);
+        
+        // Add index
+        tempDb.exec(`CREATE INDEX idx_user_privacy_user_id ON user_privacy(user_id)`);
       }
       
       tempDb.close();

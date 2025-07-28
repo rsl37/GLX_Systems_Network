@@ -22,8 +22,13 @@ export default defineConfig({
     testTimeout: 30000,
     hookTimeout: 30000,
     setupFiles: ['./src/__tests__/setup.ts'],
+    outputFile: {
+      json: './test-results/results.json',
+      junit: './test-results/junit.xml'
+    },
     coverage: {
       reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
       exclude: [
         'node_modules/',
         'src/__tests__/setup.ts',

@@ -2,7 +2,6 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { io as Client } from 'socket.io-client';
-import { db } from '../../server/database.js';
 
 // Test server setup utility
 export class TestServer {
