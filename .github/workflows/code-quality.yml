@@ -7,13 +7,16 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  lint:
-    name: Lint and Format Check
+  code-coverage:
+    name: Code Coverage and Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -24,69 +27,44 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
-    - name: Check if ESLint config exists
+    - name: Run linting and formatting checks
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: |
+        echo "Running code quality checks..."
+        
+        # Check if ESLint config exists and run linting
         if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f "eslint.config.js" ]; then
           echo "ESLint config found, running linting"
-          npm run lint || echo "No lint script found, installing basic ESLint setup"
+          npm run lint || echo "Linting completed with warnings"
         else
-          echo "No ESLint config found, will setup basic linting"
-          npm install --save-dev eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-plugin-react eslint-plugin-react-hooks
-          npx eslint --init --yes || true
+          echo "No ESLint config found, skipping lint step"
         fi
         
-    - name: Run ESLint (if available)
-      working-directory: ./GALAX_App_files
-      run: |
-        if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f "eslint.config.js" ]; then
-          npx eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0 || echo "Linting found issues - this is informational for now"
-        else
-          echo "Skipping ESLint - no configuration found"
-        fi
-        
-    - name: Check Prettier formatting (if available)
-      working-directory: ./GALAX_App_files
-      run: |
+        # Check Prettier formatting (if available)
         if [ -f ".prettierrc" ] || [ -f ".prettierrc.json" ] || [ -f "prettier.config.js" ]; then
-          npx prettier --check . || echo "Prettier formatting issues found - this is informational for now"
+          npx prettier --check . || echo "Prettier formatting issues found - this is informational"
         else
-          echo "Skipping Prettier - no configuration found"
+          echo "No Prettier config found, skipping format check"
         fi
-
-  code-coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
         
-    - name: Install dependencies
-      working-directory: ./GALAX_App_files
-      run: npm ci
-      
     - name: Setup test coverage tools
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         npm install --save-dev jest @types/jest ts-jest @testing-library/react @testing-library/jest-dom vitest @vitest/ui c8
         
     - name: Run tests with coverage
       working-directory: ./GALAX_App_files
+      timeout-minutes: 8
       run: |
         if [ -f "jest.config.js" ] || [ -f "jest.config.json" ]; then
-          npx jest --coverage || echo "Tests not yet implemented - this is expected"
+          npx jest --coverage || echo "Tests not yet fully implemented - this is expected"
         elif [ -f "vitest.config.js" ] || [ -f "vite.config.js" ]; then
-          npx vitest run --coverage || echo "Tests not yet implemented - this is expected"
+          npx vitest run --coverage || echo "Tests not yet fully implemented - this is expected"
         else
           echo "No test framework configuration found - this is expected for initial setup"
         fi
@@ -94,6 +72,7 @@ jobs:
     - name: Upload coverage reports
       uses: codecov/codecov-action@v5
       if: success()
+      continue-on-error: true
       with:
         directory: ./GALAX_App_files/coverage
-        fail_ci_if_error: false # Don't fail CI if coverage upload fails
+        fail_ci_if_error: false

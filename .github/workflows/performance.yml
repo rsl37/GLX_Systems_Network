@@ -10,10 +10,13 @@ jobs:
   performance-benchmarks:
     name: Performance Benchmarks
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -24,14 +27,17 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Build application
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: npm run build
       
     - name: Install performance testing tools
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         npm install --save-dev lighthouse lighthouse-ci @lhci/cli webpack-bundle-analyzer
         
@@ -62,14 +68,15 @@ jobs:
         
     - name: Start application for performance testing
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         # Start the application
-        npm start &
+        timeout 60s npm start &
         APP_PID=$!
         echo "APP_PID=$APP_PID" >> $GITHUB_ENV
         
-        # Wait for application to be ready
-        timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done' || echo "App may not be ready"
+        # Wait for application to be ready with shorter timeout
+        timeout 30 bash -c 'until curl -f http://localhost:3000 2>/dev/null; do echo "Waiting for app..."; sleep 2; done' || echo "App may not be ready for performance tests"
         
     - name: Run Lighthouse CI
       working-directory: ./GALAX_App_files
@@ -143,10 +150,13 @@ jobs:
   memory-performance:
     name: Memory Performance Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -157,15 +167,18 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Install memory profiling tools
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         npm install --save-dev clinic autocannon
         
     - name: Build application
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: npm run build
       
     - name: Memory usage test

@@ -6,7 +6,7 @@
   "license": "PolyForm-Shield-1.0.0",
   "scripts": {
     "build": "vite build && tsc --project tsconfig.server.json",
-    "start": "tsx watch scripts/dev.ts",
+    "start": "npx tsx watch scripts/dev.ts",
     "test": "vitest run",
     "test:api": "vitest --run tests/api",
     "test:socket": "vitest --run tests/socket",
@@ -15,10 +15,15 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:all": "npm run test && npm run test:e2e",
-    "test:env": "tsx scripts/test-env.ts",
-    "deployment:check": "tsx scripts/deployment-check.js",
+    "test:env": "npx tsx scripts/test-env.ts",
+    "deployment:check": "npx tsx scripts/deployment-check.js",
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
-    "domain:check": "tsx scripts/domain-check.ts"
+    "domain:check": "npx tsx scripts/domain-check.ts",
+    "health:log": "npx tsx scripts/health-location-status-logger.ts",
+    "branch:analyze": "npx tsx scripts/branch-commit-analyzer.ts",
+    "logs:all": "npm run health:log && npm run branch:analyze",
+    "dashboard": "npx tsx scripts/monitoring-dashboard.ts",
+    "monitor:full": "npm run logs:all && npm run dashboard"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",

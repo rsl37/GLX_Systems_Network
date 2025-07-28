@@ -13,10 +13,13 @@ jobs:
   dependency-scan:
     name: Dependency Vulnerability Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -27,20 +30,24 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Run npm audit
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         npm audit --audit-level=high
         
     - name: Run security audit with audit-ci
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         npx audit-ci --config ./audit-ci.json || echo "audit-ci not configured yet"
         
     - name: Check for known security issues
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         # Check for common security anti-patterns
         echo "Checking for potential security issues in code..."
@@ -60,6 +67,7 @@ jobs:
   codeql-analysis:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       actions: read
       contents: read
@@ -89,10 +97,12 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Build for analysis
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: |
         # Build only the frontend since backend has compilation issues
         npm run build || echo "Build completed with warnings"
@@ -105,10 +115,13 @@ jobs:
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Run TruffleHog
       uses: trufflesecurity/trufflehog@main
