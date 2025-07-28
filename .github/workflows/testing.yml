@@ -10,14 +10,18 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x, 22.x]
+      fail-fast: false
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
@@ -28,16 +32,19 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Setup testing framework
       working-directory: ./GALAX_App_files
+      timeout-minutes: 3
       run: |
         # Install testing dependencies if not present
         npm install --save-dev vitest @vitest/ui @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
         
     - name: Run unit tests
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: |
         if [ -f "vitest.config.js" ] || [ -f "vitest.config.ts" ]; then
           npx vitest run --reporter=verbose
@@ -70,10 +77,13 @@ jobs:
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -84,7 +94,8 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Setup test database
       working-directory: ./GALAX_App_files
@@ -123,10 +134,13 @@ jobs:
   e2e-tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -137,7 +151,8 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Install Playwright
       working-directory: ./GALAX_App_files
