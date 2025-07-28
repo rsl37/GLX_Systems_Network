@@ -10,10 +10,13 @@ jobs:
   staging-deployment-test:
     name: Staging Deployment Verification
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -24,10 +27,12 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Build for production
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: |
         NODE_ENV=production npm run build
         
@@ -64,6 +69,7 @@ jobs:
         
     - name: Test production environment simulation
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: |
         echo "Testing production environment simulation..."
         
@@ -76,22 +82,22 @@ jobs:
         
         # Test if the application can at least start without full database setup
         echo "Testing application startup..."
-        timeout 30s npm start &
+        timeout 20s npm start &
         APP_PID=$!
         echo "Started app with PID: $APP_PID"
         
         # Wait for application to start (or fail)
         echo "Waiting for application startup or failure..."
-        sleep 10
+        sleep 8
         
         # Check if process is still running
         if kill -0 $APP_PID 2>/dev/null; then
           echo "✅ Application process is running"
           
-          # Try to connect to the expected port
-          if curl -f http://localhost:3001 > /dev/null 2>&1; then
+          # Try to connect to the expected port with timeout
+          if timeout 5s curl -f http://localhost:3001 > /dev/null 2>&1; then
             echo "✅ Application is accepting connections on port 3001"
-          elif curl -f http://localhost:5173 > /dev/null 2>&1; then
+          elif timeout 5s curl -f http://localhost:5173 > /dev/null 2>&1; then
             echo "✅ Application is accepting connections on port 5173 (Vite dev)"
           else
             echo "ℹ️  Application is running but not accepting HTTP connections yet (startup in progress)"
@@ -141,10 +147,13 @@ jobs:
   deployment-health-checks:
     name: Deployment Health Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -155,14 +164,17 @@ jobs:
         
     - name: Install dependencies
       working-directory: ./GALAX_App_files
-      run: npm ci
+      timeout-minutes: 5
+      run: npm ci --prefer-offline --no-audit --no-fund
       
     - name: Build application
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: npm run build
       
     - name: Test startup time
       working-directory: ./GALAX_App_files
+      timeout-minutes: 5
       run: |
         echo "Testing application startup time..."
         
@@ -233,14 +245,17 @@ jobs:
   environment-compatibility:
     name: Environment Compatibility Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     strategy:
       matrix:
         node-version: [20.x, 22.x]
-    
+      fail-fast: false
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
       
     - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
@@ -251,22 +266,23 @@ jobs:
         
     - name: Test Node.js compatibility
       working-directory: ./GALAX_App_files
+      timeout-minutes: 10
       run: |
         echo "Testing Node.js ${{ matrix.node-version }} compatibility..."
         
         # Install dependencies
-        npm ci
+        npm ci --prefer-offline --no-audit --no-fund
         
         # Test build
         npm run build
         
         # Basic runtime test
-        timeout 30s npm start &
+        timeout 20s npm start &
         APP_PID=$!
         
-        sleep 10
+        sleep 8
         
-        if curl -f http://localhost:3000 > /dev/null 2>&1; then
+        if timeout 5s curl -f http://localhost:3000 > /dev/null 2>&1; then
           echo "✅ Compatible with Node.js ${{ matrix.node-version }}"
         else
           echo "❌ Issues with Node.js ${{ matrix.node-version }}"
