@@ -18,7 +18,12 @@
     "test:env": "tsx scripts/test-env.ts",
     "deployment:check": "tsx scripts/deployment-check.js",
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
-    "domain:check": "tsx scripts/domain-check.ts"
+    "domain:check": "tsx scripts/domain-check.ts",
+    "health:log": "tsx scripts/health-location-status-logger.ts",
+    "branch:analyze": "tsx scripts/branch-commit-analyzer.ts",
+    "logs:all": "npm run health:log && npm run branch:analyze",
+    "dashboard": "tsx scripts/monitoring-dashboard.ts",
+    "monitor:full": "npm run logs:all && npm run dashboard"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
