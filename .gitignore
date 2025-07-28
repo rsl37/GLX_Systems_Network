@@ -86,7 +86,9 @@ bundle-size-report.md
 api-contract-test.js
 socket-test.js
 Dockerfile.test
-*.test.ts
-*.test.js
-e2e/
+# Exclude generated test files but allow e2e source files
 **/src/__tests__/
+# Allow e2e directory but exclude specific generated content
+!e2e/
+e2e/test-results/
+e2e/playwright-report/

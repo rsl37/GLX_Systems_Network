@@ -27,6 +27,7 @@ export default defineConfig({
       junit: './test-results/junit.xml'
     },
     coverage: {
+      enabled: true,
       reporter: ['text', 'json', 'html'],
       reportsDirectory: './coverage',
       exclude: [
