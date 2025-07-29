@@ -302,9 +302,9 @@ export const corsConfig = {
       console.warn(`🚨 CORS blocked origin: ${origin}`, {
         allowedOrigins: allowedOrigins.length,
         configuredOrigins: {
-          CLIENT_ORIGIN: process.env.CLIENT_ORIGIN,
-          FRONTEND_URL: process.env.FRONTEND_URL,
-          TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS,
+          CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? "[set]" : "[unset]",
+          FRONTEND_URL: process.env.FRONTEND_URL ? "[set]" : "[unset]",
+          TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS ? "[set]" : "[unset]",
         },
         isProduction,
         timestamp: new Date().toISOString(),
