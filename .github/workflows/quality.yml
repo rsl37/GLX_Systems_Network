@@ -172,50 +172,141 @@ jobs:
         kill $APP_PID 2>/dev/null || true
 
   e2e-tests:
-  name: End-to-End Tests
-  runs-on: ubuntu-latest
-  timeout-minutes: 20
-
-  steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
-
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-    node-version: '20.x'
-    cache: 'npm'
-    cache-dependency-path: './GALAX_App_files/package-lock.json'
-
-  - name: Install dependencies
-    working-directory: ./GALAX_App_files
-    run: npm ci --prefer-offline --no-audit --no-fund
-
-  - name: Install Playwright
-    working-directory: ./GALAX_App_files
-    run: |
-        npx playwright install chromium --with-deps
-
-  - name: Build application
-    working-directory: ./GALAX_App_files
-    run: npm run build
-
-  - name: Run E2E tests
-    working-directory: ./GALAX_App_files
-    run: |
-        if [ -f "playwright.config.ts" ] || [ -f "playwright.config.js" ]; then
-      npm run test:e2e
-        else
-          echo "No E2E test configuration found - creating basic health check"
-      npx playwright test --headed=false --config-override='{"use":{"headless":true},"projects":[{"name":"chromium","use":{"...devices":"Desktop Chrome"}}],"testDir":"./e2e"}' || echo "E2E tests completed"
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: './GALAX_App_files/package-lock.json'
+        
+    - name: Install dependencies
+      working-directory: ./GALAX_App_files
+      run: npm ci --prefer-offline --no-audit --no-fund
+      
+    - name: Install Playwright
+      working-directory: ./GALAX_App_files
+      run: |
+        echo "Installing Playwright browsers..."
+        npx playwright install chromium --with-deps || {
+          echo "Failed to install Chromium browser, trying alternative approach..."
+          npx playwright install --with-deps || {
+            echo "Browser installation failed, will attempt to run tests without browser binaries"
+            exit 0
+          }
+        }
+      
+    - name: Build application
+      working-directory: ./GALAX_App_files
+      run: npm run build
+      
+    - name: Setup test environment
+      working-directory: ./GALAX_App_files
+      run: |
+        echo "Setting up test environment..."
+        # Copy test environment
+        cp .env.test .env
+        # Ensure data directory exists
+        mkdir -p data
+        # Create a simple test database
+        echo "Test environment setup complete"
+      
+    - name: Start application
+      working-directory: ./GALAX_App_files
+      run: |
+        echo "Starting application for E2E tests..."
+        npm start &
+        APP_PID=$!
+        echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+        
+        echo "Waiting for application to start..."
+        # Wait for app to start with better error handling
+        for i in {1..30}; do
+          if curl -f -s http://localhost:3000 >/dev/null 2>&1; then
+            echo "✓ Application started successfully on port 3000"
+            break
+          fi
+          echo "Waiting for application... ($i/30)"
+          sleep 2
+        done
+        
+        # Final check
+        if ! curl -f -s http://localhost:3000 >/dev/null 2>&1; then
+          echo "❌ Application failed to start properly"
+          echo "Checking application logs..."
+          jobs
+          exit 1
         fi
+        
+    - name: Run E2E tests
+      working-directory: ./GALAX_App_files
+      run: |
+        echo "Running E2E tests..."
+        
+        # Check if browsers are properly installed
+        if npx playwright --version >/dev/null 2>&1; then
+          echo "✓ Playwright is available"
+        else
+          echo "❌ Playwright is not available"
+          exit 1
+        fi
+        
+        # Check if test files exist
+        if [ ! -d "e2e" ] || [ -z "$(ls -A e2e 2>/dev/null)" ]; then
+          echo "⚠️  No E2E tests found in e2e directory, creating basic test..."
+          mkdir -p e2e
+          cat > e2e/basic-health.spec.ts << 'EOF'
+import { test, expect } from '@playwright/test';
 
-  - name: Upload test results
-    uses: actions/upload-artifact@v4
-    if: always()
-    with:
-    name: e2e-test-results
-    path: |
+test('Application health check', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveTitle(/GALAX|Mimo|Civic/i);
+  await page.waitForLoadState('networkidle');
+  const body = page.locator('body');
+  await expect(body).toBeVisible();
+});
+EOF
+        fi
+        
+        # Run the tests with better error handling
+        if [ -f "playwright.config.ts" ] || [ -f "playwright.config.js" ]; then
+          echo "Using existing Playwright configuration..."
+          npm run test:e2e || {
+            echo "E2E tests failed, checking for common issues..."
+            echo "Browser status:"
+            npx playwright install --dry-run chromium || true
+            exit 1
+          }
+        else
+          echo "No Playwright config found, running with basic setup..."
+          npx playwright test --config=playwright.config.ts || {
+            echo "E2E tests failed with basic setup"
+            exit 1
+          }
+        fi
+        
+        echo "✓ E2E tests completed successfully"
+        
+    - name: Stop application
+      if: always()
+      run: |
+        if [ ! -z "$APP_PID" ]; then
+          kill $APP_PID || true
+        fi
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
           ./GALAX_App_files/test-results/
           ./GALAX_App_files/playwright-report/
     retention-days: 7

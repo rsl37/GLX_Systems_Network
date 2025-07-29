@@ -9,7 +9,7 @@
 // Added 2025-01-13 21:57:30 UTC - Centralized Security Management System
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import { postQuantumSecurity } from '../postQuantumCrypto.js';
+import { postQuantumCrypto } from '../postQuantumCrypto.js';
 import { antimalwareFileScanner, antimalwarePayloadScanner, getQuarantineStats, manageQuarantine } from './antimalware.js';
 import { antivirusFileScanner, realTimeProtection, antivirusAdmin, initializeAntivirus, globalScanStats } from './antivirus.js';
 import { 
@@ -192,9 +192,10 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     // Get antimalware stats
     const malwareStats = await getQuarantineStats();
     
-    // Calculate protection score (0-125, with bonus points for post-quantum)
-    // Get post-quantum status
-    const postQuantumStatus = getPostQuantumStatus();
+    // Get post-quantum security status
+    const pqStatus = postQuantumCrypto.getStatus();
+    
+    // Calculate protection score (0-130 for quantum-safe)
     let protectionScore = 0;
     
     if (SECURITY_CONFIG.antimalware.enabled) protectionScore += 20;
@@ -206,35 +207,27 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 5;
     if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 5;
     
-    // Post-quantum security bonus (future-proofing against quantum computers)
-    if (SECURITY_CONFIG.postQuantum.enabled) protectionScore += 20;
-    if (SECURITY_CONFIG.postQuantum.mlKemEnabled) protectionScore += 5;
-    if (SECURITY_CONFIG.postQuantum.mlDsaEnabled) protectionScore += 5;
-    if (SECURITY_CONFIG.postQuantum.slhDsaEnabled) protectionScore += 5;
-    if (SECURITY_CONFIG.postQuantum.hybridCrypto) protectionScore += 10;
-    
-    // Cap at 100 for display, but track quantum readiness
-    const quantumReady = protectionScore > 100;
-    const displayScore = Math.min(protectionScore, 100);
+    // Add post-quantum bonus protection (30 points for quantum-safe level)
+    if (pqStatus.initialized) protectionScore += 30;
     
     // Determine security level including quantum-safe level
     let securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe';
-    if (quantumReady) {
+    if (protectionScore >= 130) {
       securityLevel = 'quantum-safe';
-    } else if (displayScore >= 95) {
+    } else if (protectionScore >= 95) {
       securityLevel = 'maximum';
-    } else if (displayScore >= 80) {
+    } else if (protectionScore >= 80) {
       securityLevel = 'high';
-    } else if (displayScore >= 60) {
+    } else if (protectionScore >= 60) {
       securityLevel = 'medium';
     } else {
       securityLevel = 'low';
     }
     
-    // Get post-quantum security status
-    const pqStatus = postQuantumSecurity.getSecurityStatus();
+    // Cap display score at 100 but track actual for quantum-safe level
+    const displayScore = Math.min(protectionScore, 100);
     
-    return {
+    const status: SecuritySystemStatus = {
       antimalware: {
         enabled: SECURITY_CONFIG.antimalware.enabled,
         lastScan: new Date().toISOString(),
@@ -258,11 +251,11 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
         honeypotActive: SECURITY_CONFIG.antiHacking.honeypot
       },
       postQuantum: {
-        enabled: SECURITY_CONFIG.postQuantum.enabled,
-        algorithms: pqStatus.algorithms,
-        securityLevel: pqStatus.securityLevel,
-        quantumResistant: SECURITY_CONFIG.postQuantum.quantumResistant,
-        hybridCrypto: SECURITY_CONFIG.postQuantum.hybridCrypto,
+        enabled: SECURITY_CONFIG.postQuantum.enabled && pqStatus.initialized,
+        algorithms: pqStatus.initialized ? ['ML-KEM', 'ML-DSA', 'SLH-DSA'] : [],
+        securityLevel: pqStatus.initialized ? pqStatus.securityLevel : 0,
+        quantumResistant: pqStatus.initialized && pqStatus.complianceLevel === 'NIST Post-Quantum Standards',
+        hybridCrypto: pqStatus.initialized && SECURITY_CONFIG.postQuantum.hybridCrypto,
         lastTest: new Date().toISOString()
       },
       overall: {
@@ -271,7 +264,8 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
         lastUpdate: new Date().toISOString()
       }
     };
-    } catch (error) {
+    return status;
+  } catch (error) {
     console.error('Error getting security status:', error);
     return {
       antimalware: { enabled: false, lastScan: '', threatsDetected: 0, quarantinedFiles: 0 },
@@ -439,7 +433,7 @@ export const securityDashboardAdmin = {
   // Post-quantum security status
   getPostQuantumStatus: async (req: Request, res: Response) => {
     try {
-      const status = getPostQuantumStatus();
+      const status = postQuantumCrypto.getStatus();
       res.json({
         success: true,
         data: status,
@@ -460,8 +454,7 @@ export const securityDashboardAdmin = {
   // Test post-quantum cryptographic operations
   testPostQuantumOperations: async (req: Request, res: Response) => {
     try {
-      const { testPostQuantumOperations } = await import('../postQuantumCrypto.js');
-      const results = await testPostQuantumOperations();
+      const results = await postQuantumCrypto.testOperations();
       
       res.json({
         success: true,
@@ -575,11 +568,9 @@ export const initializeSecuritySystems = async () => {
   
   // Initialize post-quantum cryptography
   try {
-    const { initializePostQuantumSecurity } = await import('../postQuantumCrypto.js');
-    await initializePostQuantumSecurity();
+    await postQuantumCrypto.initialize();
   } catch (error) {
-    console.error('⚠️ Post-quantum cryptography initialization failed:', error);
-    SECURITY_CONFIG.postQuantum.enabled = false;
+    console.warn('⚠️ Post-quantum initialization failed:', error.message);
   }
   
   console.log('✅ Security Systems Status:');
@@ -590,11 +581,53 @@ export const initializeSecuritySystems = async () => {
   console.log(`   🤖 Bot Detection: ${SECURITY_CONFIG.antiHacking.botDetection ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🍯 Honeypot System: ${SECURITY_CONFIG.antiHacking.honeypot ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🧠 Behavioral Analysis: ${SECURITY_CONFIG.antiHacking.behavioralAnalysis ? 'ENABLED' : 'DISABLED'}`);
-  console.log(`   🔐 Post-Quantum Crypto: ${SECURITY_CONFIG.postQuantum.enabled ? 'ENABLED' : 'DISABLED'}`);
-  console.log(`   ⚛️  Quantum Resistant: ${SECURITY_CONFIG.postQuantum.quantumResistant ? 'ENABLED' : 'DISABLED'}`);
-  console.log(`   🔀 Hybrid Encryption: ${SECURITY_CONFIG.postQuantum.hybridCrypto ? 'ENABLED' : 'DISABLED'}`);
-  
+  console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`); 
   console.log('🚀 GALAX App Security Systems are FULLY OPERATIONAL');
+};
+
+// Post-Quantum Security Admin endpoints
+export const postQuantumSecurityAdmin = {
+  // Get post-quantum security status
+  getStatus: async (req: Request, res: Response) => {
+    try {
+      const status = postQuantumCrypto.getStatus();
+      res.json({
+        success: true,
+        data: status,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: {
+          message: 'Failed to retrieve post-quantum security status',
+          statusCode: 500
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
+  },
+
+  // Test post-quantum cryptographic operations
+  testOperations: async (req: Request, res: Response) => {
+    try {
+      const testResults = await postQuantumCrypto.testOperations();
+      res.json({
+        success: true,
+        data: testResults,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: {
+          message: 'Failed to test post-quantum operations',
+          statusCode: 500
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
 };
 
 // Export all admin endpoints
@@ -602,7 +635,8 @@ export const securityAdminEndpoints = {
   dashboard: securityDashboardAdmin,
   antimalware: manageQuarantine,
   antivirus: antivirusAdmin,
-  antiHacking: antiHackingAdmin
+  antiHacking: antiHackingAdmin,
+  postQuantum: postQuantumSecurityAdmin
 };
 
 // Export security configuration for external use

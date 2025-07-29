@@ -67,7 +67,7 @@ import SocketManager from "./socketManager.js";
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
 
-import { postQuantumSecurity } from "./postQuantumCrypto.js";
+import { postQuantumCrypto } from "./postQuantumCrypto.js";
 
 // Import comprehensive security systems
 import {
@@ -481,72 +481,13 @@ app.get("/api/admin/security/antihacking/stats", authenticateToken, securityAdmi
 app.post("/api/admin/security/antihacking/block-ip", authenticateToken, securityAdminEndpoints.antiHacking.blockIP);
 app.post("/api/admin/security/antihacking/unblock-ip", authenticateToken, securityAdminEndpoints.antiHacking.unblockIP);
 
-// Post-Quantum Security admin endpoints
-app.get("/api/admin/security/post-quantum/status", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    const status = postQuantumSecurity.getSecurityStatus();
-    res.json({
-      success: true,
-      data: {
-        ...status,
-        timestamp: new Date().toISOString(),
-        description: "Post-Quantum Cryptography Security Baseline",
-        nistStandards: ["ML-KEM", "ML-DSA", "SLH-DSA"],
-        quantumResistant: true,
-        hybridEncryption: true
-      }
-    });
-  } catch (error) {
-    console.error("❌ Post-quantum security status error:", error);
-    res.status(500).json({ success: false, error: "Failed to get post-quantum security status" });
-  }
-});
+// Post-Quantum Security Management
+app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.postQuantum.getStatus);
+app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.postQuantum.testOperations);
 
-app.post("/api/admin/security/post-quantum/test", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    // Test post-quantum key exchange
-    const kemTest = postQuantumSecurity.keyEncapsulation.generateKeyPair();
-    const { ciphertext, sharedSecret } = postQuantumSecurity.keyEncapsulation.encapsulate(kemTest.publicKey);
-    const decapsulatedSecret = postQuantumSecurity.keyEncapsulation.decapsulate(ciphertext, kemTest.privateKey);
-    
-    // Test post-quantum signatures
-    const dsaTest = postQuantumSecurity.digitalSignatures.generateKeyPair();
-    const testMessage = Buffer.from("GALAX Post-Quantum Security Test");
-    const signature = postQuantumSecurity.digitalSignatures.sign(testMessage, dsaTest.privateKey);
-    const signatureValid = postQuantumSecurity.digitalSignatures.verify(signature, testMessage, dsaTest.publicKey);
-
-    res.json({
-      success: true,
-      data: {
-        kemTest: {
-          keyGenerated: kemTest.publicKey.length > 0 && kemTest.privateKey.length > 0,
-          encapsulation: ciphertext.length > 0 && sharedSecret.length > 0,
-          decapsulation: Buffer.from(sharedSecret).equals(Buffer.from(decapsulatedSecret))
-        },
-        dsaTest: {
-          keyGenerated: dsaTest.publicKey.length > 0 && dsaTest.privateKey.length > 0,
-          signatureCreated: signature.length > 0,
-          signatureValid: signatureValid
-        },
-        timestamp: new Date().toISOString(),
-        testStatus: "All post-quantum cryptography tests passed"
-      }
-    });
-
-    logSecurityEvent({
-      type: "test",
-      severity: "info",
-      ip: req.ip || "unknown",
-      details: { event: "Post-quantum security test completed", userId: req.userId },
-      action: "Admin security testing",
-      status: "allowed"
-    });
-
-  } catch (error) {
-    console.error("❌ Post-quantum security test error:", error);
-    res.status(500).json({ success: false, error: "Post-quantum security test failed" });
-  }
-});
+// Post-Quantum Cryptography Management
+app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.dashboard.getPostQuantumStatus);
+app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.dashboard.testPostQuantumOperations);
 
 // Serve uploaded files with security headers
 app.use(
@@ -609,10 +550,9 @@ export async function startServer(port: number) {
 
     // Initialize Post-Quantum Cryptography Security Baseline
     try {
-      const pqSecurityStatus = postQuantumSecurity.initializeSecurity();
+      await postQuantumCrypto.initialize();
+      const pqStatus = postQuantumCrypto.getStatus();
       console.log("🔐 Post-Quantum Security Baseline initialized successfully");
-      console.log(`   • Security Level: ${pqSecurityStatus.securityLevel} (256-bit equivalent)`);
-      console.log(`   • Algorithms: ${pqSecurityStatus.algorithms.join(', ')}`);
 
       logSecurityEvent({
         type: "system",
@@ -620,8 +560,8 @@ export async function startServer(port: number) {
         ip: "system",
         details: { 
           event: "Post-Quantum Security initialized",
-          securityLevel: pqSecurityStatus.securityLevel,
-          algorithms: pqSecurityStatus.algorithms
+          securityLevel: pqStatus.securityLevel,
+          initialized: pqStatus.initialized
         },
         action: "Post-quantum cryptography baseline enabled",
         status: "allowed",
