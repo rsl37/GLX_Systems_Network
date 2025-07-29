@@ -80,7 +80,8 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
 
   // Validation error (express-validator)
   if (err.name === 'ValidationError') {
-    const message = 'Invalid input data';
+    // Use the original validation error message instead of generic message
+    const message = err.message || 'Invalid input data';
     error = { statusCode: 400, message } as AppError;
   }
 
