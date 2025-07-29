@@ -175,8 +175,9 @@ export async function markPhoneAsVerified(userId: number, phone: string): Promis
  */
 export async function sendPhoneVerification(phone: string, code: string): Promise<boolean> {
   try {
-    // Safely log phone number with masking
-    const maskedPhone = phone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2');
+    // Safely log phone number with masking and sanitization
+    const sanitizedPhone = phone.replace(/[\n\r]/g, '');
+    const maskedPhone = sanitizedPhone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2');
     console.log('📱 Sending SMS verification to:', maskedPhone);
     
     // Mock SMS implementation for development
