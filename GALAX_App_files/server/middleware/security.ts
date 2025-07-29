@@ -374,8 +374,9 @@ export const requestLogger = (
   const safeMethod = req.method.slice(0, 10).replace(/[^A-Z]/g, "");
   const safePath = req.path
     .slice(0, 100)
-    .replace(/[^\w\/\-_?.=&]/g, "")
-    .replace(/\r?\n/g, "");
+    // Remove all non-path-safe characters, including all line breaks and control chars
+    .replace(/[\r\n\u2028\u2029\t\f\v\0\x0B\x1B\x7F-\u009F]/g, "")
+    .replace(/[^\w\/\-_?.=&]/g, "");
 
   // Log request details
   console.log("📝 Request:", safeMethod, safePath, {
