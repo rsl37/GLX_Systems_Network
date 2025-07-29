@@ -53,8 +53,11 @@ export function RegisterPage() {
         if (cleanPhone.startsWith('+')) {
           identifier = cleanPhone;
         } else {
-          // Remove any leading zeros and add the selected country code
-          const phoneWithoutLeadingZeros = cleanPhone.replace(/^0+/, '');
+          // Remove any leading zeros (only if followed by other digits) and add the selected country code
+          const phoneWithoutLeadingZeros = cleanPhone.replace(/^0+(?=\d)/, '');
+          if (!phoneWithoutLeadingZeros) {
+            throw new Error('Invalid phone number: phone number cannot be empty after removing leading zeros.');
+          }
           identifier = `${countryCode}${phoneWithoutLeadingZeros}`;
         }
       }
