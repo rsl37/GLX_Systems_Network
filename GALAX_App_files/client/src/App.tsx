@@ -26,6 +26,7 @@ const CrisisPage = React.lazy(() => import('./pages/CrisisPage').then(module => 
 const GovernancePage = React.lazy(() => import('./pages/GovernancePage').then(module => ({ default: module.GovernancePage })));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage').then(module => ({ default: module.ProfilePage })));
 const StablecoinPage = React.lazy(() => import('./pages/StablecoinPage').then(module => ({ default: module.StablecoinPage })));
+const AdminPage = React.lazy(() => import('./pages/AdminPage').then(module => ({ default: module.AdminPage })));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -89,6 +90,11 @@ function AppContent() {
               <Route path="/stablecoin" element={
                 <ProtectedRoute>
                   <StablecoinPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminPage />
                 </ProtectedRoute>
               } />
               <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
