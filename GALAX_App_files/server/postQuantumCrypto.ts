@@ -200,7 +200,7 @@ class PostQuantumCryptography {
    * Generate zero-knowledge proof
    */
   async generateZKProof(statement: string): Promise<{ proof: Buffer; commitment: Buffer }> {
-    if (!this.config.zerknowledgeProofs) {
+    if (!this.config.zeroKnowledgeProofs) {
       throw new Error('Zero-knowledge proofs not enabled');
     }
 
