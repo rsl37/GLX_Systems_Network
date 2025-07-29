@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, HandHeart, AlertTriangle, Vote, User, DollarSign } from 'lucide-react';
+import { Home, HandHeart, AlertTriangle, Vote, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -40,11 +40,11 @@ export function BottomNavigation() {
       description: 'View and report emergency situations'
     },
     { 
-      path: '/stablecoin', 
-      icon: DollarSign, 
-      label: 'Coin',
-      ariaLabel: 'Navigate to stablecoin section',
-      description: 'Manage your digital currency and transactions'
+      path: '/admin', 
+      icon: Settings, 
+      label: 'Admin',
+      ariaLabel: 'Navigate to admin dashboard',
+      description: 'Access security administration and system management'
     },
     { 
       path: '/governance', 

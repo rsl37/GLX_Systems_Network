@@ -45,10 +45,15 @@ export function CountryCodeSelector({
   );
 
   // Show popular countries first if no search query
+  // Ensure no duplicates by filtering out countries that are already in popular countries
+  const remainingCountries = countries.filter(country => 
+    !popularCountries.some(pop => pop.code === country.code)
+  );
+  
   const displayCountries = searchQuery ? filteredCountries : [
     ...popularCountries,
     { code: 'separator', name: '---', dialCode: '', flag: '' },
-    ...countries.filter(country => !popularCountries.some(pop => pop.code === country.code))
+    ...remainingCountries
   ];
 
   const handleCountrySelect = (dialCode: string) => {
@@ -99,7 +104,7 @@ export function CountryCodeSelector({
 
           return (
             <SelectItem
-              key={`${country.code}-${index}`}
+              key={country.code}
               value={country.dialCode}
               className="flex items-center gap-3 cursor-pointer"
             >

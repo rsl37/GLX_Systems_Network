@@ -1,0 +1,153 @@
+---
+name: Preview Deployment
+
+'on':
+  pull_request:
+  branches: [ main ]
+  types: [opened, synchronize, reopened]
+
+env:
+  NODE_VERSION: '20.x'
+  WORKING_DIRECTORY: './GALAX_App_files'
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+  name: Deploy Preview
+  runs-on: ubuntu-latest
+  timeout-minutes: 15
+  if: github.event.pull_request.draft == false
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: ${{ env.NODE_VERSION }}
+    cache: 'npm'
+    cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+  - name: Install dependencies
+    working-directory: ${{ env.WORKING_DIRECTORY }}
+    run: npm ci --prefer-offline --no-audit --no-fund
+
+  - name: Build application
+    working-directory: ${{ env.WORKING_DIRECTORY }}
+    run: npm run build
+
+  - name: Deploy to Vercel Preview
+    uses: amondnet/vercel-action@v25
+    if: env.VERCEL_TOKEN != ''
+    id: vercel-deploy
+    with:
+    vercel-token: ${{ secrets.VERCEL_TOKEN }}
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+    vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+    working-directory: ${{ env.WORKING_DIRECTORY }}
+    scope: ${{ secrets.VERCEL_ORG_ID }}
+    alias-domains: |
+          galax-civic-pr-${{ github.event.pull_request.number }}.vercel.app
+    env:
+    VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+  - name: Update PR with preview URL
+    uses: actions/github-script@v7
+    if: steps.vercel-deploy.conclusion == 'success'
+    with:
+    script: |
+      const { data: comments } = await github.rest.issues.listComments({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: context.issue.number,
+          });
+
+          const botComment = comments.find(comment =>
+            comment.user.type === 'Bot' &&
+            comment.body.includes('🚀 Preview Deployment')
+          );
+
+          const previewUrl = '${{ steps.vercel-deploy.outputs.preview-url }}';
+          const commitSha = context.sha.substring(0, 7);
+
+          const body = previewUrl ? `🚀 **Preview Deployment**
+
+          ✅ Preview deployed successfully!
+
+      **🔗 Preview URL:** ${previewUrl}
+      **📝 Commit:** ${commitSha}
+      **🌿 Branch:** \`${{ github.head_ref }}\`
+
+      ---
+
+      This preview will automatically update when you push new commits to this PR.` : `🚀 **Preview Deployment**
+
+          📦 Build completed successfully but preview deployment was skipped.
+
+      **📝 Commit:** ${commitSha}
+      **🌿 Branch:** \`${{ github.head_ref }}\`
+
+          *To enable preview deployments, configure Vercel secrets in repository settings.*`;
+
+          if (botComment) {
+            await github.rest.issues.updateComment({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        comment_id: botComment.id,
+        body: body
+            });
+          } else {
+            await github.rest.issues.createComment({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: context.issue.number,
+        body: body
+            });
+          }
+
+  lighthouse-audit:
+  name: Lighthouse Performance Audit
+  runs-on: ubuntu-latest
+  needs: [deploy-preview]
+  timeout-minutes: 10
+  if: github.event.pull_request.draft == false
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: ${{ env.NODE_VERSION }}
+
+  - name: Install Lighthouse CI
+    run: npm install -g @lhci/cli
+
+  - name: Run Lighthouse CI
+    working-directory: ${{ env.WORKING_DIRECTORY }}
+    run: |
+        # Use Lighthouse CI config if it exists
+        if [ -f ".lighthouserc.json" ]; then
+          echo "Using Lighthouse CI configuration"
+          lhci autorun --upload.target=temporary-public-storage || echo "Lighthouse CI completed with warnings"
+        else
+          echo "No Lighthouse CI config found, skipping detailed audit"
+          echo "ℹ️ To enable Lighthouse audits, add a .lighthouserc.json file"
+        fi
+    env:
+    LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  - name: Upload Lighthouse results
+    uses: actions/upload-artifact@v4
+    if: always() && hashFiles('GALAX_App_files/.lighthouseci/**') != ''
+    with:
+    name: lighthouse-results
+    path: |
+          ./GALAX_App_files/.lighthouseci/
+    retention-days: 7

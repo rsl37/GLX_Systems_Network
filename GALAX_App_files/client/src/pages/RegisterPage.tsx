@@ -38,7 +38,30 @@ export function RegisterPage() {
 
     try {
       // Format phone number with country code if it's a phone signup
-      const identifier = signupMethod === 'email' ? email : `${countryCode}${phone.replace(/^[\+\s0]+/, '').replace(/\s/g, '')}`;
+      let identifier = email;
+      if (signupMethod === 'phone') {
+        // Clean the phone number: remove all non-digit characters except leading +
+        // Remove all non-digit characters
+        let cleanPhone = phone.replace(/[^\d]/g, '');
+        
+        // Check if phone starts with a plus sign and handle it separately
+        if (phone.startsWith('+')) {
+          cleanPhone = `+${cleanPhone}`;
+        }
+        
+        // Check if phone already has a country code (starts with +)
+        if (cleanPhone.startsWith('+')) {
+          identifier = cleanPhone;
+        } else {
+          // Remove any leading zeros (only if followed by other digits) and add the selected country code
+          const phoneWithoutLeadingZeros = cleanPhone.replace(/^0+(?=\d)/, '');
+          if (!phoneWithoutLeadingZeros) {
+            throw new Error('Invalid phone number: phone number cannot be empty after removing leading zeros.');
+          }
+          identifier = `${countryCode}${phoneWithoutLeadingZeros}`;
+        }
+      }
+      
       await register(identifier, password, username, signupMethod);
       navigate('/dashboard');
     } catch (err) {

@@ -1,8 +1,10 @@
 # GALAX: Web3 Civic Networking Platform
 
 [![CI/CD Pipeline](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/main.yml)
-[![Security Checks](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Security%20Checks/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
-[![Code Quality](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Code%20Quality/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/quality.yml)
+[![Security Checks](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Security%20Scan/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
+[![Code Quality](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Quality%20%26%20Performance/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/quality.yml)
+[![Workflow Health](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Workflow%20Health%20Monitor/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/workflow-monitor.yml)
+[![Codecov](https://codecov.io/gh/rsl37/GALAX_Civic_Networking_App/branch/main/graph/badge.svg)](https://codecov.io/gh/rsl37/GALAX_Civic_Networking_App)
 
 **GALAX** is a next-generation web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance.
 

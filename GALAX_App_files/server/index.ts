@@ -67,6 +67,8 @@ import SocketManager from "./socketManager.js";
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
 
+import { postQuantumCrypto } from "./postQuantumCrypto.js";
+
 // Import comprehensive security systems
 import {
   comprehensiveSecurityMiddleware,
@@ -479,6 +481,10 @@ app.get("/api/admin/security/antihacking/stats", authenticateToken, securityAdmi
 app.post("/api/admin/security/antihacking/block-ip", authenticateToken, securityAdminEndpoints.antiHacking.blockIP);
 app.post("/api/admin/security/antihacking/unblock-ip", authenticateToken, securityAdminEndpoints.antiHacking.unblockIP);
 
+// Post-Quantum Security Management
+app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.postQuantum.getStatus);
+app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.postQuantum.testOperations);
+
 // Post-Quantum Cryptography Management
 app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.dashboard.getPostQuantumStatus);
 app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.dashboard.testPostQuantumOperations);
@@ -540,6 +546,28 @@ export async function startServer(port: number) {
       });
     } catch (error) {
       console.error("❌ Security system initialization error:", error);
+    }
+
+    // Initialize Post-Quantum Cryptography Security Baseline
+    try {
+      await postQuantumCrypto.initialize();
+      const pqStatus = postQuantumCrypto.getStatus();
+      console.log("🔐 Post-Quantum Security Baseline initialized successfully");
+
+      logSecurityEvent({
+        type: "system",
+        severity: "info",
+        ip: "system",
+        details: { 
+          event: "Post-Quantum Security initialized",
+          securityLevel: pqStatus.securityLevel,
+          initialized: pqStatus.initialized
+        },
+        action: "Post-quantum cryptography baseline enabled",
+        status: "allowed",
+      });
+    } catch (error) {
+      console.error("❌ Post-Quantum Security initialization error:", error);
     }
 
     // Initialize and start stablecoin service
