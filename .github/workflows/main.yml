@@ -135,10 +135,46 @@ jobs:
     - name: Check for secrets
       run: |
         echo "Scanning for potential secrets..."
-        # Simple grep-based secret detection
-        if grep -r -E "(password|secret|key|token).*=" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-          echo "⚠️  Warning: Potential secrets found in code"
-        else
+        # Improved secret detection - focus on actual credential patterns, not variable names
+        SECRET_FOUND=false
+        
+        echo "Checking for API keys and tokens..."
+        if grep -r -E "(apiKey|secretKey|authToken|api_key|secret_key|auth_token)\s*=\s*[\"'][a-zA-Z0-9_-]{20,}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
+          echo "⚠️  Warning: Potential API keys found"
+          SECRET_FOUND=true
+        fi
+        
+        echo "Checking for GitHub tokens..."
+        if grep -r -E "ghp_[a-zA-Z0-9]{36}" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
+          echo "⚠️  Warning: GitHub tokens found"
+          SECRET_FOUND=true
+        fi
+        
+        echo "Checking for AWS keys..."
+        if grep -r -E "AKIA[0-9A-Z]{16}" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
+          echo "⚠️  Warning: AWS access keys found"
+          SECRET_FOUND=true
+        fi
+        
+        echo "Checking for JWT secrets..."
+        if grep -r -E "(jwtSecret|jwt_secret|JWT_SECRET)\s*=\s*[\"'][a-zA-Z0-9_-]{16,}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
+          echo "⚠️  Warning: JWT secrets found"
+          SECRET_FOUND=true
+        fi
+        
+        echo "Checking for Base64 encoded secrets..."
+        if grep -r -E "(secret|password|token)\s*=\s*[\"'][A-Za-z0-9+/]{40,}={0,2}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
+          echo "⚠️  Warning: Base64 encoded secrets found"
+          SECRET_FOUND=true
+        fi
+        
+        echo "Checking for long hardcoded passwords..."
+        if grep -r -E "(password|secret)\s*=\s*[\"'][a-zA-Z0-9!@#$%^&*()_+-]{12,}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
+          echo "⚠️  Warning: Long hardcoded passwords found"
+          SECRET_FOUND=true
+        fi
+        
+        if [ "$SECRET_FOUND" = false ]; then
           echo "✓ No obvious secrets detected"
         fi
 
