@@ -7,7 +7,6 @@
  */
 
 // Added 2025-01-11 17:01:45 UTC - Phone verification functionality
-import { randomBytes } from "crypto";
 import { db } from "./database.js";
 import { encryptPersonalData, decryptPersonalData } from "./encryption.js";
 
