@@ -67,7 +67,7 @@ import SocketManager from "./socketManager.js";
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
 
-import { postQuantumSecurity } from "./postQuantumCrypto.js";
+import { postQuantumCrypto } from "./postQuantumCrypto.js";
 
 // Import comprehensive security systems
 import {
@@ -550,10 +550,9 @@ export async function startServer(port: number) {
 
     // Initialize Post-Quantum Cryptography Security Baseline
     try {
-      const pqSecurityStatus = postQuantumSecurity.initializeSecurity();
+      await postQuantumCrypto.initialize();
+      const pqStatus = postQuantumCrypto.getStatus();
       console.log("🔐 Post-Quantum Security Baseline initialized successfully");
-      console.log(`   • Security Level: ${pqSecurityStatus.securityLevel} (256-bit equivalent)`);
-      console.log(`   • Algorithms: ${pqSecurityStatus.algorithms.join(', ')}`);
 
       logSecurityEvent({
         type: "system",
@@ -561,8 +560,8 @@ export async function startServer(port: number) {
         ip: "system",
         details: { 
           event: "Post-Quantum Security initialized",
-          securityLevel: pqSecurityStatus.securityLevel,
-          algorithms: pqSecurityStatus.algorithms
+          securityLevel: pqStatus.securityLevel,
+          initialized: pqStatus.initialized
         },
         action: "Post-quantum cryptography baseline enabled",
         status: "allowed",

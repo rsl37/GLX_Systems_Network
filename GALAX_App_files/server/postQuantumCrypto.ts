@@ -9,12 +9,10 @@
 // Post-Quantum Cryptography Security Baseline
 // Implements NIST-compliant post-quantum algorithms for future-proof security
 
-import * as crypto from 'crypto';
-import { ml_kem512, ml_kem768, ml_kem1024 } from '@noble/post-quantum/ml-kem';
-import { ml_dsa44, ml_dsa65, ml_dsa87 } from '@noble/post-quantum/ml-dsa';
-import { slh_dsa_shake_128s, slh_dsa_shake_192s, slh_dsa_shake_256s } from '@noble/post-quantum/slh-dsa';
-import * as kyber from 'crystals-kyber';
-import * as dilithium from 'dilithium-js';
+import crypto from 'crypto';
+import { ml_kem1024 } from '@noble/post-quantum/ml-kem';
+import { ml_dsa87 } from '@noble/post-quantum/ml-dsa';
+import { slh_dsa_shake_256s } from '@noble/post-quantum/slh-dsa';
 
 // Simulated NIST post-quantum algorithms for demonstration
 // In production, would use actual libraries like @noble/post-quantum, crystals-kyber, etc.
@@ -59,50 +57,6 @@ class PostQuantumCryptography {
   async initialize(): Promise<void> {
     console.log('🛡️ Initializing Post-Quantum Security Baseline...');
 
-  /**
-   * Verify a post-quantum digital signature
-   */
-  verify(signature: Uint8Array, message: Uint8Array, publicKey: Uint8Array): boolean {
-    return this.dsaAlgorithm.verify(publicKey, message, signature);
-  }
-
-  /**
-   * Hybrid signing: creates both classical and post-quantum signatures
-   */
-  hybridSign(message: Uint8Array, classicalPrivateKey: Buffer, pqPrivateKey: Uint8Array): {
-    classicalSignature: Buffer;
-    postQuantumSignature: Uint8Array;
-    combinedSignature: Buffer;
-  } {
-    // Classical ECDSA signature
-    const sign = crypto.createSign('SHA256');
-    sign.update(Buffer.from(message));
-    const classicalSignature = sign.sign(classicalPrivateKey);
-
-    // Post-quantum signature
-    const postQuantumSignature = this.sign(message, pqPrivateKey);
-
-    // Combined signature format: [classical_length(4)] + [classical_sig] + [pq_sig]
-    const classicalLengthBuffer = Buffer.allocUnsafe(4);
-    classicalLengthBuffer.writeUInt32BE(classicalSignature.length, 0);
-    
-    const combinedSignature = Buffer.concat([
-      classicalLengthBuffer,
-      classicalSignature,
-      Buffer.from(postQuantumSignature)
-    ]);
-
-    return {
-      classicalSignature,
-      postQuantumSignature,
-      combinedSignature
-    };
-  }
-
-  /**
-   * Verify hybrid signature
-   */
-  hybridVerify(combinedSignature: Buffer, message: Uint8Array, classicalPublicKey: Buffer, pqPublicKey: Uint8Array): boolean {
     try {
       // Generate ML-KEM (CRYSTALS-Kyber) keys - FIPS 203 compliant
       const mlkem = this.generateMLKEMKeys();
@@ -127,7 +81,6 @@ class PostQuantumCryptography {
       throw error;
     }
   }
-}
 
   /**
    * Generate ML-KEM (CRYSTALS-Kyber) key pair
