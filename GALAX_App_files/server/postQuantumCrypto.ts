@@ -10,6 +10,9 @@
 // Implements quantum-resistant protection against future quantum computing threats
 
 import crypto from 'crypto';
+import { ml_kem1024 } from '@noble/post-quantum/ml-kem';
+import { ml_dsa87 } from '@noble/post-quantum/ml-dsa';
+import { slh_dsa_shake_256s } from '@noble/post-quantum/slh-dsa';
 
 // Post-quantum cryptography interfaces
 export interface PostQuantumKeyPair {
@@ -81,43 +84,44 @@ class PostQuantumCryptoService {
 
   // Generate ML-KEM (CRYSTALS-Kyber) key pair for key encapsulation
   private async generateMLKEMKeyPair(): Promise<PostQuantumKeyPair> {
-    // Simulated ML-KEM-1024 key generation (NIST Security Level 5)
-    const publicKey = crypto.randomBytes(1568); // ML-KEM-1024 public key size
-    const privateKey = crypto.randomBytes(3168); // ML-KEM-1024 private key size
+    // Use actual ML-KEM-1024 implementation (NIST Security Level 5)
+    const keys = ml_kem1024.keygen();
     
     return {
-      publicKey,
-      privateKey,
+      publicKey: keys.publicKey,
+      privateKey: keys.secretKey,
       algorithm: 'ML-KEM-1024',
-      keySize: 1568
+      keySize: keys.publicKey.length
     };
   }
 
   // Generate ML-DSA (CRYSTALS-Dilithium) key pair for digital signatures
   private async generateMLDSAKeyPair(): Promise<PostQuantumKeyPair> {
-    // Simulated ML-DSA-87 key generation (NIST Security Level 5)
-    const publicKey = crypto.randomBytes(2592); // ML-DSA-87 public key size
-    const privateKey = crypto.randomBytes(4896); // ML-DSA-87 private key size
+    // Use actual ML-DSA-87 implementation (NIST Security Level 5)
+    // Generate random seed for key generation
+    const seed = crypto.randomBytes(32);
+    const keys = ml_dsa87.keygen(seed);
     
     return {
-      publicKey,
-      privateKey,
+      publicKey: keys.publicKey,
+      privateKey: keys.secretKey,
       algorithm: 'ML-DSA-87',
-      keySize: 2592
+      keySize: keys.publicKey.length
     };
   }
 
   // Generate SLH-DSA (SPHINCS+) key pair as backup signature system
   private async generateSLHDSAKeyPair(): Promise<PostQuantumKeyPair> {
-    // Simulated SLH-DSA-256s key generation (compact version)
-    const publicKey = crypto.randomBytes(64); // SLH-DSA-256s public key size
-    const privateKey = crypto.randomBytes(128); // SLH-DSA-256s private key size
+    // Use actual SLH-DSA-SHAKE-256s implementation (compact version)
+    // Generate random seed for key generation (96 bytes required for SLH-DSA)
+    const seed = crypto.randomBytes(96);
+    const keys = slh_dsa_shake_256s.keygen(seed);
     
     return {
-      publicKey,
-      privateKey,
-      algorithm: 'SLH-DSA-256s',
-      keySize: 64
+      publicKey: keys.publicKey,
+      privateKey: keys.secretKey,
+      algorithm: 'SLH-DSA-SHAKE-256s',
+      keySize: keys.publicKey.length
     };
   }
 
@@ -127,9 +131,8 @@ class PostQuantumCryptoService {
       throw new Error('Post-quantum cryptography not initialized');
     }
 
-    // Simulated ML-KEM encapsulation
-    const sharedSecret = crypto.randomBytes(32);
-    const encapsulatedKey = crypto.randomBytes(1568); // ML-KEM-1024 ciphertext size
+    // Use actual ML-KEM encapsulation
+    const { cipherText: encapsulatedKey, sharedSecret } = ml_kem1024.encapsulate(this.mlkemKeyPair.publicKey);
     
     // Encrypt data with shared secret
     const iv = crypto.randomBytes(16);
@@ -151,9 +154,8 @@ class PostQuantumCryptoService {
       throw new Error('Post-quantum cryptography not initialized');
     }
 
-    // Simulated ML-DSA signature generation
-    const hash = crypto.createHash('sha3-512').update(data).digest();
-    const signature = crypto.randomBytes(4595); // ML-DSA-87 signature size
+    // Use actual ML-DSA signature generation
+    const signature = ml_dsa87.sign(this.mldsaKeyPair.privateKey, data);
     
     return {
       signature,
@@ -225,7 +227,7 @@ class PostQuantumCryptoService {
           nistsCompliant: true
         },
         slhdsa: {
-          algorithm: 'SLH-DSA-256s',
+          algorithm: 'SLH-DSA-SHAKE-256s',
           publicKeySize: this.slhdsaKeyPair?.publicKey.length || 0,
           securityLevel: 5,
           nistsCompliant: true
