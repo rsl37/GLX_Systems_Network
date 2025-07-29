@@ -41,7 +41,13 @@ export function RegisterPage() {
       let identifier = email;
       if (signupMethod === 'phone') {
         // Clean the phone number: remove all non-digit characters except leading +
-        const cleanPhone = phone.replace(/[^\d+]/g, '');
+        // Remove all non-digit characters
+        let cleanPhone = phone.replace(/[^\d]/g, '');
+        
+        // Check if phone starts with a plus sign and handle it separately
+        if (phone.startsWith('+')) {
+          cleanPhone = `+${cleanPhone}`;
+        }
         
         // Check if phone already has a country code (starts with +)
         if (cleanPhone.startsWith('+')) {
