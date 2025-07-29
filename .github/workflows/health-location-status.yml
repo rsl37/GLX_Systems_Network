@@ -1,70 +1,71 @@
+---
 name: Health, Location, and Status Monitoring
 
-on:
+'on':
   push:
-    branches: [ main, develop ]
+  branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop ]
+  branches: [ main, develop ]
   schedule:
     # Run daily at 6 AM UTC
-    - cron: '0 6 * * *'
+  - cron: '0 6 * * *'
 
 jobs:
   health-monitoring:
-    name: System Health and Status Checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
-        
-    - name: Install dependencies
-      working-directory: ./GALAX_App_files
-      timeout-minutes: 5
-      run: npm ci --prefer-offline --no-audit --no-fund
-      
-    - name: Run health monitoring scripts
-      working-directory: ./GALAX_App_files
-      timeout-minutes: 3
-      run: |
+  name: System Health and Status Checks
+  runs-on: ubuntu-latest
+  timeout-minutes: 10
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+    with:
+    fetch-depth: 1
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: '20.x'
+    cache: 'npm'
+    cache-dependency-path: './GALAX_App_files/package-lock.json'
+
+  - name: Install dependencies
+    working-directory: ./GALAX_App_files
+    timeout-minutes: 5
+    run: npm ci --prefer-offline --no-audit --no-fund
+
+  - name: Run health monitoring scripts
+    working-directory: ./GALAX_App_files
+    timeout-minutes: 3
+    run: |
         echo "🔍 Running system health checks..."
-        
+
         # Create logs directory
         mkdir -p logs/health-status
-        
+
         # Run health monitoring if scripts exist
         if [ -f "scripts/health-location-status-logger.ts" ]; then
           timeout 60 npx tsx scripts/health-location-status-logger.ts || echo "Health logging completed with warnings"
         fi
-        
+
         if [ -f "scripts/branch-commit-analyzer.ts" ]; then
           timeout 60 npx tsx scripts/branch-commit-analyzer.ts || echo "Branch analysis completed with warnings"
         fi
-        
+
         # Basic session management check
         echo "Checking for session management issues..."
         if [ -f ".env.example" ]; then
           grep -E "(JWT_SECRET|SESSION_SECRET|AUTH)" .env.example || echo "No session secrets configured"
         fi
-        
+
         echo "✅ Health monitoring completed"
-        
-    - name: Upload monitoring results
-      uses: actions/upload-artifact@v4
-      if: always()
-      continue-on-error: true
-      with:
-        name: health-monitoring-results
-        path: ./GALAX_App_files/logs/
-        retention-days: 7
-        if-no-files-found: ignore
+
+  - name: Upload monitoring results
+    uses: actions/upload-artifact@v4
+    if: always()
+    continue-on-error: true
+    with:
+    name: health-monitoring-results
+    path: ./GALAX_App_files/logs/
+    retention-days: 7
+    if-no-files-found: ignore

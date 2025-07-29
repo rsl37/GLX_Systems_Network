@@ -1,168 +1,221 @@
+---
 name: Quality & Performance
 
-on:
+'on':
   push:
-    branches: [ main, develop ]
+  branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop ]
+  branches: [ main, develop ]
 
 jobs:
   code-coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
-        
-    - name: Install dependencies
-      working-directory: ./GALAX_App_files
-      run: npm ci --prefer-offline --no-audit --no-fund
-      
-    - name: Run tests with coverage
-      working-directory: ./GALAX_App_files
-      run: npm run test:coverage
-      
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      if: success()
-      continue-on-error: true
-      with:
-        directory: ./GALAX_App_files/coverage
-        fail_ci_if_error: false
+  name: Code Coverage
+  runs-on: ubuntu-latest
+  timeout-minutes: 15
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: '20.x'
+    cache: 'npm'
+    cache-dependency-path: './GALAX_App_files/package-lock.json'
+
+  - name: Install dependencies
+    working-directory: ./GALAX_App_files
+    run: npm ci --prefer-offline --no-audit --no-fund
+
+  - name: Run tests with coverage
+    working-directory: ./GALAX_App_files
+    run: npm run test:coverage
+
+  - name: Upload coverage to Codecov
+    uses: codecov/codecov-action@v5
+    if: success()
+    continue-on-error: true
+    with:
+    directory: ./GALAX_App_files/coverage
+    fail_ci_if_error: false
+
+  accessibility-testing:
+  name: Accessibility Testing
+  runs-on: ubuntu-latest
+  timeout-minutes: 15
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: '20.x'
+    cache: 'npm'
+    cache-dependency-path: './GALAX_App_files/package-lock.json'
+
+  - name: Install dependencies
+    working-directory: ./GALAX_App_files
+    run: npm ci --prefer-offline --no-audit --no-fund
+
+  - name: Install accessibility testing tools
+    working-directory: ./GALAX_App_files
+    run: |
+        npm install --no-save @axe-core/cli axe-playwright
+        npx playwright install chromium --with-deps
+
+  - name: Build application
+    working-directory: ./GALAX_App_files
+    run: npm run build
+
+  - name: Start application for testing
+    working-directory: ./GALAX_App_files
+    run: |
+      npm start &
+      APP_PID=$!
+      echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+
+      # Wait for app to start
+      timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+
+  - name: Run accessibility tests
+    working-directory: ./GALAX_App_files
+    run: |
+      echo "Running accessibility tests..."
+
+      # Test main pages for accessibility
+      npx axe http://localhost:3000 --reporter json --output-file accessibility-results.json || true
+
+      # Display results
+      if [ -f accessibility-results.json ]; then
+        echo "Accessibility test results:"
+        cat accessibility-results.json | head -50
+      fi
+
+  - name: Stop application
+    if: always()
+    run: |
+        if [ ! -z "$APP_PID" ]; then
+          kill $APP_PID || true
+        fi
+
+  - name: Upload accessibility results
+    uses: actions/upload-artifact@v4
+    if: always()
+    with:
+    name: accessibility-test-results
+    path: ./GALAX_App_files/accessibility-results.json
+    retention-days: 7
 
   performance-check:
-    name: Performance Check
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
-        
-    - name: Install dependencies
-      working-directory: ./GALAX_App_files
-      run: npm ci --prefer-offline --no-audit --no-fund
-      
-    - name: Build application
-      working-directory: ./GALAX_App_files
-      run: npm run build
-      
-    - name: Analyze bundle size
-      working-directory: ./GALAX_App_files
-      run: |
+  name: Performance Check
+  runs-on: ubuntu-latest
+  timeout-minutes: 20
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: '20.x'
+    cache: 'npm'
+    cache-dependency-path: './GALAX_App_files/package-lock.json'
+
+  - name: Install dependencies
+    working-directory: ./GALAX_App_files
+    run: npm ci --prefer-offline --no-audit --no-fund
+
+  - name: Build application
+    working-directory: ./GALAX_App_files
+    run: npm run build
+
+  - name: Analyze bundle size
+    working-directory: ./GALAX_App_files
+    run: |
         echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
         echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
         echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-        
+
         if [ -d "dist/public/assets" ]; then
           find dist/public/assets/ -name "*.js" -exec ls -lh {} \; | \
             awk '{print "| " $9 " | " $5 " |"}' >> $GITHUB_STEP_SUMMARY
-            
+
           # Check for oversized bundles
           LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k)
           if [ -n "$LARGE_FILES" ]; then
             echo "⚠️ Large bundle files detected (>500KB)" >> $GITHUB_STEP_SUMMARY
           fi
         fi
-      
-    - name: Performance test
-      working-directory: ./GALAX_App_files
-      run: |
+
+  - name: Performance test
+    working-directory: ./GALAX_App_files
+    run: |
         # Start app for testing
         timeout 30s npm start &
         APP_PID=$!
-        
+
         # Wait for startup
         sleep 10
-        
+
         # Basic performance check
         if curl -w "Response time: %{time_total}s\n" -f http://localhost:3000 2>/dev/null; then
           echo "✓ Application responds within reasonable time"
         else
           echo "⚠️ Application may have performance issues"
         fi
-        
+
         # Cleanup
         kill $APP_PID 2>/dev/null || true
 
   e2e-tests:
-    name: End-to-End Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
-        
-    - name: Install dependencies
-      working-directory: ./GALAX_App_files
-      run: npm ci --prefer-offline --no-audit --no-fund
-      
-    - name: Install Playwright
-      working-directory: ./GALAX_App_files
-      run: |
+  name: End-to-End Tests
+  runs-on: ubuntu-latest
+  timeout-minutes: 20
+
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+    node-version: '20.x'
+    cache: 'npm'
+    cache-dependency-path: './GALAX_App_files/package-lock.json'
+
+  - name: Install dependencies
+    working-directory: ./GALAX_App_files
+    run: npm ci --prefer-offline --no-audit --no-fund
+
+  - name: Install Playwright
+    working-directory: ./GALAX_App_files
+    run: |
         npx playwright install chromium --with-deps
-      
-    - name: Build application
-      working-directory: ./GALAX_App_files
-      run: npm run build
-      
-    - name: Start application
-      working-directory: ./GALAX_App_files
-      run: |
-        npm start &
-        APP_PID=$!
-        echo "APP_PID=$APP_PID" >> $GITHUB_ENV
-        
-        # Wait for app to start
-        timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
-        
-    - name: Run E2E tests
-      working-directory: ./GALAX_App_files
-      run: |
+
+  - name: Build application
+    working-directory: ./GALAX_App_files
+    run: npm run build
+
+  - name: Run E2E tests
+    working-directory: ./GALAX_App_files
+    run: |
         if [ -f "playwright.config.ts" ] || [ -f "playwright.config.js" ]; then
-          npm run test:e2e
+      npm run test:e2e
         else
           echo "No E2E test configuration found - creating basic health check"
-          npx playwright test --headed=false --config-override='{"use":{"headless":true},"projects":[{"name":"chromium","use":{"...devices":"Desktop Chrome"}}],"testDir":"./e2e"}' || echo "E2E tests completed"
+      npx playwright test --headed=false --config-override='{"use":{"headless":true},"projects":[{"name":"chromium","use":{"...devices":"Desktop Chrome"}}],"testDir":"./e2e"}' || echo "E2E tests completed"
         fi
-        
-    - name: Stop application
-      if: always()
-      run: |
-        if [ ! -z "$APP_PID" ]; then
-          kill $APP_PID || true
-        fi
-        
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: e2e-test-results
-        path: |
+
+  - name: Upload test results
+    uses: actions/upload-artifact@v4
+    if: always()
+    with:
+    name: e2e-test-results
+    path: |
           ./GALAX_App_files/test-results/
           ./GALAX_App_files/playwright-report/
-        retention-days: 7
+    retention-days: 7
