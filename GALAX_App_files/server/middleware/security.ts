@@ -392,7 +392,7 @@ export const requestLogger = (
     const duration = Date.now() - start;
     const logLevel = res.statusCode >= 400 ? "❌" : "✅";
 
-    console.log("Response:", logLevel, safeMethod, safePath, {
+    console.log(`${logLevel} ${req.method} ${req.path}`, {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
       contentLength: res.get("Content-Length") || "0",
