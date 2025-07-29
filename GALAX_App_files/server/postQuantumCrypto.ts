@@ -32,7 +32,7 @@ interface PostQuantumKeys {
 interface PostQuantumConfig {
   securityLevel: number;
   hybridMode: boolean;
-  zerknowledgeProofs: boolean;
+  zeroKnowledgeProofs: boolean;
 }
 
 class PostQuantumCryptography {
