@@ -797,7 +797,10 @@ app.post(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
 
       console.log("📧 Email verification request from user:", userId);
 
@@ -872,7 +875,10 @@ app.post(
   validatePhoneVerification,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
       const { phone } = req.body;
 
       console.log("📱 Phone verification request from user:", userId);
@@ -931,7 +937,13 @@ app.post(
   validatePhoneVerificationConfirm,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { phone, code } = req.body;
 
       console.log("🔍 Phone verification attempt for user:", userId);
@@ -978,7 +990,13 @@ app.post(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
 
       console.log("🔐 2FA setup request from user:", userId);
 
@@ -1099,7 +1117,13 @@ app.post(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { code } = req.body;
 
       console.log("🔓 2FA disable request from user:", userId);
@@ -1149,7 +1173,13 @@ app.post(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { code } = req.body;
 
       console.log("🔍 2FA verification request from user:", userId);
@@ -1199,7 +1229,13 @@ app.get(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
 
       const status = await get2FAStatus(userId);
 
@@ -1233,7 +1269,13 @@ app.post(
   ]),
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { documentType, documentNumber } = req.body;
 
       console.log("📄 KYC document upload request from user:", userId);
@@ -1314,7 +1356,13 @@ app.post(
 
 app.get("/api/kyc/status", authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const userId = req.userId!;
+    if (!req.userId || typeof req.userId !== 'number') {
+
+      return res.status(401).json({ error: "Invalid authentication token" });
+
+    }
+
+    const userId = req.userId;
 
     const status = await getKYCStatus(userId);
 
@@ -1530,7 +1578,12 @@ app.get(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      console.log("👤 Profile request for user:", req.userId);
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
+      
+      console.log("👤 Profile request for user:", userId);
 
       const user = await db
         .selectFrom("users")
@@ -1553,7 +1606,7 @@ app.get(
           "created_at",
           "wallet_address",
         ])
-        .where("id", "=", req.userId!)
+        .where("id", "=", userId)
         .executeTakeFirst();
 
       if (!user) {
@@ -1586,7 +1639,13 @@ app.put(
   validateProfileUpdate,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { username, email, phone, skills, bio, wallet_address } = req.body;
 
       console.log("📝 Profile update for user:", userId);
@@ -1668,7 +1727,13 @@ app.post(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { currentPassword, newPassword } = req.body;
 
       if (!currentPassword || !newPassword) {
@@ -1760,7 +1825,13 @@ app.get(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
 
       // Get privacy settings from user_privacy table (create if doesn't exist)
       let privacySettings = await db
@@ -1824,7 +1895,13 @@ app.put(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
       const { showEmail, showPhone, showWallet, walletDisplayMode } = req.body;
 
       // Validate input
@@ -1911,7 +1988,13 @@ app.put(
 app.get("/api/user/stats", authenticateToken, async (req: AuthRequest, res) => {
   try {
     console.log("📊 Stats request for user:", req.userId);
-    const userId = req.userId!;
+    if (!req.userId || typeof req.userId !== 'number') {
+
+      return res.status(401).json({ error: "Invalid authentication token" });
+
+    }
+
+    const userId = req.userId;
 
     // Get user statistics
     const helpRequestsCreated = await db
@@ -1984,6 +2067,11 @@ app.post(
   validateHelpRequest,
   async (req: AuthRequest, res) => {
     try {
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
+      
       const {
         title,
         description,
@@ -2019,7 +2107,7 @@ app.post(
       const helpRequest = await db
         .insertInto("help_requests")
         .values({
-          requester_id: req.userId!,
+          requester_id: userId,
           title,
           description,
           category,
@@ -2248,6 +2336,11 @@ app.post(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
+      
       const helpRequestId = parseInt(req.params.id);
 
       if (isNaN(helpRequestId) || helpRequestId <= 0) {
@@ -2260,7 +2353,7 @@ app.post(
         });
       }
 
-      console.log("🤝 Offering help:", { helpRequestId, helperId: req.userId });
+      console.log("🤝 Offering help:", { helpRequestId, helperId: userId });
 
       // Check if request exists and is available
       const helpRequest = await db
@@ -2282,7 +2375,7 @@ app.post(
       }
 
       // Prevent users from helping their own requests
-      if (helpRequest.requester_id === req.userId) {
+      if (helpRequest.requester_id === userId) {
         return res.status(400).json({
           success: false,
           error: {
@@ -2296,7 +2389,7 @@ app.post(
       await db
         .updateTable("help_requests")
         .set({
-          helper_id: req.userId!,
+          helper_id: userId,
           status: "matched",
           updated_at: new Date().toISOString(),
         })
@@ -2309,7 +2402,7 @@ app.post(
         .values({
           help_request_id: helpRequestId,
           requester_id: helpRequest.requester_id,
-          helper_id: req.userId!,
+          helper_id: userId,
         })
         .returning("id")
         .executeTakeFirst();
@@ -2405,6 +2498,10 @@ app.post(
   validateCrisisAlert,
   async (req: AuthRequest, res) => {
     try {
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
       const { title, description, severity, latitude, longitude, radius } =
         req.body;
 
@@ -2423,7 +2520,7 @@ app.post(
           latitude,
           longitude,
           radius: radius || 1000,
-          created_by: req.userId!,
+          created_by: userId,
           status: "active",
         })
         .returning("id")
@@ -2497,6 +2594,10 @@ app.post(
   validateProposal,
   async (req: AuthRequest, res) => {
     try {
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
       const { title, description, category, deadline } = req.body;
 
       console.log("🗳️ Creating proposal:", {
@@ -2511,7 +2612,7 @@ app.post(
           title,
           description,
           category,
-          created_by: req.userId!,
+          created_by: userId,
           deadline,
           status: "active",
           votes_for: 0,
@@ -2545,8 +2646,13 @@ app.post(
 
 app.get("/api/proposals", authenticateToken, async (req: AuthRequest, res) => {
   try {
+    if (!req.userId || typeof req.userId !== 'number') {
+      return res.status(401).json({ error: "Invalid authentication token" });
+    }
+    const userId = req.userId;
+    
     const { category, status } = req.query;
-    console.log("🗳️ Fetching proposals for user:", req.userId);
+    console.log("🗳️ Fetching proposals for user:", userId);
 
     let query = db
       .selectFrom("proposals")
@@ -2554,7 +2660,7 @@ app.get("/api/proposals", authenticateToken, async (req: AuthRequest, res) => {
       .leftJoin("votes", (join) =>
         join
           .onRef("votes.proposal_id", "=", "proposals.id")
-          .on("votes.user_id", "=", req.userId!),
+          .on("votes.user_id", "=", userId),
       )
       .select([
         "proposals.id",
@@ -2601,7 +2707,13 @@ app.post(
     try {
       const proposalId = parseInt(req.params.id);
       const { vote_type } = req.body;
-      const userId = req.userId!;
+      if (!req.userId || typeof req.userId !== 'number') {
+
+        return res.status(401).json({ error: "Invalid authentication token" });
+
+      }
+
+      const userId = req.userId;
 
       console.log("🗳️ Voting on proposal:", {
         proposalId,
@@ -2711,12 +2823,17 @@ app.get(
   authenticateToken,
   async (req: AuthRequest, res) => {
     try {
-      console.log("💰 Fetching transactions for user:", req.userId);
+      if (!req.userId || typeof req.userId !== 'number') {
+        return res.status(401).json({ error: "Invalid authentication token" });
+      }
+      const userId = req.userId;
+      
+      console.log("💰 Fetching transactions for user:", userId);
 
       const transactions = await db
         .selectFrom("transactions")
         .selectAll()
-        .where("user_id", "=", req.userId!)
+        .where("user_id", "=", userId)
         .orderBy("created_at", "desc")
         .limit(20)
         .execute();
@@ -2736,6 +2853,11 @@ app.get(
 // Action Points claim endpoint
 app.post("/api/claim", authenticateToken, async (req: AuthRequest, res) => {
   try {
+    if (!req.userId || typeof req.userId !== 'number') {
+      return res.status(401).json({ error: "Invalid authentication token" });
+    }
+    const userId = req.userId;
+    
     const { amount = 100 } = req.body;
 
     if (typeof amount !== "number" || amount <= 0 || amount > 1000) {
@@ -2748,13 +2870,13 @@ app.post("/api/claim", authenticateToken, async (req: AuthRequest, res) => {
       });
     }
 
-    console.log("💎 AP claim request:", { userId: req.userId, amount });
+    console.log("💎 AP claim request:", { userId, amount });
 
     // Check current balance
     const user = await db
       .selectFrom("users")
       .select(["ap_balance"])
-      .where("id", "=", req.userId!)
+      .where("id", "=", userId)
       .executeTakeFirst();
 
     if (!user || user.ap_balance < amount) {
@@ -2772,14 +2894,14 @@ app.post("/api/claim", authenticateToken, async (req: AuthRequest, res) => {
     await db
       .updateTable("users")
       .set({ ap_balance: user.ap_balance - amount })
-      .where("id", "=", req.userId!)
+      .where("id", "=", userId)
       .execute();
 
     // Record transaction
     await db
       .insertInto("transactions")
       .values({
-        user_id: req.userId!,
+        user_id: userId,
         type: "claim",
         amount: -amount,
         token_type: "AP",
