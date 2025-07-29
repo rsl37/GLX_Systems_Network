@@ -12,6 +12,9 @@ import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
 
+// Directory where uploaded files are stored (must match upload middleware config)
+const UPLOADS_DIR = path.resolve("uploads");
+
 // Validate file path to prevent path traversal
 function validateFilePath(filePath: string, allowedDir: string): boolean {
   const resolvedPath = path.resolve(filePath);
@@ -436,6 +439,10 @@ async function quarantineVirusFile(
   viruses: VirusSignature[],
   scanId: string,
 ): Promise<string> {
+  // Validate that filePath is within the uploads directory
+  if (!validateFilePath(filePath, UPLOADS_DIR)) {
+    throw new Error("Invalid file path: outside of uploads directory");
+  }
   await ensureDirectories();
 
   const fileName = path.basename(filePath);
