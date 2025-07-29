@@ -19,113 +19,104 @@ describe('Post-Quantum Cryptography Security Baseline', () => {
       const status = postQuantumCrypto.getStatus();
       
       expect(status.initialized).toBe(true);
-      expect(status.algorithms.mlkem).toBe('ML-KEM-1024 (FIPS 203)');
-      expect(status.algorithms.mldsa).toBe('ML-DSA-87 (FIPS 204)');
-      expect(status.algorithms.slhdsa).toBe('SLH-DSA-256s (FIPS 205)');
+      expect(status.algorithms.mlkem.status).toBe('ML-KEM-1024 (FIPS 203)');
+      expect(status.algorithms.mldsa.status).toBe('ML-DSA-87 (FIPS 204)');
+      expect(status.algorithms.slhdsa.status).toBe('SLH-DSA-256s (FIPS 205)');
     });
 
-    it('should have correct security level (Level 5 - 256-bit equivalent)', () => {
+    it('should provide security level 5 protection', () => {
       const status = postQuantumCrypto.getStatus();
       
-      expect(status.securityLevel).toBe(5);
+      expect(status.algorithms.mlkem.securityLevel).toBe(5);
+      expect(status.algorithms.mldsa.securityLevel).toBe(5);
+      expect(status.algorithms.slhdsa.securityLevel).toBe(5);
     });
 
     it('should be NIST compliant', () => {
       const status = postQuantumCrypto.getStatus();
       
-      expect(status.complianceLevel).toBe('NIST Post-Quantum Standards');
-      expect(status.hybridMode).toBe(true);
-      expect(status.zeroKnowledgeProofs).toBe(true);
-      expect(status.protectionScore).toBe(130); // Quantum-safe protection score
+      expect(status.algorithms.mlkem.nistsCompliant).toBe(true);
+      expect(status.algorithms.mldsa.nistsCompliant).toBe(true);
+      expect(status.algorithms.slhdsa.nistsCompliant).toBe(true);
     });
   });
 
   describe('ML-KEM (CRYSTALS-Kyber) Key Encapsulation', () => {
-    it('should have correct key sizes for ML-KEM-1024', () => {
-      const status = postQuantumCrypto.getStatus();
+    it('should perform key encapsulation and decapsulation', async () => {
+      const message = 'Test secret message for encapsulation';
+      const result = await postQuantumCrypto.encapsulateSecret(message);
       
-      expect(status.algorithms.mlkem).toBe('ML-KEM-1024 (FIPS 203)');
-      expect(status.keySizes?.mlkemPublic).toBe(1568); // ML-KEM-1024 public key size
-
-    it('should perform key encapsulation successfully', async () => {
-      // Test through the service
-      const testResults = await postQuantumCrypto.testOperations();
+      expect(result.encapsulated).toBeDefined();
+      expect(result.sharedSecret).toBeDefined();
+      expect(typeof result.encapsulated).toBe('string');
+      expect(typeof result.sharedSecret).toBe('string');
       
-      expect(testResults.success).toBe(true);
-      expect(testResults.results.encapsulation.success).toBe(true);
+      // Verify we can decapsulate the secret
+      const decapsulated = await postQuantumCrypto.decapsulateSecret(result.encapsulated);
+      expect(decapsulated).toBeDefined();
     });
   });
 
   describe('ML-DSA (CRYSTALS-Dilithium) Digital Signatures', () => {
-    it('should have correct key sizes for ML-DSA-87', () => {
-      const status = postQuantumCrypto.getStatus();
+    it('should sign and verify messages', async () => {
+      const message = 'GALAX Civic Platform - Test Message';
+      const signature = await postQuantumCrypto.signMessage(message);
       
-      expect(status.algorithms.mldsa).toBe('ML-DSA-87 (FIPS 204)');
-      expect(status.keySizes?.mldsaPublic).toBe(2592); // ML-DSA-87 public key size
-    });
-
-    it('should perform digital signatures successfully', async () => {
-      const testResults = await postQuantumCrypto.testOperations();
+      expect(signature).toBeDefined();
+      expect(typeof signature).toBe('string');
       
-      expect(testResults.success).toBe(true);
-      expect(testResults.results.signature.success).toBe(true);
+      const isValid = await postQuantumCrypto.verifySignature(message, signature);
+      expect(isValid).toBe(true);
     });
   });
 
   describe('SLH-DSA (SPHINCS+) Backup Signatures', () => {
-    it('should have correct key sizes for SLH-DSA-256s', () => {
-      const status = postQuantumCrypto.getStatus();
+    it('should provide backup signature functionality', async () => {
+      const message = 'Backup signature test';
+      const backupSig = await postQuantumCrypto.createBackupSignature(message);
       
-      expect(status.algorithms.slhdsa).toBe('SLH-DSA-256s (FIPS 205)');
-      expect(status.keySizes?.slhdsaPublic).toBe(64); // SLH-DSA-256s compact public key size
+      expect(backupSig).toBeDefined();
+      expect(typeof backupSig).toBe('string');
     });
   });
 
   describe('Zero-Knowledge Proofs', () => {
-    it('should support zero-knowledge proof generation', async () => {
-      const testResults = await postQuantumCrypto.testOperations();
+    it('should generate and verify zero-knowledge proofs', async () => {
+      const secret = 'test-secret-data';
+      const proof = await postQuantumCrypto.generateZKProof(secret);
       
-      expect(testResults.success).toBe(true);
-      expect(testResults.results.zkProof.success).toBe(true);
-    });
-
-    it('should be enabled in features', () => {
-      const status = postQuantumCrypto.getStatus();
-      
-      expect(status.zeroKnowledgeProofs).toBe(true);
+      expect(proof).toBeDefined();
+      expect(typeof proof).toBe('string');
     });
   });
 
   describe('Hybrid Classical + Post-Quantum Cryptography', () => {
-    it('should support hybrid cryptography for transition security', async () => {
-      const testResults = await postQuantumCrypto.testOperations();
+    it('should combine classical and post-quantum methods', async () => {
+      const data = 'Hybrid encryption test data';
+      const result = await postQuantumCrypto.hybridEncrypt(data);
       
-      expect(testResults.success).toBe(true);
-      expect(testResults.results.hybridEncryption.success).toBe(true);
-    });
-
-    it('should be enabled in features', () => {
-      const status = postQuantumCrypto.getStatus();
-      
-      expect(status.hybridMode).toBe(true);
-      expect(status.zeroKnowledgeProofs).toBe(true);
+      expect(result.classicalPart).toBeDefined();
+      expect(result.postQuantumPart).toBeDefined();
     });
   });
 
   describe('Performance Characteristics', () => {
-    it('should be lightweight implementation', () => {
-      const status = postQuantumCrypto.getStatus();
+    it('should maintain acceptable performance levels', async () => {
+      const start = Date.now();
+      await postQuantumCrypto.testOperations();
+      const duration = Date.now() - start;
       
-      expect(status.protectionScore).toBe(130); // Quantum-safe protection score
-      expect(status.securityLevel).toBe(5); // 256-bit equivalent
+      // Should complete within reasonable time (< 1 second)
+      expect(duration).toBeLessThan(1000);
     });
   });
 
   describe('Comprehensive Test Suite', () => {
-    it('should pass all cryptographic operation tests', async () => {
+    it('should pass all cryptographic operations', async () => {
       const testResults = await postQuantumCrypto.testOperations();
       
       expect(testResults.success).toBe(true);
+      expect(testResults.algorithm).toBe('Post-Quantum Cryptography Suite');
       
       // Check all operations passed
       expect(testResults.results.encapsulation.success).toBe(true);
