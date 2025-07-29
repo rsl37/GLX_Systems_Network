@@ -275,22 +275,14 @@ test('Application health check', async ({ page }) => {
 EOF
         fi
         
-        # Run the tests with better error handling
-        if [ -f "playwright.config.ts" ] || [ -f "playwright.config.js" ]; then
-          echo "Using existing Playwright configuration..."
-          npm run test:e2e || {
-            echo "E2E tests failed, checking for common issues..."
-            echo "Browser status:"
-            npx playwright install --dry-run chromium || true
-            exit 1
-          }
-        else
-          echo "No Playwright config found, running with basic setup..."
-          npx playwright test --config=playwright.config.ts || {
-            echo "E2E tests failed with basic setup"
-            exit 1
-          }
-        fi
+        # Run E2E tests using the configured npm script
+        echo "Running E2E tests using npm script..."
+        npm run test:e2e || {
+          echo "E2E tests failed, checking for common issues..."
+          echo "Browser status:"
+          npx playwright install --dry-run chromium || true
+          exit 1
+        }
         
         echo "✓ E2E tests completed successfully"
         
