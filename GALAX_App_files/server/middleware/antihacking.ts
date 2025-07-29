@@ -10,7 +10,6 @@
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import fs from "fs/promises";
-import path from "path";
 
 // Attack pattern detection
 interface AttackPattern {
