@@ -298,8 +298,9 @@ async function performVirusScan(filePath: string): Promise<{
   try {
     globalScanStats.totalScans++;
 
+    const sanitizedFileName = path.basename(filePath).replace(/[\n\r]/g, "");
     console.log(
-      `🔍 Starting virus scan [${scanId}] for: ${path.basename(filePath)}`,
+      `🔍 Starting virus scan [${scanId}] for: ${sanitizedFileName}`,
     );
 
     // Calculate file hashes
