@@ -48,22 +48,23 @@ This repository now uses a streamlined approach with **4 core workflows** instea
 
 | Old Workflows (Removed) | New Consolidated Location |
 |-------------------------|---------------------------|
-| `ci.yml`, `testing.yml` | `main.yml` (Build & Test) |
+| `ci.yml`, `testing.yml` | `main.yml` (Build & Test, Code Quality) |
 | `code-quality.yml` | `main.yml` (Code Quality) |
 | `security.yml`, `codeql.yml`, `snyk-security.yml`, `trivy.yml`, `sysdig-scan.yml` | `security-streamlined.yml` |
-| `performance.yml`, `application-specific.yml` | `quality.yml` |
-| `deployment.yml` | `main.yml` (Deployment Check) |
+| `performance.yml`, `application-specific.yml` | `quality.yml` (Performance Check, E2E Tests) |
+| `deployment.yml` | `main.yml` (Deployment Readiness) |
 | `super-linter.yml`, `codacy.yml`, `node.js.yml` | Consolidated into main workflows |
 
 ## Status Checks Summary
 
 | Workflow | Jobs | Essential Checks |
 |----------|------|------------------|
-| **Main CI/CD** | 4 | Build, Test, Type Check, Basic Security, Deployment |
+| **Main CI/CD** | 4 | Build & Test, Code Quality, Security Check, Deployment Readiness |
 | **Security** | 3 | CodeQL, Dependencies, Secrets |
 | **Quality** | 3 | Coverage, Performance, E2E |
+| **Docker** | 1 | Container Build & Publish |
 
-**Total Status Checks**: 10 consolidated checks (down from 23)
+**Total Status Checks**: 4 core workflows with 11 consolidated checks (down from 23+)
 
 ## Benefits
 
@@ -105,6 +106,8 @@ Update required status checks to use the new workflow job names:
 - `Deployment Readiness` (from main.yml)
 - `Security Analysis` (from security-streamlined.yml)
 - `Code Coverage` (from quality.yml)
+- `Performance Check` (from quality.yml)
+- `E2E Tests` (from quality.yml)
 
 ## Quick Start
 

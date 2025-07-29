@@ -1,110 +1,76 @@
 # GitHub Actions Workflows Documentation - OPTIMIZED
 
-This repository implements **6 streamlined CI workflows** instead of the previous 34+ redundant checks, providing comprehensive coverage with improved efficiency and reliability.
+This repository implements **4 core CI workflows** instead of the previous 23+ redundant checks, providing comprehensive coverage with improved efficiency and reliability.
 
 ## 🚀 Optimization Summary
 
-**BEFORE**: 34+ redundant CI checks with frequent hangs and duplications  
-**AFTER**: ~20-25 efficient checks across 6 core workflows  
+**BEFORE**: 23+ redundant CI checks with frequent hangs and duplications  
+**AFTER**: 4 consolidated core workflows with additional utility workflows  
 **IMPROVEMENTS**: Eliminated redundancies, added timeout protection, fixed Node.js compatibility
 
 ## Workflow Overview
 
-### 1. **Code Quality Checks** - `code-quality.yml`
-**Purpose**: Comprehensive code quality analysis  
-**Jobs**: 1 (consolidated from previous 2 separate jobs)  
+### 1. **Main CI/CD Pipeline** - `main.yml`
+**Purpose**: Comprehensive CI/CD with build, test, security check, and deployment readiness  
+**Jobs**: 4 (Build & Test, Code Quality, Security Check, Deployment Readiness)  
 **Optimizations**: 
-- ✅ Combined linting + coverage into single efficient job
-- ✅ Removed duplicate TypeScript checking (handled in CI)
+- ✅ Consolidated build verification and TypeScript compilation
+- ✅ Integrated linting and basic security checks
 - ✅ Added proper timeouts and error handling
 
 **Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Code Coverage and Analysis
+**Status Check**: ✅ Build and Test, ✅ Code Quality, ✅ Security Check, ✅ Deployment Readiness
 
-### 2. **Continuous Integration** - `ci.yml` 
-**Purpose**: Build verification and TypeScript compilation  
-**Jobs**: 2 (build matrix + type-check)  
+### 2. **Security Analysis** - `security-streamlined.yml` 
+**Purpose**: Comprehensive security vulnerability detection  
+**Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
 **Optimizations**:
-- ✅ **Fixed Node.js compatibility**: 20.x, 22.x only (removed broken 18.x)
-- ✅ Added `fail-fast: false` to prevent early cancellation
-- ✅ Optimized dependency installation with `--prefer-offline --no-audit --no-fund`
-
-**Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Build Application (20.x, 22.x), ✅ TypeScript Type Check
-
-### 3. **Application-Specific Checks** - `application-specific.yml`
-**Purpose**: Core application functionality testing  
-**Jobs**: 4 (database, API, Socket.IO, **authentication**)  
-**Major Optimization**: 
-- 🎯 **CONSOLIDATED AUTH TESTING**: Merged 6-job auth workflow into single efficient job
-- ✅ Added comprehensive timeout protection
-- ✅ Streamlined authentication test execution
-
-**Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Database Tests, ✅ API Contract Tests, ✅ Socket.IO Tests, ✅ Authentication Tests
-
-### 4. **Deployment Readiness** - `deployment.yml`
-**Purpose**: Production deployment validation  
-**Jobs**: 3 (staging verification, health checks, environment compatibility)  
-**Optimizations**:
-- ✅ Added startup timeout handling (20-30 seconds)
-- ✅ Improved process cleanup and error handling
-- ✅ Streamlined environment compatibility matrix
-
-**Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Staging Deployment, ✅ Health Checks, ✅ Environment Compatibility
-
-### 5. **Performance Checks** - `performance.yml`
-**Purpose**: Performance and bundle size analysis  
-**Jobs**: 2 (benchmarks + memory)  
-**Optimizations**:
-- ✅ Added application startup timeouts (30 seconds)
-- ✅ Improved Lighthouse CI configuration
-- ✅ Enhanced memory usage monitoring
-
-**Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Performance Benchmarks, ✅ Memory Performance Tests
-
-### 6. **Security Checks** - `security.yml`
-**Purpose**: Security vulnerability detection  
-**Jobs**: 3 (dependency scan, CodeQL, secret scan)  
-**Optimizations**:
+- ✅ Consolidated multiple security tools into unified workflow
 - ✅ Added job-level timeouts (10-20 minutes)
-- ✅ Improved CodeQL configuration
 - ✅ Enhanced secret scanning with TruffleHog
 
 **Triggers**: Push to main/develop, Pull Requests, Daily schedule (2 AM UTC)  
-**Status Check**: ✅ Dependency Scan, ✅ CodeQL Analysis, ✅ Secret Scanning
+**Status Check**: ✅ Security Analysis
 
-### 7. **Testing** - `testing.yml`
-**Purpose**: Comprehensive test suite execution  
-**Jobs**: 2 (unit tests + integration/E2E)  
+### 3. **Quality & Performance** - `quality.yml`
+**Purpose**: Code quality, performance, and comprehensive testing  
+**Jobs**: 3 (Code Coverage, Performance Check, E2E Tests)  
 **Optimizations**:
-- ✅ **Fixed Node.js compatibility**: 20.x, 22.x (removed 18.x)
-- ✅ Added proper timeouts for all test phases
-- ✅ Consolidated integration and E2E testing
+- ✅ Consolidated performance and quality checks
+- ✅ Added application startup timeouts (30 seconds)
+- ✅ Enhanced memory usage monitoring and coverage reporting
 
 **Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Unit Tests (20.x, 22.x), ✅ Integration Tests, ✅ E2E Tests
+**Status Check**: ✅ Code Coverage, ✅ Performance Check, ✅ E2E Tests
 
-### 8. **Health Monitoring** - `health-location-status.yml`
+### 4. **Docker Deployment** - `docker-publish.yml`
+**Purpose**: Container image building and publishing  
+**Jobs**: 1 (Build and publish Docker images)  
+**Optimizations**:
+- ✅ Streamlined container deployment process
+- ✅ Proper caching and multi-stage builds
+
+**Triggers**: Push to main, Release tags  
+**Status Check**: ✅ Docker Build and Publish
+
+## Additional Utility Workflows
+
+### Health Monitoring - `health-location-status.yml`
 **Purpose**: System health and status monitoring  
-**Jobs**: 1 (simplified from previous 2 complex jobs)  
-**Major Optimization**: 
-- 🎯 **SIMPLIFIED WORKFLOW**: Reduced from overly complex implementation
-- ✅ Focused on core health monitoring requirements
-- ✅ Removed redundant analysis steps
-
 **Triggers**: Push to main/develop, Pull Requests, Daily schedule  
-**Status Check**: ✅ System Health and Status Checks
+
+### Repository Maintenance
+- **`label.yml`** - Automated issue labeling
+- **`stale.yml`** - Stale issue management  
+- **`summary.yml`** - Summary reporting
 
 ## 🔧 Key Improvements
 
 ### Eliminated Major Redundancies
-- 🚨 **Removed duplicate auth workflow** (`auth-status-checks.yml` with 6 jobs → consolidated into application-specific)
-- 🚨 **Consolidated TypeScript checking** (was duplicated across multiple workflows)
-- 🚨 **Unified Node.js version testing** (consistent 20.x, 22.x across all workflows)
-- 🚨 **Merged code quality checks** (lint + coverage in single job)
+- 🚨 **Consolidated core functionality** into 4 main workflows (main.yml, security-streamlined.yml, quality.yml, docker-publish.yml)
+- 🚨 **Unified CI/CD pipeline** (build, test, quality, deployment in main.yml)
+- 🚨 **Streamlined security analysis** (CodeQL, dependency scan, secret detection in single workflow)
+- 🚨 **Integrated quality checks** (coverage, performance, E2E in quality.yml)
 
 ### Enhanced Reliability  
 - 🛡️ **Comprehensive timeout protection**: Job-level (10-20min), Step-level (3-8min)
@@ -113,29 +79,27 @@ This repository implements **6 streamlined CI workflows** instead of the previou
 - 🛡️ **Proper process cleanup** with timeout handling for hanging issues
 
 ### Performance Gains
-- 📈 **Reduced total checks**: 34+ → ~20-25 (including matrix jobs)
+- 📈 **Reduced total workflows**: 23+ → 4 core workflows (plus utilities)
 - 📈 **Faster dependency installation** with `--prefer-offline --no-audit --no-fund`
 - 📈 **Streamlined git operations** with `fetch-depth: 1`
 - 📈 **Efficient artifact handling** with proper retention policies
 
 ## 📊 Check Count Analysis
 
-### Matrix Job Breakdown
-- **CI**: 2 Node versions × 1 build job = 2 matrix jobs
-- **Testing**: 2 Node versions × 1 unit test job = 2 matrix jobs  
-- **Deployment**: 2 Node versions × 1 compatibility job = 2 matrix jobs
-- **Other workflows**: Single jobs each
+### Core Workflow Structure
+- **Main CI/CD**: Build & Test, Code Quality, Security Check, Deployment Readiness
+- **Security Analysis**: CodeQL, Dependency Scan, Secret Detection  
+- **Quality & Performance**: Coverage, Performance, E2E Tests
+- **Docker Deployment**: Container build and publish
 
-**Total estimated checks**: ~20-25 (down from 34+)
+**Total core checks**: 4 workflows with consolidated functionality
 
 ### Required Status Checks Mapping
-The 6 workflows above map directly to GitHub's required status checks:
-1. ✅ **Code Quality Checks** 
-2. ✅ **Continuous Integration (CI) Status Checks**  
-3. ✅ **Custom Application-Specific Checks** 
-4. ✅ **Deployment Readiness** 
-5. ✅ **Performance Checks** 
-6. ✅ **Security Checks** 
+The 4 core workflows map directly to GitHub's required status checks:
+1. ✅ **Main CI/CD Pipeline** (Build & Test, Code Quality, Security Check, Deployment Readiness)
+2. ✅ **Security Analysis** (Comprehensive security scanning)
+3. ✅ **Quality & Performance** (Coverage, Performance, E2E Tests)  
+4. ✅ **Docker Deployment** (Container deployment) 
 
 ## 🚨 Issue #93 Resolution
 
@@ -151,18 +115,15 @@ The 6 workflows above map directly to GitHub's required status checks:
 
 Configure these status checks as **required** in GitHub Settings → Branches:
 
-**Core Required Checks (6 workflows):**
-1. Code Coverage and Analysis
-2. Build Application (20.x, 22.x) + TypeScript Type Check  
-3. Database Tests + API Contract Tests + Socket.IO Tests + Authentication Tests
-4. Staging Deployment + Health Checks + Environment Compatibility
-5. Performance Benchmarks + Memory Performance Tests
-6. Dependency Scan + CodeQL Analysis + Secret Scanning
+**Core Required Checks (4 workflows):**
+1. Build and Test + Code Quality + Security Check + Deployment Readiness (from main.yml)
+2. Security Analysis (from security-streamlined.yml)  
+3. Code Coverage + Performance Check + E2E Tests (from quality.yml)
+4. Docker Build and Publish (from docker-publish.yml)
 
-**Additional checks from matrix jobs:**
-- Unit Tests (20.x, 22.x)
-- Integration Tests, E2E Tests
-- System Health and Status Checks
+**Additional utility workflows:**
+- System Health Checks (from health-location-status.yml)
+- Repository maintenance workflows (label, stale, summary)
 
 ## 🔧 Troubleshooting
 
