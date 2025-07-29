@@ -141,7 +141,7 @@ jobs:
         
     - name: Upload lint results
       uses: actions/upload-artifact@v4
-      if: always()
+      if: always() && hashFiles('GALAX_App_files/eslint-results.json') != ''
       with:
         name: lint-results
         path: ${{ env.WORKING_DIRECTORY }}/eslint-results.json

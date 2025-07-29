@@ -108,7 +108,7 @@ jobs:
         
     - name: Upload audit results
       uses: actions/upload-artifact@v4
-      if: always()
+      if: always() && hashFiles('GALAX_App_files/audit-results.json') != ''
       with:
         name: npm-audit-results
         path: ./GALAX_App_files/audit-results.json

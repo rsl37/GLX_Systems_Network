@@ -1,8 +1,6 @@
 name: Release Management
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       release_type:
@@ -110,12 +108,10 @@ jobs:
         git push origin main --tags
         
     - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ env.NEW_VERSION }}
-        release_name: Release v${{ env.NEW_VERSION }}
+        name: Release v${{ env.NEW_VERSION }}
         body: |
           # Release v${{ env.NEW_VERSION }}
           
@@ -167,12 +163,15 @@ jobs:
       
     - name: Deploy to Vercel Production
       uses: amondnet/vercel-action@v25
+      if: env.VERCEL_TOKEN != ''
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
         working-directory: ./GALAX_App_files
         vercel-args: '--prod'
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         
     - name: Post-deployment health check
       run: |

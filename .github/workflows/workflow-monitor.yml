@@ -29,10 +29,20 @@ jobs:
           
           for (const workflowName of workflows) {
             try {
+              // Try to find workflow by name first, fallback to ID mapping
+              let workflowId = workflowName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+              if (workflowName === 'CI/CD Pipeline') {
+                workflowId = 'main.yml';
+              } else if (workflowName === 'Security Scan') {
+                workflowId = 'security-streamlined.yml';
+              } else if (workflowName === 'Quality & Performance') {
+                workflowId = 'quality.yml';
+              }
+              
               const { data: runs } = await github.rest.actions.listWorkflowRuns({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: `${workflowName.toLowerCase().replace(/[^a-z0-9]/g, '-')}.yml`,
+                workflow_id: workflowId,
                 per_page: 10
               });
               
