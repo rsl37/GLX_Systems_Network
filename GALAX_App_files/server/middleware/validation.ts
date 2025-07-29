@@ -22,13 +22,13 @@ const SQL_INJECTION_PATTERNS = [
 
 // XSS patterns to detect and block - using safer non-greedy patterns
 const XSS_PATTERNS = [
-  /<script\b[^>]{0,100}>/i,
+  /<script\b[^>]*?>/i,
   /javascript:/i,
   /on\w+\s*=/i,
-  /<iframe\b[^>]{0,100}>/i,
-  /<object\b[^>]{0,100}>/i,
-  /<embed\b[^>]{0,100}>/i,
-  /<link\b[^>]{0,100}>/i,
+  /<iframe\b[^>]*?>/i,
+  /<object\b[^>]*?>/i,
+  /<embed\b[^>]*?>/i,
+  /<link\b[^>]*?>/i,
   /expression\s*\(/i,
   /vbscript:/i,
   /data:text\/html/i,
