@@ -67,6 +67,7 @@ vite.config.js.timestamp-*
 .react-devtools*
 
 # Database files (enhanced)
+*.sqlite
 *.sqlite-shm
 *.sqlite-wal
 *.backup

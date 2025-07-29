@@ -579,7 +579,8 @@ export const honeypotMiddleware = (
 
   // Check if accessing honeypot path
   for (const honeypotPath of HONEYPOT_PATHS) {
-    if (path.includes(honeypotPath)) {
+    // Only trigger for exact matches or direct admin access, not API endpoints
+    if (path === honeypotPath || (path.startsWith(honeypotPath) && !path.startsWith('/api/admin'))) {
       addSuspiciousIP(clientIP, `Honeypot Access: ${honeypotPath}`, "high");
 
       console.warn(`🍯 Honeypot triggered by IP ${clientIP}: ${path}`);

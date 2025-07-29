@@ -479,6 +479,10 @@ app.get("/api/admin/security/antihacking/stats", authenticateToken, securityAdmi
 app.post("/api/admin/security/antihacking/block-ip", authenticateToken, securityAdminEndpoints.antiHacking.blockIP);
 app.post("/api/admin/security/antihacking/unblock-ip", authenticateToken, securityAdminEndpoints.antiHacking.unblockIP);
 
+// Post-Quantum Cryptography Management
+app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.dashboard.getPostQuantumStatus);
+app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.dashboard.testPostQuantumOperations);
+
 // Serve uploaded files with security headers
 app.use(
   "/uploads",
@@ -523,7 +527,7 @@ export async function startServer(port: number) {
 
     // Initialize comprehensive security systems
     try {
-      initializeSecuritySystems();
+      await initializeSecuritySystems();
       console.log("🛡️ Comprehensive security systems initialized successfully");
 
       logSecurityEvent({
