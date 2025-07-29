@@ -14,6 +14,13 @@ import { randomBytes } from 'crypto';
 import { db } from './database.js';
 import { encryptDocument, decryptDocument, hashDocument } from './encryption.js';
 
+// Validate file path to prevent path traversal
+function validateFilePath(filePath: string, allowedDir: string): boolean {
+  const resolvedPath = path.resolve(filePath);
+  const resolvedAllowedDir = path.resolve(allowedDir);
+  return resolvedPath.startsWith(resolvedAllowedDir);
+}
+
 // Allowed document types
 const ALLOWED_DOCUMENT_TYPES = [
   'passport',
@@ -76,6 +83,12 @@ function validateKYCData(documentType: string, documentNumber: string): boolean 
  */
 async function storeEncryptedDocument(filePath: string, userId: number, documentType: string): Promise<string> {
   try {
+    // Validate file path to prevent path traversal
+    const allowedUploadDir = path.resolve('./data/uploads');
+    if (!validateFilePath(filePath, allowedUploadDir)) {
+      throw new Error('Invalid file path');
+    }
+
     // Read file data
     const fileData = fs.readFileSync(filePath);
     

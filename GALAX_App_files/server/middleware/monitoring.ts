@@ -107,12 +107,23 @@ export const collectMetrics = (req: Request & { startTime?: number }, res: Respo
   // Track request
   metrics.requests.total++;
   
-  const endpoint = req.route?.path || req.path;
-  metrics.requests.by_endpoint[endpoint] = (metrics.requests.by_endpoint[endpoint] || 0) + 1;
-  metrics.requests.by_method[req.method] = (metrics.requests.by_method[req.method] || 0) + 1;
+  // Sanitize endpoint to prevent property injection
+  const endpoint = (req.route?.path || req.path).toString().slice(0, 100);
+  const sanitizedEndpoint = endpoint.replace(/[^a-zA-Z0-9\/\-_:.]/g, '');
   
-  if (req.apiVersion) {
-    metrics.requests.by_version[req.apiVersion] = (metrics.requests.by_version[req.apiVersion] || 0) + 1;
+  // Sanitize HTTP method
+  const method = req.method.slice(0, 10);
+  const sanitizedMethod = method.replace(/[^A-Z]/g, '');
+  
+  metrics.requests.by_endpoint[sanitizedEndpoint] = (metrics.requests.by_endpoint[sanitizedEndpoint] || 0) + 1;
+  metrics.requests.by_method[sanitizedMethod] = (metrics.requests.by_method[sanitizedMethod] || 0) + 1;
+  
+  // Validate and sanitize API version
+  if (req.apiVersion && typeof req.apiVersion === 'string') {
+    const sanitizedVersion = req.apiVersion.slice(0, 10).replace(/[^a-zA-Z0-9.]/g, '');
+    if (sanitizedVersion) {
+      metrics.requests.by_version[sanitizedVersion] = (metrics.requests.by_version[sanitizedVersion] || 0) + 1;
+    }
   }
 
   // Track active user session
@@ -162,7 +173,10 @@ export const collectMetrics = (req: Request & { startTime?: number }, res: Respo
 // Error tracking
 export const trackError = (error: Error, req: Request, endpoint: string): void => {
   metrics.errors.total++;
-  metrics.errors.by_type[error.name] = (metrics.errors.by_type[error.name] || 0) + 1;
+  
+  // Sanitize error name to prevent property injection
+  const errorName = error.name.slice(0, 50).replace(/[^a-zA-Z0-9_]/g, '');
+  metrics.errors.by_type[errorName] = (metrics.errors.by_type[errorName] || 0) + 1;
   
   metrics.errors.recent.push({
     timestamp: new Date().toISOString(),

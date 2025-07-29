@@ -77,7 +77,7 @@ if (nodeEnv && ['development', 'production', 'staging', 'test'].includes(nodeEnv
   console.log(`   ❌ NODE_ENV: Invalid or missing (current: "${nodeEnv || 'NOT SET'}")`);
 }
 
-// JWT_SECRET validation
+// JWT_SECRET validation - never log the actual secret
 const jwtSecret = process.env.JWT_SECRET;
 if (jwtSecret) {
   if (jwtSecret.length >= 32) {

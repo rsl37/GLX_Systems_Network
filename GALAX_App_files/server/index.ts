@@ -1037,11 +1037,12 @@ app.post('/api/auth/2fa/verify', authenticateToken, async (req: AuthRequest, res
     
     console.log('🔍 2FA verification request from user:', userId);
 
-    if (!code || code.length !== 6) {
+    // Strict validation to prevent security bypass
+    if (!code || typeof code !== 'string' || code.length !== 6 || !/^\d{6}$/.test(code)) {
       return res.status(400).json({ 
         success: false,
         error: {
-          message: 'Please provide a 6-digit verification code',
+          message: 'Please provide a valid 6-digit numeric verification code',
           statusCode: 400
         }
       });

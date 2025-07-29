@@ -20,18 +20,18 @@ const SQL_INJECTION_PATTERNS = [
   /((\%27)|(\'))|((\%3D)|(=))|((\%3B)|(;))|((\%2D)|(\-))|((\%2B)|(\+))|((\%25)|(\%))/i
 ];
 
-// XSS patterns to detect and block
+// XSS patterns to detect and block - using safer non-greedy patterns
 const XSS_PATTERNS = [
-  /<script[^>]*>.*?<\/script>/gi,
-  /javascript:/gi,
-  /on\w+\s*=/gi,
-  /<iframe[^>]*>.*?<\/iframe>/gi,
-  /<object[^>]*>.*?<\/object>/gi,
-  /<embed[^>]*>/gi,
-  /<link[^>]*>/gi,
-  /expression\s*\(/gi,
-  /vbscript:/gi,
-  /data:text\/html/gi
+  /<script\b[^>]{0,100}>/i,
+  /javascript:/i,
+  /on\w+\s*=/i,
+  /<iframe\b[^>]{0,100}>/i,
+  /<object\b[^>]{0,100}>/i,
+  /<embed\b[^>]{0,100}>/i,
+  /<link\b[^>]{0,100}>/i,
+  /expression\s*\(/i,
+  /vbscript:/i,
+  /data:text\/html/i
 ];
 
 // Enhanced input sanitization function

@@ -38,15 +38,17 @@ export async function diagnoseDatabaseFile() {
   } else {
     console.log('✅ Database file exists');
     
-    // Check file stats
-    const stats = fs.statSync(databasePath);
-    console.log('📊 File size:', stats.size, 'bytes');
-    console.log('📅 Created:', stats.birthtime);
-    console.log('📅 Modified:', stats.mtime);
-    
     // Check if it's a valid SQLite file
     try {
+      // Use a single atomic read operation to avoid race conditions
       const buffer = fs.readFileSync(databasePath, { encoding: null });
+      
+      // Check file stats after reading to ensure consistency  
+      const stats = fs.statSync(databasePath);
+      console.log('📊 File size:', stats.size, 'bytes');
+      console.log('📅 Created:', stats.birthtime);
+      console.log('📅 Modified:', stats.mtime);
+      
       const header = buffer.slice(0, 16).toString('ascii');
       console.log('🔍 File header:', header);
       

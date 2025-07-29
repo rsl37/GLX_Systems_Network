@@ -175,12 +175,14 @@ export async function markPhoneAsVerified(userId: number, phone: string): Promis
  */
 export async function sendPhoneVerification(phone: string, code: string): Promise<boolean> {
   try {
-    console.log('📱 Sending SMS verification to:', phone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2'));
+    // Safely log phone number with masking
+    const maskedPhone = phone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2');
+    console.log('📱 Sending SMS verification to:', maskedPhone);
     
     // Mock SMS implementation for development
     if (process.env.NODE_ENV === 'development') {
       console.log('🔧 Development mode - SMS verification code:', code);
-      console.log('🔧 Phone number:', phone);
+      console.log('🔧 Phone number (masked):', maskedPhone);
       return true;
     }
 

@@ -114,15 +114,21 @@ export const securityHeaders = helmet({
 
 // Request sanitization middleware
 export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
+  // HTML entity escape function
+  const escapeHtml = (str: string): string => {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  };
+
   // Recursively sanitize object properties
   const sanitizeObject = (obj: any): any => {
     if (typeof obj === 'string') {
-      // Remove potentially dangerous characters
-      return obj
-        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
-        .replace(/javascript:/gi, '') // Remove javascript: protocol
-        .replace(/on\w+\s*=/gi, '') // Remove event handlers
-        .trim();
+      // Use more secure approach - escape HTML instead of regex filtering
+      return escapeHtml(obj.trim());
     }
     
     if (Array.isArray(obj)) {
@@ -345,8 +351,12 @@ export const corsConfig = {
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   
+  // Sanitize user-controlled data to prevent format string injection
+  const safeMethod = req.method.slice(0, 10).replace(/[^A-Z]/g, '');
+  const safePath = req.path.slice(0, 100).replace(/[^\w\/\-_?.=&]/g, '');
+  
   // Log request details
-  console.log(`📝 ${req.method} ${req.path}`, {
+  console.log('📝 Request:', safeMethod, safePath, {
     ip: req.ip,
     userAgent: req.get('User-Agent'),
     timestamp: new Date().toISOString(),
@@ -359,7 +369,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
     const duration = Date.now() - start;
     const logLevel = res.statusCode >= 400 ? '❌' : '✅';
     
-    console.log(`${logLevel} ${req.method} ${req.path}`, {
+    console.log('Response:', logLevel, safeMethod, safePath, {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
       contentLength: res.get('Content-Length') || '0'

@@ -12,6 +12,13 @@ import crypto from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
 
+// Validate file path to prevent path traversal
+function validateFilePath(filePath: string, allowedDir: string): boolean {
+  const resolvedPath = path.resolve(filePath);
+  const resolvedAllowedDir = path.resolve(allowedDir);
+  return resolvedPath.startsWith(resolvedAllowedDir);
+}
+
 // Virus signature database with real-world patterns
 interface VirusSignature {
   id: string;
@@ -251,6 +258,12 @@ async function calculateMultipleHashes(filePath: string): Promise<{
   md5: string;
   sha1: string;
 }> {
+  // Validate file path to prevent path traversal
+  const allowedDir = path.resolve('./data');
+  if (!validateFilePath(filePath, allowedDir)) {
+    throw new Error('Invalid file path');
+  }
+
   const fileBuffer = await fs.readFile(filePath);
   
   return {
@@ -303,6 +316,7 @@ async function performVirusScan(filePath: string): Promise<{
     }
     
     // Read file content for signature scanning
+    // Path validation already done in calculateMultipleHashes
     const fileBuffer = await fs.readFile(filePath);
     const fileContent = fileBuffer.toString('utf8');
     

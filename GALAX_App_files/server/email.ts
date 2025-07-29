@@ -10,6 +10,16 @@ import nodemailer from 'nodemailer';
 import { randomBytes } from 'crypto';
 import { db } from './database.js';
 
+// HTML escape function to prevent XSS
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 // Email configuration
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -223,7 +233,10 @@ export async function sendEmailVerification(email: string, token: string, userna
   try {
     console.log('📧 Sending email verification to:', email);
     
-    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
+    // Sanitize inputs to prevent XSS
+    const safeUsername = escapeHtml(username);
+    const safeToken = encodeURIComponent(token);
+    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${safeToken}`;
     
     const mailOptions = {
       from: process.env.SMTP_FROM || 'GALAX Support <noreply@galaxcivicnetwork.me>',
@@ -237,7 +250,7 @@ export async function sendEmailVerification(email: string, token: string, userna
           </div>
           
           <div style="padding: 30px; background: white; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #333; margin-bottom: 20px;">Welcome to GALAX, ${username}!</h2>
+            <h2 style="color: #333; margin-bottom: 20px;">Welcome to GALAX, ${safeUsername}!</h2>
             
             <p style="color: #666; line-height: 1.6;">
               Thank you for joining our civic network platform. To complete your registration and start participating in your community, please verify your email address.

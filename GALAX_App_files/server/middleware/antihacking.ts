@@ -54,11 +54,11 @@ const ATTACK_PATTERNS: AttackPattern[] = [
     countermeasure: 'Block request immediately'
   },
   
-  // XSS patterns
+  // XSS patterns - using safer patterns
   {
     id: 'XSS_SCRIPT_TAG',
     name: 'XSS Script Tag',
-    pattern: /<script[\s\S]*?>[\s\S]*?<\/script>/gi,
+    pattern: /<script\b[^>]{0,100}>/i,
     type: 'xss',
     severity: 'high',
     description: 'Cross-site scripting via script tags',
@@ -67,7 +67,7 @@ const ATTACK_PATTERNS: AttackPattern[] = [
   {
     id: 'XSS_EVENT_HANDLER',
     name: 'XSS Event Handler',
-    pattern: /on(load|click|mouseover|error|focus|blur)\s*=/gi,
+    pattern: /on(load|click|mouseover|error|focus|blur)\s*=/i,
     type: 'xss',
     severity: 'medium',
     description: 'XSS via HTML event handlers',
