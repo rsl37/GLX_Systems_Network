@@ -1,0 +1,31 @@
+{
+  "name": "galax-mcp-servers",
+  "version": "1.0.0",
+  "description": "Custom MCP servers for GALAX Civic Networking App",
+  "main": "index.js",
+  "scripts": {
+    "start:websocket": "node websocket-server.js",
+    "start:civic": "node civic-server.js",
+    "start:auth": "node auth-server.js",
+    "start:social": "node social-good-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "civic",
+    "websocket",
+    "authentication",
+    "social-good"
+  ],
+  "author": "GALAX Civic Networking Team",
+  "license": "PolyForm-Shield-1.0.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "socket.io": "^4.8.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "mcpServers": {
+    "google-maps": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@cablate/mcp-google-map", "--port", "3000"],
+      "tools": [
+        "search_nearby",
+        "get_place_details", 
+        "maps_geocode",
+        "maps_reverse_geocode",
+        "maps_distance_matrix",
+        "maps_directions",
+        "maps_elevation"
+      ],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "COPILOT_MCP_GOOGLE_MAPS_API_KEY"
+      }
+    },
+    
+    "github-integration": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "tools": [
+        "create_or_update_file",
+        "create_repository",
+        "create_issue",
+        "create_pull_request",
+        "list_files",
+        "read_file",
+        "list_issues",
+        "update_issue",
+        "get_file_contents",
+        "search_repositories"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "COPILOT_MCP_GITHUB_TOKEN"
+      }
+    },
+
+    "web3-blockchain": {
+      "type": "local", 
+      "command": "npx",
+      "args": ["-y", "@strangelove-ventures/web3-mcp"],
+      "tools": [
+        "get_balance",
+        "get_token_balance",
+        "get_transaction_history",
+        "validate_address",
+        "get_network_info",
+        "estimate_gas",
+        "get_token_info"
+      ],
+      "env": {
+        "ENABLE_ETHEREUM_TOOLS": "true",
+        "ETH_PRIVATE_KEY": "COPILOT_MCP_ETH_PRIVATE_KEY"
+      }
+    },
+
+    "realtime-websocket": {
+      "type": "local",
+      "command": "node",
+      "args": ["./mcp-servers/websocket-server.js"],
+      "tools": [
+        "send_realtime_message",
+        "join_chat_room", 
+        "leave_chat_room",
+        "get_active_users",
+        "broadcast_notification",
+        "get_chat_history"
+      ],
+      "env": {
+        "WEBSOCKET_PORT": "8080",
+        "JWT_SECRET": "COPILOT_MCP_JWT_SECRET"
+      }
+    },
+
+    "civic-api-integration": {
+      "type": "local",
+      "command": "node", 
+      "args": ["./mcp-servers/civic-server.js"],
+      "tools": [
+        "get_civic_data",
+        "search_local_services",
+        "get_community_events",
+        "report_civic_issue",
+        "get_government_contacts",
+        "search_nonprofits"
+      ],
+      "env": {
+        "CIVIC_API_KEY": "COPILOT_MCP_CIVIC_API_KEY",
+        "OPEN_DATA_API_KEY": "COPILOT_MCP_OPEN_DATA_KEY"
+      }
+    },
+
+    "database-operations": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "tools": [
+        "read_query",
+        "write_query",
+        "list_schemas",
+        "describe_table",
+        "analyze_query_plan"
+      ],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "COPILOT_MCP_DATABASE_URL"
+      }
+    },
+
+    "jwt-auth-server": {
+      "type": "local",
+      "command": "node",
+      "args": ["./mcp-servers/auth-server.js"],
+      "tools": [
+        "verify_jwt_token",
+        "generate_access_token",
+        "refresh_token",
+        "validate_user_permissions",
+        "get_user_profile"
+      ],
+      "env": {
+        "JWT_SECRET": "COPILOT_MCP_JWT_SECRET",
+        "TOKEN_EXPIRY": "3600"
+      }
+    },
+
+    "notification-system": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-email"],
+      "tools": [
+        "send_email",
+        "send_sms",
+        "create_push_notification",
+        "schedule_notification",
+        "get_notification_status"
+      ],
+      "env": {
+        "EMAIL_API_KEY": "COPILOT_MCP_EMAIL_KEY",
+        "SMS_API_KEY": "COPILOT_MCP_SMS_KEY"
+      }
+    },
+
+    "social-good-apis": {
+      "type": "local",
+      "command": "node",
+      "args": ["./mcp-servers/social-good-server.js"],
+      "tools": [
+        "search_volunteer_opportunities",
+        "get_charity_info",
+        "find_food_banks",
+        "get_disaster_relief_info",
+        "search_community_resources",
+        "report_community_need"
+      ],
+      "env": {
+        "VOLUNTEER_API_KEY": "COPILOT_MCP_VOLUNTEER_KEY",
+        "CHARITY_API_KEY": "COPILOT_MCP_CHARITY_KEY"
+      }
+    },
+
+    "analytics-monitoring": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-analytics"],
+      "tools": [
+        "track_user_event",
+        "get_usage_analytics",
+        "monitor_app_performance",
+        "generate_reports",
+        "set_alerts"
+      ],
+      "env": {
+        "ANALYTICS_API_KEY": "COPILOT_MCP_ANALYTICS_KEY"
+      }
+    }
+  }
+}

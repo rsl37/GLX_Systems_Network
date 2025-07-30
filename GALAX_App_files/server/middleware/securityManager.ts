@@ -26,6 +26,23 @@ import {
   suspiciousIPs,
   blockedIPs
 } from './antihacking.js';
+import { 
+  zeroDayProtectionMiddleware, 
+  zeroDayProtectionAdmin, 
+  initializeZeroDayProtection, 
+  updateThreatIntelligence,
+  zeroDayStats,
+  AI_ML_THREATS,
+  CLOUD_EDGE_THREATS,
+  NETWORK_INFRA_THREATS
+} from './zeroDayProtection.js';
+import { 
+  sandboxingMiddleware, 
+  sandboxFileUpload, 
+  sandboxAdmin, 
+  initializeSandboxing,
+  sandboxStats
+} from './sandboxing.js';
 
 // Security system status
 interface SecuritySystemStatus {
@@ -51,6 +68,25 @@ interface SecuritySystemStatus {
     botDetectionActive: boolean;
     honeypotActive: boolean;
   };
+  zeroDayProtection: {
+    enabled: boolean;
+    threatPatterns: number;
+    threatsDetected: number;
+    criticalThreats: number;
+    behavioralAnomalies: number;
+    lastIntelligenceUpdate: string;
+    aiMlThreats: number;
+    cloudEdgeThreats: number;
+    networkInfraThreats: number;
+  };
+  sandboxing: {
+    enabled: boolean;
+    activeSessions: number;
+    quarantinedSessions: number;
+    violationsDetected: number;
+    isolationEffectiveness: number;
+    averageSessionDuration: number;
+  };
   postQuantum: {
     enabled: boolean;
     algorithms: string[];
@@ -60,7 +96,7 @@ interface SecuritySystemStatus {
     lastTest: string;
   };
   overall: {
-    securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe';
+    securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe' | 'zero-day-protected';
     protectionScore: number;
     lastUpdate: string;
   };
@@ -89,6 +125,24 @@ const SECURITY_CONFIG = {
     honeypot: true,
     csrfProtection: true,
     behavioralAnalysis: true
+  },
+  zeroDayProtection: {
+    enabled: true,
+    aiMlProtection: true,
+    cloudEdgeProtection: true,
+    networkInfraProtection: true,
+    behavioralAnomalyDetection: true,
+    threatIntelligenceEnabled: true,
+    updateInterval: 60 * 60 * 1000 // 1 hour
+  },
+  sandboxing: {
+    enabled: true,
+    isolationLevel: 'enhanced',
+    fileUploadSandboxing: true,
+    networkMonitoring: true,
+    memoryMonitoring: true,
+    maxExecutionTime: 5000,
+    maxMemoryUsage: 100 * 1024 * 1024 // 100MB
   },
   postQuantum: {
     enabled: true,
@@ -149,6 +203,12 @@ export const comprehensiveSecurityMiddleware = [
   // Enhanced security headers (first)
   enhancedSecurityHeaders,
   
+  // Zero-day protection (early detection of unknown threats)
+  zeroDayProtectionMiddleware,
+  
+  // Sandboxing (isolation and containment)
+  sandboxingMiddleware,
+  
   // Real-time antivirus protection
   realTimeProtection,
   
@@ -179,6 +239,9 @@ export const comprehensiveSecurityMiddleware = [
 
 // File upload security middleware stack
 export const fileUploadSecurityMiddleware = [
+  // Sandbox file upload monitoring
+  sandboxFileUpload,
+  
   // Antimalware file scanning
   antimalwareFileScanner,
   
@@ -195,24 +258,39 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     // Get post-quantum security status
     const pqStatus = postQuantumCrypto.getStatus();
     
-    // Calculate protection score (0-130 for quantum-safe)
+    // Calculate protection score (0-160 for zero-day-protected)
     let protectionScore = 0;
     
-    if (SECURITY_CONFIG.antimalware.enabled) protectionScore += 20;
-    if (SECURITY_CONFIG.antivirus.enabled) protectionScore += 20;
-    if (SECURITY_CONFIG.antiHacking.enabled) protectionScore += 20;
-    if (SECURITY_CONFIG.antiHacking.ddosProtection) protectionScore += 5;
-    if (SECURITY_CONFIG.antiHacking.botDetection) protectionScore += 5;
-    if (SECURITY_CONFIG.antiHacking.honeypot) protectionScore += 5;
-    if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 5;
-    if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 5;
+    if (SECURITY_CONFIG.antimalware.enabled) protectionScore += 15;
+    if (SECURITY_CONFIG.antivirus.enabled) protectionScore += 15;
+    if (SECURITY_CONFIG.antiHacking.enabled) protectionScore += 15;
+    if (SECURITY_CONFIG.antiHacking.ddosProtection) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.botDetection) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.honeypot) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 3;
+    
+    // Zero-day protection (30 points)
+    if (SECURITY_CONFIG.zeroDayProtection.enabled) protectionScore += 20;
+    if (SECURITY_CONFIG.zeroDayProtection.aiMlProtection) protectionScore += 3;
+    if (SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection) protectionScore += 3;
+    if (SECURITY_CONFIG.zeroDayProtection.networkInfraProtection) protectionScore += 2;
+    if (SECURITY_CONFIG.zeroDayProtection.behavioralAnomalyDetection) protectionScore += 2;
+    
+    // Sandboxing protection (15 points)
+    if (SECURITY_CONFIG.sandboxing.enabled) protectionScore += 10;
+    if (SECURITY_CONFIG.sandboxing.fileUploadSandboxing) protectionScore += 2;
+    if (SECURITY_CONFIG.sandboxing.networkMonitoring) protectionScore += 2;
+    if (SECURITY_CONFIG.sandboxing.memoryMonitoring) protectionScore += 1;
     
     // Add post-quantum bonus protection (30 points for quantum-safe level)
     if (pqStatus.initialized) protectionScore += 30;
     
-    // Determine security level including quantum-safe level
-    let securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe';
-    if (protectionScore >= 130) {
+    // Determine security level including zero-day-protected level
+    let securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe' | 'zero-day-protected';
+    if (protectionScore >= 160) {
+      securityLevel = 'zero-day-protected';
+    } else if (protectionScore >= 130) {
       securityLevel = 'quantum-safe';
     } else if (protectionScore >= 95) {
       securityLevel = 'maximum';
@@ -250,6 +328,25 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
         botDetectionActive: SECURITY_CONFIG.antiHacking.botDetection,
         honeypotActive: SECURITY_CONFIG.antiHacking.honeypot
       },
+      zeroDayProtection: {
+        enabled: SECURITY_CONFIG.zeroDayProtection.enabled,
+        threatPatterns: AI_ML_THREATS.length + CLOUD_EDGE_THREATS.length + NETWORK_INFRA_THREATS.length,
+        threatsDetected: zeroDayStats.threatsDetected,
+        criticalThreats: zeroDayStats.criticalThreats,
+        behavioralAnomalies: zeroDayStats.threatsByCategory.behavioral_anomaly,
+        lastIntelligenceUpdate: new Date().toISOString(),
+        aiMlThreats: zeroDayStats.threatsByCategory.ai_ml,
+        cloudEdgeThreats: zeroDayStats.threatsByCategory.cloud_edge,
+        networkInfraThreats: zeroDayStats.threatsByCategory.network_infra
+      },
+      sandboxing: {
+        enabled: SECURITY_CONFIG.sandboxing.enabled,
+        activeSessions: sandboxStats.activeSessions,
+        quarantinedSessions: sandboxStats.quarantinedSessions,
+        violationsDetected: sandboxStats.violationsDetected,
+        isolationEffectiveness: sandboxStats.isolationEffectiveness,
+        averageSessionDuration: sandboxStats.averageSessionDuration
+      },
       postQuantum: {
         enabled: SECURITY_CONFIG.postQuantum.enabled && pqStatus.initialized,
         algorithms: pqStatus.initialized ? ['ML-KEM', 'ML-DSA', 'SLH-DSA'] : [],
@@ -271,6 +368,8 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
       antimalware: { enabled: false, lastScan: '', threatsDetected: 0, quarantinedFiles: 0 },
       antivirus: { enabled: false, definitionsCount: 0, lastUpdate: '', totalScans: 0, virusesDetected: 0 },
       antiHacking: { enabled: false, attackPatternsActive: 0, suspiciousIPs: 0, blockedIPs: 0, ddosProtectionActive: false, botDetectionActive: false, honeypotActive: false },
+      zeroDayProtection: { enabled: false, threatPatterns: 0, threatsDetected: 0, criticalThreats: 0, behavioralAnomalies: 0, lastIntelligenceUpdate: '', aiMlThreats: 0, cloudEdgeThreats: 0, networkInfraThreats: 0 },
+      sandboxing: { enabled: false, activeSessions: 0, quarantinedSessions: 0, violationsDetected: 0, isolationEffectiveness: 0, averageSessionDuration: 0 },
       postQuantum: { enabled: false, algorithms: [], securityLevel: 0, quantumResistant: false, hybridCrypto: false, lastTest: '' },
       overall: { securityLevel: 'low', protectionScore: 0, lastUpdate: new Date().toISOString() }
     };
@@ -566,6 +665,12 @@ export const initializeSecuritySystems = async () => {
   // Initialize antivirus system
   initializeAntivirus();
   
+  // Initialize zero-day protection system
+  initializeZeroDayProtection();
+  
+  // Initialize sandboxing system
+  await initializeSandboxing();
+  
   // Initialize post-quantum cryptography
   try {
     await postQuantumCrypto.initialize();
@@ -581,8 +686,13 @@ export const initializeSecuritySystems = async () => {
   console.log(`   🤖 Bot Detection: ${SECURITY_CONFIG.antiHacking.botDetection ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🍯 Honeypot System: ${SECURITY_CONFIG.antiHacking.honeypot ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🧠 Behavioral Analysis: ${SECURITY_CONFIG.antiHacking.behavioralAnalysis ? 'ENABLED' : 'DISABLED'}`);
+  console.log(`   🦾 Zero-Day Protection: ${SECURITY_CONFIG.zeroDayProtection.enabled ? 'ENABLED' : 'DISABLED'}`);
+  console.log(`   🔬 AI/ML Security: ${SECURITY_CONFIG.zeroDayProtection.aiMlProtection ? 'ENABLED' : 'DISABLED'}`);
+  console.log(`   ☁️ Cloud/Edge Security: ${SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection ? 'ENABLED' : 'DISABLED'}`);
+  console.log(`   🌐 Network Infrastructure Security: ${SECURITY_CONFIG.zeroDayProtection.networkInfraProtection ? 'ENABLED' : 'DISABLED'}`);
+  console.log(`   📦 Sandboxing System: ${SECURITY_CONFIG.sandboxing.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`); 
-  console.log('🚀 GALAX App Security Systems are FULLY OPERATIONAL');
+  console.log('🚀 GALAX App Security Systems are FULLY OPERATIONAL with ZERO-DAY PROTECTION');
 };
 
 // Post-Quantum Security Admin endpoints
@@ -636,6 +746,8 @@ export const securityAdminEndpoints = {
   antimalware: manageQuarantine,
   antivirus: antivirusAdmin,
   antiHacking: antiHackingAdmin,
+  zeroDayProtection: zeroDayProtectionAdmin,
+  sandboxing: sandboxAdmin,
   postQuantum: postQuantumSecurityAdmin
 };
 
