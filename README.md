@@ -78,6 +78,7 @@ GALAX_App_files/
 - **⚡ Fast Performance**: Vite build system and optimized bundles
 - **🧪 Comprehensive Testing**: Unit, integration, and E2E tests
 - **🚀 CI/CD Ready**: Automated workflows and Vercel deployment
+- **🤖 MCP Integration**: GitHub Copilot integration with custom civic networking tools
 
 ---
 
@@ -88,6 +89,7 @@ GALAX_App_files/
 - [Security Information](SECURITY.md) - Security policies and reporting
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
 - [Workspace Guide](GALAX_Project_Workspace.md) - Development workspace setup
+- [MCP Setup Guide](MCP_SETUP_GUIDE.md) - GitHub Copilot MCP configuration
 
 ---
 
