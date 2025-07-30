@@ -448,18 +448,38 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
-  // Validate TRUSTED_ORIGINS format (required for Version 3.0)
+  // Validate TRUSTED_ORIGINS format (required for Version 3.0) with security best practices
   const trustedOrigins = process.env.TRUSTED_ORIGINS;
   if (trustedOrigins) {
     const origins = trustedOrigins.split(',').map(origin => origin.trim());
     let validOrigins = 0;
     let invalidOrigins = 0;
+    let securityWarnings: string[] = [];
     
     for (const origin of origins) {
       try {
         const url = new URL(origin);
         if (url.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')) {
           validOrigins++;
+          
+          // Security validations to reduce attack surface
+          if (process.env.NODE_ENV === 'production') {
+            // Warn against development origins in production
+            if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.includes('.local')) {
+              securityWarnings.push(`Development origin '${origin}' should not be used in production`);
+            }
+            
+            // Warn against non-HTTPS in production
+            if (url.protocol !== 'https:') {
+              securityWarnings.push(`Non-HTTPS origin '${origin}' creates security risk in production`);
+            }
+          }
+          
+          // Warn against overly broad wildcards or IP addresses in production
+          if (process.env.NODE_ENV === 'production' && /^\d+\.\d+\.\d+\.\d+/.test(url.hostname)) {
+            securityWarnings.push(`IP address origin '${origin}' reduces security - use domain names when possible`);
+          }
+          
         } else {
           invalidOrigins++;
         }
@@ -469,26 +489,45 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
     
     if (invalidOrigins === 0) {
+      const status = securityWarnings.length > 0 ? 'warning' : 'pass';
+      const message = securityWarnings.length > 0 
+        ? `All ${validOrigins} trusted origins are formatted correctly, but ${securityWarnings.length} security concerns detected`
+        : `All ${validOrigins} trusted origins are properly formatted with secure configuration`;
+        
       results.push({
-        check: 'TRUSTED_ORIGINS Format',
-        status: 'pass',
-        message: `All ${validOrigins} trusted origins are properly formatted`,
+        check: 'TRUSTED_ORIGINS Security',
+        status,
+        message,
         details: { 
           total_origins: origins.length,
           valid_origins: validOrigins,
-          purpose: 'Version 3.0: third-party integrations, mobile contexts, enterprise deployments'
+          security_warnings: securityWarnings,
+          purpose: 'Version 3.0: third-party integrations, mobile contexts, enterprise deployments',
+          security_notes: [
+            'HTTPS enforced in production',
+            'Development origins blocked in production', 
+            'Specific domains preferred over IP addresses',
+            'Each origin explicitly validated'
+          ]
         }
       });
     } else {
       results.push({
-        check: 'TRUSTED_ORIGINS Format',
+        check: 'TRUSTED_ORIGINS Security',
         status: 'fail',
-        message: `${invalidOrigins} of ${origins.length} trusted origins have invalid format`,
+        message: `${invalidOrigins} of ${origins.length} trusted origins have invalid format or security issues`,
         details: { 
           total_origins: origins.length,
           valid_origins: validOrigins,
           invalid_origins: invalidOrigins,
-          requirement: 'All origins must be valid URLs with https:// (or http:// in development)'
+          security_warnings: securityWarnings,
+          requirement: 'All origins must be valid URLs with https:// (or http:// in development)',
+          security_requirements: [
+            'HTTPS required in production',
+            'No development origins in production',
+            'Specific domains preferred over IP addresses',
+            'No wildcard or overly broad patterns'
+          ]
         }
       });
     }
