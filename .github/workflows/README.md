@@ -18,7 +18,7 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 - ✅ Integrated linting and basic security checks
 - ✅ Added proper timeouts and error handling
 
-**Triggers**: Push to main/develop, Pull Requests  
+**Triggers**: Push to main, Pull Requests  
 **Status Check**: ✅ Build and Test, ✅ Code Quality, ✅ Security Check, ✅ Deployment Readiness
 
 ### 2. **Security Analysis** - `security-streamlined.yml` 
@@ -29,7 +29,7 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 - ✅ Added job-level timeouts (10-20 minutes)
 - ✅ Enhanced secret scanning with TruffleHog
 
-**Triggers**: Push to main/develop, Pull Requests, Daily schedule (2 AM UTC)  
+**Triggers**: Push to main, Pull Requests, Daily schedule (2 AM UTC)  
 **Status Check**: ✅ Security Analysis
 
 ### 3. **Quality & Performance** - `quality.yml`
@@ -40,7 +40,7 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 - ✅ Added application startup timeouts (30 seconds)
 - ✅ Enhanced memory usage monitoring and coverage reporting
 
-**Triggers**: Push to main/develop, Pull Requests  
+**Triggers**: Push to main, Pull Requests  
 **Status Check**: ✅ Code Coverage, ✅ Performance Check, ✅ E2E Tests
 
 ### 4. **Docker Deployment** - `docker-publish.yml`
@@ -57,7 +57,7 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 
 ### Health Monitoring - `health-location-status.yml`
 **Purpose**: System health and status monitoring  
-**Triggers**: Push to main/develop, Pull Requests, Daily schedule  
+**Triggers**: Push to main, Pull Requests, Daily schedule  
 
 ### Repository Maintenance
 - **`label.yml`** - Automated issue labeling

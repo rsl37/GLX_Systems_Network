@@ -56,8 +56,7 @@
   ],
   "git": {
     "deploymentEnabled": {
-      "main": true,
-      "develop": true
+      "main": true
     }
   }
 }

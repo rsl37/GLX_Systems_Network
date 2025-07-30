@@ -2,7 +2,7 @@ name: Authentication Status Checks
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
     paths:
       - 'GALAX_App_files/server/auth.ts'
       - 'GALAX_App_files/server/index.ts'
@@ -10,7 +10,7 @@ on:
       - 'GALAX_App_files/server/middleware/**'
       - '.github/workflows/auth-status-checks.yml'
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
     paths:
       - 'GALAX_App_files/server/auth.ts'
       - 'GALAX_App_files/server/index.ts'
