@@ -42,6 +42,67 @@ const OPTIONAL_ENV_VARS = [
   'TRUSTED_ORIGINS'
 ];
 
+// Top 50 SMTP hosts used globally
+const SUPPORTED_SMTP_HOSTS = [
+  // Major email providers
+  'smtp.gmail.com', 'smtp.googlemail.com',
+  'smtp-mail.outlook.com', 'smtp.live.com', 'smtp.hotmail.com',
+  'smtp.mail.yahoo.com', 'smtp.mail.yahoo.co.uk', 'smtp.mail.yahoo.fr',
+  'smtp.aol.com', 'smtp.mail.me.com', 'smtp.icloud.com',
+  // Business email providers
+  'smtp.office365.com', 'smtp.exchange.office365.com',
+  'smtp.zoho.com', 'smtp.zoho.eu', 'smtp.zoho.in',
+  'smtp.fastmail.com', 'smtp.fastmail.fm',
+  'smtp.protonmail.com', 'smtp.protonmail.ch',
+  'smtp.tutanota.com', 'smtp.tutanota.de',
+  // Regional providers
+  'smtp.yandex.com', 'smtp.yandex.ru',
+  'smtp.mail.ru', 'smtp.rambler.ru',
+  'smtp.qq.com', 'smtp.163.com', 'smtp.126.com',
+  'smtp.sina.com', 'smtp.sohu.com',
+  'smtp.naver.com', 'smtp.daum.net',
+  'smtp.web.de', 'smtp.gmx.de', 'smtp.gmx.com',
+  'smtp.freenet.de', 't-online.de',
+  'smtp.orange.fr', 'smtp.sfr.fr', 'smtp.free.fr',
+  'smtp.alice.it', 'smtp.libero.it', 'smtp.tiscali.it',
+  'smtp.terra.com.br', 'smtp.uol.com.br',
+  // Enterprise and hosting providers
+  'mail.privateemail.com', 'secureserver.net',
+  'smtp.1and1.com', 'smtp.ionos.com',
+  'smtp.bluehost.com', 'smtp.hostgator.com',
+  'smtp.dreamhost.com', 'smtp.godaddy.com',
+  'smtp.namecheap.com', 'smtp.siteground.com'
+];
+
+// International country codes and their phone number patterns
+const INTERNATIONAL_PHONE_PATTERNS = {
+  // Format: country code -> { min_length, max_length, pattern }
+  '+1': { min: 11, max: 11, pattern: /^\+1[2-9]\d{2}[2-9]\d{6}$/ }, // US/Canada
+  '+44': { min: 11, max: 13, pattern: /^\+44[1-9]\d{8,10}$/ }, // UK
+  '+49': { min: 11, max: 12, pattern: /^\+49[1-9]\d{9,10}$/ }, // Germany
+  '+33': { min: 10, max: 12, pattern: /^\+33[1-9]\d{8,10}$/ }, // France
+  '+39': { min: 10, max: 13, pattern: /^\+39[0-9]\d{8,11}$/ }, // Italy
+  '+34': { min: 11, max: 11, pattern: /^\+34[6-9]\d{8}$/ }, // Spain
+  '+31': { min: 11, max: 11, pattern: /^\+31[6]\d{8}$/ }, // Netherlands
+  '+46': { min: 10, max: 12, pattern: /^\+46[7]\d{8,10}$/ }, // Sweden
+  '+47': { min: 10, max: 10, pattern: /^\+47[4,9]\d{7}$/ }, // Norway
+  '+45': { min: 10, max: 10, pattern: /^\+45[2-9]\d{7}$/ }, // Denmark
+  '+41': { min: 11, max: 12, pattern: /^\+41[7]\d{8,9}$/ }, // Switzerland
+  '+43': { min: 11, max: 13, pattern: /^\+43[6]\d{9,11}$/ }, // Austria
+  '+32': { min: 10, max: 11, pattern: /^\+32[4]\d{8,9}$/ }, // Belgium
+  '+7': { min: 11, max: 11, pattern: /^\+7[9]\d{9}$/ }, // Russia
+  '+86': { min: 11, max: 13, pattern: /^\+86[1]\d{10,12}$/ }, // China
+  '+81': { min: 11, max: 13, pattern: /^\+81[7,8,9]\d{9,11}$/ }, // Japan
+  '+82': { min: 11, max: 12, pattern: /^\+82[1]\d{9,10}$/ }, // South Korea
+  '+91': { min: 12, max: 13, pattern: /^\+91[6-9]\d{9,10}$/ }, // India
+  '+61': { min: 11, max: 12, pattern: /^\+61[4]\d{8,9}$/ }, // Australia
+  '+64': { min: 10, max: 11, pattern: /^\+64[2]\d{7,8}$/ }, // New Zealand
+  '+55': { min: 11, max: 13, pattern: /^\+55[1-9]\d{9,11}$/ }, // Brazil
+  '+52': { min: 11, max: 13, pattern: /^\+52[1]\d{9,11}$/ }, // Mexico
+  '+54': { min: 11, max: 13, pattern: /^\+54[9]\d{9,11}$/ }, // Argentina
+  '+27': { min: 11, max: 11, pattern: /^\+27[6,7,8]\d{8}$/ }, // South Africa
+};
+
 // Minimum requirements for production
 const PRODUCTION_REQUIREMENTS = {
   JWT_SECRET_MIN_LENGTH: 32,
@@ -176,6 +237,41 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
+  // Validate SMTP_HOST against supported providers
+  const smtpHost = process.env.SMTP_HOST;
+  if (smtpHost) {
+    if (SUPPORTED_SMTP_HOSTS.includes(smtpHost.toLowerCase())) {
+      results.push({
+        check: 'SMTP Host Configuration',
+        status: 'pass',
+        message: `SMTP_HOST is from a supported email provider: ${smtpHost}`,
+        details: { host: smtpHost, supported: true }
+      });
+    } else {
+      // Check if it's a custom domain that follows proper SMTP naming conventions
+      const isCustomSMTP = /^(smtp|mail)\./i.test(smtpHost) || /\.smtp\./i.test(smtpHost);
+      if (isCustomSMTP) {
+        results.push({
+          check: 'SMTP Host Configuration',
+          status: 'pass',
+          message: `SMTP_HOST appears to be a valid custom SMTP server: ${smtpHost}`,
+          details: { host: smtpHost, type: 'custom', supported: false }
+        });
+      } else {
+        results.push({
+          check: 'SMTP Host Configuration',
+          status: 'warning',
+          message: `SMTP_HOST '${smtpHost}' is not in the list of verified providers. Consider using a mainstream email service for better deliverability.`,
+          details: { 
+            host: smtpHost, 
+            supported: false,
+            suggestion: 'Consider using Gmail, Outlook, or another mainstream provider'
+          }
+        });
+      }
+    }
+  }
+
   // Validate SMTP_PORT format if provided
   const smtpPort = process.env.SMTP_PORT;
   if (smtpPort) {
@@ -188,32 +284,109 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         details: { port: smtpPort }
       });
     } else {
+      // Check for common secure SMTP ports
+      const commonPorts = [25, 465, 587, 2525];
+      const isCommonPort = commonPorts.includes(portNum);
+      const isSecurePort = [465, 587].includes(portNum);
+      
       results.push({
         check: 'SMTP Port Configuration',
         status: 'pass',
-        message: `SMTP_PORT is properly configured: ${smtpPort}`,
-        details: { port: portNum }
+        message: `SMTP_PORT is properly configured: ${smtpPort}${isSecurePort ? ' (secure)' : ''}`,
+        details: { 
+          port: portNum, 
+          common: isCommonPort, 
+          secure: isSecurePort,
+          recommendation: isSecurePort ? 'secure port' : 'consider using port 587 or 465 for security'
+        }
       });
     }
   }
 
-  // Validate TWILIO_PHONE_NUMBER format if provided
+  // Validate TWILIO_PHONE_NUMBER format with comprehensive international support
   const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
   if (twilioPhone) {
-    if (twilioPhone.startsWith('+') && twilioPhone.length >= 10) {
+    // Basic format check
+    if (!twilioPhone.startsWith('+')) {
       results.push({
         check: 'Twilio Phone Number Format',
-        status: 'pass',
-        message: `TWILIO_PHONE_NUMBER is properly formatted`,
-        details: { phone: twilioPhone.substring(0, 5) + '***' }
+        status: 'fail',
+        message: `TWILIO_PHONE_NUMBER must start with + and include country code. Current: ${twilioPhone}`,
+        details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'missing_plus_prefix' }
       });
     } else {
-      results.push({
-        check: 'Twilio Phone Number Format',
-        status: 'warning',
-        message: `TWILIO_PHONE_NUMBER should start with + and include country code`,
-        details: { phone: twilioPhone ? twilioPhone.substring(0, 5) + '***' : 'not set' }
-      });
+      // Extract country code
+      const countryCodeMatch = twilioPhone.match(/^(\+\d{1,4})/);
+      if (!countryCodeMatch) {
+        results.push({
+          check: 'Twilio Phone Number Format',
+          status: 'fail',
+          message: `TWILIO_PHONE_NUMBER has invalid country code format`,
+          details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'invalid_country_code' }
+        });
+      } else {
+        const countryCode = countryCodeMatch[1];
+        const phonePattern = INTERNATIONAL_PHONE_PATTERNS[countryCode];
+        
+        if (phonePattern) {
+          // Validate against specific country pattern
+          if (phonePattern.pattern.test(twilioPhone) && 
+              twilioPhone.length >= phonePattern.min && 
+              twilioPhone.length <= phonePattern.max) {
+            results.push({
+              check: 'Twilio Phone Number Format',
+              status: 'pass',
+              message: `TWILIO_PHONE_NUMBER is properly formatted for country code ${countryCode}`,
+              details: { 
+                phone: twilioPhone.substring(0, 5) + '***',
+                country_code: countryCode,
+                length: twilioPhone.length,
+                validated: true
+              }
+            });
+          } else {
+            results.push({
+              check: 'Twilio Phone Number Format',
+              status: 'warning',
+              message: `TWILIO_PHONE_NUMBER format may not be standard for country code ${countryCode}`,
+              details: { 
+                phone: twilioPhone.substring(0, 5) + '***',
+                country_code: countryCode,
+                length: twilioPhone.length,
+                expected_min: phonePattern.min,
+                expected_max: phonePattern.max
+              }
+            });
+          }
+        } else {
+          // Generic validation for unsupported country codes
+          if (twilioPhone.length >= 8 && twilioPhone.length <= 16) {
+            results.push({
+              check: 'Twilio Phone Number Format',
+              status: 'pass',
+              message: `TWILIO_PHONE_NUMBER appears valid with country code ${countryCode} (generic validation)`,
+              details: { 
+                phone: twilioPhone.substring(0, 5) + '***',
+                country_code: countryCode,
+                length: twilioPhone.length,
+                validation_type: 'generic'
+              }
+            });
+          } else {
+            results.push({
+              check: 'Twilio Phone Number Format',
+              status: 'warning',
+              message: `TWILIO_PHONE_NUMBER length may be invalid for country code ${countryCode}`,
+              details: { 
+                phone: twilioPhone.substring(0, 5) + '***',
+                country_code: countryCode,
+                length: twilioPhone.length,
+                expected_range: '8-16 characters'
+              }
+            });
+          }
+        }
+      }
     }
   }
   const trustedOrigins = process.env.TRUSTED_ORIGINS;
