@@ -1,0 +1,2 @@
+# This file ensures the logs directory is preserved in version control
+# The logs directory is required by the deployment validation system
