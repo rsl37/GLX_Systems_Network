@@ -332,11 +332,11 @@ export function sandboxingMiddleware(req: Request, res: Response, next: NextFunc
   res.set('X-Sandbox-Risk', session.risk);
   
   // Override response to complete session
-  const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any) {
+  const originalEnd = res.end.bind(res);
+  res.end = function(chunk?: any, encoding?: any, cb?: () => void) {
     completeSandboxSession(session.id);
-    originalEnd.call(this, chunk, encoding);
-  };
+    return originalEnd(chunk, encoding, cb);
+  } as any;
   
   // Monitor for timeout
   const timeout = setTimeout(() => {
