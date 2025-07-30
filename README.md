@@ -25,11 +25,14 @@ cd GALAX_Civic_Networking_App/GALAX_App_files
 # Install dependencies
 npm install
 
-# Start development server
+# Development setup
 npm start
 
+# Production setup
+npm run production:setup
+
 # Build for production
-npm run build
+npm run build:production
 ```
 
 ### Testing
@@ -77,7 +80,8 @@ GALAX_App_files/
 - **📱 Responsive Design**: Mobile-first UI with Tailwind CSS
 - **⚡ Fast Performance**: Vite build system and optimized bundles
 - **🧪 Comprehensive Testing**: Unit, integration, and E2E tests
-- **🚀 CI/CD Ready**: Automated workflows and Vercel deployment
+- **🚀 Production Ready**: Automated production setup and deployment
+- **🛡️ Security First**: Production-grade security headers and configurations
 
 ---
 
@@ -85,6 +89,8 @@ GALAX_App_files/
 
 - [About GALAX](ABOUT_GALAX.md) - Project overview and mission
 - [Project Structure](PROJECT_STRUCTURE.md) - Detailed directory structure
+- [Production Mode Guide](GALAX_App_files/PRODUCTION_MODE_GUIDE.md) - Production deployment setup
+- [Deployment Configuration](DEPLOYMENT.md) - Deployment troubleshooting
 - [Security Information](SECURITY.md) - Security policies and reporting
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
 - [Workspace Guide](GALAX_Project_Workspace.md) - Development workspace setup

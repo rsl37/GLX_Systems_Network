@@ -15,6 +15,7 @@ export const vitePort = 3000;
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
+  const isDevelopment = mode === 'development';
   
   return {
     plugins: [
@@ -77,12 +78,13 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: path.join(process.cwd(), 'dist/public'),
       emptyOutDir: true,
-      minify: 'esbuild', // Enable minification
-      target: 'es2020', // Modern target for better optimization
+      minify: isProduction ? 'esbuild' : false, // Only minify in production
+      target: isProduction ? 'es2020' : 'es2022', // More conservative target for production
+      sourcemap: isDevelopment, // Disable sourcemaps in production for security
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Separate vendor chunks for better caching
+          manualChunks: isProduction ? {
+            // Separate vendor chunks for better caching in production
             vendor: ['react', 'react-dom'],
             router: ['react-router-dom'],
             ui: [
@@ -103,11 +105,12 @@ export default defineConfig(({ mode }) => {
             maps: ['@googlemaps/js-api-loader', 'leaflet'],
             animation: ['framer-motion'],
             analytics: ['@vercel/analytics', '@vercel/speed-insights'] // Vercel monitoring tools
-          }
+          } : undefined // No chunking in development for faster builds
         }
       },
-      chunkSizeWarningLimit: 500, // Set more appropriate warning limit
-      sourcemap: isProduction ? false : true, // Disable sourcemaps in production
+      chunkSizeWarningLimit: isProduction ? 500 : 1000, // Stricter limits in production
+      cssCodeSplit: isProduction, // Split CSS in production for better caching
+      assetsInlineLimit: isProduction ? 4096 : 0, // Inline small assets in production only
     },
     clearScreen: false,
     server: {
@@ -129,10 +132,14 @@ export default defineConfig(({ mode }) => {
     css: {
       devSourcemap: !isProduction,
     },
-    // Optimize build with better tree-shaking
+    // Optimize build with better tree-shaking and production settings
     esbuild: {
-      sourcemap: !isProduction,
-      drop: isProduction ? ['console', 'debugger'] : [],
+      sourcemap: isDevelopment,
+      drop: isProduction ? ['console', 'debugger'] : [], // Remove console logs in production
+      legalComments: isProduction ? 'none' : 'eof', // Remove legal comments in production
+      minifyIdentifiers: isProduction,
+      minifySyntax: isProduction,
+      minifyWhitespace: isProduction,
     },
     // Optimize dependencies
     optimizeDeps: {
