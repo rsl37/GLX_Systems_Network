@@ -65,7 +65,15 @@ export function RegisterPage() {
       await register(identifier, password, username, signupMethod);
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      // Provide more helpful error messages
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        // Enhanced fallback message with more context
+        setError('Registration failed. Please check your information and try again. If the problem persists, contact support.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +99,14 @@ export function RegisterPage() {
         setError('MetaMask not detected. Please install MetaMask to use wallet registration.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wallet registration failed');
+      // Provide more helpful error messages for wallet registration
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Wallet registration failed. Please check your MetaMask connection and try again.');
+      }
     } finally {
       setIsLoading(false);
     }

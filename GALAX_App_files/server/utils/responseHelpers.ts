@@ -84,6 +84,18 @@ export const ErrorMessages = {
   NOT_FOUND: 'Resource not found',
   ALREADY_EXISTS: 'Resource already exists',
   FORBIDDEN: 'Access forbidden',
+  // Registration-specific error messages
+  REGISTRATION_USER_EXISTS: 'An account with this email, phone, username, or wallet address already exists',
+  REGISTRATION_EMAIL_EXISTS: 'An account with this email address already exists',
+  REGISTRATION_PHONE_EXISTS: 'An account with this phone number already exists',
+  REGISTRATION_USERNAME_EXISTS: 'This username is already taken',
+  REGISTRATION_WALLET_EXISTS: 'An account with this wallet address already exists',
+  REGISTRATION_DATABASE_ERROR: 'Unable to create account due to a technical issue. Please try again',
+  REGISTRATION_VALIDATION_ERROR: 'Please check your information and try again',
+  REGISTRATION_EMAIL_INVALID: 'Please enter a valid email address',
+  REGISTRATION_PHONE_INVALID: 'Please enter a valid phone number',
+  REGISTRATION_PASSWORD_WEAK: 'Password must be at least 8 characters long',
+  REGISTRATION_USERNAME_INVALID: 'Username must be 3-30 characters and contain only letters, numbers, and underscores',
 } as const;
 
 /**

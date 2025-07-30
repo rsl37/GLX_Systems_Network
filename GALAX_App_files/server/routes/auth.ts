@@ -78,25 +78,61 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       walletAddress,
     });
 
-    // Check if user already exists
-    const existingUser = await db
-      .selectFrom('users')
-      .selectAll()
-      .where((eb) =>
-        eb.or(
-          [
-            email ? eb('email', '=', email) : undefined,
-            phone ? eb('phone', '=', phone) : undefined,
-            eb('username', '=', username),
-            walletAddress ? eb('wallet_address', '=', walletAddress) : undefined,
-          ].filter(Boolean),
-        ),
-      )
-      .executeTakeFirst();
+    // Check if user already exists - check each field separately for specific error messages
+    let conflictField = null;
+    let conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
 
-    if (existingUser) {
-      console.log('❌ Registration failed: User already exists');
-      return sendError(res, 'User already exists with this email, phone, username, or wallet address', StatusCodes.BAD_REQUEST);
+    if (email) {
+      const emailUser = await db
+        .selectFrom('users')
+        .selectAll()
+        .where('email', '=', email)
+        .executeTakeFirst();
+      if (emailUser) {
+        conflictField = 'email';
+        conflictMessage = ErrorMessages.REGISTRATION_EMAIL_EXISTS;
+      }
+    }
+
+    if (!conflictField && phone) {
+      const phoneUser = await db
+        .selectFrom('users')
+        .selectAll()
+        .where('phone', '=', phone)
+        .executeTakeFirst();
+      if (phoneUser) {
+        conflictField = 'phone';
+        conflictMessage = ErrorMessages.REGISTRATION_PHONE_EXISTS;
+      }
+    }
+
+    if (!conflictField) {
+      const usernameUser = await db
+        .selectFrom('users')
+        .selectAll()
+        .where('username', '=', username)
+        .executeTakeFirst();
+      if (usernameUser) {
+        conflictField = 'username';
+        conflictMessage = ErrorMessages.REGISTRATION_USERNAME_EXISTS;
+      }
+    }
+
+    if (!conflictField && walletAddress) {
+      const walletUser = await db
+        .selectFrom('users')
+        .selectAll()
+        .where('wallet_address', '=', walletAddress)
+        .executeTakeFirst();
+      if (walletUser) {
+        conflictField = 'wallet';
+        conflictMessage = ErrorMessages.REGISTRATION_WALLET_EXISTS;
+      }
+    }
+
+    if (conflictField) {
+      console.log(`❌ Registration failed: ${conflictField} already exists`);
+      return sendError(res, conflictMessage, StatusCodes.BAD_REQUEST);
     }
 
     const passwordHash = password ? await hashPassword(password) : null;
@@ -124,7 +160,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 
     if (!user) {
       console.log('❌ Registration failed: Failed to create user');
-      return sendError(res, 'Failed to create user account', StatusCodes.INTERNAL_ERROR);
+      return sendError(res, ErrorMessages.REGISTRATION_DATABASE_ERROR, StatusCodes.INTERNAL_ERROR);
     }
 
     // Send email verification if email provided
