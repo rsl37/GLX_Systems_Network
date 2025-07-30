@@ -1,3 +1,4 @@
+---
 name: "CodeQL Configuration (Solo Developer Optimized)"
 
 # Disable default queries that might be too strict for solo dev
