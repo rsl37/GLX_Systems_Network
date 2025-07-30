@@ -481,6 +481,13 @@ app.get("/api/admin/security/antihacking/stats", authenticateToken, securityAdmi
 app.post("/api/admin/security/antihacking/block-ip", authenticateToken, securityAdminEndpoints.antiHacking.blockIP);
 app.post("/api/admin/security/antihacking/unblock-ip", authenticateToken, securityAdminEndpoints.antiHacking.unblockIP);
 
+// Zero-Day Protection Management
+app.get("/api/admin/security/zero-day/:action", authenticateToken, securityAdminEndpoints.zeroDayProtection);
+
+// Sandboxing System Management
+app.get("/api/admin/security/sandbox/:action", authenticateToken, securityAdminEndpoints.sandboxing);
+app.post("/api/admin/security/sandbox/:action", authenticateToken, securityAdminEndpoints.sandboxing);
+
 // Post-Quantum Security Management
 app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.postQuantum.getStatus);
 app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.postQuantum.testOperations);

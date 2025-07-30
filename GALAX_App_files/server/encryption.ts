@@ -183,9 +183,10 @@ export function decryptDocument(encryptedData: string, documentId: string): Buff
 
 /**
  * Generates a cryptographically secure random token
+ * @param byteLength - Number of random bytes to generate (default: 32 bytes = 64 hex characters)
  */
-export function generateSecureToken(length: number = 32): string {
-  return crypto.randomBytes(length).toString('hex');
+export function generateSecureToken(byteLength: number = 32): string {
+  return crypto.randomBytes(byteLength).toString('hex');
 }
 
 /**
