@@ -311,7 +311,7 @@ jobs:
           fi
           
           # Quick startup test (with timeout to prevent hanging)
-          if npm run --silent start --dry-run >/dev/null 2>&1; then
+          if npm run --if-present --silent start >/dev/null 2>&1; then
             (npm run start --if-present & echo $! > app_pid.txt) & timeout 30s wait $(cat app_pid.txt)
             APP_PID=$(cat app_pid.txt)
             rm -f app_pid.txt
