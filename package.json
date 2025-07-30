@@ -6,15 +6,15 @@
   "type": "module",
   "license": "PolyForm-Shield-1.0.0",
   "scripts": {
-    "deployment:check": "cd GALAX_App_files && npm install && npm run deployment:check",
-    "deployment:test": "cd GALAX_App_files && npm install && npm run deployment:test",
-    "domain:check": "cd GALAX_App_files && npm install && npm run domain:check",
-    "build": "cd GALAX_App_files && npm install && npm run build",
-    "start": "cd GALAX_App_files && npm install && npm run start",
-    "test": "cd GALAX_App_files && npm install && npm run test",
-    "test:all": "cd GALAX_App_files && npm install && npm run test:all",
-    "install:app": "cd GALAX_App_files && npm install",
-    "setup": "cd GALAX_App_files && npm install"
+    "deployment:check": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run deployment:check",
+    "deployment:test": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run deployment:test",
+    "domain:check": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run domain:check",
+    "build": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run build",
+    "start": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run start",
+    "test": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run test",
+    "test:all": "cd GALAX_App_files && [ -d node_modules ] || npm install && npm run test:all",
+    "install:app": "cd GALAX_App_files && [ -d node_modules ] || npm install",
+    "setup": "cd GALAX_App_files && [ -d node_modules ] || npm install"
   },
   "workspaces": [
     "GALAX_App_files"
