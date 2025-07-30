@@ -312,8 +312,9 @@ jobs:
           
           # Quick startup test (with timeout to prevent hanging)
           if npm run --silent start --dry-run >/dev/null 2>&1; then
-            timeout 30s npm run start --if-present &
-            APP_PID=$!
+            (npm run start --if-present & echo $! > app_pid.txt) & timeout 30s wait $(cat app_pid.txt)
+            APP_PID=$(cat app_pid.txt)
+            rm -f app_pid.txt
           else
             echo "⚠️  'start' script not found in package.json. Skipping application startup test, but continuing pipeline."
             true
