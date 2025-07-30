@@ -79,7 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           // Non-JSON response, likely HTML error page
           const text = await response.text();
-          debugInfo = { ...debugInfo, responseText: text.substring(0, 500) };
+          if (process.env.NODE_ENV === 'development') {
+            debugInfo = { ...debugInfo, responseText: text.substring(0, 500) };
+          }
           
           if (text.includes('<html') || text.includes('<!DOCTYPE')) {
             // This is common in Vercel when API routes aren't properly configured
