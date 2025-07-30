@@ -17,12 +17,17 @@ import { db } from './database.js';
 const require = createRequire(import.meta.url);
 const checkDiskSpace = require('check-disk-space').default;
 
-// Environment variables that are required for production deployment
-const REQUIRED_ENV_VARS = [
+// Core environment variables that are essential for any deployment
+const CORE_REQUIRED_ENV_VARS = [
   'NODE_ENV',
   'PORT',
   'DATA_DIRECTORY',
-  'JWT_SECRET',
+  'JWT_SECRET'
+];
+
+// Environment variables that are recommended for full production features
+// Missing these will generate warnings but not fail deployment readiness
+const RECOMMENDED_ENV_VARS = [
   'JWT_REFRESH_SECRET',
   'ENCRYPTION_MASTER_KEY',
   'SMTP_HOST',
@@ -39,6 +44,9 @@ const REQUIRED_ENV_VARS = [
   'FRONTEND_URL',     // Legacy frontend URL support
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
 ];
+
+// Backward compatibility: all variables together
+const REQUIRED_ENV_VARS = [...CORE_REQUIRED_ENV_VARS, ...RECOMMENDED_ENV_VARS];
 
 // Top 50 SMTP hosts used globally
 const SUPPORTED_SMTP_HOSTS = [
@@ -135,8 +143,8 @@ interface DeploymentReadinessReport {
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
   
-  // Check required environment variables
-  for (const envVar of REQUIRED_ENV_VARS) {
+  // Check core required environment variables (fail if missing)
+  for (const envVar of CORE_REQUIRED_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
       results.push({
@@ -144,6 +152,26 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'fail',
         message: `Required environment variable ${envVar} is not set`,
         details: { variable: envVar, required: true }
+      });
+    } else {
+      results.push({
+        check: `Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length }
+      });
+    }
+  }
+
+  // Check recommended environment variables (warn if missing)
+  for (const envVar of RECOMMENDED_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Recommended environment variable ${envVar} is not set. Some features may be limited.`,
+        details: { variable: envVar, recommended: true }
       });
     } else {
       results.push({

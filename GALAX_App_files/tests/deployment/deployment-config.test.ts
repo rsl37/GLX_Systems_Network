@@ -95,7 +95,7 @@ describe('Deployment Configuration Tests', () => {
     it('should not be in not_ready state with basic env vars', async () => {
       // Test with minimal required environment variables
       // Don't set DATABASE_URL to let it fall back to SQLite
-      const env = {
+      const env: Record<string, string | undefined> = {
         ...process.env,
         NODE_ENV: 'production',
         PORT: '3000',
