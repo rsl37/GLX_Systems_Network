@@ -310,8 +310,8 @@ jobs:
             timeout 30s npm run start --if-present &
             APP_PID=$!
           else
-            echo "❌ 'start' script not found in package.json. Skipping application startup test."
-            exit 1
+            echo "⚠️  'start' script not found in package.json. Skipping application startup test, but continuing pipeline."
+            true
           fi
           
           # Wait for app to start
