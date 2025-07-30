@@ -151,8 +151,13 @@ jobs:
         if: matrix.node-version == 20
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          echo "Generating test coverage..."
-          npm run test:coverage || echo "Coverage generation completed"
+          echo "Checking if 'test:coverage' script exists in package.json..."
+          if grep -q '"test:coverage"' package.json; then
+            echo "Generating test coverage..."
+            npm run test:coverage || echo "Coverage generation completed"
+          else
+            echo "'test:coverage' script not found in package.json. Skipping coverage generation."
+          fi
 
   performance-checks:
     name: Performance Tests
