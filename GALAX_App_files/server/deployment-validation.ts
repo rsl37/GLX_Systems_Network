@@ -16,7 +16,17 @@ const REQUIRED_ENV_VARS = [
   'NODE_ENV',
   'PORT',
   'DATA_DIRECTORY',
-  'JWT_SECRET'
+  'JWT_SECRET',
+  'JWT_REFRESH_SECRET',
+  'ENCRYPTION_MASTER_KEY',
+  'SMTP_HOST',
+  'SMTP_PORT', 
+  'SMTP_USER',
+  'SMTP_PASS',
+  'SMTP_FROM',
+  'TWILIO_SID',
+  'TWILIO_AUTH_TOKEN',
+  'TWILIO_PHONE_NUMBER'
 ];
 
 // Important environment variables for production (not strictly required but recommended)
@@ -29,15 +39,7 @@ const RECOMMENDED_ENV_VARS = [
 
 // Optional environment variables with validation
 const OPTIONAL_ENV_VARS = [
-  'SMTP_HOST',
-  'SMTP_PORT', 
-  'SMTP_USER',
-  'SMTP_PASS',
-  'SMTP_FROM',
-  'TRUSTED_ORIGINS',
-  'TWILIO_SID',
-  'TWILIO_AUTH_TOKEN',
-  'TWILIO_PHONE_NUMBER'
+  'TRUSTED_ORIGINS'
 ];
 
 // Minimum requirements for production
@@ -134,60 +136,86 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
-  // Check optional environment variables - only warn if partial configuration detected
-  // Email/SMTP configuration check
-  const smtpVars = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'];
-  const setSmtpVars = smtpVars.filter(envVar => process.env[envVar]);
-  
-  if (setSmtpVars.length > 0) {
-    // Some SMTP variables are set - check for complete configuration
-    for (const envVar of smtpVars) {
-      const value = process.env[envVar];
-      if (!value) {
-        results.push({
-          check: `SMTP Configuration: ${envVar}`,
-          status: 'warning',
-          message: `SMTP variable ${envVar} is not set. Email features require all SMTP variables to be configured`,
-          details: { variable: envVar, feature: 'email', partialConfig: true }
-        });
-      } else {
-        results.push({
-          check: `SMTP Configuration: ${envVar}`,
-          status: 'pass',
-          message: `SMTP variable ${envVar} is configured`,
-          details: { variable: envVar, feature: 'email' }
-        });
-      }
+  // Validate JWT_REFRESH_SECRET strength
+  const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
+  if (jwtRefreshSecret) {
+    if (jwtRefreshSecret.length < PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH) {
+      results.push({
+        check: 'JWT Refresh Secret Strength',
+        status: 'fail',
+        message: `JWT_REFRESH_SECRET is too short (${jwtRefreshSecret.length} chars). Minimum ${PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH} characters required for production`,
+        details: { current_length: jwtRefreshSecret.length, required_length: PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH }
+      });
+    } else {
+      results.push({
+        check: 'JWT Refresh Secret Strength',
+        status: 'pass',
+        message: `JWT_REFRESH_SECRET meets security requirements (${jwtRefreshSecret.length} characters)`,
+        details: { length: jwtRefreshSecret.length }
+      });
     }
   }
 
-  // Twilio/SMS configuration check
-  const twilioVars = ['TWILIO_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_PHONE_NUMBER'];
-  const setTwilioVars = twilioVars.filter(envVar => process.env[envVar]);
-  
-  if (setTwilioVars.length > 0) {
-    // Some Twilio variables are set - check for complete configuration
-    for (const envVar of twilioVars) {
-      const value = process.env[envVar];
-      if (!value) {
-        results.push({
-          check: `Twilio Configuration: ${envVar}`,
-          status: 'warning',
-          message: `Twilio variable ${envVar} is not set. SMS features require all Twilio variables to be configured`,
-          details: { variable: envVar, feature: 'sms', partialConfig: true }
-        });
-      } else {
-        results.push({
-          check: `Twilio Configuration: ${envVar}`,
-          status: 'pass',
-          message: `Twilio variable ${envVar} is configured`,
-          details: { variable: envVar, feature: 'sms' }
-        });
-      }
+  // Validate ENCRYPTION_MASTER_KEY strength (should be 64 characters for hex)
+  const encryptionKey = process.env.ENCRYPTION_MASTER_KEY;
+  if (encryptionKey) {
+    if (encryptionKey.length < 64) {
+      results.push({
+        check: 'Encryption Master Key Strength',
+        status: 'fail',
+        message: `ENCRYPTION_MASTER_KEY is too short (${encryptionKey.length} chars). Minimum 64 characters required for production`,
+        details: { current_length: encryptionKey.length, required_length: 64 }
+      });
+    } else {
+      results.push({
+        check: 'Encryption Master Key Strength',
+        status: 'pass',
+        message: `ENCRYPTION_MASTER_KEY meets security requirements (${encryptionKey.length} characters)`,
+        details: { length: encryptionKey.length }
+      });
     }
   }
 
-  // TRUSTED_ORIGINS is truly optional - only check if set
+  // Validate SMTP_PORT format if provided
+  const smtpPort = process.env.SMTP_PORT;
+  if (smtpPort) {
+    const portNum = Number(smtpPort);
+    if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+      results.push({
+        check: 'SMTP Port Configuration',
+        status: 'fail',
+        message: `SMTP_PORT must be a valid port number between 1 and 65535. Current value: ${smtpPort}`,
+        details: { port: smtpPort }
+      });
+    } else {
+      results.push({
+        check: 'SMTP Port Configuration',
+        status: 'pass',
+        message: `SMTP_PORT is properly configured: ${smtpPort}`,
+        details: { port: portNum }
+      });
+    }
+  }
+
+  // Validate TWILIO_PHONE_NUMBER format if provided
+  const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
+  if (twilioPhone) {
+    if (twilioPhone.startsWith('+') && twilioPhone.length >= 10) {
+      results.push({
+        check: 'Twilio Phone Number Format',
+        status: 'pass',
+        message: `TWILIO_PHONE_NUMBER is properly formatted`,
+        details: { phone: twilioPhone.substring(0, 5) + '***' }
+      });
+    } else {
+      results.push({
+        check: 'Twilio Phone Number Format',
+        status: 'warning',
+        message: `TWILIO_PHONE_NUMBER should start with + and include country code`,
+        details: { phone: twilioPhone ? twilioPhone.substring(0, 5) + '***' : 'not set' }
+      });
+    }
+  }
   const trustedOrigins = process.env.TRUSTED_ORIGINS;
   if (trustedOrigins) {
     results.push({
