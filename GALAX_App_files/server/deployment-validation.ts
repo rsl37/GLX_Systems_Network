@@ -134,24 +134,68 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
-  // Check optional environment variables and provide warnings
-  for (const envVar of OPTIONAL_ENV_VARS) {
-    const value = process.env[envVar];
-    if (!value) {
-      results.push({
-        check: `Optional Environment Variable: ${envVar}`,
-        status: 'warning',
-        message: `Optional environment variable ${envVar} is not set. Email features may not work properly`,
-        details: { variable: envVar, required: false }
-      });
-    } else {
-      results.push({
-        check: `Optional Environment Variable: ${envVar}`,
-        status: 'pass',
-        message: `Optional environment variable ${envVar} is configured`,
-        details: { variable: envVar }
-      });
+  // Check optional environment variables - only warn if partial configuration detected
+  // Email/SMTP configuration check
+  const smtpVars = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'];
+  const setSmtpVars = smtpVars.filter(envVar => process.env[envVar]);
+  
+  if (setSmtpVars.length > 0) {
+    // Some SMTP variables are set - check for complete configuration
+    for (const envVar of smtpVars) {
+      const value = process.env[envVar];
+      if (!value) {
+        results.push({
+          check: `SMTP Configuration: ${envVar}`,
+          status: 'warning',
+          message: `SMTP variable ${envVar} is not set. Email features require all SMTP variables to be configured`,
+          details: { variable: envVar, feature: 'email', partialConfig: true }
+        });
+      } else {
+        results.push({
+          check: `SMTP Configuration: ${envVar}`,
+          status: 'pass',
+          message: `SMTP variable ${envVar} is configured`,
+          details: { variable: envVar, feature: 'email' }
+        });
+      }
     }
+  }
+
+  // Twilio/SMS configuration check
+  const twilioVars = ['TWILIO_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_PHONE_NUMBER'];
+  const setTwilioVars = twilioVars.filter(envVar => process.env[envVar]);
+  
+  if (setTwilioVars.length > 0) {
+    // Some Twilio variables are set - check for complete configuration
+    for (const envVar of twilioVars) {
+      const value = process.env[envVar];
+      if (!value) {
+        results.push({
+          check: `Twilio Configuration: ${envVar}`,
+          status: 'warning',
+          message: `Twilio variable ${envVar} is not set. SMS features require all Twilio variables to be configured`,
+          details: { variable: envVar, feature: 'sms', partialConfig: true }
+        });
+      } else {
+        results.push({
+          check: `Twilio Configuration: ${envVar}`,
+          status: 'pass',
+          message: `Twilio variable ${envVar} is configured`,
+          details: { variable: envVar, feature: 'sms' }
+        });
+      }
+    }
+  }
+
+  // TRUSTED_ORIGINS is truly optional - only check if set
+  const trustedOrigins = process.env.TRUSTED_ORIGINS;
+  if (trustedOrigins) {
+    results.push({
+      check: `Optional Configuration: TRUSTED_ORIGINS`,
+      status: 'pass',
+      message: `Additional trusted origins are configured`,
+      details: { variable: 'TRUSTED_ORIGINS', value: trustedOrigins.split(',').length + ' origins' }
+    });
   }
 
   // Validate DATABASE_URL format if provided
