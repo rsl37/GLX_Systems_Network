@@ -195,7 +195,16 @@ app.get("/api/health", (req, res) => {
 
 // Security middleware stack
 app.use(securityHeaders);
-app.use(cors(corsConfig));
+
+// Main CORS configuration - exclude auth routes as they have their own CORS with page verification
+app.use((req, res, next) => {
+  // Skip main CORS for auth routes - they use createAuthCorsConfig with page verification
+  if (req.path.startsWith('/api/auth')) {
+    return next();
+  }
+  cors(corsConfig)(req, res, next);
+});
+
 app.use(validateIP);
 app.use(requestLogger);
 
