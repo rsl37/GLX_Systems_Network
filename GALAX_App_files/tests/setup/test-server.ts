@@ -1,25 +1,16 @@
 import express from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { io as Client } from 'socket.io-client';
 
-// Test server setup utility
+// Test server setup utility (Socket.IO removed for Vercel compatibility)
 export class TestServer {
   public app: express.Application;
   public server: any;
-  public io: Server;
   public port: number;
   public baseUrl: string;
 
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
-    this.io = new Server(this.server, {
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
-    });
     this.port = 0; // Let system assign available port
     this.baseUrl = '';
   }
@@ -40,7 +31,6 @@ export class TestServer {
 
   async stop(): Promise<void> {
     return new Promise((resolve) => {
-      this.io.close();
       this.server.close(() => {
         resolve();
       });
@@ -53,12 +43,26 @@ export class TestServer {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
-  // Create test client for socket.io
-  createSocketClient() {
-    return Client(this.baseUrl, {
-      autoConnect: false,
-      transports: ['websocket']
-    });
+  // Create mock client for HTTP polling tests
+  createHttpClient() {
+    return {
+      baseUrl: this.baseUrl,
+      // Mock HTTP client for testing polling functionality
+      poll: async (endpoint: string) => {
+        const fetch = (await import('node-fetch')).default;
+        const response = await fetch(`${this.baseUrl}${endpoint}`);
+        return response.json();
+      },
+      post: async (endpoint: string, data: any) => {
+        const fetch = (await import('node-fetch')).default;
+        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        return response.json();
+      }
+    };
   }
 }
 

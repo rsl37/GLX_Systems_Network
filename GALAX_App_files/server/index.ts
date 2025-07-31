@@ -868,3 +868,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log("🚀 Starting server directly...");
   startServer(Number(process.env.PORT) || 3001);
 }
+
+// Export app for serverless functions (Vercel)
+export function createExpressApp() {
+  return app;
+}
