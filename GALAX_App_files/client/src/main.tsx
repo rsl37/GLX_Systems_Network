@@ -8,11 +8,22 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App';
 
 import './index.css';
+
+// Lazy load analytics for better initial load performance
+const AnalyticsWrapper = React.lazy(() => 
+  import('@vercel/analytics/react').then(module => ({
+    default: () => <module.Analytics />
+  }))
+);
+
+const SpeedInsightsWrapper = React.lazy(() => 
+  import('@vercel/speed-insights/react').then(module => ({
+    default: () => <module.SpeedInsights />
+  }))
+);
 
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -27,7 +38,9 @@ darkQuery.addEventListener('change', updateDarkClass);
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
-    <Analytics />
-    <SpeedInsights />
+    <React.Suspense fallback={null}>
+      <AnalyticsWrapper />
+      <SpeedInsightsWrapper />
+    </React.Suspense>
   </React.StrictMode>,
 );

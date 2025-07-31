@@ -26,7 +26,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Info
-} from 'lucide-react';
+} from '@/lib/icons';
 import { motion } from 'framer-motion';
 
 interface StablecoinMetrics {
