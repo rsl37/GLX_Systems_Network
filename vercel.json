@@ -1,14 +1,21 @@
 {
   "version": 2,
-  "buildCommand": "cd GALAX_App_files && npm install && mkdir -p data/logs && npm run build",
+  "buildCommand": "cd GALAX_App_files && npm install && npm run build",
   "outputDirectory": "GALAX_App_files/dist/public",
   "installCommand": "cd GALAX_App_files && npm install",
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
+  "env": {
+    "NODE_ENV": "production"
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -38,20 +45,6 @@
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https: wss: ws:; media-src 'self' blob:; object-src 'none'; frame-src 'none';"
         }
       ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "header",
-          "key": "x-forwarded-proto",
-          "value": "http"
-        }
-      ],
-      "destination": "https://galaxcivicnetwork.me/",
-      "permanent": true
     }
   ],
   "git": {

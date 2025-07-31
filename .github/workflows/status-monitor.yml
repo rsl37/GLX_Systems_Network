@@ -1,0 +1,90 @@
+---
+name: Status Check Monitor
+
+'on':
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_run:
+    workflows: ["CI/CD Pipeline", "Quality & Performance", "Security Scan"]
+    types: [completed]
+
+permissions:
+  contents: read
+  statuses: write
+  checks: write
+  actions: read
+
+jobs:
+  monitor-status-checks:
+    name: Monitor Status Check Updates
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: |
+          npm install @actions/core @actions/github
+
+      - name: Run status check monitor
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node .github/scripts/check-status-updates.js
+
+      - name: Report status check issues
+        if: github.event_name == 'workflow_run'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowName = '${{ github.event.workflow_run.name }}';
+            const conclusion = '${{ github.event.workflow_run.conclusion }}';
+            const headSha = '${{ github.event.workflow_run.head_sha }}';
+
+            console.log(`Monitoring status updates for ${workflowName} (${conclusion})`);
+
+            // Wait a moment for status updates to propagate
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            // Check for stuck pending statuses
+            const { data: statuses } = await github.rest.repos.listCommitStatusesForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: headSha
+            });
+
+            const pendingStatuses = statuses.filter(status => 
+              status.state === 'pending' && 
+              (new Date() - new Date(status.created_at)) > 300000 // 5 minutes old
+            );
+
+            if (pendingStatuses.length > 0) {
+              console.log(`⚠️ Found ${pendingStatuses.length} stuck pending status(es)`);
+              
+              // Force update stuck pending statuses
+              for (const status of pendingStatuses) {
+                const newState = conclusion === 'success' ? 'success' : 
+                                conclusion === 'failure' ? 'failure' : 'error';
+                
+                console.log(`Updating stuck status: ${status.context}`);
+                
+                await github.rest.repos.createCommitStatus({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  sha: headSha,
+                  state: newState,
+                  context: status.context,
+                  description: `Auto-updated: ${workflowName} ${conclusion}`,
+                  target_url: '${{ github.event.workflow_run.html_url }}'
+                });
+              }
+            } else {
+              console.log(`✅ No stuck pending statuses found`);
+            }

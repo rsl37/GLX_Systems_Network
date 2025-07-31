@@ -18,13 +18,24 @@ const require = createRequire(import.meta.url);
 const checkDiskSpace = require('check-disk-space').default;
 
 // Environment variables that are required for production deployment
-const REQUIRED_ENV_VARS = [
+const CRITICAL_ENV_VARS = [
   'NODE_ENV',
+  'JWT_SECRET',
+  'CLIENT_ORIGIN'    // CORS configuration
+];
+
+const RECOMMENDED_ENV_VARS = [
   'PORT',
   'DATA_DIRECTORY',
-  'JWT_SECRET',
   'JWT_REFRESH_SECRET',
   'ENCRYPTION_MASTER_KEY',
+  'DATABASE_URL',     // Production database connection
+  'SOCKET_PATH',      // Custom Socket.IO path
+  'FRONTEND_URL',     // Legacy frontend URL support
+  'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+];
+
+const OPTIONAL_ENV_VARS = [
   'SMTP_HOST',
   'SMTP_PORT', 
   'SMTP_USER',
@@ -32,12 +43,7 @@ const REQUIRED_ENV_VARS = [
   'SMTP_FROM',
   'TWILIO_SID',
   'TWILIO_AUTH_TOKEN',
-  'TWILIO_PHONE_NUMBER',
-  'CLIENT_ORIGIN',    // CORS configuration
-  'DATABASE_URL',     // Production database connection
-  'SOCKET_PATH',      // Custom Socket.IO path
-  'FRONTEND_URL',     // Legacy frontend URL support
-  'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+  'TWILIO_PHONE_NUMBER'
 ];
 
 // Top 50 SMTP hosts used globally
@@ -135,24 +141,65 @@ interface DeploymentReadinessReport {
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
   
-  // Check required environment variables
-  for (const envVar of REQUIRED_ENV_VARS) {
+  // Check critical environment variables (required for basic functionality)
+  for (const envVar of CRITICAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
       results.push({
-        check: `Environment Variable: ${envVar}`,
+        check: `Critical Environment Variable: ${envVar}`,
         status: 'fail',
-        message: `Required environment variable ${envVar} is not set`,
-        details: { variable: envVar, required: true }
+        message: `Critical environment variable ${envVar} is not set`,
+        details: { variable: envVar, required: true, category: 'critical' }
       });
     } else {
       results.push({
-        check: `Environment Variable: ${envVar}`,
+        check: `Critical Environment Variable: ${envVar}`,
         status: 'pass',
-        message: `Environment variable ${envVar} is properly set`,
-        details: { variable: envVar, length: value.length }
+        message: `Critical environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'critical' }
       });
     }
+  }
+
+  // Check recommended environment variables (should be set for production)
+  for (const envVar of RECOMMENDED_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Recommended Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Recommended environment variable ${envVar} is not set`,
+        details: { variable: envVar, required: false, category: 'recommended' }
+      });
+    } else {
+      results.push({
+        check: `Recommended Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Recommended environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'recommended' }
+      });
+    }
+  }
+
+  // Check optional environment variables (nice to have)
+  for (const envVar of OPTIONAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Optional Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Optional environment variable ${envVar} is not set - some features may be unavailable`,
+        details: { variable: envVar, required: false, category: 'optional' }
+      });
+    } else {
+      results.push({
+        check: `Optional Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Optional environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'optional' }
+      });
+    }
+  }
   }
 
   // Validate JWT_SECRET strength

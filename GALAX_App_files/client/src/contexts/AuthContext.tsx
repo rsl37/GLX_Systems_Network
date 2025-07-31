@@ -56,10 +56,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check if response is OK
     if (!response.ok) {
       let errorMessage = 'Request failed';
+      let debugInfo = {
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url,
+        headers: Object.fromEntries(response.headers.entries())
+      };
+      
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
+          debugInfo = { ...debugInfo, responseData: errorData };
+          
           if (errorData.error && typeof errorData.error === 'object') {
             errorMessage = errorData.error.message || errorMessage;
           } else if (errorData.error && typeof errorData.error === 'string') {
@@ -70,14 +79,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           // Non-JSON response, likely HTML error page
           const text = await response.text();
-          if (text.includes('<html') || text.includes('<!DOCTYPE')) {
-            throw new Error('Server returned an error page instead of JSON. Please check your API routes.');
+          if (process.env.NODE_ENV === 'development') {
+            debugInfo = { ...debugInfo, responseText: text.substring(0, 500) };
           }
-          errorMessage = text || errorMessage;
+          
+          if (text.includes('<html') || text.includes('<!DOCTYPE')) {
+            // This is common in Vercel when API routes aren't properly configured
+            if (response.status === 404) {
+              errorMessage = 'API endpoint not found. This might be a Vercel deployment configuration issue.';
+            } else if (response.status === 500) {
+              errorMessage = 'Server error. Please check your environment variables and API configuration.';
+            } else {
+              errorMessage = 'Server returned an error page instead of JSON. Please check your API routes.';
+            }
+          } else {
+            errorMessage = text || errorMessage;
+          }
         }
       } catch (parseError) {
         console.error('Error parsing error response:', parseError);
+        debugInfo = { ...debugInfo, parseError: parseError.message };
       }
+      
+      // Enhanced error logging for production debugging
+      console.error('🚨 API Request Failed:', {
+        errorMessage,
+        debugInfo,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        currentUrl: window.location.href
+      });
+      
+      // Provide more specific error messages based on common Vercel issues
+      if (response.status === 404) {
+        errorMessage = `API endpoint not found (${response.status}). Please check if your API routes are properly deployed.`;
+      } else if (response.status === 500) {
+        errorMessage = `Server error (${response.status}). Please check your environment variables and server configuration.`;
+      } else if (response.status === 502 || response.status === 503) {
+        errorMessage = `Service temporarily unavailable (${response.status}). Please try again in a moment.`;
+      } else if (response.status >= 400 && response.status < 500) {
+        errorMessage = errorMessage.includes('Request failed') 
+          ? `Client error (${response.status}): ${response.statusText || 'Bad Request'}`
+          : errorMessage;
+      }
+      
       throw new Error(errorMessage);
     }
 

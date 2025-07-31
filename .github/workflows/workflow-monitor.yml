@@ -4,14 +4,21 @@ name: Workflow Health Monitor
 'on':
   schedule:
     # Monitor workflow health daily at 6 AM UTC
-  - cron: '0 6 * * *'
+    - cron: '0 6 * * *'
   workflow_dispatch:
   workflow_run:
-  workflows:
-    - "CI/CD Pipeline"
-    - "Security Scan"
-    - "Quality & Performance"
-  types: [completed]
+    workflows:
+      - "CI/CD Pipeline"
+      - "Security Scan"
+      - "Quality & Performance"
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+  statuses: write
+  checks: write
+  actions: read
 
 jobs:
   monitor-workflows:
@@ -56,154 +63,159 @@ jobs:
                     per_page: 10
                   });
 
-              const recentRuns = runs.workflow_runs.slice(0, 5);
-              const failureCount = recentRuns.filter(run => run.conclusion === 'failure').length;
-              const successRate = ((recentRuns.length - failureCount) / recentRuns.length * 100).toFixed(1);
+                const recentRuns = runs.workflow_runs.slice(0, 5);
+                const failureCount = recentRuns.filter(run => run.conclusion === 'failure').length;
+                const successRate = ((recentRuns.length - failureCount) / recentRuns.length * 100).toFixed(1);
 
-              results.push({
-        name: workflowName,
-        successRate: successRate,
-        recentFailures: failureCount,
-        lastRun: recentRuns[0]?.created_at || 'Never',
-        status: failureCount > 2 ? '🔴 Critical' : failureCount > 0 ? '🟡 Warning' : '🟢 Healthy'
-              });
-            } catch (error) {
-              results.push({
-        name: workflowName,
-        status: '❓ Unknown',
-        error: error.message
-              });
+                results.push({
+                  name: workflowName,
+                  successRate: successRate,
+                  recentFailures: failureCount,
+                  lastRun: recentRuns[0]?.created_at || 'Never',
+                  status: failureCount > 2 ? '🔴 Critical' : failureCount > 0 ? '🟡 Warning' : '🟢 Healthy'
+                });
+              } catch (error) {
+                results.push({
+                  name: workflowName,
+                  status: '❓ Unknown',
+                  error: error.message
+                });
+              }
             }
-          }
 
-          return results;
+            return results;
 
-  - name: Generate health report
-    id: health-report
-    run: |
-        cat << 'EOF' > workflow-health-report.md
-        # 🔍 Workflow Health Report
+      - name: Generate health report
+        id: health-report
+        run: |
+          cat << 'EOF' > workflow-health-report.md
+          # 🔍 Workflow Health Report
 
-    **Generated:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          **Generated:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')
 
-        ## 📊 Workflow Status Overview
+          ## 📊 Workflow Status Overview
 
-        | Workflow | Status | Success Rate | Recent Failures | Last Run |
-    |----------|--------|--------------|-----------------|----------|
-        EOF
+          | Workflow | Status | Success Rate | Recent Failures | Last Run |
+          |----------|--------|--------------|-----------------|----------|
+          EOF
 
-        # Parse the JSON results and add to report
-        echo '${{ steps.workflow-status.outputs.result }}' | jq -r '.[] | "| \(.name) | \(.status) | \(.successRate // "N/A")% | \(.recentFailures // "N/A") | \(.lastRun // "N/A") |"' >> workflow-health-report.md
+          # Parse the JSON results and add to report
+          echo '${{ steps.workflow-status.outputs.result }}' | jq -r '.[] | \
+            "| \(.name) | \(.status) | \(.successRate // "N/A")% | \(.recentFailures // "N/A") | \(.lastRun // "N/A") |"' \
+            >> workflow-health-report.md
 
-        cat << 'EOF' >> workflow-health-report.md
+          cat << 'EOF' >> workflow-health-report.md
 
-        ## 🚨 Action Items
+          ## 🚨 Action Items
 
-    - [ ] Review failing workflows and address issues
-    - [ ] Check for dependency updates that might resolve issues
-    - [ ] Verify environment configurations are correct
-    - [ ] Monitor resource usage and timeout settings
+          - [ ] Review failing workflows and address issues
+          - [ ] Check for dependency updates that might resolve issues
+          - [ ] Verify environment configurations are correct
+          - [ ] Monitor resource usage and timeout settings
 
-        ## 📈 Health Metrics
+          ## 📈 Health Metrics
 
-    - **Overall System Health:** $([ $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length') -eq 0 ] && echo "🟢 Healthy" || echo "🔴 Needs Attention")
-    - **Critical Issues:** $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length')
-    - **Warnings:** $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🟡"))] | length')
+          - **Overall System Health:** $([ $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length') -eq 0 ] && echo "🟢 Healthy" ||\
+          echo "🔴 Needs Attention")
+          - **Critical Issues:** $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length')
+          - **Warnings:** $(echo '${{ steps.workflow-status.outputs.result }}' \
+            | jq '[.[] | select(.status | contains("🟡"))] | length')
 
-        EOF
+          EOF
 
-        # Set output for notifications
-        CRITICAL_COUNT=$(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length')
-        echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          # Set output for notifications
+          CRITICAL_COUNT=$(echo '${{ steps.workflow-status.outputs.result }}' \
+            | jq '[.[] | select(.status | contains("🔴"))] | length')
+          echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
 
-  - name: Create or update workflow health issue
-    uses: actions/github-script@v7
-    with:
-    script: |
-          const fs = require('fs');
-          const reportContent = fs.readFileSync('workflow-health-report.md', 'utf8');
-          const criticalCount = ${{ steps.health-report.outputs.critical_count }};
+      - name: Create or update workflow health issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportContent = fs.readFileSync('workflow-health-report.md', 'utf8');
+            const criticalCount = ${{ steps.health-report.outputs.critical_count }};
 
-          // Check for existing health issue
-      const { data: issues } = await github.rest.issues.listForRepo({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      labels: 'workflow-health',
-      state: 'open'
-          });
-
-          const title = `🔍 Workflow Health Monitor - ${new Date().toISOString().split('T')[0]}`;
-
-          if (criticalCount > 0) {
-            // Create or update issue if there are critical problems
-            if (issues.length > 0) {
-              await github.rest.issues.update({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: issues[0].number,
-        title: title,
-        body: reportContent,
-        labels: ['workflow-health', 'critical']
-              });
-            } else {
-              await github.rest.issues.create({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        title: title,
-        body: reportContent,
-        labels: ['workflow-health', 'critical'],
-        assignees: ['rsl37']
-              });
-            }
-          } else if (issues.length > 0) {
-            // Close existing issue if everything is healthy
-            await github.rest.issues.update({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: issues[0].number,
-        state: 'closed',
-        body: reportContent + '\n\n✅ **All workflows are now healthy. Closing this monitoring issue.**'
+            // Check for existing health issue
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'workflow-health',
+              state: 'open'
             });
-          }
 
-  - name: Upload health report
-    uses: actions/upload-artifact@v4
-    with:
-    name: workflow-health-report
-    path: workflow-health-report.md
-    retention-days: 30
+            const title = `🔍 Workflow Health Monitor - ${new Date().toISOString().split('T')[0]}`;
+
+            if (criticalCount > 0) {
+              // Create or update issue if there are critical problems
+              if (issues.length > 0) {
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issues[0].number,
+                  title: title,
+                  body: reportContent,
+                  labels: ['workflow-health', 'critical']
+                });
+              } else {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: reportContent,
+                  labels: ['workflow-health', 'critical'],
+                  assignees: ['rsl37']
+                });
+              }
+            } else if (issues.length > 0) {
+              // Close existing issue if everything is healthy
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                state: 'closed',
+                body: reportContent + '\n\n✅ **All workflows are now healthy. Closing this monitoring issue.**'
+              });
+            }
+
+      - name: Upload health report
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-health-report
+          path: workflow-health-report.md
+          retention-days: 30
 
   notify-failures:
-  name: Notify Critical Failures
-  runs-on: ubuntu-latest
-  if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure'
+    name: Notify Critical Failures
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure'
 
-  steps:
-  - name: Notify of workflow failure
-    uses: actions/github-script@v7
-    with:
-    script: |
-          const workflowName = '${{ github.event.workflow_run.name }}';
-          const runUrl = '${{ github.event.workflow_run.html_url }}';
-          const branch = '${{ github.event.workflow_run.head_branch }}';
-          const commit = '${{ github.event.workflow_run.head_sha }}';
+    steps:
+      - name: Notify of workflow failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowName = '${{ github.event.workflow_run.name }}';
+            const runUrl = '${{ github.event.workflow_run.html_url }}';
+            const branch = '${{ github.event.workflow_run.head_branch }}';
+            const commit = '${{ github.event.workflow_run.head_sha }}';
 
-          // Create an issue for workflow failure
-          await github.rest.issues.create({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      title: `🚨 Workflow Failure: ${workflowName}`,
-      body: `## 🚨 Workflow Failure Alert
+            // Create an issue for workflow failure
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Workflow Failure: ${workflowName}`,
+              body: `## 🚨 Workflow Failure Alert
 
-      **Workflow:** ${workflowName}
-      **Branch:** ${branch}
-      **Commit:** ${commit.substring(0, 7)}
-      **Run URL:** ${runUrl}
-      **Time:** ${new Date().toISOString()}
+            **Workflow:** ${workflowName}
+            **Branch:** ${branch}
+            **Commit:** ${commit.substring(0, 7)}
+            **Run URL:** ${runUrl}
+            **Time:** ${new Date().toISOString()}
 
             ### Action Required
 
-      Please investigate this workflow failure and take appropriate action:
+            Please investigate this workflow failure and take appropriate action:
 
             1. 🔍 Review the workflow logs
             2. 🐛 Identify the root cause
@@ -212,10 +224,83 @@ jobs:
 
             ### Quick Links
 
-      - [View Workflow Run](${runUrl})
-      - [Repository Actions](https://github.com/${context.repo.owner}/${context.repo.repo}/actions)
-      - [Workflow Health Dashboard](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/workflow-monitor.yml)
+            - [View Workflow Run](${runUrl})
+            - [Repository Actions](https://github.com/${context.repo.owner}/${context.repo.repo}/actions)
+            - [Workflow Health Dashboard](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/workflow-monitor.yml)
             `,
-      labels: ['workflow-failure', 'urgent'],
-      assignees: ['rsl37']
-          });
+              labels: ['workflow-failure', 'urgent'],
+              assignees: ['rsl37']
+            });
+
+  check-pending-status:
+    name: Check Pending Status Updates
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_run'
+    timeout-minutes: 5
+
+    steps:
+      - name: Check and update pending statuses
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowName = '${{ github.event.workflow_run.name }}';
+            const conclusion = '${{ github.event.workflow_run.conclusion }}';
+            const runUrl = '${{ github.event.workflow_run.html_url }}';
+            const headSha = '${{ github.event.workflow_run.head_sha }}';
+
+            console.log(`Checking status for workflow: ${workflowName}`);
+            console.log(`Conclusion: ${conclusion}`);
+            console.log(`Head SHA: ${headSha}`);
+
+            // Get current commit statuses
+            const { data: statuses } = await github.rest.repos.listCommitStatusesForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: headSha
+            });
+
+            console.log(`Found ${statuses.length} existing statuses for commit ${headSha}`);
+            
+            // Find pending statuses related to this workflow
+            const pendingStatuses = statuses.filter(status => 
+              status.state === 'pending' && 
+              status.context.includes(workflowName)
+            );
+
+            console.log(`Found ${pendingStatuses.length} pending statuses for ${workflowName}`);
+
+            // Update pending statuses to match workflow conclusion
+            for (const status of pendingStatuses) {
+              const newState = conclusion === 'success' ? 'success' : 
+                              conclusion === 'failure' ? 'failure' : 'error';
+              
+              console.log(`Updating status ${status.context} from pending to ${newState}`);
+              
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: headSha,
+                state: newState,
+                context: status.context,
+                description: `${workflowName}: ${conclusion}`,
+                target_url: runUrl
+              });
+            }
+
+            // If no pending statuses found, create a general workflow status
+            if (pendingStatuses.length === 0) {
+              console.log(`No pending statuses found, creating new status for ${workflowName}`);
+              
+              const newState = conclusion === 'success' ? 'success' : 
+                              conclusion === 'failure' ? 'failure' : 'error';
+              
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: headSha,
+                state: newState,
+                context: `${workflowName} / Complete`,
+                description: `${workflowName} workflow: ${conclusion}`,
+                target_url: runUrl
+              });
+            }

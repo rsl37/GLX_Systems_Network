@@ -8,22 +8,21 @@ name: Mark stale issues and pull requests
 
 'on':
   schedule:
-  - cron: '34 21 * * *'
+    - cron: '34 21 * * *'
 
 jobs:
   stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
 
-  runs-on: ubuntu-latest
-  permissions:
-    issues: write
-    pull-requests: write
-
-  steps:
-  - uses: actions/stale@v5
-    with:
-    repo-token: ${{ secrets.GITHUB_TOKEN }}
-    days-before-stale: 60
-    days-before-close: 7
+    steps:
+      - uses: actions/stale@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 60
+          days-before-close: 7
     stale-issue-message: >
           This issue has been automatically marked as stale because it has not had recent activity.
           If you believe this issue is still relevant, please add a comment or update it to prevent

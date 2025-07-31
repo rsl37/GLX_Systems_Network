@@ -1,0 +1,380 @@
+/*
+ * Copyright (c) 2025 GALAX Civic Networking App
+ * 
+ * This software is licensed under the PolyForm Shield License 1.0.0.
+ * For the full license text, see LICENSE file in the root directory 
+ * or visit https://polyformproject.org/licenses/shield/1.0.0
+ */
+
+/**
+ * Environment Variable Validation for Production Deployment
+ * 
+ * This module validates environment variables required for production deployment,
+ * particularly for Vercel deployments where missing or incorrect environment
+ * variables are a common cause of authentication failures.
+ */
+
+import { validateJWTSecret } from './config/security.js';
+
+interface EnvironmentValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  recommendations: string[];
+}
+
+interface RequiredEnvVar {
+  name: string;
+  required: boolean;
+  description: string;
+  validator?: (value: string) => boolean;
+  recommendation?: string;
+}
+
+const REQUIRED_ENV_VARS: RequiredEnvVar[] = [
+  {
+    name: 'NODE_ENV',
+    required: true,
+    description: 'Application environment (development, production, staging)',
+    validator: (value) => ['development', 'production', 'staging', 'test'].includes(value),
+    recommendation: 'Set to "production" for Vercel deployment'
+  },
+  {
+    name: 'JWT_SECRET',
+    required: true,
+    description: 'JWT signing secret (minimum 32 characters)',
+    validator: (value) => value.length >= 32,
+    recommendation: 'Generate with: openssl rand -hex 32'
+  },
+  {
+    name: 'JWT_REFRESH_SECRET',
+    required: false,
+    description: 'JWT refresh token secret',
+    validator: (value) => value.length >= 32,
+    recommendation: 'Generate with: openssl rand -hex 32'
+  },
+  {
+    name: 'CLIENT_ORIGIN',
+    required: true,
+    description: 'Primary CORS origin for the frontend',
+    validator: (value) => value.startsWith('https://') || process.env.NODE_ENV === 'development',
+    recommendation: 'Set to your Vercel app URL (e.g., https://your-app.vercel.app)'
+  },
+  {
+    name: 'DATABASE_URL',
+    required: false,
+    description: 'Database connection string (recommended for production)',
+    validator: (value) => value.includes('://'),
+    recommendation: 'Use PostgreSQL for production (Vercel Postgres)'
+  },
+  {
+    name: 'TRUSTED_ORIGINS',
+    required: false,
+    description: 'Additional trusted origins (comma-separated)',
+    recommendation: 'Include staging domains and custom domains'
+  },
+  {
+    name: 'SMTP_HOST',
+    required: false,
+    description: 'SMTP server for email functionality',
+    recommendation: 'Required for email verification and password reset'
+  },
+  {
+    name: 'SMTP_USER',
+    required: false,
+    description: 'SMTP username',
+    recommendation: 'Required if SMTP_HOST is set'
+  },
+  {
+    name: 'SMTP_PASS',
+    required: false,
+    description: 'SMTP password or app password',
+    recommendation: 'Use app-specific password for Gmail'
+  }
+];
+
+/**
+ * Validates environment variables for production deployment
+ */
+export function validateEnvironment(): EnvironmentValidationResult {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const recommendations: string[] = [];
+
+  console.log('🔍 Validating environment variables...');
+
+  for (const envVar of REQUIRED_ENV_VARS) {
+    const value = process.env[envVar.name];
+
+    if (envVar.required && !value) {
+      errors.push(`Missing required environment variable: ${envVar.name} - ${envVar.description}`);
+      if (envVar.recommendation) {
+        recommendations.push(`${envVar.name}: ${envVar.recommendation}`);
+      }
+      continue;
+    }
+
+    if (value && envVar.validator && !envVar.validator(value)) {
+      errors.push(`Invalid value for ${envVar.name}: ${envVar.description}`);
+      if (envVar.recommendation) {
+        recommendations.push(`${envVar.name}: ${envVar.recommendation}`);
+      }
+      continue;
+    }
+
+    if (!value && !envVar.required) {
+      warnings.push(`Optional environment variable not set: ${envVar.name} - ${envVar.description}`);
+      if (envVar.recommendation) {
+        recommendations.push(`${envVar.name}: ${envVar.recommendation}`);
+      }
+    }
+  }
+
+  // Validate authentication-specific configurations
+  validateAuthConfiguration(errors, warnings, recommendations);
+
+  // Validate CORS configuration
+  validateCorsConfiguration(errors, warnings, recommendations);
+
+  // Validate production-specific settings
+  if (process.env.NODE_ENV === 'production') {
+    validateProductionConfiguration(errors, warnings, recommendations);
+  }
+
+  const isValid = errors.length === 0;
+  
+  if (isValid) {
+    console.log('✅ Environment validation passed');
+  } else {
+    console.error('❌ Environment validation failed');
+    errors.forEach(error => console.error(`  - ${error}`));
+  }
+
+  if (warnings.length > 0) {
+    console.warn('⚠️ Environment warnings:');
+    warnings.forEach(warning => console.warn(`  - ${warning}`));
+  }
+
+  return {
+    isValid,
+    errors,
+    warnings,
+    recommendations
+  };
+}
+
+/**
+ * Validates authentication-specific configuration
+ */
+function validateAuthConfiguration(
+  errors: string[],
+  warnings: string[],
+  recommendations: string[]
+): void {
+  const jwtSecret = process.env.JWT_SECRET;
+  const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Validate JWT_SECRET with comprehensive security checks
+  if (jwtSecret) {
+    const validation = validateJWTSecret(jwtSecret, isProduction);
+    
+    if (!validation.isValid || validation.severity === 'critical') {
+      errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+      
+      if (validation.weakPatterns.length > 0) {
+        const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
+        const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+        
+        if (criticalPatterns.length > 0) {
+          errors.push(`JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+        }
+        if (highPatterns.length > 0) {
+          errors.push(`JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+        }
+      }
+      
+      recommendations.push('JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
+    } else if (validation.severity === 'warning') {
+      warnings.push(`JWT_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
+      recommendations.push('JWT_SECRET: Consider improving secret strength for enhanced security');
+    }
+  }
+
+  // Validate JWT_REFRESH_SECRET with the same comprehensive checks
+  if (jwtRefreshSecret) {
+    const validation = validateJWTSecret(jwtRefreshSecret, isProduction);
+    
+    if (!validation.isValid || validation.severity === 'critical') {
+      errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+      
+      if (validation.weakPatterns.length > 0) {
+        const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
+        const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+        
+        if (criticalPatterns.length > 0) {
+          errors.push(`JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+        }
+        if (highPatterns.length > 0) {
+          errors.push(`JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+        }
+      }
+      
+      recommendations.push('JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
+    } else if (validation.severity === 'warning') {
+      warnings.push(`JWT_REFRESH_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
+      recommendations.push('JWT_REFRESH_SECRET: Consider improving secret strength for enhanced security');
+    }
+  }
+
+  // Check if email configuration is complete
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+
+  if (smtpHost && (!smtpUser || !smtpPass)) {
+    warnings.push('Incomplete SMTP configuration - email functionality may not work');
+    recommendations.push('SMTP: Set SMTP_USER and SMTP_PASS if SMTP_HOST is configured');
+  }
+}
+
+/**
+ * Validates CORS configuration
+ */
+function validateCorsConfiguration(
+  errors: string[],
+  warnings: string[],
+  recommendations: string[]
+): void {
+  const clientOrigin = process.env.CLIENT_ORIGIN;
+  const frontendUrl = process.env.FRONTEND_URL;
+  const trustedOrigins = process.env.TRUSTED_ORIGINS;
+
+  if (!clientOrigin && !frontendUrl) {
+    errors.push('No CORS origin configured - API requests will fail');
+    recommendations.push('CORS: Set CLIENT_ORIGIN to your frontend URL');
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    if (clientOrigin && !clientOrigin.startsWith('https://')) {
+      errors.push('CLIENT_ORIGIN must use HTTPS in production');
+    }
+
+    if (frontendUrl && !frontendUrl.startsWith('https://')) {
+      warnings.push('FRONTEND_URL should use HTTPS in production');
+    }
+  }
+
+  if (!trustedOrigins) {
+    warnings.push('No additional trusted origins configured');
+    recommendations.push('TRUSTED_ORIGINS: Consider adding staging and custom domains');
+  }
+}
+
+/**
+ * Validates production-specific configuration
+ */
+function validateProductionConfiguration(
+  errors: string[],
+  warnings: string[],
+  recommendations: string[]
+): void {
+  // Check database configuration
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    warnings.push('No database URL configured - using SQLite fallback');
+    recommendations.push('DATABASE_URL: Use PostgreSQL for production (Vercel Postgres recommended)');
+  } else if (databaseUrl.includes('sqlite') || databaseUrl.includes('file:')) {
+    warnings.push('Using SQLite in production - PostgreSQL recommended');
+    recommendations.push('DATABASE_URL: Switch to PostgreSQL for better performance and reliability');
+  }
+
+  // Check security settings
+  if (process.env.ALLOW_NO_ORIGIN_IN_PRODUCTION === 'true') {
+    warnings.push('Allowing requests with no origin in production - security risk');
+    recommendations.push('ALLOW_NO_ORIGIN_IN_PRODUCTION: Set to false for better security');
+  }
+
+  // Check if common production URLs are configured
+  const hasVercelDomain = process.env.CLIENT_ORIGIN?.includes('vercel.app') || 
+                          process.env.FRONTEND_URL?.includes('vercel.app');
+  
+  if (!hasVercelDomain) {
+    warnings.push('No Vercel domain detected in CORS configuration');
+    recommendations.push('CORS: Ensure your Vercel app URL is included in CLIENT_ORIGIN or TRUSTED_ORIGINS');
+  }
+}
+
+/**
+ * Generates a deployment checklist based on validation results
+ */
+export function generateDeploymentChecklist(validationResult: EnvironmentValidationResult): string[] {
+  const checklist: string[] = [
+    '# Vercel Deployment Checklist',
+    '',
+    '## Environment Variables (Set in Vercel Dashboard)',
+    '1. Go to Project Settings → Environment Variables',
+    '2. Set the following required variables:',
+    ''
+  ];
+
+  REQUIRED_ENV_VARS.forEach(envVar => {
+    const status = process.env[envVar.name] ? '✅' : '❌';
+    checklist.push(`   ${status} ${envVar.name} - ${envVar.description}`);
+    if (envVar.recommendation) {
+      checklist.push(`      Recommendation: ${envVar.recommendation}`);
+    }
+    checklist.push('');
+  });
+
+  if (validationResult.errors.length > 0) {
+    checklist.push('## ❌ Issues to Fix:');
+    validationResult.errors.forEach(error => {
+      checklist.push(`- ${error}`);
+    });
+    checklist.push('');
+  }
+
+  if (validationResult.warnings.length > 0) {
+    checklist.push('## ⚠️ Warnings:');
+    validationResult.warnings.forEach(warning => {
+      checklist.push(`- ${warning}`);
+    });
+    checklist.push('');
+  }
+
+  if (validationResult.recommendations.length > 0) {
+    checklist.push('## 💡 Recommendations:');
+    validationResult.recommendations.forEach(rec => {
+      checklist.push(`- ${rec}`);
+    });
+    checklist.push('');
+  }
+
+  checklist.push('## Additional Steps:');
+  checklist.push('3. Redeploy after setting environment variables');
+  checklist.push('4. Test authentication flow in production');
+  checklist.push('5. Monitor logs for any remaining issues');
+
+  return checklist;
+}
+
+/**
+ * Logs environment validation results
+ */
+export function logEnvironmentStatus(): void {
+  const validation = validateEnvironment();
+  
+  if (!validation.isValid) {
+    console.error('\n🚨 DEPLOYMENT ERROR: Environment validation failed');
+    console.error('The following issues must be resolved before deployment:\n');
+    validation.errors.forEach(error => console.error(`❌ ${error}`));
+    
+    if (validation.recommendations.length > 0) {
+      console.log('\n💡 Recommendations:');
+      validation.recommendations.forEach(rec => console.log(`  - ${rec}`));
+    }
+    
+    console.log('\n📋 For a complete deployment checklist, run: npm run deployment:check');
+  }
+}

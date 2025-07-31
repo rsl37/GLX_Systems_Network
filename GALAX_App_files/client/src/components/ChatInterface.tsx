@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, MessageCircle } from 'lucide-react';
+import { Send, MessageCircle, Wifi, WifiOff } from 'lucide-react';
 
 interface Message {
   id: number;
@@ -32,29 +32,41 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const token = localStorage.getItem('token');
   const socketConnection = useSocket(token);
-  const socket = socketConnection?.socket;
+  const { health, sendMessage, joinRoom } = socketConnection;
 
   useEffect(() => {
     fetchMessages();
-  }, [helpRequestId]);
+    // Join the help request room for real-time updates
+    if (token) {
+      joinRoom(`help_request_${helpRequestId}`).catch(console.error);
+    }
+  }, [helpRequestId, token, joinRoom]);
 
   useEffect(() => {
-    if (socket) {
-      socket.emit('join_help_request', helpRequestId);
+    // Use messages from the socket connection if available
+    if (socketConnection.messages) {
+      const helpRequestMessages = socketConnection.messages.filter(
+        msg => msg.type === 'chat' && msg.roomId === `help_request_${helpRequestId}`
+      );
       
-      socket.on('new_message', (message: Message) => {
-        setMessages(prev => [...prev, message]);
-      });
-      
-      return () => {
-        socket.off('new_message');
-      };
+      if (helpRequestMessages.length > 0) {
+        const formattedMessages = helpRequestMessages.map(msg => ({
+          id: parseInt(msg.id),
+          message: msg.content,
+          sender: msg.username,
+          avatar: null, // Will be fetched from user data
+          timestamp: msg.timestamp
+        }));
+        
+        setMessages(formattedMessages);
+      }
     }
-  }, [socket, helpRequestId]);
+  }, [socketConnection.messages, helpRequestId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -84,17 +96,38 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
     }
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || !socket) return;
+    if (!newMessage.trim() || isSending) return;
 
-    socket.emit('send_message', {
-      helpRequestId,
-      message: newMessage.trim()
-    });
-
-    setNewMessage('');
+    setIsSending(true);
+    
+    try {
+      // Use the new Pusher-based sendMessage function
+      await sendMessage(newMessage.trim(), `help_request_${helpRequestId}`);
+      
+      // Optimistically add the message to the UI (Pusher will deliver the real message)
+      const optimisticMessage: Message = {
+        id: Date.now(), // Temporary ID
+        message: newMessage.trim(),
+        sender: currentUser,
+        avatar: null,
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, optimisticMessage]);
+      setNewMessage('');
+      
+      // No need to manually refresh - Pusher will deliver the real message
+      
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      // Show user-friendly error message
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const scrollToBottom = () => {
@@ -128,12 +161,34 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   return (
     <Card className="mt-4">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <MessageCircle className="h-5 w-5" />
-          Chat
+        <CardTitle className="flex items-center justify-between text-lg">
+          <div className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5" />
+            Chat
+          </div>
+          <div className="flex items-center gap-1 text-sm">
+            {health.connected ? (
+              <div className="flex items-center text-green-600">
+                <Wifi className="h-4 w-4" />
+                <span className="text-xs">Connected</span>
+              </div>
+            ) : (
+              <div className="flex items-center text-red-600">
+                <WifiOff className="h-4 w-4" />
+                <span className="text-xs">Connecting...</span>
+              </div>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Connection Status */}
+        {health.lastError && (
+          <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+            ⚠️ {health.lastError}
+          </div>
+        )}
+        
         {/* Messages */}
         <div className="h-64 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-lg">
           {messages.length === 0 ? (
@@ -197,11 +252,21 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
             className="flex-1"
+            disabled={isSending}
           />
-          <Button type="submit" disabled={!newMessage.trim()}>
-            <Send className="h-4 w-4" />
+          <Button type="submit" disabled={!newMessage.trim() || isSending}>
+            {isSending ? (
+              <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
           </Button>
         </form>
+        
+        {/* Pusher Status */}
+        <div className="text-xs text-gray-500 text-center">
+          Real-time via Pusher • {health.pusherState}
+        </div>
       </CardContent>
     </Card>
   );

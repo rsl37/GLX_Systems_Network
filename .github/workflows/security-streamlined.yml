@@ -2,133 +2,210 @@
 name: Security Scan
 
 'on':
-  push:
-  branches: [ main, develop, production ]
   pull_request:
-  branches: [ main, develop, production ]
+    branches: [main, develop, production]
   schedule:
     # Run security scans daily at 2 AM UTC
-  - cron: '0 2 * * *'
+    - cron: '0 2 * * *'
 
 permissions:
   contents: read
   security-events: write
   pull-requests: write
+  statuses: write
+  checks: write
 
 jobs:
   dependency-review:
-  name: Dependency Review
-  runs-on: ubuntu-latest
-  if: github.event_name == 'pull_request'
-  timeout-minutes: 10
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 10
 
-  steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Dependency Review
-    uses: actions/dependency-review-action@v4
-    with:
-    fail-on-severity: moderate
-    deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0, LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0, CDDL-1.0, CDDL-1.1
-    comment-summary-in-pr: always
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0,
+            LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
+            CDDL-1.0, CDDL-1.1
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
+            PolyForm-Shield-1.0.0, UNLICENSED
+          comment-summary-in-pr: always
+
   security-analysis:
-  name: Security Analysis
-  runs-on: ubuntu-latest
-  timeout-minutes: 20
-  permissions:
-    actions: read
-    contents: read
-    security-events: write
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
-  steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Initialize CodeQL
-    uses: github/codeql-action/init@v3
-    with:
-    languages: javascript
-    config-file: ./.github/codeql-config.yml
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          config-file: ./.github/codeql-config.yml
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-    node-version: '20.x'
-    cache: 'npm'
-    cache-dependency-path: './GALAX_App_files/package-lock.json'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
 
-  - name: Install dependencies
-    working-directory: ./GALAX_App_files
-    run: npm ci --prefer-offline --no-audit --no-fund
+      - name: Install dependencies
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
 
-  - name: Build for analysis
-    working-directory: ./GALAX_App_files
-    run: npm run build
+      - name: Build for analysis
+        working-directory: ./GALAX_App_files
+        run: npm run build
 
-  - name: Perform CodeQL Analysis
-    uses: github/codeql-action/analyze@v3
-    with:
-    category: "/language:javascript"
-    upload: true
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+          upload: true
 
   dependency-scan:
-  name: Dependency Security
-  runs-on: ubuntu-latest
-  timeout-minutes: 10
+    name: Dependency Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-  steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-    node-version: '20.x'
-    cache: 'npm'
-    cache-dependency-path: './GALAX_App_files/package-lock.json'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
 
-  - name: Install dependencies
-    working-directory: ./GALAX_App_files
-    run: npm ci --prefer-offline --no-audit --no-fund
+      - name: Install dependencies
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
 
-  - name: Run npm audit
-    working-directory: ./GALAX_App_files
-    run: |
-        echo "Running npm audit..."
-        npm audit --audit-level=moderate --json > audit-results.json || true
+      - name: Run npm audit
+        working-directory: ./GALAX_App_files
+        run: |
+          echo "Running npm audit..."
+          npm audit --audit-level=moderate --json > audit-results.json || true
 
-        # Create SARIF report from audit results
-        if [ -s audit-results.json ]; then
-          echo "Audit findings detected, processing results..."
-          cat audit-results.json
-        else
-          echo "No audit findings detected."
-        fi
+          # Create SARIF report from audit results
+          if [ -s audit-results.json ]; then
+            echo "Audit findings detected, processing results..."
+            cat audit-results.json
+          else
+            echo "No audit findings detected."
+          fi
 
-  - name: Upload audit results
-    uses: actions/upload-artifact@v4
-    if: always() && hashFiles('GALAX_App_files/audit-results.json') != ''
-    with:
-    name: npm-audit-results
-    path: ./GALAX_App_files/audit-results.json
-    retention-days: 7
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('GALAX_App_files/audit-results.json') != ''
+        with:
+          name: npm-audit-results
+          path: ./GALAX_App_files/audit-results.json
+          retention-days: 7
 
   secret-scan:
-  name: Secret Detection
-  runs-on: ubuntu-latest
-  timeout-minutes: 10
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-  steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
-    with:
-    fetch-depth: 0  # Need full history for secret scanning
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for secret scanning
 
-  - name: Run TruffleHog
-    uses: trufflesecurity/trufflehog@main
-    with:
-    path: ./
-    base: main
-    head: HEAD
-    extra_args: --only-verified
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --only-verified
+
+  # Status reporting job to ensure proper PR status updates
+  report-security-status:
+    name: Report Security Status
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [dependency-review, security-analysis, dependency-scan, secret-scan]
+    timeout-minutes: 5
+
+    steps:
+      - name: Report overall security status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'dependency-review', result: '${{ needs.dependency-review.result }}' },
+              { name: 'security-analysis', result: '${{ needs.security-analysis.result }}' },
+              { name: 'dependency-scan', result: '${{ needs.dependency-scan.result }}' },
+              { name: 'secret-scan', result: '${{ needs.secret-scan.result }}' }
+            ];
+
+            const failed = jobs.filter(job => job.result === 'failure');
+            const cancelled = jobs.filter(job => job.result === 'cancelled');
+            const skipped = jobs.filter(job => job.result === 'skipped');
+            const successful = jobs.filter(job => job.result === 'success');
+
+            let status = 'success';
+            let description = `All security checks passed (${successful.length}/${jobs.length})`;
+
+            if (failed.length > 0) {
+              status = 'failure';
+              description = `${failed.length} security check(s) failed: ${failed.map(j => j.name).join(', ')}`;
+            } else if (cancelled.length > 0) {
+              status = 'cancelled';
+              description = `${cancelled.length} security check(s) cancelled: ${cancelled.map(j => j.name).join(', ')}`;
+            }
+
+            console.log(`Security Scan Status: ${status}`);
+            console.log(`Description: ${description}`);
+            console.log('Job Results:', JSON.stringify(jobs, null, 2));
+
+            // Set overall workflow status
+            if (status === 'failure') {
+              core.setFailed(description);
+            }
+
+      - name: Update commit status for security checks
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'Dependency Review', result: '${{ needs.dependency-review.result }}' },
+              { name: 'Security Analysis', result: '${{ needs.security-analysis.result }}' },
+              { name: 'Dependency Security', result: '${{ needs.dependency-scan.result }}' },
+              { name: 'Secret Detection', result: '${{ needs.secret-scan.result }}' }
+            ];
+
+            for (const job of jobs) {
+              const state = job.result === 'success' ? 'success' : 
+                           job.result === 'failure' ? 'failure' : 'pending';
+              
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.payload.pull_request.head.sha,
+                state: state,
+                context: `Security Scan / ${job.name}`,
+                description: `${job.name}: ${job.result}`,
+                target_url: `${context.payload.pull_request.html_url}/checks`
+              });
+            }

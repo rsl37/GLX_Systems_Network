@@ -51,5 +51,10 @@ export {
   Zap,
   Lock,
   Phone,
-  Plus
+  Plus,
+  TrendingDown,
+  Minus,
+  BarChart3,
+  CheckCircle,
+  Info
 } from 'lucide-react';

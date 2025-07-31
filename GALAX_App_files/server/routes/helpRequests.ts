@@ -13,12 +13,11 @@ import { uploadLimiter } from '../middleware/rateLimiter.js';
 import { validateHelpRequest, validateFileUpload } from '../middleware/validation.js';
 import { fileUploadSecurity } from '../middleware/security.js';
 import { db } from '../database.js';
-import { Server } from 'socket.io';
 
 const router = Router();
 
 // Create help request
-export function createHelpRequestRoutes(upload: any, io: Server) {
+export function createHelpRequestRoutes(upload: any) {
   router.post(
     '/',
     authenticateToken,
@@ -86,17 +85,6 @@ export function createHelpRequestRoutes(upload: any, io: Server) {
           console.log('❌ Help request creation failed');
           return sendError(res, 'Failed to create help request', StatusCodes.INTERNAL_ERROR);
         }
-
-        // Broadcast new help request to all connected users
-        io.emit('new_help_request', {
-          id: helpRequest.id,
-          title,
-          category,
-          urgency,
-          latitude: latitude ? parseFloat(latitude) : null,
-          longitude: longitude ? parseFloat(longitude) : null,
-          created_at: helpRequest.created_at,
-        });
 
         console.log('✅ Help request created:', helpRequest.id);
         sendSuccess(res, { id: helpRequest.id });
@@ -301,13 +289,6 @@ export function createHelpRequestRoutes(upload: any, io: Server) {
           data: JSON.stringify({ helpRequestId, chatRoomId: chatRoom?.id }),
         })
         .execute();
-
-      // Broadcast status update
-      io.to(`help_request_${helpRequestId}`).emit('status_update', {
-        id: helpRequestId,
-        status: 'matched',
-        helper_id: userId,
-      });
 
       console.log('✅ Help offered successfully:', { helpRequestId, helperId: userId });
       sendSuccess(res, { chatRoomId: chatRoom?.id });

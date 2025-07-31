@@ -1,11 +1,13 @@
 {
   "name": "GALAX - Civic Network Platform",
   "short_name": "GALAX",
-  "description": "A civic engagement platform for community help and governance",
+  "description": "Lean civic engagement platform for community help and governance",
   "start_url": "/",
   "display": "standalone",
+  "scope": "/",
   "background_color": "#f5f5f5",
   "theme_color": "#B593EE",
+  "lang": "en-US",
   "icons": [
     {
       "src": "/favicon.ico",
@@ -15,9 +17,49 @@
     {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Help Requests",
+      "short_name": "Help",
+      "description": "View and respond to civic help requests",
+      "url": "/help",
+      "icons": [
+        {
+          "src": "/apple-touch-icon.png",
+          "sizes": "180x180"
+        }
+      ]
+    },
+    {
+      "name": "Crisis Response", 
+      "short_name": "Crisis",
+      "description": "Emergency civic response tools",
+      "url": "/crisis",
+      "icons": [
+        {
+          "src": "/apple-touch-icon.png",
+          "sizes": "180x180"
+        }
+      ]
+    },
+    {
+      "name": "Governance",
+      "short_name": "Vote",
+      "description": "Participate in civic governance",
+      "url": "/governance", 
+      "icons": [
+        {
+          "src": "/apple-touch-icon.png",
+          "sizes": "180x180"
+        }
+      ]
     }
   ],
   "categories": ["social", "government", "utilities"],
-  "orientation": "portrait-primary"
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
 }
