@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { useSocket } from '../hooks/useSocket';
+import { useWebSocket } from '../hooks/useWebSocket';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,26 +35,26 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const token = localStorage.getItem('token');
-  const socketConnection = useSocket(token);
-  const socket = socketConnection?.socket;
+  const webSocketConnection = useWebSocket(token);
 
   useEffect(() => {
     fetchMessages();
   }, [helpRequestId]);
 
   useEffect(() => {
-    if (socket) {
-      socket.emit('join_help_request', helpRequestId);
+    if (webSocketConnection && webSocketConnection.health.authenticated) {
+      webSocketConnection.joinHelpRequest(helpRequestId);
       
-      socket.on('new_message', (message: Message) => {
+      const unsubscribe = webSocketConnection.on('new_message', (message: Message) => {
         setMessages(prev => [...prev, message]);
       });
       
       return () => {
-        socket.off('new_message');
+        unsubscribe();
+        webSocketConnection.leaveHelpRequest(helpRequestId);
       };
     }
-  }, [socket, helpRequestId]);
+  }, [webSocketConnection, helpRequestId, webSocketConnection?.health.authenticated]);
 
   useEffect(() => {
     scrollToBottom();
@@ -87,13 +87,9 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || !socket) return;
+    if (!newMessage.trim() || !webSocketConnection || !webSocketConnection.health.authenticated) return;
 
-    socket.emit('send_message', {
-      helpRequestId,
-      message: newMessage.trim()
-    });
-
+    webSocketConnection.sendChatMessage(helpRequestId, newMessage.trim());
     setNewMessage('');
   };
 

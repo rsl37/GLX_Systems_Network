@@ -9,7 +9,7 @@
     "start": "npx tsx watch scripts/dev.ts",
     "test": "scripts/ensure-test-dirs.sh && vitest run",
     "test:api": "scripts/ensure-test-dirs.sh && vitest --run tests/api",
-    "test:socket": "scripts/ensure-test-dirs.sh && vitest --run tests/socket",
+    "test:socket": "scripts/ensure-test-dirs.sh && vitest --run tests/websocket",
     "test:watch": "scripts/ensure-test-dirs.sh && vitest",
     "test:coverage": "scripts/ensure-test-dirs.sh && vitest run --coverage",
     "test:ui": "scripts/ensure-test-dirs.sh && vitest --ui",
@@ -86,11 +86,10 @@
     "react-day-picker": "8.10.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^7.7.0",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
     "speakeasy": "^2.0.0",
     "tailwind-merge": "3.3.1",
-    "tailwindcss-animate": "1.0.7"
+    "tailwindcss-animate": "1.0.7",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
@@ -103,6 +102,7 @@
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@types/supertest": "^6.0.3",
+    "@types/ws": "^8.5.13",
     "@vitejs/plugin-react": "4.7.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",

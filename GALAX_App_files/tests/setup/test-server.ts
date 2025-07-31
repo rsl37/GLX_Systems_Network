@@ -1,25 +1,27 @@
 import express from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { io as Client } from 'socket.io-client';
+import { WebSocketServer } from 'ws';
+import WebSocketManager from '../../server/webSocketManager.js';
 
 // Test server setup utility
 export class TestServer {
   public app: express.Application;
   public server: any;
-  public io: Server;
+  public wss: WebSocketServer;
+  public webSocketManager: WebSocketManager;
   public port: number;
   public baseUrl: string;
 
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
-    this.io = new Server(this.server, {
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
+    this.wss = new WebSocketServer({ 
+      server: this.server,
+      path: '/websocket',
+      clientTracking: true,
+      maxPayload: 1e6, // 1MB
     });
+    this.webSocketManager = new WebSocketManager(this.wss);
     this.port = 0; // Let system assign available port
     this.baseUrl = '';
   }
@@ -39,8 +41,8 @@ export class TestServer {
   }
 
   async stop(): Promise<void> {
-    return new Promise((resolve) => {
-      this.io.close();
+    return new Promise(async (resolve) => {
+      await this.webSocketManager.shutdown();
       this.server.close(() => {
         resolve();
       });
@@ -53,12 +55,10 @@ export class TestServer {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
-  // Create test client for socket.io
-  createSocketClient() {
-    return Client(this.baseUrl, {
-      autoConnect: false,
-      transports: ['websocket']
-    });
+  // Create test WebSocket client
+  createWebSocketClient() {
+    const WebSocket = require('ws');
+    return new WebSocket(`ws://localhost:${this.port}/websocket`);
   }
 }
 

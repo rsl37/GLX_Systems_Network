@@ -35,7 +35,7 @@ const REQUIRED_ENV_VARS = [
   'TWILIO_PHONE_NUMBER',
   'CLIENT_ORIGIN',    // CORS configuration
   'DATABASE_URL',     // Production database connection
-  'SOCKET_PATH',      // Custom Socket.IO path
+  'WEBSOCKET_PATH',  // Custom WebSocket path
   'FRONTEND_URL',     // Legacy frontend URL support
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
 ];
@@ -428,22 +428,22 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
-  // Validate SOCKET_PATH format if provided
-  const socketPath = process.env.SOCKET_PATH;
-  if (socketPath) {
-    if (socketPath.startsWith('/') && socketPath.length > 1) {
+  // Validate WEBSOCKET_PATH format if provided
+  const websocketPath = process.env.WEBSOCKET_PATH;
+  if (websocketPath) {
+    if (websocketPath.startsWith('/') && websocketPath.length > 1) {
       results.push({
-        check: 'SOCKET_PATH Format',
+        check: 'WEBSOCKET_PATH Format',
         status: 'pass',
-        message: 'SOCKET_PATH is properly formatted',
-        details: { path: socketPath }
+        message: 'WEBSOCKET_PATH is properly formatted',
+        details: { path: websocketPath }
       });
     } else {
       results.push({
-        check: 'SOCKET_PATH Format',
+        check: 'WEBSOCKET_PATH Format',
         status: 'warning',
-        message: 'SOCKET_PATH should start with / and have additional path components',
-        details: { path: socketPath }
+        message: 'WEBSOCKET_PATH should start with / and have additional path components',
+        details: { path: websocketPath }
       });
     }
   }

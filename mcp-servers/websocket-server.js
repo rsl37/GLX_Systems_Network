@@ -8,7 +8,7 @@
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { createServer } = require('http');
-const { Server: SocketIOServer } = require('socket.io');
+const { WebSocketServer } = require('ws');
 const jwt = require('jsonwebtoken');
 
 class WebSocketMCPServer {
@@ -23,64 +23,182 @@ class WebSocketMCPServer {
     });
 
     this.httpServer = createServer();
-    this.io = new SocketIOServer(this.httpServer, {
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      }
+    this.wss = new WebSocketServer({ 
+      server: this.httpServer,
+      path: '/mcp-websocket',
+      clientTracking: true,
+      maxPayload: 1e6, // 1MB
+    });
     });
 
     this.activeUsers = new Map();
     this.chatRooms = new Map();
-    this.setupSocketHandlers();
+    this.connections = new Map();
+    this.setupWebSocketHandlers();
     this.setupTools();
   }
 
-  setupSocketHandlers() {
-    this.io.use((socket, next) => {
-      const token = socket.handshake.auth.token;
+  setupWebSocketHandlers() {
+    this.wss.on('connection', (ws, request) => {
+      const url = new URL(request.url, 'http://localhost');
+      const token = url.searchParams.get('token');
+      
+      let userId = null;
+      
       if (token) {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret');
-          socket.userId = decoded.userId;
-          next();
+          userId = decoded.userId;
         } catch (err) {
-          next(new Error('Authentication error'));
+          console.error('Authentication error:', err);
+          ws.close(1008, 'Authentication error');
+          return;
         }
       } else {
-        next(new Error('No token provided'));
+        console.error('No token provided');
+        ws.close(1008, 'No token provided');
+        return;
       }
-    });
 
-    this.io.on('connection', (socket) => {
-      console.log('User connected:', socket.userId);
-      this.activeUsers.set(socket.userId, socket.id);
+      const connectionId = this.generateConnectionId();
+      console.log('User connected:', userId, connectionId);
+      
+      this.activeUsers.set(userId, connectionId);
+      this.connections.set(connectionId, { ws, userId, rooms: new Set() });
 
-      socket.on('join_room', (room) => {
-        socket.join(room);
-        if (!this.chatRooms.has(room)) {
-          this.chatRooms.set(room, new Set());
-        }
-        this.chatRooms.get(room).add(socket.userId);
-      });
-
-      socket.on('leave_room', (room) => {
-        socket.leave(room);
-        if (this.chatRooms.has(room)) {
-          this.chatRooms.get(room).delete(socket.userId);
+      ws.on('message', (data) => {
+        try {
+          const message = JSON.parse(data.toString());
+          this.handleMessage(connectionId, message);
+        } catch (error) {
+          console.error('Failed to parse message:', error);
+          this.sendMessage(ws, { type: 'error', data: { message: 'Invalid message format' } });
         }
       });
 
-      socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.userId);
-        this.activeUsers.delete(socket.userId);
+      ws.on('close', () => {
+        console.log('User disconnected:', userId, connectionId);
+        this.activeUsers.delete(userId);
         
-        // Remove from all chat rooms
-        this.chatRooms.forEach((users, room) => {
-          users.delete(socket.userId);
-        });
+        const connection = this.connections.get(connectionId);
+        if (connection) {
+          // Remove from all chat rooms
+          connection.rooms.forEach(room => {
+            if (this.chatRooms.has(room)) {
+              this.chatRooms.get(room).delete(userId);
+              if (this.chatRooms.get(room).size === 0) {
+                this.chatRooms.delete(room);
+              }
+            }
+          });
+        }
+        
+        this.connections.delete(connectionId);
       });
+
+      ws.on('error', (error) => {
+        console.error('WebSocket error for user', userId, ':', error);
+      });
+
+      // Send connection confirmation
+      this.sendMessage(ws, { type: 'connected', data: { connectionId, userId } });
     });
+  }
+
+  generateConnectionId() {
+    return `mcp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  handleMessage(connectionId, message) {
+    const connection = this.connections.get(connectionId);
+    if (!connection) return;
+
+    const { ws, userId } = connection;
+
+    switch (message.type) {
+      case 'join_room':
+        this.handleJoinRoom(connectionId, message.data);
+        break;
+      case 'leave_room':
+        this.handleLeaveRoom(connectionId, message.data);
+        break;
+      case 'send_message':
+        this.handleSendMessage(connectionId, message.data);
+        break;
+      default:
+        this.sendMessage(ws, { type: 'error', data: { message: 'Unknown message type' } });
+    }
+  }
+
+  handleJoinRoom(connectionId, room) {
+    const connection = this.connections.get(connectionId);
+    if (!connection) return;
+
+    connection.rooms.add(room);
+    
+    if (!this.chatRooms.has(room)) {
+      this.chatRooms.set(room, new Set());
+    }
+    this.chatRooms.get(room).add(connection.userId);
+    
+    this.sendMessage(connection.ws, { type: 'room_joined', data: { room } });
+  }
+
+  handleLeaveRoom(connectionId, room) {
+    const connection = this.connections.get(connectionId);
+    if (!connection) return;
+
+    connection.rooms.delete(room);
+    
+    if (this.chatRooms.has(room)) {
+      this.chatRooms.get(room).delete(connection.userId);
+      if (this.chatRooms.get(room).size === 0) {
+        this.chatRooms.delete(room);
+      }
+    }
+    
+    this.sendMessage(connection.ws, { type: 'room_left', data: { room } });
+  }
+
+  handleSendMessage(connectionId, data) {
+    const connection = this.connections.get(connectionId);
+    if (!connection) return;
+
+    const { room, message } = data;
+    
+    if (!room || !message) {
+      this.sendMessage(connection.ws, { type: 'error', data: { message: 'Room and message are required' } });
+      return;
+    }
+
+    // Broadcast to all users in the room
+    if (this.chatRooms.has(room)) {
+      const messageData = {
+        type: 'new_message',
+        data: {
+          room,
+          message,
+          sender: connection.userId,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      this.chatRooms.get(room).forEach(userId => {
+        const userConnectionId = this.activeUsers.get(userId);
+        if (userConnectionId) {
+          const userConnection = this.connections.get(userConnectionId);
+          if (userConnection) {
+            this.sendMessage(userConnection.ws, messageData);
+          }
+        }
+      });
+    }
+  }
+
+  sendMessage(ws, message) {
+    if (ws.readyState === 1) { // WebSocket.OPEN
+      ws.send(JSON.stringify(message));
+    }
   }
 
   setupTools() {
@@ -198,7 +316,23 @@ class WebSocketMCPServer {
       room
     };
 
-    this.io.to(room).emit('new_message', messageData);
+    // Broadcast to all users in the room
+    if (this.chatRooms.has(room)) {
+      const broadcastMessage = {
+        type: 'new_message',
+        data: messageData
+      };
+
+      this.chatRooms.get(room).forEach(userId => {
+        const userConnectionId = this.activeUsers.get(userId);
+        if (userConnectionId) {
+          const userConnection = this.connections.get(userConnectionId);
+          if (userConnection) {
+            this.sendMessage(userConnection.ws, broadcastMessage);
+          }
+        }
+      });
+    }
     
     return {
       content: [{
@@ -209,11 +343,11 @@ class WebSocketMCPServer {
   }
 
   async joinChatRoom({ room, userId }) {
-    const socketId = this.activeUsers.get(userId);
-    if (socketId) {
-      const socket = this.io.sockets.sockets.get(socketId);
-      if (socket) {
-        socket.join(room);
+    const connectionId = this.activeUsers.get(userId);
+    if (connectionId) {
+      const connection = this.connections.get(connectionId);
+      if (connection) {
+        connection.rooms.add(room);
         if (!this.chatRooms.has(room)) {
           this.chatRooms.set(room, new Set());
         }
@@ -230,13 +364,16 @@ class WebSocketMCPServer {
   }
 
   async leaveChatRoom({ room, userId }) {
-    const socketId = this.activeUsers.get(userId);
-    if (socketId) {
-      const socket = this.io.sockets.sockets.get(socketId);
-      if (socket) {
-        socket.leave(room);
+    const connectionId = this.activeUsers.get(userId);
+    if (connectionId) {
+      const connection = this.connections.get(connectionId);
+      if (connection) {
+        connection.rooms.delete(room);
         if (this.chatRooms.has(room)) {
           this.chatRooms.get(room).delete(userId);
+          if (this.chatRooms.get(room).size === 0) {
+            this.chatRooms.delete(room);
+          }
         }
       }
     }
@@ -274,7 +411,15 @@ class WebSocketMCPServer {
       timestamp: new Date().toISOString()
     };
 
-    this.io.emit('civic_notification', notification);
+    // Broadcast to all connected users
+    const broadcastMessage = {
+      type: 'civic_notification',
+      data: notification
+    };
+
+    this.connections.forEach(connection => {
+      this.sendMessage(connection.ws, broadcastMessage);
+    });
 
     return {
       content: [{

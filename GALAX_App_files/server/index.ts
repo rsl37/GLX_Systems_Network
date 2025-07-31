@@ -8,7 +8,7 @@
 
 import express from "express";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import { WebSocketServer } from "ws";
 import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
@@ -60,8 +60,8 @@ import {
   validateJsonPayload,
 } from "./middleware/validation.js";
 
-// Import socket manager
-import SocketManager from "./socketManager.js";
+// Import WebSocket manager
+import WebSocketManager from "./webSocketManager.js";
 
 // Import stablecoin functionality
 import stablecoinRoutes from "./stablecoin/routes.js";
@@ -117,27 +117,18 @@ console.log("Data directory:", process.env.DATA_DIRECTORY || "./data");
 const app = express();
 const server = createServer(app);
 
-// Socket.IO configuration with custom path support
-const socketPath = process.env.SOCKET_PATH || "/socket.io";
-console.log("🔌 Socket.IO path:", socketPath);
+// WebSocket Server configuration
+console.log("🔌 Setting up WebSocket server...");
 
-const io = new Server(server, {
-  path: socketPath,
-  cors: {
-    origin:
-      process.env.NODE_ENV === "production"
-        ? process.env.CLIENT_ORIGIN || false
-        : "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-  pingTimeout: 60000,
-  pingInterval: 25000,
-  maxHttpBufferSize: 1e6, // 1MB
-  allowEIO3: true,
+const wss = new WebSocketServer({ 
+  server,
+  path: '/websocket',
+  clientTracking: true,
+  maxPayload: 1e6, // 1MB
 });
 
-// Initialize socket manager
-const socketManager = new SocketManager(io);
+// Initialize WebSocket manager
+const webSocketManager = new WebSocketManager(wss);
 
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({
@@ -182,14 +173,14 @@ const upload = multer({
 // Health check endpoint (no security restrictions for monitoring)
 app.get("/api/health", (req, res) => {
   console.log("🏥 Health check requested");
-  const socketHealth = socketManager.getHealthStatus();
+  const webSocketHealth = webSocketManager.getHealthStatus();
 
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     dataDirectory: process.env.DATA_DIRECTORY || "./data",
-    sockets: socketHealth,
+    websockets: webSocketHealth,
   });
 });
 
@@ -259,9 +250,9 @@ app.use("/api", validateApiVersion);
 app.use("/api", apiLimiter);
 
 // System endpoints
-app.get("/api/socket/health", (req, res) => {
-  const health = socketManager.getHealthStatus();
-  console.log("🔌 Socket health check:", health);
+app.get("/api/websocket/health", (req, res) => {
+  const health = webSocketManager.getHealthStatus();
+  console.log("🔌 WebSocket health check:", health);
   res.json({ success: true, data: health });
 });
 
@@ -415,7 +406,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/proposals", governanceRoutes);
 app.use("/api/crisis-alerts", crisisRoutes);
 app.use("/api", miscRoutes);
-app.use("/api/help-requests", createHelpRequestRoutes(upload, io));
+app.use("/api/help-requests", createHelpRequestRoutes(upload, webSocketManager));
 
 // Legacy KYC endpoints (keeping for compatibility)
 app.post(
@@ -598,13 +589,13 @@ app.use(errorHandler);
 // Graceful shutdown handling
 process.on("SIGTERM", async () => {
   console.log("🔌 SIGTERM received, shutting down gracefully...");
-  await socketManager.shutdown();
+  await webSocketManager.shutdown();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
   console.log("🔌 SIGINT received, shutting down gracefully...");
-  await socketManager.shutdown();
+  await webSocketManager.shutdown();
   process.exit(0);
 });
 
@@ -676,10 +667,10 @@ export async function startServer(port: number) {
     }
 
     server.listen(port, () => {
-      console.log(`✅ API Server with Socket.IO running on port ${port}`);
+      console.log(`✅ API Server with WebSocket running on port ${port}`);
       console.log(`🌍 Health check: http://localhost:${port}/api/health`);
       console.log(`🗄️ Database test: http://localhost:${port}/api/test-db`);
-      console.log(`🔌 Socket health: http://localhost:${port}/api/socket/health`);
+      console.log(`🔌 WebSocket health: http://localhost:${port}/api/websocket/health`);
       console.log(`💰 Stablecoin API: http://localhost:${port}/api/stablecoin/status`);
       console.log(`🛡️ Security Admin: http://localhost:${port}/api/admin/security/status`);
       console.log(`🔒 Security: COMPREHENSIVE PROTECTION ACTIVE`);
@@ -692,7 +683,7 @@ export async function startServer(port: number) {
       console.log(`   🧠 Behavioral Analysis: ENABLED`);
       console.log(`   🔐 Rate Limiting & Account Lockout: ENABLED`);
       console.log(`🚀 Performance: Database indexes and connection optimizations active`);
-      console.log(`🧹 Socket management: Enhanced with connection cleanup and memory management`);
+      console.log(`🧹 WebSocket management: Enhanced with connection cleanup and memory management`);
     });
   } catch (err) {
     console.error("💥 Failed to start server:", err);

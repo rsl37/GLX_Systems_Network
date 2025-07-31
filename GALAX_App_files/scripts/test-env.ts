@@ -24,7 +24,7 @@ console.log("🧪 Testing Environment Variables Configuration\n");
 
 const requiredVars = ["NODE_ENV", "PORT", "JWT_SECRET"];
 
-const recommendedVars = ["CLIENT_ORIGIN", "DATABASE_URL", "SOCKET_PATH"];
+const recommendedVars = ["CLIENT_ORIGIN", "DATABASE_URL", "WEBSOCKET_PATH"];
 
 const optionalVars = ["SMTP_HOST", "SMTP_PORT", "TWILIO_SID"];
 
@@ -132,18 +132,18 @@ if (databaseUrl) {
   console.log(`   ➖ DATABASE_URL: Not set (will use SQLite fallback)`);
 }
 
-// SOCKET_PATH validation
-const socketPath = process.env.SOCKET_PATH;
-if (socketPath) {
-  if (socketPath.startsWith("/") && socketPath.length > 1) {
-    console.log(`   ✅ SOCKET_PATH: Valid path "${socketPath}"`);
+// WEBSOCKET_PATH validation
+const websocketPath = process.env.WEBSOCKET_PATH;
+if (websocketPath) {
+  if (websocketPath.startsWith("/") && websocketPath.length > 1) {
+    console.log(`   ✅ WEBSOCKET_PATH: Valid path "${websocketPath}"`);
   } else {
     console.log(
-      `   ⚠️ SOCKET_PATH: Should start with / and have additional components (current: "${socketPath}")`,
+      `   ⚠️ WEBSOCKET_PATH: Should start with / and have additional components (current: "${websocketPath}")`,
     );
   }
 } else {
-  console.log(`   ➖ SOCKET_PATH: Not set (will use default /socket.io)`);
+  console.log(`   ➖ WEBSOCKET_PATH: Not set (will use default /websocket)`);
 }
 
 console.log("\n📋 Summary:");
