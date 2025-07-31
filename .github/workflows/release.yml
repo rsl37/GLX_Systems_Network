@@ -54,7 +54,8 @@ jobs:
         id: release-type
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "type=${{ github.event.inputs.release_type }}" >> $GITHUB_OUTPUT
+            echo "type=${{ github.event.inputs.release_type }}" \
+              >> $GITHUB_OUTPUT
           else
             # Auto-determine based on commit messages
             if git log --format=%B -n 20 | grep -q "BREAKING CHANGE"; then
@@ -82,7 +83,8 @@ jobs:
           fi
 
           # Process commits
-          git log $RANGE --pretty=format:"- %s (%h)" --reverse >> CHANGELOG_TEMP.md
+          git log $RANGE --pretty=format:"- %s (%h)" --reverse \
+            >> CHANGELOG_TEMP.md
 
           # Set output for use in release
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
@@ -93,7 +95,8 @@ jobs:
         working-directory: ./GALAX_App_files
         run: |
           # Update version based on release type
-          npm version ${{ steps.release-type.outputs.type }} --no-git-tag-version
+          npm version ${{ steps.release-type.outputs.type }} \
+            --no-git-tag-version
 
           # Get new version
           NEW_VERSION=$(node -p "require('./package.json').version")
@@ -130,7 +133,8 @@ jobs:
 
             ## Deployment
 
-            This release has been automatically deployed to the production environment.
+            This release has been automatically deployed to the production
+            environment.
 
             **Live Demo:** [galaxcivicnetwork.me](https://galaxcivicnetwork.me)
     draft: false
@@ -144,62 +148,64 @@ jobs:
   if: github.ref == 'refs/heads/main'
 
   steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-    node-version: '20.x'
-    cache: 'npm'
-    cache-dependency-path: './GALAX_App_files/package-lock.json'
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: './GALAX_App_files/package-lock.json'
 
-  - name: Install dependencies
-    working-directory: ./GALAX_App_files
-    run: npm ci --prefer-offline --no-audit --no-fund
+    - name: Install dependencies
+      working-directory: ./GALAX_App_files
+      run: npm ci --prefer-offline --no-audit --no-fund
 
-  - name: Build for production
-    working-directory: ./GALAX_App_files
-    run: npm run build
+    - name: Build for production
+      working-directory: ./GALAX_App_files
+      run: npm run build
 
-  - name: Deploy to Vercel Production
-    uses: amondnet/vercel-action@v25
-    if: env.VERCEL_TOKEN != ''
-    with:
-    vercel-token: ${{ secrets.VERCEL_TOKEN }}
-    vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-    vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-    working-directory: ./GALAX_App_files
-    vercel-args: '--prod'
-    env:
-    VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    - name: Deploy to Vercel Production
+      uses: amondnet/vercel-action@v25
+      if: env.VERCEL_TOKEN != ''
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./GALAX_App_files
+        vercel-args: '--prod'
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-  - name: Post-deployment health check
-    run: |
-      echo "Waiting for deployment to be available..."
-      sleep 30
+    - name: Post-deployment health check
+      run: |
+        echo "Waiting for deployment to be available..."
+        sleep 30
 
-      # Health check
-      if curl -f -s https://galaxcivicnetwork.me/health 2>/dev/null; then
-        echo "✅ Production deployment successful"
-      elif curl -f -s https://galaxcivicnetwork.me 2>/dev/null; then
-        echo "✅ Production deployment successful (main page)"
-      else
-        echo "⚠️ Production deployment may have issues"
-        exit 1
-      fi
+        # Health check
+        if curl -f -s https://galaxcivicnetwork.me/health 2>/dev/null; then
+          echo "✅ Production deployment successful"
+        elif curl -f -s https://galaxcivicnetwork.me 2>/dev/null; then
+          echo "✅ Production deployment successful (main page)"
+        else
+          echo "⚠️ Production deployment may have issues"
+          exit 1
+        fi
 
-  - name: Notify deployment status
-    if: always()
-    uses: actions/github-script@v7
-    with:
-      script: |
-        const status = process.env.DEPLOYMENT_STATUS || 'unknown';
-        const version = process.env.NEW_VERSION || 'unknown';
+    - name: Notify deployment status
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const status = process.env.DEPLOYMENT_STATUS || 'unknown';
+          const version = process.env.NEW_VERSION || 'unknown';
 
-        await github.rest.repos.createCommitComment({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          commit_sha: context.sha,
-          body: `🚀 **Production Deployment**\n\n✅ Version ${version} successfully deployed to production!\n\n**Live URL:** https://galaxcivicnetwork.me`
-        });
+          await github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+            body: `🚀 **Production Deployment**\n\n✅ Version ${version} \
+              successfully deployed to production!\n\n**Live URL:** \
+              https://galaxcivicnetwork.me`
+          });

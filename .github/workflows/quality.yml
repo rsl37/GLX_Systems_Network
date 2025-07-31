@@ -76,7 +76,8 @@ jobs:
           echo "APP_PID=$APP_PID" >> $GITHUB_ENV
 
           # Wait for app to start
-          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep \
+            2; done'
 
       - name: Run accessibility tests
         working-directory: ./GALAX_App_files
@@ -145,7 +146,8 @@ jobs:
             # Check for oversized bundles
             LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k)
             if [ -n "$LARGE_FILES" ]; then
-              echo "⚠️ Large bundle files detected (>500KB)" >> $GITHUB_STEP_SUMMARY
+              echo "⚠️ Large bundle files detected (>500KB)" \
+            >> $GITHUB_STEP_SUMMARY
             fi
           fi
 

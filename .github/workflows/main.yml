@@ -36,7 +36,10 @@ jobs:
       - name: Generate cache key
         id: cache-key
         run: |
-          echo "key=${{ env.CACHE_VERSION }}-${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('GALAX_App_files/package-lock.json') }}" >> $GITHUB_OUTPUT
+          echo "key=${{ env.CACHE_VERSION }}-${{ runner.os }}-node-\
+            ${{ env.NODE_VERSION }}-\
+            ${{ hashFiles('GALAX_App_files/package-lock.json') }}" \
+            >> $GITHUB_OUTPUT
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -120,7 +123,8 @@ jobs:
         run: |
           # Check Prettier formatting if config exists
           if [ -f ".prettierrc" ] || [ -f ".prettierrc.json" ] || [ -f "prettier.config.js" ]; then
-            npx prettier --check . || echo "Formatting issues found - run 'npm run format' to fix"
+            npx prettier --check . || echo "Formatting issues found - run 'npm \
+              run format' to fix"
           else
             echo "No Prettier config found, skipping format check"
           fi

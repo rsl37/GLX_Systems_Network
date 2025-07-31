@@ -43,17 +43,20 @@ jobs:
 
           # Run health monitoring if scripts exist
           if [ -f "scripts/health-location-status-logger.ts" ]; then
-            timeout 60 npx tsx scripts/health-location-status-logger.ts || echo "Health logging completed with warnings"
+            timeout 60 npx tsx scripts/health-location-status-logger.ts \
+              || echo "Health logging completed with warnings"
           fi
 
           if [ -f "scripts/branch-commit-analyzer.ts" ]; then
-            timeout 60 npx tsx scripts/branch-commit-analyzer.ts || echo "Branch analysis completed with warnings"
+            timeout 60 npx tsx scripts/branch-commit-analyzer.ts \
+              || echo "Branch analysis completed with warnings"
           fi
 
           # Basic session management check
           echo "Checking for session management issues..."
           if [ -f ".env.example" ]; then
-            grep -E "(JWT_SECRET|SESSION_SECRET|AUTH)" .env.example || echo "No session secrets configured"
+            grep -E "(JWT_SECRET|SESSION_SECRET|AUTH)" .env.example \
+              || echo "No session secrets configured"
           fi
 
           echo "✅ Health monitoring completed"

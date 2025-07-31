@@ -1,5 +1,6 @@
+---
 name: Copilot MCP Setup
-on:
+'on':
   workflow_dispatch:
     inputs:
       setup_type:
@@ -31,7 +32,9 @@ jobs:
           cache-dependency-path: 'GALAX_App_files/package-lock.json'
 
       - name: Install MCP server dependencies
-        if: ${{ github.event.inputs.setup_type == 'full' || github.event.inputs.setup_type == 'dependencies_only' }}
+        if: >-
+          ${{ github.event.inputs.setup_type == 'full' ||
+          github.event.inputs.setup_type == 'dependencies_only' }}
         run: |
           echo "Installing MCP server dependencies..."
           npm install -g @cablate/mcp-google-map
@@ -42,18 +45,20 @@ jobs:
           npm install -g @modelcontextprotocol/server-analytics
 
       - name: Setup custom MCP servers
-        if: ${{ github.event.inputs.setup_type == 'full' || github.event.inputs.setup_type == 'servers_only' }}
+        if: >-
+          ${{ github.event.inputs.setup_type == 'full' ||
+          github.event.inputs.setup_type == 'servers_only' }}
         run: |
           echo "Setting up custom MCP servers..."
-          
+
           # Create mcp-servers directory if it doesn't exist
           mkdir -p mcp-servers
-          
+
           # Install dependencies for custom servers
           cd mcp-servers
           npm init -y
           npm install @modelcontextprotocol/sdk socket.io jsonwebtoken
-          
+
           # Make server files executable
           chmod +x websocket-server.js
           chmod +x civic-server.js
@@ -64,18 +69,21 @@ jobs:
         if: ${{ github.event.inputs.setup_type == 'full' }}
         run: |
           echo "Validating MCP configuration..."
-          
+
           # Check if mcp-config.json exists and is valid JSON
           if [ -f "mcp-config.json" ]; then
             echo "✓ MCP configuration file found"
-            node -e "JSON.parse(require('fs').readFileSync('mcp-config.json', 'utf8')); console.log('✓ MCP configuration is valid JSON')"
+            node -e "JSON.parse(require('fs').readFileSync(
+              'mcp-config.json', 'utf8'));
+              console.log('✓ MCP configuration is valid JSON')"
           else
             echo "✗ MCP configuration file not found"
             exit 1
           fi
-          
+
           # Check if custom server files exist
-          for server in websocket-server.js civic-server.js auth-server.js social-good-server.js; do
+          for server in websocket-server.js civic-server.js \
+            auth-server.js social-good-server.js; do
             if [ -f "mcp-servers/$server" ]; then
               echo "✓ Custom server found: $server"
             else
@@ -88,11 +96,12 @@ jobs:
         if: ${{ github.event.inputs.setup_type == 'full' }}
         run: |
           echo "Testing custom MCP servers..."
-          
+
           cd mcp-servers
-          
+
           # Basic syntax check for each server
-          for server in websocket-server.js civic-server.js auth-server.js social-good-server.js; do
+          for server in websocket-server.js civic-server.js \
+            auth-server.js social-good-server.js; do
             echo "Testing syntax for $server..."
             node -c "$server"
             echo "✓ $server syntax is valid"
@@ -104,30 +113,44 @@ jobs:
           echo "# MCP Setup Report" > mcp-setup-report.md
           echo "" >> mcp-setup-report.md
           echo "**Setup Date:** $(date)" >> mcp-setup-report.md
-          echo "**Setup Type:** ${{ github.event.inputs.setup_type }}" >> mcp-setup-report.md
+          echo "**Setup Type:** ${{ github.event.inputs.setup_type }}" \
+            >> mcp-setup-report.md
           echo "" >> mcp-setup-report.md
           echo "## Configuration Files" >> mcp-setup-report.md
           echo "- [x] mcp-config.json" >> mcp-setup-report.md
           echo "" >> mcp-setup-report.md
           echo "## Custom MCP Servers" >> mcp-setup-report.md
-          echo "- [x] WebSocket Server (websocket-server.js)" >> mcp-setup-report.md
-          echo "- [x] Civic Data Server (civic-server.js)" >> mcp-setup-report.md
-          echo "- [x] Authentication Server (auth-server.js)" >> mcp-setup-report.md
-          echo "- [x] Social Good Server (social-good-server.js)" >> mcp-setup-report.md
+          echo "- [x] WebSocket Server (websocket-server.js)" \
+            >> mcp-setup-report.md
+          echo "- [x] Civic Data Server (civic-server.js)" \
+            >> mcp-setup-report.md
+          echo "- [x] Authentication Server (auth-server.js)" \
+            >> mcp-setup-report.md
+          echo "- [x] Social Good Server (social-good-server.js)" \
+            >> mcp-setup-report.md
           echo "" >> mcp-setup-report.md
           echo "## External MCP Servers" >> mcp-setup-report.md
-          echo "- [x] Google Maps MCP (@cablate/mcp-google-map)" >> mcp-setup-report.md
-          echo "- [x] Web3 Blockchain MCP (@strangelove-ventures/web3-mcp)" >> mcp-setup-report.md
-          echo "- [x] GitHub Integration MCP (@modelcontextprotocol/server-github)" >> mcp-setup-report.md
-          echo "- [x] PostgreSQL MCP (@modelcontextprotocol/server-postgres)" >> mcp-setup-report.md
-          echo "- [x] Email MCP (@modelcontextprotocol/server-email)" >> mcp-setup-report.md
-          echo "- [x] Analytics MCP (@modelcontextprotocol/server-analytics)" >> mcp-setup-report.md
+          echo "- [x] Google Maps MCP (@cablate/mcp-google-map)" \
+            >> mcp-setup-report.md
+          echo "- [x] Web3 Blockchain MCP (@strangelove-ventures/web3-mcp)" \
+            >> mcp-setup-report.md
+          echo "- [x] GitHub Integration MCP \
+            (@modelcontextprotocol/server-github)" >> mcp-setup-report.md
+          echo "- [x] PostgreSQL MCP (@modelcontextprotocol/server-postgres)" \
+            >> mcp-setup-report.md
+          echo "- [x] Email MCP (@modelcontextprotocol/server-email)" \
+            >> mcp-setup-report.md
+          echo "- [x] Analytics MCP (@modelcontextprotocol/server-analytics)" \
+            >> mcp-setup-report.md
           echo "" >> mcp-setup-report.md
           echo "## Next Steps" >> mcp-setup-report.md
-          echo "1. Configure GitHub Copilot to use the MCP configuration" >> mcp-setup-report.md
-          echo "2. Set up environment secrets in the 'copilot' environment" >> mcp-setup-report.md
-          echo "3. Test MCP integration with GitHub Copilot" >> mcp-setup-report.md
-          
+          echo "1. Configure GitHub Copilot to use the MCP configuration" \
+            >> mcp-setup-report.md
+          echo "2. Set up environment secrets in the 'copilot' environment" \
+            >> mcp-setup-report.md
+          echo "3. Test MCP integration with GitHub Copilot" \
+            >> mcp-setup-report.md
+
           echo "Setup report generated:"
           cat mcp-setup-report.md
 
@@ -143,7 +166,7 @@ jobs:
           echo ""
           echo "Core Services:"
           echo "  COPILOT_MCP_GOOGLE_MAPS_API_KEY"
-          echo "  COPILOT_MCP_GITHUB_TOKEN" 
+          echo "  COPILOT_MCP_GITHUB_TOKEN"
           echo "  COPILOT_MCP_JWT_SECRET"
           echo "  COPILOT_MCP_DATABASE_URL"
           echo ""
