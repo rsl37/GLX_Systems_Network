@@ -13,6 +13,7 @@ import { BottomNavigation } from './components/BottomNavigation';
 import { EmailVerificationBanner } from './components/EmailVerificationBanner';
 import { AnimatedBackground } from './components/AnimatedBackground';
 import ErrorBoundary from './components/ErrorBoundary';
+import PerformanceMonitor from './components/PerformanceMonitor';
 
 // Lazy load pages for better performance
 const LoginPage = React.lazy(() => import('./pages/LoginPage').then(module => ({ default: module.LoginPage })));
@@ -103,6 +104,7 @@ function AppContent() {
         </div>
       </div>
       {user && <BottomNavigation />}
+      <PerformanceMonitor />
     </div>
   );
 }
