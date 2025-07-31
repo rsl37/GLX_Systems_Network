@@ -22,8 +22,8 @@ export function usePageVerification(pageType: 'login' | 'register') {
   }, [pageType]);
 
   const verifyPage = async () => {
-    // Skip verification in development mode
-    if (process.env.NODE_ENV === 'development') {
+    // Skip verification in development mode (NODE_ENV undefined or 'development')
+    if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
       setVerificationToken('dev-mode-skip-verification');
       return;
     }

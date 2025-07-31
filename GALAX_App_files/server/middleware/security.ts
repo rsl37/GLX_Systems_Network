@@ -242,7 +242,7 @@ export const corsConfig = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void,
   ) => {
-    const isDevelopment = process.env.NODE_ENV === "development";
+    const isDevelopment = process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined;
     const isProduction = process.env.NODE_ENV === "production";
 
     const allowedOrigins = [
@@ -250,8 +250,12 @@ export const corsConfig = {
       ...(isDevelopment
         ? [
             "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3002",
             "http://localhost:5173",
             "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001", 
+            "http://127.0.0.1:3002",
             "http://127.0.0.1:5173",
           ]
         : []),
@@ -297,16 +301,19 @@ export const corsConfig = {
 
     // Check against allowed origins
     if (origin && allowedOrigins.includes(origin)) {
+      console.log(`✅ CORS allowed origin: ${origin}`);
       callback(null, true);
     } else {
       console.warn(`🚨 CORS blocked origin: ${origin}`, {
         allowedOrigins: allowedOrigins.length,
+        isDevelopment,
+        isProduction,
+        availableOrigins: allowedOrigins,
         configuredOrigins: {
           CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? "[set]" : "[unset]",
           FRONTEND_URL: process.env.FRONTEND_URL ? "[set]" : "[unset]",
           TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS ? "[set]" : "[unset]",
         },
-        isProduction,
         timestamp: new Date().toISOString(),
       });
       callback(new Error("Not allowed by CORS"));

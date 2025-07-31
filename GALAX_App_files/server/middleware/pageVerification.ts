@@ -159,8 +159,8 @@ export function requirePageVerification(
   res: Response,
   next: NextFunction
 ): void {
-  // Skip verification in development mode
-  if (process.env.NODE_ENV === 'development') {
+  // Skip verification in development mode (NODE_ENV undefined or 'development')
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined) {
     return next();
   }
   
@@ -219,7 +219,7 @@ export function createAuthCorsConfig() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      const isDevelopment = process.env.NODE_ENV === "development";
+      const isDevelopment = process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined;
       const isProduction = process.env.NODE_ENV === "production";
 
       const allowedOrigins = [
@@ -227,8 +227,12 @@ export function createAuthCorsConfig() {
         ...(isDevelopment
           ? [
               "http://localhost:3000",
+              "http://localhost:3001", 
+              "http://localhost:3002",
               "http://localhost:5173",
               "http://127.0.0.1:3000",
+              "http://127.0.0.1:3001",
+              "http://127.0.0.1:3002",
               "http://127.0.0.1:5173",
             ]
           : []),
@@ -268,10 +272,14 @@ export function createAuthCorsConfig() {
 
       // Check against allowed origins
       if (origin && allowedOrigins.includes(origin)) {
+        console.log(`✅ Auth CORS: Allowed origin ${origin} for auth request`);
         callback(null, true);
       } else {
         console.warn(`🚨 Auth CORS: Blocked origin ${origin} for auth request`, {
           allowedOrigins: allowedOrigins.length,
+          isDevelopment,
+          isProduction,
+          availableOrigins: allowedOrigins,
           timestamp: new Date().toISOString(),
         });
         callback(new Error("Authentication not allowed from this origin"));

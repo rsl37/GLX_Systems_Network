@@ -159,7 +159,7 @@ export function RegisterPage() {
             </CardDescription>
             
             {/* Security verification indicator */}
-            {process.env.NODE_ENV !== 'development' && (
+            {process.env.NODE_ENV === 'production' && (
               <div className="mt-4">
                 {isVerifying ? (
                   <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
@@ -279,7 +279,7 @@ export function RegisterPage() {
               <Button
                 type="submit"
                 className="w-full galax-button"
-                disabled={isLoading || (process.env.NODE_ENV !== 'development' && !verificationToken)}
+                disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -317,7 +317,7 @@ export function RegisterPage() {
               variant="outline"
               className="w-full galax-button-accent"
               onClick={handleWalletRegister}
-              disabled={isLoading || (process.env.NODE_ENV !== 'development' && !verificationToken)}
+              disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >
               <Wallet className="h-4 w-4 mr-2" />
               Register with MetaMask
