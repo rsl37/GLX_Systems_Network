@@ -205,12 +205,36 @@ echo '# Directory for test results' > ./test-results/.gitkeep
 echo '# Directory for playwright reports' > ./playwright-report/.gitkeep
 
 # Set proper permissions for data directories
-chmod 755 ./data 2>/dev/null || true
-chmod 755 ./data/uploads 2>/dev/null || true
-chmod 755 ./data/logs 2>/dev/null || true
-chmod 700 ./data/encrypted_documents 2>/dev/null || true  # More restrictive for encrypted docs
-chmod 700 ./quarantine 2>/dev/null || true              # Restrict quarantine access
-chmod 700 ./virus_quarantine 2>/dev/null || true        # Restrict virus quarantine access
+if [ -d "./data" ]; then
+    chmod 755 ./data || echo "⚠️ Warning: Failed to set permissions for ./data"
+else
+    echo "⚠️ Warning: Directory ./data does not exist, skipping permission setting"
+fi
+if [ -d "./data/uploads" ]; then
+    chmod 755 ./data/uploads || echo "⚠️ Warning: Failed to set permissions for ./data/uploads"
+else
+    echo "⚠️ Warning: Directory ./data/uploads does not exist, skipping permission setting"
+fi
+if [ -d "./data/logs" ]; then
+    chmod 755 ./data/logs || echo "⚠️ Warning: Failed to set permissions for ./data/logs"
+else
+    echo "⚠️ Warning: Directory ./data/logs does not exist, skipping permission setting"
+fi
+if [ -d "./data/encrypted_documents" ]; then
+    chmod 700 ./data/encrypted_documents || echo "⚠️ Warning: Failed to set permissions for ./data/encrypted_documents"
+else
+    echo "⚠️ Warning: Directory ./data/encrypted_documents does not exist, skipping permission setting"
+fi
+if [ -d "./quarantine" ]; then
+    chmod 700 ./quarantine || echo "⚠️ Warning: Failed to set permissions for ./quarantine"
+else
+    echo "⚠️ Warning: Directory ./quarantine does not exist, skipping permission setting"
+fi
+if [ -d "./virus_quarantine" ]; then
+    chmod 700 ./virus_quarantine || echo "⚠️ Warning: Failed to set permissions for ./virus_quarantine"
+else
+    echo "⚠️ Warning: Directory ./virus_quarantine does not exist, skipping permission setting"
+fi
 
 echo ""
 echo "🎉 Environment setup complete!"
