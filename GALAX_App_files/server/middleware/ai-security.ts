@@ -249,7 +249,9 @@ export class AIMCPSecurityMiddleware {
         const hash = crypto.createHash('sha256').update(modelData).digest('hex');
         // In a real implementation, this would check against a known good hash
         // For now, we'll just store the hash for future reference
-        isValid = true; // Assume valid for demo purposes
+        // Compare the computed hash against known good hashes
+        const knownGoodHashes = this.config.allowedModelVersions; // Replace with actual hash storage
+        isValid = knownGoodHashes.includes(hash);
         
         this.modelIntegrity.set(modelVersion, {
           version: modelVersion,
