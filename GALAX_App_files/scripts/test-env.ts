@@ -24,9 +24,15 @@ console.log("🧪 Testing Environment Variables Configuration\n");
 
 const requiredVars = ["NODE_ENV", "PORT", "JWT_SECRET"];
 
+const essentialVars = [
+  "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET", "PUSHER_CLUSTER",  // Real-time features
+  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features  
+  "TWILIO_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"            // SMS/Phone features
+];
+
 const recommendedVars = ["CLIENT_ORIGIN", "DATABASE_URL", "SOCKET_PATH"];
 
-const optionalVars = ["SMTP_HOST", "SMTP_PORT", "TWILIO_SID"];
+const optionalVars = [];
 
 console.log("📋 Required Environment Variables:");
 requiredVars.forEach((varName) => {
@@ -41,6 +47,30 @@ requiredVars.forEach((varName) => {
   console.log(`   ${status} ${varName}: ${displayValue}`);
 });
 
+console.log("\n📋 Essential Environment Variables (Required for Core Features):");
+essentialVars.forEach((varName) => {
+  const value = process.env[varName];
+  const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-'];
+  const isPlaceholder = value && placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder));
+  
+  let status = "❌";
+  let displayValue = "NOT SET";
+  
+  if (value) {
+    if (isPlaceholder) {
+      status = "⚠️";
+      displayValue = "[PLACEHOLDER - NEEDS REAL VALUE]";
+    } else {
+      status = "✅";
+      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS") 
+        ? "[HIDDEN]" 
+        : value;
+    }
+  }
+  
+  console.log(`   ${status} ${varName}: ${displayValue}`);
+});
+
 console.log("\n📋 Recommended Environment Variables:");
 recommendedVars.forEach((varName) => {
   const value = process.env[varName];
@@ -50,12 +80,16 @@ recommendedVars.forEach((varName) => {
 });
 
 console.log("\n📋 Optional Environment Variables:");
-optionalVars.forEach((varName) => {
-  const value = process.env[varName];
-  const status = value ? "✅" : "➖";
-  const displayValue = value || "NOT SET";
-  console.log(`   ${status} ${varName}: ${displayValue}`);
-});
+if (optionalVars.length === 0) {
+  console.log("   ℹ️ No optional variables defined");
+} else {
+  optionalVars.forEach((varName) => {
+    const value = process.env[varName];
+    const status = value ? "✅" : "➖";
+    const displayValue = value || "NOT SET";
+    console.log(`   ${status} ${varName}: ${displayValue}`);
+  });
+}
 
 // Test specific validations
 console.log("\n🔍 Environment Variable Validations:");
@@ -149,10 +183,13 @@ if (socketPath) {
 console.log("\n📋 Summary:");
 const totalRequired = requiredVars.length;
 const setRequired = requiredVars.filter((v) => process.env[v]).length;
+const totalEssential = essentialVars.length;
+const setEssential = essentialVars.filter((v) => process.env[v]).length;
 const totalRecommended = recommendedVars.length;
 const setRecommended = recommendedVars.filter((v) => process.env[v]).length;
 
 console.log(`   Required Variables: ${setRequired}/${totalRequired} set`);
+console.log(`   Essential Variables: ${setEssential}/${totalEssential} set`);
 console.log(
   `   Recommended Variables: ${setRecommended}/${totalRecommended} set`,
 );
@@ -161,6 +198,16 @@ if (setRequired === totalRequired) {
   console.log("\n✅ All required environment variables are configured!");
 } else {
   console.log("\n❌ Some required environment variables are missing.");
+}
+
+if (setEssential === totalEssential) {
+  console.log("✅ All essential environment variables are configured!");
+} else {
+  console.log("\n❌ Some essential environment variables are missing.");
+  console.log("⚠️  Missing essential variables will cause core features to fail:");
+  console.log("   • PUSHER_* variables: Real-time communication features");
+  console.log("   • SMTP_* variables: Email verification and password reset");
+  console.log("   • TWILIO_* variables: Phone verification and SMS");
 }
 
 if (setRecommended === totalRecommended) {
@@ -175,3 +222,7 @@ console.log("\n💡 To configure missing variables:");
 console.log("   1. Copy .env.example to .env");
 console.log("   2. Edit .env with your values");
 console.log("   3. Restart the application");
+console.log("\n🔧 Essential services setup required:");
+console.log("   • Pusher: Create account at https://pusher.com for real-time features");
+console.log("   • SMTP: Configure email service (Gmail, Outlook, etc.) for email verification");
+console.log("   • Twilio: Create account at https://twilio.com for phone verification");

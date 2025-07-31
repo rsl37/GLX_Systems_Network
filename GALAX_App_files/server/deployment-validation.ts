@@ -35,15 +35,24 @@ const RECOMMENDED_ENV_VARS = [
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
 ];
 
+// Essential environment variables for core features
+const ESSENTIAL_ENV_VARS = [
+  'PUSHER_APP_ID',    // Real-time features - ESSENTIAL
+  'PUSHER_KEY',       // Real-time features - ESSENTIAL
+  'PUSHER_SECRET',    // Real-time features - ESSENTIAL
+  'PUSHER_CLUSTER',   // Real-time features - ESSENTIAL
+  'SMTP_HOST',        // Email verification, password reset - ESSENTIAL
+  'SMTP_PORT',        // Email verification, password reset - ESSENTIAL
+  'SMTP_USER',        // Email verification, password reset - ESSENTIAL
+  'SMTP_PASS',        // Email verification, password reset - ESSENTIAL
+  'SMTP_FROM',        // Email verification, password reset - ESSENTIAL
+  'TWILIO_SID',       // Phone verification, password reset - ESSENTIAL
+  'TWILIO_AUTH_TOKEN', // Phone verification, password reset - ESSENTIAL
+  'TWILIO_PHONE_NUMBER' // Phone verification, password reset - ESSENTIAL
+];
+
 const OPTIONAL_ENV_VARS = [
-  'SMTP_HOST',
-  'SMTP_PORT', 
-  'SMTP_USER',
-  'SMTP_PASS',
-  'SMTP_FROM',
-  'TWILIO_SID',
-  'TWILIO_AUTH_TOKEN',
-  'TWILIO_PHONE_NUMBER'
+  // Development and debugging only
 ];
 
 // Top 50 SMTP hosts used globally
@@ -181,6 +190,39 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
+  // Check essential environment variables (required for core features)
+  for (const envVar of ESSENTIAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Essential Environment Variable: ${envVar}`,
+        status: 'fail',
+        message: `Essential environment variable ${envVar} is not set - core features will not work`,
+        details: { variable: envVar, required: true, category: 'essential' }
+      });
+    } else {
+      // Check for placeholder values that indicate incomplete configuration
+      const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-'];
+      const isPlaceholder = placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder));
+      
+      if (isPlaceholder) {
+        results.push({
+          check: `Essential Environment Variable: ${envVar}`,
+          status: 'fail',
+          message: `Essential environment variable ${envVar} contains placeholder value - must be configured with real service credentials`,
+          details: { variable: envVar, value_type: 'placeholder', category: 'essential' }
+        });
+      } else {
+        results.push({
+          check: `Essential Environment Variable: ${envVar}`,
+          status: 'pass',
+          message: `Essential environment variable ${envVar} is properly configured`,
+          details: { variable: envVar, length: value.length, category: 'essential' }
+        });
+      }
+    }
+  }
+
   // Check optional environment variables (nice to have)
   for (const envVar of OPTIONAL_ENV_VARS) {
     const value = process.env[envVar];
@@ -199,7 +241,6 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         details: { variable: envVar, length: value.length, category: 'optional' }
       });
     }
-  }
   }
 
   // Validate JWT_SECRET strength

@@ -72,13 +72,16 @@ TRUSTED_ORIGINS=http://localhost:5173,http://localhost:3000,http://127.0.0.1:517
 ALLOW_NO_ORIGIN_IN_PRODUCTION=false
 
 # =============================================================================
-# REAL-TIME COMMUNICATION (PUSHER)
+# REAL-TIME COMMUNICATION (PUSHER) - ESSENTIAL
 # =============================================================================
 
-# Development placeholders - configure with actual values if needed
-PUSHER_APP_ID=dev-pusher-app-id
-PUSHER_KEY=dev-pusher-key
-PUSHER_SECRET=dev-pusher-secret
+# Pusher configuration for real-time messaging and notifications
+# ⚠️ ESSENTIAL: These must be configured with real Pusher account values
+# Replace WebSocket functionality with Pusher for Vercel compatibility
+# Get these values from: https://pusher.com
+PUSHER_APP_ID=REQUIRED-get-from-pusher-dashboard
+PUSHER_KEY=REQUIRED-get-from-pusher-dashboard
+PUSHER_SECRET=REQUIRED-get-from-pusher-dashboard
 PUSHER_CLUSTER=us2
 
 # =============================================================================
@@ -88,23 +91,27 @@ PUSHER_CLUSTER=us2
 SOCKET_PATH=/socket.io
 
 # =============================================================================
-# EMAIL CONFIGURATION (SMTP)
+# EMAIL CONFIGURATION (SMTP) - ESSENTIAL
 # =============================================================================
 
-# Development placeholders - configure with actual values if needed
-SMTP_HOST=smtp.example.com
+# SMTP settings for email verification and notifications
+# ⚠️ ESSENTIAL: Required for password reset and email verification features
+# Configure with your email service provider
+SMTP_HOST=REQUIRED-configure-your-smtp-host
 SMTP_PORT=587
-SMTP_USER=dev@example.com
-SMTP_PASS=dev-password
+SMTP_USER=REQUIRED-your-email-username
+SMTP_PASS=REQUIRED-your-email-password-or-app-password
 SMTP_FROM=noreply@localhost
 
 # =============================================================================
-# SMS/PHONE VERIFICATION (TWILIO)
+# SMS/PHONE VERIFICATION (TWILIO) - ESSENTIAL
 # =============================================================================
 
-# Development placeholders - configure with actual values if needed
-TWILIO_SID=dev-twilio-sid
-TWILIO_AUTH_TOKEN=dev-twilio-token
+# Twilio configuration for phone number verification
+# ⚠️ ESSENTIAL: Required for 2FA and phone verification features
+# Get these values from: https://twilio.com
+TWILIO_SID=REQUIRED-get-from-twilio-dashboard
+TWILIO_AUTH_TOKEN=REQUIRED-get-from-twilio-dashboard
 TWILIO_PHONE_NUMBER=+1234567890
 
 # =============================================================================
@@ -128,8 +135,9 @@ EOF
 # This file was created automatically for local development
 
 # Pusher configuration for real-time communication
-# Development placeholders - configure with actual values if needed
-REACT_APP_PUSHER_KEY=dev-pusher-key
+# ⚠️ ESSENTIAL: These must be configured with real Pusher account values
+# Get these values from your Pusher dashboard at https://pusher.com
+REACT_APP_PUSHER_KEY=REQUIRED-get-from-pusher-dashboard
 REACT_APP_PUSHER_CLUSTER=us2
 
 # API endpoint configuration
@@ -208,8 +216,23 @@ echo "   - The .env files contain development defaults"
 echo "   - For production, generate secure secrets using: openssl rand -hex 32"
 echo "   - Never commit .env files to version control"
 echo ""
-echo "🔧 To configure external services:"
-echo "   - SMTP: Update SMTP_* variables for email functionality"
-echo "   - Twilio: Update TWILIO_* variables for SMS functionality"
-echo "   - Pusher: Update PUSHER_* variables for real-time features"
-echo "   - Database: Set DATABASE_URL for PostgreSQL (leave empty for SQLite)"
+echo "🔧 ESSENTIAL SERVICES CONFIGURATION REQUIRED:"
+echo "   These services must be configured with real credentials for the app to work:"
+echo ""
+echo "   📧 SMTP Email Service:"
+echo "      - Update SMTP_* variables with your email provider credentials"
+echo "      - Required for email verification and password reset"
+echo "      - Supported providers: Gmail, Outlook, Yahoo, etc."
+echo ""
+echo "   📱 Twilio SMS Service:"
+echo "      - Create account at https://twilio.com"
+echo "      - Update TWILIO_* variables with your account credentials"
+echo "      - Required for phone verification and 2FA"
+echo ""
+echo "   🔄 Pusher Real-time Service:"
+echo "      - Create account at https://pusher.com"
+echo "      - Update PUSHER_* variables with your app credentials"
+echo "      - Required for real-time messaging and notifications"
+echo ""
+echo "🚨 WARNING: App will fail to start without proper configuration of these services!"
+echo "   Run 'npm run test:env' to check configuration status."
