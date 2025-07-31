@@ -10,11 +10,12 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageVerification } from '../hooks/usePageVerification';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles } from 'lucide-react';
+import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CountryCodeSelector } from '@/components/CountryCodeSelector';
 import { Country } from '@/data/countries';
@@ -28,6 +29,7 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, loginWithWallet } = useAuth();
+  const { verificationToken, isVerifying, verificationError } = usePageVerification('login');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,9 +38,14 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       // Format phone number with country code if it's a phone login
       const identifier = loginMethod === 'email' ? email : `${countryCode}${phone.replace(/^[\+\s0]+/, '')}`;
-      await login(identifier, password);
+      await login(identifier, password, verificationToken);
       navigate('/dashboard');
     } catch (err) {
       // Provide more specific error messages
@@ -59,10 +66,15 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         if (accounts.length > 0) {
-          await loginWithWallet(accounts[0]);
+          await loginWithWallet(accounts[0], verificationToken);
           navigate('/dashboard');
         } else {
           setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
@@ -115,6 +127,28 @@ export function LoginPage() {
             <CardDescription className="text-lg text-gray-600">
               Civic Network Platform
             </CardDescription>
+            
+            {/* Security verification indicator */}
+            {process.env.NODE_ENV !== 'development' && (
+              <div className="mt-4">
+                {isVerifying ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                    <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                    Verifying page security...
+                  </div>
+                ) : verificationToken ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                    <Shield className="h-4 w-4" />
+                    Page verified and secure
+                  </div>
+                ) : verificationError ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-red-500">
+                    <AlertCircle className="h-4 w-4" />
+                    Security verification failed
+                  </div>
+                ) : null}
+              </div>
+            )}
           </CardHeader>
           
           <CardContent className="space-y-6">
@@ -202,7 +236,7 @@ export function LoginPage() {
               <Button
                 type="submit"
                 className="w-full galax-button"
-                disabled={isLoading}
+                disabled={isLoading || (process.env.NODE_ENV !== 'development' && !verificationToken)}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -234,7 +268,7 @@ export function LoginPage() {
               variant="outline"
               className="w-full galax-button-accent"
               onClick={handleWalletLogin}
-              disabled={isLoading}
+              disabled={isLoading || (process.env.NODE_ENV !== 'development' && !verificationToken)}
             >
               <Wallet className="h-4 w-4 mr-2" />
               Connect MetaMask

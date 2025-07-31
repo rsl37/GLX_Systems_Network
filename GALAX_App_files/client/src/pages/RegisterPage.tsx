@@ -10,11 +10,12 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageVerification } from '../hooks/usePageVerification';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles, User } from 'lucide-react';
+import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles, User, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CountryCodeSelector } from '@/components/CountryCodeSelector';
 import { Country } from '@/data/countries';
@@ -29,6 +30,7 @@ export function RegisterPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { register, registerWithWallet } = useAuth();
+  const { verificationToken, isVerifying, verificationError } = usePageVerification('register');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,6 +39,11 @@ export function RegisterPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       // Format phone number with country code if it's a phone signup
       let identifier = email;
       if (signupMethod === 'phone') {
@@ -62,7 +69,7 @@ export function RegisterPage() {
         }
       }
       
-      await register(identifier, password, username, signupMethod);
+      await register(identifier, password, username, signupMethod, verificationToken);
       navigate('/dashboard');
     } catch (err) {
       // Provide more helpful error messages
@@ -89,10 +96,15 @@ export function RegisterPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         if (accounts.length > 0) {
-          await registerWithWallet(accounts[0], username);
+          await registerWithWallet(accounts[0], username, verificationToken);
           navigate('/dashboard');
         } else {
           setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
@@ -145,6 +157,28 @@ export function RegisterPage() {
             <CardDescription className="text-lg text-gray-600">
               Create your civic network account
             </CardDescription>
+            
+            {/* Security verification indicator */}
+            {process.env.NODE_ENV !== 'development' && (
+              <div className="mt-4">
+                {isVerifying ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                    <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                    Verifying page security...
+                  </div>
+                ) : verificationToken ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                    <Shield className="h-4 w-4" />
+                    Page verified and secure
+                  </div>
+                ) : verificationError ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-red-500">
+                    <AlertCircle className="h-4 w-4" />
+                    Security verification failed
+                  </div>
+                ) : null}
+              </div>
+            )}
           </CardHeader>
           
           <CardContent className="space-y-6">
@@ -245,7 +279,7 @@ export function RegisterPage() {
               <Button
                 type="submit"
                 className="w-full galax-button"
-                disabled={isLoading}
+                disabled={isLoading || (process.env.NODE_ENV !== 'development' && !verificationToken)}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -283,7 +317,7 @@ export function RegisterPage() {
               variant="outline"
               className="w-full galax-button-accent"
               onClick={handleWalletRegister}
-              disabled={isLoading}
+              disabled={isLoading || (process.env.NODE_ENV !== 'development' && !verificationToken)}
             >
               <Wallet className="h-4 w-4 mr-2" />
               Register with MetaMask

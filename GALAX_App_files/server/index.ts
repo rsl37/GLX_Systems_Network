@@ -100,6 +100,14 @@ import {
 // Import deployment validation
 import { getDeploymentReadiness } from "./deployment-validation.js";
 
+// Import page verification system
+import {
+  generatePageVerificationToken,
+  requirePageVerification,
+  createAuthCorsConfig,
+  PAGE_VERIFICATION_CONFIG,
+} from "./middleware/pageVerification.js";
+
 dotenv.config();
 
 console.log("🚀 Starting server initialization...");
@@ -269,6 +277,73 @@ app.get("/api/test-db", async (req, res) => {
 app.get("/api/version", getApiVersionInfo);
 app.get("/api/deployment/ready", getDeploymentReadiness);
 
+// Page verification endpoint for auth security
+app.post("/api/verify-page", async (req, res) => {
+  try {
+    const { pageType, pageContent, checksum } = req.body;
+    const origin = req.get('Origin') || req.get('Referer');
+    const userAgent = req.get('User-Agent') || 'unknown';
+    
+    if (!origin) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: "Origin is required for page verification",
+          statusCode: 400,
+        },
+      });
+    }
+    
+    if (!pageType || !['login', 'register'].includes(pageType)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: "Valid page type (login or register) is required",
+          statusCode: 400,
+        },
+      });
+    }
+    
+    // Verify page content contains required elements
+    const requiredElements = PAGE_VERIFICATION_CONFIG.requiredPageElements[pageType as 'login' | 'register'];
+    if (pageContent && typeof pageContent === 'string') {
+      const missingElements = requiredElements.filter(element => !pageContent.includes(element));
+      if (missingElements.length > 0) {
+        console.warn(`⚠️ Page verification failed: Missing elements for ${pageType}:`, missingElements);
+        return res.status(403).json({
+          success: false,
+          error: {
+            message: "Page content verification failed",
+            statusCode: 403,
+          },
+        });
+      }
+    }
+    
+    // Generate verification token
+    const token = generatePageVerificationToken(origin, pageType as 'login' | 'register', userAgent);
+    
+    console.log(`✅ Page verified: ${pageType} page from ${origin}`);
+    res.json({
+      success: true,
+      data: {
+        verificationToken: token,
+        expiresIn: PAGE_VERIFICATION_CONFIG.tokenExpiry,
+        message: "Page verified successfully",
+      },
+    });
+  } catch (error) {
+    console.error("❌ Page verification error:", error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: "Page verification failed",
+        statusCode: 500,
+      },
+    });
+  }
+});
+
 // Monitoring endpoints
 app.get("/api/monitoring/health", authenticateToken, getHealthMetrics);
 app.get("/api/monitoring/metrics/system", authenticateToken, getSystemMetrics);
@@ -325,8 +400,8 @@ app.post("/api/monitoring/errors", async (req, res): Promise<void> => {
 // Stablecoin API routes
 app.use("/api/stablecoin", stablecoinRoutes);
 
-// Mount modular routes
-app.use("/api/auth", authRoutes);
+// Mount modular routes with enhanced auth security
+app.use("/api/auth", cors(createAuthCorsConfig()), requirePageVerification, authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/proposals", governanceRoutes);
 app.use("/api/crisis-alerts", crisisRoutes);

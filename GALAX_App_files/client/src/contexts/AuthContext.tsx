@@ -8,6 +8,7 @@
 
 import * as React from 'react';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { fetchWithPageVerification } from '../hooks/usePageVerification';
 
 interface User {
   id: number;
@@ -33,10 +34,10 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (emailOrPhone: string, password: string) => Promise<void>;
-  loginWithWallet: (walletAddress: string) => Promise<void>;
-  register: (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone') => Promise<void>;
-  registerWithWallet: (walletAddress: string, username: string) => Promise<void>;
+  login: (emailOrPhone: string, password: string, verificationToken?: string | null) => Promise<void>;
+  loginWithWallet: (walletAddress: string, verificationToken?: string | null) => Promise<void>;
+  register: (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone', verificationToken?: string | null) => Promise<void>;
+  registerWithWallet: (walletAddress: string, username: string, verificationToken?: string | null) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   refreshUser: () => Promise<void>;
@@ -167,7 +168,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (emailOrPhone: string, password: string) => {
+  const login = async (emailOrPhone: string, password: string, verificationToken?: string | null) => {
     try {
       // Determine if it's an email or phone number
       const isEmail = emailOrPhone.includes('@');
@@ -175,13 +176,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? { email: emailOrPhone, password }
         : { phone: emailOrPhone, password };
 
-      const response = await fetch('/api/auth/login', {
+      const response = await fetchWithPageVerification('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
-      });
+      }, verificationToken);
 
       const apiData = await parseApiResponse(response);
       
@@ -200,15 +201,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loginWithWallet = async (walletAddress: string) => {
+  const loginWithWallet = async (walletAddress: string, verificationToken?: string | null) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetchWithPageVerification('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ walletAddress }),
-      });
+      }, verificationToken);
 
       const apiData = await parseApiResponse(response);
       
@@ -227,7 +228,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone') => {
+  const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone', verificationToken?: string | null) => {
     try {
       // Determine if it's an email or phone number
       const isEmail = signupMethod === 'email' || (!signupMethod && emailOrPhone.includes('@'));
@@ -235,13 +236,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? { email: emailOrPhone, password, username }
         : { phone: emailOrPhone, password, username };
 
-      const response = await fetch('/api/auth/register', {
+      const response = await fetchWithPageVerification('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
-      });
+      }, verificationToken);
 
       const apiData = await parseApiResponse(response);
       
@@ -260,15 +261,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const registerWithWallet = async (walletAddress: string, username: string) => {
+  const registerWithWallet = async (walletAddress: string, username: string, verificationToken?: string | null) => {
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetchWithPageVerification('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ walletAddress, username }),
-      });
+      }, verificationToken);
 
       const apiData = await parseApiResponse(response);
       
