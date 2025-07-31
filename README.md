@@ -117,6 +117,7 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 
 - **Live Demo**: [galaxcivicnetwork.me](https://galaxcivicnetwork.me)
 - **Documentation**: [Project Docs](docs/)
+- **Production Guide**: [Production Setup](GALAX_App_files/PRODUCTION_MODE_GUIDE.md)
 - **Issues**: [GitHub Issues](https://github.com/rsl37/GALAX_Civic_Networking_App/issues)
 
 ---
