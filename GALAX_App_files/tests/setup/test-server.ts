@@ -1,27 +1,19 @@
 import express from 'express';
 import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-import WebSocketManager from '../../server/webSocketManager.js';
+import RealtimeManager from '../../server/realtimeManager.js';
 
 // Test server setup utility
 export class TestServer {
   public app: express.Application;
   public server: any;
-  public wss: WebSocketServer;
-  public webSocketManager: WebSocketManager;
+  public realtimeManager: RealtimeManager;
   public port: number;
   public baseUrl: string;
 
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
-    this.wss = new WebSocketServer({ 
-      server: this.server,
-      path: '/websocket',
-      clientTracking: true,
-      maxPayload: 1e6, // 1MB
-    });
-    this.webSocketManager = new WebSocketManager(this.wss);
+    this.realtimeManager = new RealtimeManager();
     this.port = 0; // Let system assign available port
     this.baseUrl = '';
   }
@@ -42,7 +34,7 @@ export class TestServer {
 
   async stop(): Promise<void> {
     return new Promise(async (resolve) => {
-      await this.webSocketManager.shutdown();
+      this.realtimeManager.shutdown();
       this.server.close(() => {
         resolve();
       });
@@ -55,10 +47,9 @@ export class TestServer {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
-  // Create test WebSocket client
-  createWebSocketClient() {
-    const WebSocket = require('ws');
-    return new WebSocket(`ws://localhost:${this.port}/websocket`);
+  // Create test SSE client
+  createRealtimeClient() {
+    return new EventSource(`${this.baseUrl}/api/realtime/events`);
   }
 }
 

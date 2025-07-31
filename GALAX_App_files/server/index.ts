@@ -60,7 +60,7 @@ import {
   validateJsonPayload,
 } from "./middleware/validation.js";
 
-// Import WebSocket manager
+// Import realtime manager
 import RealtimeManager from "./realtimeManager.js";
 
 // Import stablecoin functionality
@@ -675,7 +675,7 @@ export async function startServer(port: number) {
       console.log(`   🧠 Behavioral Analysis: ENABLED`);
       console.log(`   🔐 Rate Limiting & Account Lockout: ENABLED`);
       console.log(`🚀 Performance: Database indexes and connection optimizations active`);
-      console.log(`🧹 WebSocket management: Enhanced with connection cleanup and memory management`);
+      console.log(`🧹 Realtime management: Enhanced SSE connections with cleanup and memory management`);
     });
   } catch (err) {
     console.error("💥 Failed to start server:", err);
