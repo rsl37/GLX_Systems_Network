@@ -7,6 +7,7 @@
   "scripts": {
     "build": "vite build && tsc --project tsconfig.server.json",
     "start": "npx tsx watch scripts/dev.ts",
+    "setup:env": "scripts/setup-env.sh",
     "test": "scripts/ensure-test-dirs.sh && vitest run",
     "test:api": "scripts/ensure-test-dirs.sh && vitest --run tests/api",
     "test:socket": "scripts/ensure-test-dirs.sh && vitest --run tests/socket",
@@ -56,6 +57,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.2.0",
     "check-disk-space": "^3.4.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
@@ -85,6 +87,8 @@
     "react-day-picker": "8.10.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^7.7.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "speakeasy": "^2.0.0",
     "tailwind-merge": "3.3.1",
     "tailwindcss-animate": "1.0.7"
