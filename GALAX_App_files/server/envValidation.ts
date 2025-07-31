@@ -14,6 +14,8 @@
  * variables are a common cause of authentication failures.
  */
 
+import { validateJWTSecret } from './config/security.js';
+
 interface EnvironmentValidationResult {
   isValid: boolean;
   errors: string[];
@@ -170,11 +172,58 @@ function validateAuthConfiguration(
   recommendations: string[]
 ): void {
   const jwtSecret = process.env.JWT_SECRET;
+  const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
+  const isProduction = process.env.NODE_ENV === 'production';
   
+  // Validate JWT_SECRET with comprehensive security checks
   if (jwtSecret) {
-    if (jwtSecret === 'your-secret-key' || jwtSecret === 'your-super-secret-jwt-key-change-this-in-production-min-32-chars') {
-      errors.push('JWT_SECRET is using default value - this is a security risk');
-      recommendations.push('JWT_SECRET: Generate a secure random string for production');
+    const validation = validateJWTSecret(jwtSecret, isProduction);
+    
+    if (!validation.isValid || validation.severity === 'critical') {
+      errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+      
+      if (validation.weakPatterns.length > 0) {
+        const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
+        const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+        
+        if (criticalPatterns.length > 0) {
+          errors.push(`JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+        }
+        if (highPatterns.length > 0) {
+          errors.push(`JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+        }
+      }
+      
+      recommendations.push('JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
+    } else if (validation.severity === 'warning') {
+      warnings.push(`JWT_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
+      recommendations.push('JWT_SECRET: Consider improving secret strength for enhanced security');
+    }
+  }
+
+  // Validate JWT_REFRESH_SECRET with the same comprehensive checks
+  if (jwtRefreshSecret) {
+    const validation = validateJWTSecret(jwtRefreshSecret, isProduction);
+    
+    if (!validation.isValid || validation.severity === 'critical') {
+      errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+      
+      if (validation.weakPatterns.length > 0) {
+        const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
+        const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+        
+        if (criticalPatterns.length > 0) {
+          errors.push(`JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+        }
+        if (highPatterns.length > 0) {
+          errors.push(`JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+        }
+      }
+      
+      recommendations.push('JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
+    } else if (validation.severity === 'warning') {
+      warnings.push(`JWT_REFRESH_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
+      recommendations.push('JWT_REFRESH_SECRET: Consider improving secret strength for enhanced security');
     }
   }
 
