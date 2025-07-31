@@ -82,6 +82,7 @@ export function generateToken(userId: number): string {
 
 export interface AuthRequest extends Request {
   userId?: number;
+  username?: string;
 }
 
 export async function authenticateToken(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
@@ -96,6 +97,19 @@ export async function authenticateToken(req: AuthRequest, res: Response, next: N
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     req.userId = decoded.userId;
+    
+    // Get username for Pusher auth
+    try {
+      const user = await db
+        .selectFrom('users')
+        .select('username')
+        .where('id', '=', decoded.userId)
+        .executeTakeFirst();
+      req.username = user?.username || 'Unknown';
+    } catch (error) {
+      req.username = 'Unknown';
+    }
+    
     next();
   } catch (error) {
     res.status(403).json({ error: 'Invalid token' });

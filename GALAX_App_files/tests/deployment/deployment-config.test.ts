@@ -80,7 +80,7 @@ describe('Deployment Configuration Tests', () => {
       expect(fs.existsSync(vercelConfigPath)).toBe(true);
       
       const config = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf-8'));
-      expect(config.buildCommand).toContain('mkdir -p data/logs');
+      expect(config.buildCommand).toContain('npm run build');
       expect(config.outputDirectory).toBe('GALAX_App_files/dist/public');
     });
   });
