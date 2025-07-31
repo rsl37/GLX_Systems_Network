@@ -7,7 +7,7 @@ This guide provides step-by-step instructions for deploying the GALAX Civic Netw
 The application has been completely restructured to work with Vercel's serverless architecture:
 
 ### Major Changes:
-- **WebSocket Removal**: Eliminated Socket.IO dependencies, replaced with HTTP polling
+- **WebSocket → Pusher Migration**: Replaced Socket.IO with Pusher for real-time communication
 - **Database Migration**: Migrated from SQLite to PostgreSQL for serverless compatibility  
 - **Serverless Functions**: Restructured Express server to work as Vercel serverless functions
 - **Build Process**: Fixed all TypeScript compilation errors and updated build configuration
@@ -31,7 +31,13 @@ You need a PostgreSQL database. Choose one of these options:
 - Amazon RDS
 - Any PostgreSQL provider
 
-### 2. Environment Variables
+### 2. Pusher Setup (Required for Real-Time Features)
+1. Create a free account at [Pusher](https://pusher.com)
+2. Create a new app in the Pusher Dashboard
+3. Get your app credentials: App ID, Key, Secret, and Cluster
+4. Add these to your Vercel environment variables (see below)
+
+### 3. Environment Variables
 Set these in Vercel Dashboard → Project Settings → Environment Variables:
 
 ```bash
@@ -41,6 +47,12 @@ DATABASE_URL=postgres://username:password@host:5432/galax_db
 # Security (Required)
 JWT_SECRET=your-64-character-secure-random-string
 NODE_ENV=production
+
+# Real-Time Communication (Required)
+PUSHER_APP_ID=your-pusher-app-id
+PUSHER_KEY=your-pusher-key
+PUSHER_SECRET=your-pusher-secret
+PUSHER_CLUSTER=us2
 
 # CORS Configuration (Required)
 CLIENT_ORIGIN=https://your-app-name.vercel.app

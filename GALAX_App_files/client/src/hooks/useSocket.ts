@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import Pusher from 'pusher-js';
 
 interface ConnectionHealthStatus {
   connected: boolean;
@@ -15,7 +16,7 @@ interface ConnectionHealthStatus {
   maxRetries: number;
   lastError: string | null;
   connectionTime: number | null;
-  pollingInterval: number;
+  pusherState: string;
 }
 
 interface Message {
@@ -34,7 +35,7 @@ interface NotificationData {
   timestamp: string;
 }
 
-// HTTP-based polling system to replace WebSocket functionality
+// Pusher-based real-time system to replace WebSocket functionality
 export function useSocket(token: string | null) {
   const [health, setHealth] = useState<ConnectionHealthStatus>({
     connected: false,
@@ -43,16 +44,14 @@ export function useSocket(token: string | null) {
     maxRetries: 5,
     lastError: null,
     connectionTime: null,
-    pollingInterval: 5000
+    pusherState: 'disconnected'
   });
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   
-  const pollingIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
-  const retryTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
-  const lastMessageTimestamp = useRef<string | null>(null);
-  const lastNotificationTimestamp = useRef<string | null>(null);
+  const pusherRef = useRef<Pusher | null>(null);
+  const channelsRef = useRef<{ [key: string]: any }>({});
   const connectionStartTime = useRef<number>(0);
 
   const baseUrl = process.env.NODE_ENV === 'production' 
@@ -65,122 +64,93 @@ export function useSocket(token: string | null) {
       return;
     }
 
-    initializeConnection();
+    initializePusher();
 
     return () => {
       cleanup();
     };
   }, [token]);
 
-  const initializeConnection = () => {
+  const initializePusher = () => {
     connectionStartTime.current = Date.now();
-    console.log('🔌 Initializing HTTP polling connection...');
+    console.log('🔌 Initializing Pusher connection...');
     
-    setHealth(prev => ({
-      ...prev,
-      connected: true,
-      authenticated: true,
-      lastError: null,
-      connectionTime: Date.now() - connectionStartTime.current,
-      retryAttempts: 0
-    }));
-
-    startPolling();
-  };
-
-  const startPolling = () => {
-    stopPolling();
-    
-    const poll = async () => {
-      try {
-        await Promise.all([
-          pollMessages(),
-          pollNotifications()
-        ]);
-        
-        setHealth(prev => ({
-          ...prev,
-          connected: true,
-          lastError: null,
-          retryAttempts: 0
-        }));
-        
-      } catch (error) {
-        console.error('❌ Polling error:', error);
-        setHealth(prev => ({
-          ...prev,
-          connected: false,
-          lastError: error instanceof Error ? error.message : 'Polling failed'
-        }));
-        
-        handleReconnection();
+    // Initialize Pusher with configuration
+    pusherRef.current = new Pusher(process.env.REACT_APP_PUSHER_KEY || 'your-pusher-key', {
+      cluster: process.env.REACT_APP_PUSHER_CLUSTER || 'us2',
+      authEndpoint: `${baseUrl}/pusher/auth`,
+      auth: {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    };
+    });
 
-    // Initial poll
-    poll();
+    setupPusherEventListeners();
+  };
+
+  const setupPusherEventListeners = () => {
+    if (!pusherRef.current) return;
+
+    const pusher = pusherRef.current;
+
+    // Connection state listeners
+    pusher.connection.bind('connected', () => {
+      console.log('✅ Pusher connected');
+      setHealth(prev => ({
+        ...prev,
+        connected: true,
+        authenticated: true,
+        lastError: null,
+        connectionTime: Date.now() - connectionStartTime.current,
+        retryAttempts: 0,
+        pusherState: 'connected'
+      }));
+    });
+
+    pusher.connection.bind('disconnected', () => {
+      console.log('❌ Pusher disconnected');
+      setHealth(prev => ({
+        ...prev,
+        connected: false,
+        pusherState: 'disconnected'
+      }));
+    });
+
+    pusher.connection.bind('error', (error: any) => {
+      console.error('❌ Pusher connection error:', error);
+      setHealth(prev => ({
+        ...prev,
+        connected: false,
+        lastError: error.message || 'Connection error',
+        pusherState: 'error'
+      }));
+      handleReconnection();
+    });
+
+    pusher.connection.bind('state_change', (states: any) => {
+      console.log('🔄 Pusher state change:', states.previous, '->', states.current);
+      setHealth(prev => ({
+        ...prev,
+        pusherState: states.current
+      }));
+    });
+
+    // Subscribe to global notifications channel
+    subscribeToNotifications();
+  };
+
+  const subscribeToNotifications = () => {
+    if (!pusherRef.current || !token) return;
+
+    const notificationChannel = pusherRef.current.subscribe(`private-user-notifications`);
     
-    // Set up regular polling
-    pollingIntervalRef.current = setInterval(poll, health.pollingInterval);
-  };
-
-  const stopPolling = () => {
-    if (pollingIntervalRef.current) {
-      clearInterval(pollingIntervalRef.current);
-      pollingIntervalRef.current = undefined;
-    }
-  };
-
-  const pollMessages = async () => {
-    const response = await fetch(`${baseUrl}/chat/messages?since=${lastMessageTimestamp.current || ''}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+    notificationChannel.bind('new-notification', (data: NotificationData) => {
+      console.log('📢 New notification received:', data);
+      setNotifications(prev => [...prev, data].slice(-50)); // Keep last 50 notifications
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    if (data.messages && data.messages.length > 0) {
-      setMessages(prev => {
-        // Merge new messages, avoiding duplicates
-        const existingIds = new Set(prev.map(m => m.id));
-        const newMessages = data.messages.filter((msg: Message) => !existingIds.has(msg.id));
-        return [...prev, ...newMessages];
-      });
-      
-      // Update timestamp for next poll
-      lastMessageTimestamp.current = data.messages[data.messages.length - 1].timestamp;
-    }
-  };
-
-  const pollNotifications = async () => {
-    const response = await fetch(`${baseUrl}/notifications?since=${lastNotificationTimestamp.current || ''}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    if (data.notifications && data.notifications.length > 0) {
-      setNotifications(prev => {
-        // Keep only last 50 notifications
-        const existingIds = new Set(prev.map(n => n.id));
-        const newNotifications = data.notifications.filter((notif: NotificationData) => !existingIds.has(notif.id));
-        return [...prev, ...newNotifications].slice(-50);
-      });
-      
-      // Update timestamp for next poll
-      lastNotificationTimestamp.current = data.notifications[data.notifications.length - 1].timestamp;
-    }
+    channelsRef.current['notifications'] = notificationChannel;
   };
 
   const sendMessage = useCallback(async (content: string, roomId?: string) => {
@@ -199,11 +169,9 @@ export function useSocket(token: string | null) {
       }
 
       const data = await response.json();
-      console.log('✅ Message sent:', data.messageId);
+      console.log('✅ Message sent via Pusher:', data.messageId);
       
-      // Trigger immediate poll to get the new message
-      setTimeout(() => pollMessages().catch(console.error), 100);
-      
+      // No need to poll - Pusher will deliver the message in real-time
       return data;
     } catch (error) {
       console.error('❌ Failed to send message:', error);
@@ -213,6 +181,33 @@ export function useSocket(token: string | null) {
 
   const joinRoom = useCallback(async (roomId: string) => {
     try {
+      // Subscribe to the room's Pusher channel
+      if (pusherRef.current && !channelsRef.current[roomId]) {
+        const channel = pusherRef.current.subscribe(`private-help-request-${roomId}`);
+        
+        channel.bind('new-message', (data: Message) => {
+          console.log('📨 New message received:', data);
+          setMessages(prev => {
+            const existingIds = new Set(prev.map(m => m.id));
+            if (!existingIds.has(data.id)) {
+              return [...prev, data];
+            }
+            return prev;
+          });
+        });
+
+        channel.bind('user-joined', (data: any) => {
+          console.log('👋 User joined room:', data);
+        });
+
+        channel.bind('user-left', (data: any) => {
+          console.log('👋 User left room:', data);
+        });
+
+        channelsRef.current[roomId] = channel;
+      }
+
+      // Also call the API to join the room on the backend
       const response = await fetch(`${baseUrl}/chat/join`, {
         method: 'POST',
         headers: {
@@ -226,14 +221,11 @@ export function useSocket(token: string | null) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      console.log('🏠 Joined room:', roomId);
+      console.log('🏠 Joined room via Pusher:', roomId);
       
-      // Reset message timestamp to get all messages from this room
-      lastMessageTimestamp.current = null;
+      // Reset messages for this room and get initial messages
       setMessages([]);
-      
-      // Trigger immediate poll
-      setTimeout(() => pollMessages().catch(console.error), 100);
+      await loadRoomMessages(roomId);
       
     } catch (error) {
       console.error('❌ Failed to join room:', error);
@@ -243,6 +235,14 @@ export function useSocket(token: string | null) {
 
   const leaveRoom = useCallback(async (roomId: string) => {
     try {
+      // Unsubscribe from Pusher channel
+      if (channelsRef.current[roomId]) {
+        channelsRef.current[roomId].unbind_all();
+        pusherRef.current?.unsubscribe(`private-help-request-${roomId}`);
+        delete channelsRef.current[roomId];
+      }
+
+      // Call API to leave room
       const response = await fetch(`${baseUrl}/chat/leave`, {
         method: 'POST',
         headers: {
@@ -256,7 +256,7 @@ export function useSocket(token: string | null) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      console.log('🚪 Left room:', roomId);
+      console.log('🚪 Left room via Pusher:', roomId);
       
     } catch (error) {
       console.error('❌ Failed to leave room:', error);
@@ -264,16 +264,32 @@ export function useSocket(token: string | null) {
     }
   }, [token, baseUrl]);
 
-  const handleReconnection = () => {
-    if (retryTimeoutRef.current) {
-      return; // Already attempting reconnection
-    }
+  const loadRoomMessages = async (roomId: string) => {
+    try {
+      const response = await fetch(`${baseUrl}/chat/${roomId}/messages`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const messages = await response.json();
+      setMessages(messages);
+    } catch (error) {
+      console.error('❌ Failed to load room messages:', error);
+    }
+  };
+
+  const handleReconnection = () => {
     setHealth(prev => {
       const newRetryAttempts = prev.retryAttempts + 1;
       
       if (newRetryAttempts >= prev.maxRetries) {
-        console.error('❌ Maximum reconnection attempts reached');
+        console.error('❌ Maximum Pusher reconnection attempts reached');
         return {
           ...prev,
           retryAttempts: newRetryAttempts,
@@ -281,34 +297,36 @@ export function useSocket(token: string | null) {
         };
       }
 
-      // Exponential backoff: 2s, 4s, 8s, 16s, 32s
-      const delay = Math.min(2000 * Math.pow(2, newRetryAttempts - 1), 32000);
+      console.log(`🔄 Pusher reconnection attempt ${newRetryAttempts}/${prev.maxRetries}`);
       
-      console.log(`🔄 Scheduling reconnection attempt ${newRetryAttempts}/${prev.maxRetries} in ${delay}ms`);
-      
-      retryTimeoutRef.current = setTimeout(() => {
-        retryTimeoutRef.current = undefined;
-        startPolling();
-      }, delay);
-
+      // Pusher handles reconnection automatically, we just track attempts
       return {
         ...prev,
         retryAttempts: newRetryAttempts,
-        lastError: `Reconnecting in ${delay}ms (attempt ${newRetryAttempts}/${prev.maxRetries})`
+        lastError: `Reconnecting (attempt ${newRetryAttempts}/${prev.maxRetries})`
       };
     });
   };
 
   const cleanup = () => {
-    console.log('🧹 Cleaning up HTTP polling connection...');
+    console.log('🧹 Cleaning up Pusher connection...');
     
-    // Clear timeouts and intervals
-    if (retryTimeoutRef.current) {
-      clearTimeout(retryTimeoutRef.current);
-      retryTimeoutRef.current = undefined;
+    // Unsubscribe from all channels
+    Object.keys(channelsRef.current).forEach(channelName => {
+      const channel = channelsRef.current[channelName];
+      if (channel) {
+        channel.unbind_all();
+      }
+    });
+
+    // Disconnect Pusher
+    if (pusherRef.current) {
+      pusherRef.current.disconnect();
+      pusherRef.current = null;
     }
     
-    stopPolling();
+    // Clear channel references
+    channelsRef.current = {};
     
     // Reset state
     setHealth({
@@ -318,17 +336,15 @@ export function useSocket(token: string | null) {
       maxRetries: 5,
       lastError: null,
       connectionTime: null,
-      pollingInterval: 5000
+      pusherState: 'disconnected'
     });
     
     setMessages([]);
     setNotifications([]);
-    lastMessageTimestamp.current = null;
-    lastNotificationTimestamp.current = null;
   };
 
   const forceReconnect = () => {
-    console.log('🔄 Forcing reconnection...');
+    console.log('🔄 Forcing Pusher reconnection...');
     
     setHealth(prev => ({
       ...prev,
@@ -340,16 +356,17 @@ export function useSocket(token: string | null) {
     
     if (token) {
       setTimeout(() => {
-        initializeConnection();
+        initializePusher();
       }, 1000);
     }
   };
 
   const getConnectionHealth = () => health;
 
-  // Simulate socket-like interface for backward compatibility
+  // Enhanced socket-like interface with Pusher functionality
   const socketLikeInterface = {
     connected: health.connected,
+    pusherState: health.pusherState,
     emit: (event: string, data?: any) => {
       if (event === 'send_message') {
         return sendMessage(data.content, data.roomId);
@@ -360,11 +377,11 @@ export function useSocket(token: string | null) {
       }
     },
     on: (event: string, callback: (data: any) => void) => {
-      // For backward compatibility, we'll handle these events differently
-      console.log(`Event listener registered for: ${event}`);
+      // For backward compatibility with existing components
+      console.log(`Event listener registered for: ${event} (handled by Pusher)`);
     },
     off: (event: string, callback?: (data: any) => void) => {
-      console.log(`Event listener removed for: ${event}`);
+      console.log(`Event listener removed for: ${event} (handled by Pusher)`);
     },
   };
 
@@ -378,6 +395,7 @@ export function useSocket(token: string | null) {
     leaveRoom,
     forceReconnect,
     getConnectionHealth,
-    cleanup
+    cleanup,
+    pusher: pusherRef.current
   };
 }

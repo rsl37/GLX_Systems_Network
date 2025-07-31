@@ -104,10 +104,10 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
     setIsSending(true);
     
     try {
-      // Use the new HTTP-based sendMessage function
+      // Use the new Pusher-based sendMessage function
       await sendMessage(newMessage.trim(), `help_request_${helpRequestId}`);
       
-      // Optimistically add the message to the UI
+      // Optimistically add the message to the UI (Pusher will deliver the real message)
       const optimisticMessage: Message = {
         id: Date.now(), // Temporary ID
         message: newMessage.trim(),
@@ -119,10 +119,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
       setMessages(prev => [...prev, optimisticMessage]);
       setNewMessage('');
       
-      // Refresh messages after a short delay to get the actual message from server
-      setTimeout(() => {
-        fetchMessages();
-      }, 500);
+      // No need to manually refresh - Pusher will deliver the real message
       
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -266,9 +263,9 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
           </Button>
         </form>
         
-        {/* Polling Indicator */}
+        {/* Pusher Status */}
         <div className="text-xs text-gray-500 text-center">
-          Messages update every {health.pollingInterval / 1000} seconds
+          Real-time via Pusher • {health.pusherState}
         </div>
       </CardContent>
     </Card>

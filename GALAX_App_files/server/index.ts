@@ -63,6 +63,9 @@ import {
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
 
+// Import Pusher for real-time functionality
+import Pusher from "pusher";
+
 import { logEnvironmentStatus } from './envValidation.js';
 import { postQuantumCrypto } from './postQuantumCrypto.js';
 
@@ -105,6 +108,17 @@ console.log("Data directory:", process.env.DATA_DIRECTORY || "./data");
 
 // Validate environment variables for production deployment
 logEnvironmentStatus();
+
+// Initialize Pusher for real-time communication
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID || '',
+  key: process.env.PUSHER_KEY || '',
+  secret: process.env.PUSHER_SECRET || '',
+  cluster: process.env.PUSHER_CLUSTER || 'us2',
+  useTLS: true
+});
+
+console.log('🔌 Pusher initialized for real-time communication');
 
 const app = express();
 const server = createServer(app);
@@ -220,13 +234,13 @@ app.use("/api", apiLimiter);
 
 // System endpoints
 app.get("/api/realtime/health", (req, res) => {
-  console.log("🔌 Realtime health check - HTTP polling active");
+  console.log("🔌 Realtime health check - Pusher active");
   res.json({ 
     success: true, 
     data: { 
-      type: "HTTP polling",
-      interval: "5000ms",
-      status: "active"
+      type: "Pusher WebSocket",
+      status: "active",
+      cluster: process.env.PUSHER_CLUSTER || 'us2'
     } 
   });
 });
@@ -395,6 +409,47 @@ app.use("/api/crisis-alerts", crisisRoutes);
 app.use("/api", miscRoutes);
 app.use("/api/help-requests", createHelpRequestRoutes(upload));
 
+// Pusher authentication endpoint
+app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { socket_id, channel_name } = req.body;
+    
+    if (!socket_id || !channel_name) {
+      return sendError(res, 'Socket ID and channel name are required', 400);
+    }
+
+    // Validate that user can access this channel
+    if (channel_name.startsWith('private-user-notifications')) {
+      // User can access their own notification channel
+      const auth = pusher.authorizeChannel(socket_id, channel_name, {
+        user_id: req.userId!.toString(),
+        user_info: {
+          username: req.username
+        }
+      });
+      res.json(auth);
+    } else if (channel_name.startsWith('private-help-request-')) {
+      // Extract help request ID and verify user has access
+      const helpRequestId = channel_name.replace('private-help-request-', '');
+      
+      // TODO: Add proper authorization check for help requests
+      // For now, allow all authenticated users
+      const auth = pusher.authorizeChannel(socket_id, channel_name, {
+        user_id: req.userId!.toString(),
+        user_info: {
+          username: req.username
+        }
+      });
+      res.json(auth);
+    } else {
+      return sendError(res, 'Unauthorized channel access', 403);
+    }
+  } catch (error) {
+    console.error('Pusher auth error:', error);
+    sendError(res, 'Authentication failed', 500);
+  }
+});
+
 // Chat API endpoints for HTTP polling (replacing WebSocket functionality)
 app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) => {
   try {
@@ -463,13 +518,39 @@ app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
         message: content.trim(),
         created_at: new Date().toISOString()
       })
-      .returning('id')
+      .returning(['id', 'created_at'])
       .executeTakeFirst();
+
+    // Get user info for the message
+    const user = await db
+      .selectFrom('users')
+      .select(['username'])
+      .where('id', '=', req.userId!)
+      .executeTakeFirst();
+
+    const messageData = {
+      id: result?.id.toString(),
+      content: content.trim(),
+      userId: req.userId!,
+      username: user?.username || 'Unknown',
+      timestamp: result?.created_at,
+      type: 'chat',
+      roomId: roomId
+    };
+
+    // Broadcast message via Pusher to all users in the help request channel
+    try {
+      await pusher.trigger(`private-help-request-${helpRequestId}`, 'new-message', messageData);
+      console.log('✅ Message broadcasted via Pusher to channel:', `private-help-request-${helpRequestId}`);
+    } catch (pusherError) {
+      console.error('❌ Pusher broadcast error:', pusherError);
+      // Don't fail the request if Pusher fails, message is still saved
+    }
 
     res.json({
       success: true,
       messageId: result?.id.toString(),
-      timestamp: new Date().toISOString()
+      timestamp: result?.created_at
     });
   } catch (error) {
     console.error('Failed to send message:', error);
@@ -510,7 +591,34 @@ app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { roomId } = req.body;
     
-    // In HTTP polling, "joining" just means acknowledging the room
+    // Extract help request ID
+    const helpRequestId = roomId?.startsWith('help_request_') 
+      ? parseInt(roomId.replace('help_request_', ''))
+      : null;
+
+    if (!helpRequestId) {
+      return sendError(res, 'Invalid room ID', 400);
+    }
+
+    // Get user info
+    const user = await db
+      .selectFrom('users')
+      .select(['username'])
+      .where('id', '=', req.userId!)
+      .executeTakeFirst();
+
+    // Broadcast user joined event via Pusher
+    try {
+      await pusher.trigger(`private-help-request-${helpRequestId}`, 'user-joined', {
+        userId: req.userId!,
+        username: user?.username || 'Unknown',
+        timestamp: new Date().toISOString()
+      });
+      console.log('✅ User join broadcasted via Pusher');
+    } catch (pusherError) {
+      console.error('❌ Pusher join broadcast error:', pusherError);
+    }
+
     console.log(`User ${req.userId} joined room: ${roomId}`);
     
     res.json({
@@ -528,7 +636,34 @@ app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => 
   try {
     const { roomId } = req.body;
     
-    // In HTTP polling, "leaving" just means acknowledging the departure
+    // Extract help request ID
+    const helpRequestId = roomId?.startsWith('help_request_') 
+      ? parseInt(roomId.replace('help_request_', ''))
+      : null;
+
+    if (!helpRequestId) {
+      return sendError(res, 'Invalid room ID', 400);
+    }
+
+    // Get user info
+    const user = await db
+      .selectFrom('users')
+      .select(['username'])
+      .where('id', '=', req.userId!)
+      .executeTakeFirst();
+
+    // Broadcast user left event via Pusher
+    try {
+      await pusher.trigger(`private-help-request-${helpRequestId}`, 'user-left', {
+        userId: req.userId!,
+        username: user?.username || 'Unknown',
+        timestamp: new Date().toISOString()
+      });
+      console.log('✅ User leave broadcasted via Pusher');
+    } catch (pusherError) {
+      console.error('❌ Pusher leave broadcast error:', pusherError);
+    }
+
     console.log(`User ${req.userId} left room: ${roomId}`);
     
     res.json({
@@ -581,6 +716,23 @@ app.get("/api/notifications", authenticateToken, async (req: AuthRequest, res) =
     sendError(res, 'Failed to fetch notifications', 500);
   }
 });
+
+interface NotificationData {
+  id: string;
+  type: string;
+  message: string;
+  timestamp: string;
+}
+
+// Helper function to send notifications via Pusher
+async function sendNotificationViaPusher(userId: number, notificationData: NotificationData) {
+  try {
+    await pusher.trigger(`private-user-notifications-${userId}`, 'new-notification', notificationData);
+    console.log('✅ Notification sent via Pusher to user:', userId);
+  } catch (error) {
+    console.error('❌ Failed to send notification via Pusher:', error);
+  }
+}
 
 // Legacy KYC endpoints (keeping for compatibility)
 app.post(
