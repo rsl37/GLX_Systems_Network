@@ -10,9 +10,61 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db } from './database.js';
 import { Request, Response, NextFunction } from 'express';
+import { validateJWTSecret } from './config/security.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key';
+// Secure JWT secret configuration with validation
+function getSecureJWTSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  if (!secret) {
+    if (isProduction) {
+      throw new Error('JWT_SECRET environment variable is required in production');
+    }
+    console.warn('⚠️ JWT_SECRET not set - using insecure default for development');
+    return 'insecure-dev-secret-change-in-production-32chars-minimum';
+  }
+  
+  // Validate secret strength
+  const validation = validateJWTSecret(secret, isProduction);
+  if (!validation.isValid) {
+    const message = `JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`;
+    if (isProduction) {
+      throw new Error(message);
+    }
+    console.warn(`⚠️ ${message}`);
+  }
+  
+  return secret;
+}
+
+function getSecureJWTRefreshSecret(): string {
+  const secret = process.env.JWT_REFRESH_SECRET;
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  if (!secret) {
+    if (isProduction) {
+      throw new Error('JWT_REFRESH_SECRET environment variable is required in production');
+    }
+    console.warn('⚠️ JWT_REFRESH_SECRET not set - using insecure default for development');
+    return 'insecure-dev-refresh-secret-change-in-production-32chars-minimum';
+  }
+  
+  // Validate secret strength
+  const validation = validateJWTSecret(secret, isProduction);
+  if (!validation.isValid) {
+    const message = `JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`;
+    if (isProduction) {
+      throw new Error(message);
+    }
+    console.warn(`⚠️ ${message}`);
+  }
+  
+  return secret;
+}
+
+const JWT_SECRET = getSecureJWTSecret();
+const JWT_REFRESH_SECRET = getSecureJWTRefreshSecret();
 const TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
