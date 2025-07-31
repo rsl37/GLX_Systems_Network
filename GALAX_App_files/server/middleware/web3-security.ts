@@ -453,7 +453,7 @@ export class Web3SecurityMiddleware {
       event => event.fromAddress === address
     ).length;
     
-    return Math.min(10000, recentTxs * 100); // Cap at 10k voting power
+    return Math.min(MAX_VOTING_POWER, recentTxs * VOTING_POWER_MULTIPLIER); // Cap at max voting power
   }
 
   /**
