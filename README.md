@@ -28,6 +28,21 @@ npm run deployment:check   # Check deployment readiness
 npm run build              # Build the application
 npm start                  # Start development server
 
+# Additional commands available from root:
+npm run test               # Run all tests
+npm run test:api           # Run API tests
+npm run test:socket        # Run Socket.IO tests  
+npm run test:watch         # Run tests in watch mode
+npm run test:coverage      # Run tests with coverage
+npm run test:ui            # Run tests with UI
+npm run test:e2e           # Run end-to-end tests
+npm run test:env           # Test environment configuration
+npm run health:log         # Run health and location logging
+npm run branch:analyze     # Analyze branch status
+npm run logs:all           # Run all logging scripts
+npm run dashboard          # Run monitoring dashboard
+npm run monitor:full       # Full monitoring suite
+
 # Option 2: Run commands from app directory
 cd GALAX_App_files
 npm install
