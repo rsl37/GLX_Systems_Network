@@ -8,7 +8,6 @@
 
 import express from "express";
 import { createServer } from "http";
-import { WebSocketServer } from "ws";
 import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
@@ -27,6 +26,7 @@ import governanceRoutes from "./routes/governance.js";
 import crisisRoutes from "./routes/crisis.js";
 import miscRoutes from "./routes/misc.js";
 import createHelpRequestRoutes from "./routes/helpRequests.js";
+import createRealtimeRoutes from "./routes/realtime.js";
 
 // Import KYC functions (keeping legacy for now)
 import {
@@ -61,7 +61,7 @@ import {
 } from "./middleware/validation.js";
 
 // Import WebSocket manager
-import WebSocketManager from "./webSocketManager.js";
+import RealtimeManager from "./realtimeManager.js";
 
 // Import stablecoin functionality
 import stablecoinRoutes from "./stablecoin/routes.js";
@@ -117,18 +117,9 @@ console.log("Data directory:", process.env.DATA_DIRECTORY || "./data");
 const app = express();
 const server = createServer(app);
 
-// WebSocket Server configuration
-console.log("🔌 Setting up WebSocket server...");
-
-const wss = new WebSocketServer({ 
-  server,
-  path: '/websocket',
-  clientTracking: true,
-  maxPayload: 1e6, // 1MB
-});
-
-// Initialize WebSocket manager
-const webSocketManager = new WebSocketManager(wss);
+// Initialize realtime manager (Vercel-compatible)
+console.log("📡 Setting up realtime manager...");
+const realtimeManager = new RealtimeManager();
 
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({
@@ -173,14 +164,14 @@ const upload = multer({
 // Health check endpoint (no security restrictions for monitoring)
 app.get("/api/health", (req, res) => {
   console.log("🏥 Health check requested");
-  const webSocketHealth = webSocketManager.getHealthStatus();
+  const realtimeHealth = realtimeManager.getHealthStatus();
 
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
     dataDirectory: process.env.DATA_DIRECTORY || "./data",
-    websockets: webSocketHealth,
+    realtime: realtimeHealth,
   });
 });
 
@@ -250,9 +241,9 @@ app.use("/api", validateApiVersion);
 app.use("/api", apiLimiter);
 
 // System endpoints
-app.get("/api/websocket/health", (req, res) => {
-  const health = webSocketManager.getHealthStatus();
-  console.log("🔌 WebSocket health check:", health);
+app.get("/api/realtime/health", (req, res) => {
+  const health = realtimeManager.getHealthStatus();
+  console.log("📡 Realtime health check:", health);
   res.json({ success: true, data: health });
 });
 
@@ -406,7 +397,8 @@ app.use("/api/user", userRoutes);
 app.use("/api/proposals", governanceRoutes);
 app.use("/api/crisis-alerts", crisisRoutes);
 app.use("/api", miscRoutes);
-app.use("/api/help-requests", createHelpRequestRoutes(upload, webSocketManager));
+app.use("/api/help-requests", createHelpRequestRoutes(upload, realtimeManager));
+app.use("/api/realtime", createRealtimeRoutes(realtimeManager));
 
 // Legacy KYC endpoints (keeping for compatibility)
 app.post(
@@ -588,14 +580,14 @@ app.use(errorHandler);
 
 // Graceful shutdown handling
 process.on("SIGTERM", async () => {
-  console.log("🔌 SIGTERM received, shutting down gracefully...");
-  await webSocketManager.shutdown();
+  console.log("📡 SIGTERM received, shutting down gracefully...");
+  realtimeManager.shutdown();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-  console.log("🔌 SIGINT received, shutting down gracefully...");
-  await webSocketManager.shutdown();
+  console.log("📡 SIGINT received, shutting down gracefully...");
+  realtimeManager.shutdown();
   process.exit(0);
 });
 
@@ -667,10 +659,10 @@ export async function startServer(port: number) {
     }
 
     server.listen(port, () => {
-      console.log(`✅ API Server with WebSocket running on port ${port}`);
+      console.log(`✅ API Server with realtime features running on port ${port}`);
       console.log(`🌍 Health check: http://localhost:${port}/api/health`);
       console.log(`🗄️ Database test: http://localhost:${port}/api/test-db`);
-      console.log(`🔌 WebSocket health: http://localhost:${port}/api/websocket/health`);
+      console.log(`📡 Realtime health: http://localhost:${port}/api/realtime/health`);
       console.log(`💰 Stablecoin API: http://localhost:${port}/api/stablecoin/status`);
       console.log(`🛡️ Security Admin: http://localhost:${port}/api/admin/security/status`);
       console.log(`🔒 Security: COMPREHENSIVE PROTECTION ACTIVE`);

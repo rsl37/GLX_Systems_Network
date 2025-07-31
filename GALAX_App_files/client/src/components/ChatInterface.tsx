@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useRealtime } from '../hooks/useRealtime';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,26 +35,26 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const token = localStorage.getItem('token');
-  const webSocketConnection = useWebSocket(token);
+  const realtimeConnection = useRealtime(token);
 
   useEffect(() => {
     fetchMessages();
   }, [helpRequestId]);
 
   useEffect(() => {
-    if (webSocketConnection && webSocketConnection.health.authenticated) {
-      webSocketConnection.joinHelpRequest(helpRequestId);
+    if (realtimeConnection && realtimeConnection.health.authenticated) {
+      realtimeConnection.joinRoom(helpRequestId);
       
-      const unsubscribe = webSocketConnection.on('new_message', (message: Message) => {
+      realtimeConnection.onMessage('new_message', (message: Message) => {
         setMessages(prev => [...prev, message]);
       });
       
       return () => {
-        unsubscribe();
-        webSocketConnection.leaveHelpRequest(helpRequestId);
+        realtimeConnection.offMessage('new_message');
+        realtimeConnection.leaveRoom(helpRequestId);
       };
     }
-  }, [webSocketConnection, helpRequestId, webSocketConnection?.health.authenticated]);
+  }, [realtimeConnection, helpRequestId, realtimeConnection?.health.authenticated]);
 
   useEffect(() => {
     scrollToBottom();
@@ -84,13 +84,19 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
     }
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || !webSocketConnection || !webSocketConnection.health.authenticated) return;
+    if (!newMessage.trim() || !realtimeConnection || !realtimeConnection.health.authenticated) return;
 
-    webSocketConnection.sendChatMessage(helpRequestId, newMessage.trim());
-    setNewMessage('');
+    const result = await realtimeConnection.sendMessage(helpRequestId, newMessage.trim());
+    
+    if (result.success) {
+      setNewMessage('');
+    } else {
+      console.error('Failed to send message:', result.error);
+      // Could show error toast here
+    }
   };
 
   const scrollToBottom = () => {

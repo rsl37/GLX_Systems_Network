@@ -13,12 +13,12 @@ import { uploadLimiter } from '../middleware/rateLimiter.js';
 import { validateHelpRequest, validateFileUpload } from '../middleware/validation.js';
 import { fileUploadSecurity } from '../middleware/security.js';
 import { db } from '../database.js';
-import WebSocketManager from '../webSocketManager.js';
+import RealtimeManager from '../realtimeManager.js';
 
 const router = Router();
 
 // Create help request
-export function createHelpRequestRoutes(upload: any, webSocketManager: WebSocketManager) {
+export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeManager) {
   router.post(
     '/',
     authenticateToken,
@@ -88,7 +88,7 @@ export function createHelpRequestRoutes(upload: any, webSocketManager: WebSocket
         }
 
         // Broadcast new help request to all connected users
-        webSocketManager.broadcast({
+        realtimeManager.broadcast({
           type: 'new_help_request',
           data: {
             id: helpRequest.id,
@@ -306,7 +306,7 @@ export function createHelpRequestRoutes(upload: any, webSocketManager: WebSocket
         .execute();
 
       // Broadcast status update
-      webSocketManager.broadcastToRoom(`help_request_${helpRequestId}`, {
+      realtimeManager.broadcastToRoom(`help_request_${helpRequestId}`, {
         type: 'status_update',
         data: {
           id: helpRequestId,
