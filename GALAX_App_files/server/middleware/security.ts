@@ -274,7 +274,7 @@ export const corsConfig = {
 
       // Additional trusted origins from environment
       ...(process.env.TRUSTED_ORIGINS
-        ? process.env.TRUSTED_ORIGINS.split(",")
+        ? process.env.TRUSTED_ORIGINS.split(",").map(o => o.trim())
         : []),
     ].filter(Boolean); // Remove undefined/null values
 
@@ -295,21 +295,47 @@ export const corsConfig = {
       return callback(null, true);
     }
 
-    // Check against allowed origins
-    if (origin && allowedOrigins.includes(origin)) {
-      callback(null, true);
+    // Check against allowed origins (with pattern matching for Vercel domains)
+    if (origin) {
+      let isAllowed = allowedOrigins.includes(origin);
+      
+      // If not in explicit list, check Vercel deployment patterns in production
+      if (!isAllowed && isProduction) {
+        const vercelPatterns = [
+          /^https:\/\/galax-civic-networking-.*\.vercel\.app$/,
+          /^https:\/\/galax-.*\.vercel\.app$/,
+          /^https:\/\/.*galax.*\.vercel\.app$/,
+        ];
+        
+        isAllowed = vercelPatterns.some(pattern => pattern.test(origin));
+        
+        if (isAllowed) {
+          console.log(`✅ CORS: Allowed Vercel deployment pattern: ${origin}`);
+        }
+      }
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`🚨 CORS blocked origin: ${origin}`, {
+          allowedOrigins: allowedOrigins.length,
+          configuredOrigins: {
+            CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? "[set]" : "[unset]",
+            FRONTEND_URL: process.env.FRONTEND_URL ? "[set]" : "[unset]",
+            TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS ? "[set]" : "[unset]",
+          },
+          isProduction,
+          timestamp: new Date().toISOString(),
+        });
+        callback(new Error("Not allowed by CORS"));
+      }
     } else {
-      console.warn(`🚨 CORS blocked origin: ${origin}`, {
-        allowedOrigins: allowedOrigins.length,
-        configuredOrigins: {
-          CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? "[set]" : "[unset]",
-          FRONTEND_URL: process.env.FRONTEND_URL ? "[set]" : "[unset]",
-          TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS ? "[set]" : "[unset]",
-        },
+      // Explicitly handle missing `origin` headers in non-development environments
+      console.warn("🚨 CORS: Missing origin header in non-development environment", {
         isProduction,
         timestamp: new Date().toISOString(),
       });
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("Origin header missing"));
     }
   },
 

@@ -67,7 +67,7 @@ import SocketManager from "./socketManager.js";
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
 
-import { postQuantumCrypto } from "./postQuantumCrypto.js";
+import { logEnvironmentStatus } from './envValidation.js';
 
 // Import comprehensive security systems
 import {
@@ -105,6 +105,9 @@ dotenv.config();
 console.log("🚀 Starting server initialization...");
 console.log("Environment:", process.env.NODE_ENV);
 console.log("Data directory:", process.env.DATA_DIRECTORY || "./data");
+
+// Validate environment variables for production deployment
+logEnvironmentStatus();
 
 const app = express();
 const server = createServer(app);
@@ -268,6 +271,85 @@ app.get("/api/test-db", async (req, res) => {
 
 app.get("/api/version", getApiVersionInfo);
 app.get("/api/deployment/ready", getDeploymentReadiness);
+
+// Environment debug endpoint for production troubleshooting
+app.get("/api/debug/environment", (req, res) => {
+  try {
+    const envInfo = {
+      nodeEnv: process.env.NODE_ENV,
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      jwtSecretLength: process.env.JWT_SECRET?.length || 0,
+      hasClientOrigin: !!process.env.CLIENT_ORIGIN,
+      clientOrigin: process.env.CLIENT_ORIGIN || "[not set]",
+      hasFrontendUrl: !!process.env.FRONTEND_URL,
+      frontendUrl: process.env.FRONTEND_URL || "[not set]",
+      hasTrustedOrigins: !!process.env.TRUSTED_ORIGINS,
+      trustedOriginsCount: process.env.TRUSTED_ORIGINS?.split(',').length || 0,
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
+      databaseType: process.env.DATABASE_URL?.includes('postgres') ? 'postgresql' : 
+                   process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'unknown',
+      hasSmtpConfig: !!(process.env.SMTP_HOST && process.env.SMTP_USER),
+      timestamp: new Date().toISOString(),
+      platform: 'vercel',
+      dataDirectory: process.env.DATA_DIRECTORY || "./data",
+    };
+
+    console.log('🔍 Environment debug request:', {
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      origin: req.get('Origin'),
+    });
+
+    res.json({
+      success: true,
+      data: envInfo,
+    });
+  } catch (error) {
+    console.error('❌ Environment debug error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: "Environment check failed", statusCode: 500 },
+    });
+  }
+});
+
+// CORS debug endpoint
+app.get("/api/debug/cors", (req, res) => {
+  try {
+    const corsInfo = {
+      origin: req.get('Origin') || '[no origin header]',
+      userAgent: req.get('User-Agent') || '[no user agent]',
+      referer: req.get('Referer') || '[no referer]',
+      host: req.get('Host') || '[no host]',
+      forwardedHost: req.get('X-Forwarded-Host') || '[no forwarded host]',
+      forwardedProto: req.get('X-Forwarded-Proto') || '[no forwarded proto]',
+      requestUrl: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+      timestamp: new Date().toISOString(),
+      ip: req.ip,
+    };
+
+    console.log('🌐 CORS debug request:', corsInfo);
+
+    res.json({
+      success: true,
+      data: {
+        message: "CORS debug information",
+        request: corsInfo,
+        environment: {
+          nodeEnv: process.env.NODE_ENV,
+          clientOrigin: process.env.CLIENT_ORIGIN || '[not set]',
+          trustedOrigins: process.env.TRUSTED_ORIGINS || '[not set]',
+        }
+      },
+    });
+  } catch (error) {
+    console.error('❌ CORS debug error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: "CORS debug failed", statusCode: 500 },
+    });
+  }
+});
 
 // Monitoring endpoints
 app.get("/api/monitoring/health", authenticateToken, getHealthMetrics);
