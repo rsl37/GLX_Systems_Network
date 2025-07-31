@@ -192,7 +192,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('No authentication token received');
+        throw new Error('Login was successful but authentication token was not provided. Please try logging in again.');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -219,7 +219,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('No authentication token received');
+        throw new Error('Wallet login was successful but authentication token was not provided. Please try again.');
       }
     } catch (error) {
       console.error('Wallet login error:', error);
@@ -252,7 +252,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('No authentication token received');
+        throw new Error('Registration was successful but authentication token was not provided. Please try logging in.');
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -279,7 +279,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('No authentication token received');
+        throw new Error('Wallet registration was successful but authentication token was not provided. Please try logging in.');
       }
     } catch (error) {
       console.error('Wallet registration error:', error);

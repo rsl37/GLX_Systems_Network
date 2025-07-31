@@ -36,7 +36,7 @@ export function TwoFactorSetupPage() {
 
   const parseApiResponse = async (response: Response) => {
     if (!response.ok) {
-      let errorMessage = 'Request failed';
+      let errorMessage = 'Failed to process two-factor authentication request';
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {

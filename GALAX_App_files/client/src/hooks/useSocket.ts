@@ -115,7 +115,7 @@ export function useSocket(token: string | null) {
       setHealth(prev => ({
         ...prev,
         authenticated: false,
-        lastError: error.message || 'Authentication failed'
+        lastError: error.message || 'Socket authentication failed. Please refresh the page and try again.'
       }));
     });
 
@@ -125,7 +125,7 @@ export function useSocket(token: string | null) {
       setHealth(prev => ({
         ...prev,
         connected: false,
-        lastError: error.message || 'Connection failed'
+        lastError: error.message || 'Unable to connect to the server. Please check your internet connection.'
       }));
       
       handleReconnection();
@@ -202,7 +202,7 @@ export function useSocket(token: string | null) {
       console.error('❌ Socket error:', error);
       setHealth(prev => ({
         ...prev,
-        lastError: error.message || 'Socket error occurred'
+        lastError: error.message || 'A communication error occurred. Please refresh the page if issues persist.'
       }));
     });
 

@@ -96,6 +96,23 @@ export const ErrorMessages = {
   REGISTRATION_PHONE_INVALID: 'Please enter a valid phone number',
   REGISTRATION_PASSWORD_WEAK: 'Password must be at least 8 characters long',
   REGISTRATION_USERNAME_INVALID: 'Username must be 3-30 characters and contain only letters, numbers, and underscores',
+  // Login-specific error messages
+  LOGIN_ACCOUNT_NOT_FOUND: 'No account found with this email, phone number, or username',
+  LOGIN_INVALID_PASSWORD: 'The password you entered is incorrect',
+  LOGIN_ACCOUNT_LOCKED: 'Your account has been temporarily locked due to multiple failed login attempts. Please try again later or reset your password',
+  LOGIN_EMAIL_NOT_VERIFIED: 'Please verify your email address before logging in. Check your inbox for a verification email',
+  LOGIN_PHONE_NOT_VERIFIED: 'Please verify your phone number before logging in. Check your messages for a verification code',
+  LOGIN_WALLET_NOT_FOUND: 'No account found with this wallet address',
+  LOGIN_WALLET_CONNECTION_FAILED: 'Failed to connect to your wallet. Please check your MetaMask connection and try again',
+  LOGIN_NETWORK_ERROR: 'Unable to connect to our servers. Please check your internet connection and try again',
+  LOGIN_SERVER_ERROR: 'Our servers are experiencing issues. Please try again in a few moments',
+  LOGIN_RATE_LIMITED: 'Too many login attempts. Please wait a few minutes before trying again',
+  // Wallet-specific error messages
+  WALLET_NOT_DETECTED: 'MetaMask wallet not detected. Please install MetaMask browser extension to continue',
+  WALLET_CONNECTION_DENIED: 'Wallet connection was denied. Please approve the connection request in MetaMask',
+  WALLET_ACCOUNT_UNAVAILABLE: 'No wallet accounts available. Please unlock your MetaMask wallet and try again',
+  WALLET_NETWORK_MISMATCH: 'Please switch to the correct network in your MetaMask wallet',
+  WALLET_TRANSACTION_REJECTED: 'Transaction was rejected in MetaMask wallet',
 } as const;
 
 /**

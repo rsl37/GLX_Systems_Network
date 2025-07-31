@@ -41,7 +41,14 @@ export function LoginPage() {
       await login(identifier, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      // Provide more specific error messages
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Unable to log in. Please check your credentials and try again. If the problem persists, contact support.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -57,12 +64,27 @@ export function LoginPage() {
         if (accounts.length > 0) {
           await loginWithWallet(accounts[0]);
           navigate('/dashboard');
+        } else {
+          setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
         }
       } else {
-        setError('MetaMask not detected. Please install MetaMask to use wallet login.');
+        setError('MetaMask wallet not detected. Please install MetaMask browser extension to continue.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wallet login failed');
+      // Handle specific wallet errors
+      if (err instanceof Error) {
+        if (err.message.includes('User rejected')) {
+          setError('Wallet connection was denied. Please approve the connection request in MetaMask.');
+        } else if (err.message.includes('wallet_requestPermissions')) {
+          setError('MetaMask permissions denied. Please approve wallet access to continue.');
+        } else {
+          setError(err.message);
+        }
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Failed to connect to your wallet. Please check your MetaMask connection and try again.');
+      }
     } finally {
       setIsLoading(false);
     }

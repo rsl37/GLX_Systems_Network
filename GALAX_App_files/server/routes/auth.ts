@@ -238,7 +238,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
       if ((req as any).lockoutKey) {
         recordFailedAttempt((req as any).lockoutKey);
       }
-      return sendError(res, ErrorMessages.INVALID_CREDENTIALS, StatusCodes.UNAUTHORIZED);
+      return sendError(res, ErrorMessages.LOGIN_ACCOUNT_NOT_FOUND, StatusCodes.UNAUTHORIZED);
     }
 
     // Verify password for email/phone login
@@ -248,7 +248,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
         if ((req as any).lockoutKey) {
           recordFailedAttempt((req as any).lockoutKey);
         }
-        return sendError(res, ErrorMessages.INVALID_CREDENTIALS, StatusCodes.UNAUTHORIZED);
+        return sendError(res, ErrorMessages.LOGIN_ACCOUNT_NOT_FOUND, StatusCodes.UNAUTHORIZED);
       }
 
       const isValid = await comparePassword(password, user.password_hash);
@@ -257,7 +257,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
         if ((req as any).lockoutKey) {
           recordFailedAttempt((req as any).lockoutKey);
         }
-        return sendError(res, ErrorMessages.INVALID_CREDENTIALS, StatusCodes.UNAUTHORIZED);
+        return sendError(res, ErrorMessages.LOGIN_INVALID_PASSWORD, StatusCodes.UNAUTHORIZED);
       }
     }
 
@@ -278,7 +278,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
     });
   } catch (error) {
     console.error('❌ Login error:', error);
-    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+    sendError(res, ErrorMessages.LOGIN_SERVER_ERROR, StatusCodes.INTERNAL_ERROR);
   }
 });
 

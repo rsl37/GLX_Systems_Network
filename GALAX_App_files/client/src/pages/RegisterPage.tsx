@@ -71,8 +71,8 @@ export function RegisterPage() {
       } else if (typeof err === 'string') {
         setError(err);
       } else {
-        // Enhanced fallback message with more context
-        setError('Registration failed. Please check your information and try again. If the problem persists, contact support.');
+        // Enhanced fallback message with more actionable guidance
+        setError('Unable to create account. Please verify your information is correct and try again. If the problem persists, contact support.');
       }
     } finally {
       setIsLoading(false);
@@ -81,7 +81,7 @@ export function RegisterPage() {
 
   const handleWalletRegister = async () => {
     if (!username.trim()) {
-      setError('Username is required');
+      setError('Please enter a username to register with your wallet.');
       return;
     }
 
@@ -94,18 +94,26 @@ export function RegisterPage() {
         if (accounts.length > 0) {
           await registerWithWallet(accounts[0], username);
           navigate('/dashboard');
+        } else {
+          setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
         }
       } else {
-        setError('MetaMask not detected. Please install MetaMask to use wallet registration.');
+        setError('MetaMask wallet not detected. Please install MetaMask browser extension to continue.');
       }
     } catch (err) {
-      // Provide more helpful error messages for wallet registration
+      // Handle specific wallet registration errors
       if (err instanceof Error) {
-        setError(err.message);
+        if (err.message.includes('User rejected')) {
+          setError('Wallet connection was denied. Please approve the connection request in MetaMask.');
+        } else if (err.message.includes('wallet_requestPermissions')) {
+          setError('MetaMask permissions denied. Please approve wallet access to continue.');
+        } else {
+          setError(err.message);
+        }
       } else if (typeof err === 'string') {
         setError(err);
       } else {
-        setError('Wallet registration failed. Please check your MetaMask connection and try again.');
+        setError('Failed to register with your wallet. Please check your MetaMask connection and try again.');
       }
     } finally {
       setIsLoading(false);
