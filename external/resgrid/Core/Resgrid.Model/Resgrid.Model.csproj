@@ -1,0 +1,94 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Configurations>Debug;Release;Docker</Configurations>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\caf\Emergency_call.caf">
+      <Link>Audio\Emergency_call.caf</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\caf\High_call.caf">
+      <Link>Audio\High_call.caf</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\caf\Low_call.caf">
+      <Link>Audio\Low_call.caf</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\caf\Medium_call.caf">
+      <Link>Audio\Medium_call.caf</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Call_closed.wav">
+      <Link>Audio\Call_closed.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Call_updated.wav">
+      <Link>Audio\Call_updated.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Emergency_call.wav">
+      <Link>Audio\Emergency_call.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\High_call.wav">
+      <Link>Audio\High_call.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Low_call.wav">
+      <Link>Audio\Low_call.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Medium_call.wav">
+      <Link>Audio\Medium_call.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\New_Call.wav">
+      <Link>Audio\New_Call.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\New_Chat.wav">
+      <Link>Audio\New_Chat.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\New_Message.wav">
+      <Link>Audio\New_Message.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\New_shift.wav">
+      <Link>Audio\New_shift.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\New_Training.wav">
+      <Link>Audio\New_Training.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Notification.wav">
+      <Link>Audio\Notification.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Personnel_Staffing_Updated.wav">
+      <Link>Audio\Personnel_Staffing_Updated.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Personnel_Status_Updated.wav">
+      <Link>Audio\Personnel_Status_Updated.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Trouble_Alert_emergency_.wav">
+      <Link>Audio\Trouble_Alert_emergency_.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Unit_Notice.wav">
+      <Link>Audio\Unit_Notice.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Unit_Status_Updated.wav">
+      <Link>Audio\Unit_Status_Updated.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Upcoming_shift.wav">
+      <Link>Audio\Upcoming_shift.wav</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\Web\Resgrid.Web\wwwroot\audio\wav\Upcoming_Training.wav">
+      <Link>Audio\Upcoming_Training.wav</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Common\Resgrid-PubPriv-KeyFile.snk" Link="Resgrid-PubPriv-KeyFile.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
+    <PackageReference Include="GeoJSON.Net" Version="1.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+    <PackageReference Include="MimeKit" Version="4.11.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.2.1" />
+    <PackageReference Include="protobuf-net" Version="3.2.46" />
+    <PackageReference Include="Stripe.net" Version="47.4.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Resgrid.Config\Resgrid.Config.csproj" />
+    <ProjectReference Include="..\Resgrid.Framework\Resgrid.Framework.csproj" />
+  </ItemGroup>
+</Project>

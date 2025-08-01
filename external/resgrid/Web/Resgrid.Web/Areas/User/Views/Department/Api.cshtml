@@ -1,0 +1,61 @@
+﻿@model Resgrid.Web.Areas.User.Models.DepartmentSettingsModel
+@inject IStringLocalizer<Resgrid.Localization.Areas.User.Department.Department> localizer
+@{
+  ViewBag.Title = "Resgrid | " + @localizer["ApiSettingsHeader"];
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-4">
+    <h2>@localizer["ApiSettingsHeader"]</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a asp-controller="Home" asp-action="Dashboard" asp-route-area="User">@commonLocalizer["HomeModule"]</a>
+      </li>
+      <li class="active">
+        <strong>@localizer["ApiSettingsHeader"]</strong>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="wrapper wrapper-content">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div class="form-horizontal">
+            <h5>@localizer["RssActiveCallFeedHeader"]</h5>
+            <p>
+                @localizer["RssActiveCallFeedInfo"]
+            </p>
+            @if (String.IsNullOrEmpty(Model.ActiveCallRssKey))
+			{
+              <p>
+                  @localizer["RssActiveCallNoFeedInfo"]
+              </p>
+
+              <fieldset class="form-actions">
+                <a class="btn btn-large btn-inverse" href="@Url.Action("ProvisionActiveCallRssKey", "Department", new { area = "User" })">@localizer["Provision"]</a>
+              </fieldset>
+			}
+			else
+			{
+              <h4>Your Active Call Feed Urls are</h4>
+              <dl class="dl-horizontal">
+                <dt>RSS 2.0</dt>
+                <dd><a href="https://api.resgrid.com/api/v4/Feeds/GetActiveCallsAsRSS?key=@Model.ActiveCallRssKey">https://api.resgrid.com/api/v4/Feeds/GetActiveCallsAsRSS?key=@Model.ActiveCallRssKey</a></dd>
+              </dl>
+              <fieldset class="form-actions">
+                <a class="btn btn-mini btn-danger" data-confirm="@localizer["RegenerateWarning"]" href="@Url.Action("ProvisionActiveCallRssKey", "Department", new { area = "User" })">@localizer["Regenerate"]</a>
+              </fieldset>
+			}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@section Scripts
+{
+
+}

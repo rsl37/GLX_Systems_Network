@@ -1,0 +1,175 @@
+﻿@model Resgrid.Web.Models.AccountViewModels.RegisterViewModel
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Resgrid.Localization.Account.Login> localizer
+@{
+    ViewData["Title"] = "Resgrid | " + @localizer["RegisterHeader"];
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    @Html.Partial("_StylePartial")
+
+    <style>
+        .dropcap {
+            color: #1F8AC4;
+            float: left;
+            font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 75px;
+            line-height: 60px;
+            padding-top: 4px;
+            padding-right: 8px;
+            padding-left: 3px;
+        }
+    </style>
+    <link rel="stylesheet" href="~/clib/validate-password-requirements/jquery.passwordRequirements.css" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body class="gray-bg">
+
+    <div class="loginColumns animated fadeInDown">
+        <div class="row">
+
+            <div class="col-md-6">
+                <div style="text-align: center;">
+                    <a asp-controller="Home" asp-action="Index"><img src="~/images/Resgrid_JustText.png" style="width: 200px;" /></a>
+                </div>
+                <div style="font-size: 16px !important; padding-top:4px;padding-bottom: 18px;">
+                    <p>
+                       @localizer["RegisterText1"]
+                    </p>
+                    <div class="row" style="padding-bottom:12px;">
+                        <div class="col-sm-12">
+                            <span class="dropcap">1</span>@localizer["RegisterText2"]
+                        </div>
+                    </div>
+                    <div class="row" style="padding-bottom:12px;">
+                        <div class="col-sm-12">
+                            <span class="dropcap">2</span>@localizer["RegisterText3"]
+                        </div>
+                    </div>
+                    <div class="row" style="padding-bottom:12px;">
+                        <div class="col-sm-12">
+                            <span class="dropcap">3</span>@localizer["RegisterText4"]
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" style="font-size: 14px !important;">
+                            @localizer["RegisterText5"]
+                        </div>
+                    </div>
+                </div>
+
+                <div class='alert alert-info'>
+                    @localizer["SignUpTerms1"] Resgrid's <a href="@Resgrid.Config.UrlsConfig.TermsOfUseUrl" target="_blank">@localizer["TermsOfUse"]</a> &
+                    <a href="@Resgrid.Config.UrlsConfig.PrivacyPolicyUrl" target="_blank">@localizer["PrivacyPolicy"]</a>
+                </div>
+
+                <p>
+                    <small><a href="@Resgrid.Config.UrlsConfig.HomeUrl">@localizer["GoBack"]</a></small>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <div class="ibox-content">
+                    <form id="registrationForm" class="m-t" role="form" asp-controller="Account" asp-action="Register" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="@localizer["FirstName"]" asp-for="FirstName" required="">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="@localizer["LastName"]" asp-for="LastName" required="">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="@localizer["EmailAddress"]" asp-for="Email" required="">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="@localizer["DepartmentName"]" asp-for="DepartmentName" required="">
+                        </div>
+                        <div class="form-group" style="vertical-align: central;">
+                            <label asp-for="DepartmentType" class="col-md-6 control-label" style="padding-top: 10px; padding-left: 2px;"></label>
+                            <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; padding-top: 10px; padding-bottom: 20px; float: right; text-align: right;">
+                                <select asp-for="DepartmentType" asp-items="ViewBag.DepartmentTypes" style="padding-left: 0; width: 100%;"></select>
+                                <span asp-validation-for="DepartmentType" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="@localizer["Username"]" asp-for="Username" required="">
+                        </div>
+                        <div class="form-group">
+                            <span>@localizer["PasswordHelp"]</span>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Password" class="pr-password form-control" placeholder="@localizer["Password"]" required="" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="ConfirmPassword" class="pr-password form-control" placeholder="@localizer["ConfirmPassword"]" required="" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="g-recaptcha" data-sitekey="@Model.SiteKey"></div>
+                            <input asp-for="GoogleReCaptchaResponse" type="hidden" required="" />
+                        </div>
+
+
+                        <button id="registerButton" type="submit" class="btn btn-primary block full-width m-b">@localizer["Resgister"]</button>
+
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                    </form>
+                    <p class="m-t">
+
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                Resgrid, LLC.
+            </div>
+            <div class="col-md-6 text-right">
+                <small>© @DateTime.Now.Year</small>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="~/lib/jquery/jquery.min.js"><\/script>')</script>
+    <script src="~/clib/ujs/jquery-ujs.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/select2/dist/js/select2.min.js"></script>
+    <script src="~/clib/bootstrap-wizard/bootstrap-wizard.min.js"></script>
+    <script src="~/clib/validate-password-requirements/jquery.passwordRequirements.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+            $(document).ready(function () {
+                $(".pr-password").passwordRequirements({
+                  numCharacters: 8,
+                  useLowercase: true,
+                  useUppercase: true,
+                  useNumbers: true,
+                  useSpecial: false
+                });
+
+              $(document).on('submit', '#registrationForm', function () {
+                var crep = $('#g-recaptcha-response').val();
+                $('#GoogleReCaptchaResponse').val(crep);
+
+                if ($(this).valid()) {
+                  // On submit disable form submit button
+                  $('#registerButton').prop('disabled', true);
+                }
+
+                return true;
+              });
+            });
+    </script>
+</body>
+</html>

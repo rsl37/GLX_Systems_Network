@@ -1,0 +1,606 @@
+﻿@model Resgrid.Web.Areas.User.Models.Logs.NewLogView
+@inject IStringLocalizer<Resgrid.Localization.Areas.User.Logs.Logs> localizer
+@{
+	ViewBag.Title = "Resgrid | " + @localizer["NewLogHeader"];
+}
+
+@section Styles
+{
+	<style>
+		.k-select {
+			line-height: 1.5em !important;
+		}
+	</style>
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-4">
+		<h2>@localizer["NewLogHeader"]</h2>
+		<ol class="breadcrumb">
+			<li>
+				<a asp-controller="Home" asp-action="Dashboard" asp-route-area="User">@commonLocalizer["HomeModule"]</a>
+			</li>
+			<li>
+				<a asp-controller="Logs" asp-action="Index" asp-route-area="User">@commonLocalizer["LogsModule"]</a>
+			</li>
+			<li class="active">
+				<strong>@localizer["NewLogHeader"]</strong>
+			</li>
+		</ol>
+	</div>
+</div>
+
+<form id="newLogForm" class="form-horizontal" role="form" asp-controller="Logs" asp-action="NewLog" asp-route-area="User" method="post" onsubmit="resgrid.logs.newlog.onNewLogSubmit()">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="wrapper wrapper-content">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>@localizer["NewLogHeader"]</h5>
+					</div>
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-md-8 col-md-offset-1">
+								@if (!String.IsNullOrEmpty(Model.Message))
+								{
+									<div class="alert alert-success">
+										@Model.Message
+									</div>
+								}
+								<span class="alert-error">
+									@Html.AntiForgeryToken()
+									@Html.HiddenFor(m => m.CallId)
+									@Html.HiddenFor(m => m.Log.LogId)
+								</span>
+
+								@if (!String.IsNullOrEmpty(Model.ErrorMessage))
+								{
+									<span class="alert alert-danger">
+										@Model.ErrorMessage
+									</span>
+								}
+								@localizer["NewLogInfo"]
+								<div asp-validation-summary="All" class="text-danger"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@commonLocalizer["General"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@commonLocalizer["Type"]
+						</label>
+						<div class="col-sm-10">
+							@Html.DropDownListFor(m => m.LogType, Model.Types, new { @class = "sl2", style="width:150px;" })
+						</div>
+					</div>
+					<div class="form-group call-related">
+						<label class="col-sm-2 control-label">
+							@commonLocalizer["Id"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-2" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.ExternalId, new { @class = "form-control call-validation" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group coroner-related">
+						<label class="col-sm-2 control-label">
+							@localizer["CaseNumber"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-2" style="padding-left: 0;">
+								<input type="text" id="caseNumber" name="caseNumber" class="form-control coroner-validation" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@commonLocalizer["Station"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-2" style="padding-left: 0;padding-bottom: 6px;">
+								@Html.DropDownListFor(m => m.Log.StationGroupId, new SelectList(Model.Stations, "DepartmentGroupId", "Name"), new { @class = "sl2", style = "width:200px;" })
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="callLogInformation">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@commonLocalizer["Call"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@commonLocalizer["Call"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<div class="btn-group">
+									<a id="newCallOption" onclick=" resgrid.logs.newlog.newCall(); " class="btn btn-default active">@localizer["NewCall"]</a>
+									<a id="selectCallOption" onclick=" resgrid.logs.newlog.selectCall(); " class="btn btn-default">@localizer["SelectCall"]</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["CallName"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Call.Name, new { @class = "form-control call-validation", autofocus = "autofocus" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["CallPriority"]
+						</label>
+						<div class="col-sm-10">
+							@Html.DropDownListFor(m => m.CallPriority, Model.CallPriorities, new { })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@commonLocalizer["Type"]
+						</label>
+						<div class="col-sm-10">
+							@Html.DropDownListFor(m => m.Call.Type, Model.CallTypes, new { @style = "width: 360px;" })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["CallTimestamp"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Call.LoggedOn, new { @class = "form-control call-validation", onkeydown = "javascript:return false;", style="width:250px;" })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["NatureOfCall"]
+						</label>
+						<div class="col-sm-10">
+							<input type="hidden" asp-for="Call.NatureOfCall">
+
+							<div id="editor-container2" style="width:100%;height:250px">
+								@Html.Raw(Model.Call.NatureOfCall)
+							</div>
+
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["CallAddress"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Call.Address, new { @class = "form-control" })
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="trainingInformation" style="display: none;">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@localizer["Training"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["TrainingOrCourse"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.Course, new { @class = "form-control", autofocus = "autofocus" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["TrainingCode"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.CourseCode, new { @class = "form-control", autofocus = "autofocus" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["Instructors"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.Instructors, new { @class = "form-control", autofocus = "autofocus" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["Start"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Log.StartedOn, new { @class = "form-control training-validation", onkeydown = "javascript:return false;", data_val = "true", data_val_required = @localizer["TrainingStartError"] })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["End"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Log.EndedOn, new { @class = "form-control training-validation", onkeydown = "javascript:return false;", data_val = "true", data_val_required = @localizer["TrainingEndError"] })
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="workInformation" style="display: none;">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@localizer["WorkLog"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["Start"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Log.StartedOn, new { id = "workStartTime", @class = "form-control work-validation", onkeydown = "javascript:return false;", data_val = "true", data_val_required = @localizer["WorkLogStartRequired"] })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["End"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Log.EndedOn, new { id = "workEndTime", @class = "form-control work-validation", onkeydown = "javascript:return false;", data_val = "true", data_val_required = @localizer["WorkLogEndRequired"] })
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="meetingInformation" style="display: none;">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@localizer["Meeting"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["MeetingType"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.Type, new { @class = "form-control meeting-validation", data_val = "true", data_val_required = @localizer["MeetingTypeReq"] })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["Location"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.Location, new { @class = "form-control meeting-validation", data_val = "true", data_val_required = @localizer["MeetingLocationReq"] })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["PresidingPeople"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.Instructors, new { @class = "form-control" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["OtherAttendees"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.OtherPersonnel, new { @class = "form-control" })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["Start"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Log.StartedOn, new { id = "meetingStartedOn", @class = "form-control meeting-validation", onkeydown = "javascript:return false;", data_val = "true", data_val_required = @localizer["MeetingStartReq"] })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["End"]
+						</label>
+						<div class="col-sm-10">
+							@Html.TextBoxFor(m => m.Log.EndedOn, new { id = "meetingEndedOn", @class = "form-control meeting-validation", onkeydown = "javascript:return false;", data_val = "true", data_val_required = @localizer["MeetingEndReq"] })
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="coronerInformation" style="display: none;">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@localizer["Coroner"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["Date"]
+						</label>
+						<div class="col-sm-10">
+							<input type="text" id="coronerDate" name="coronerDate" class="form-control coroner-validation" onkeydown="javascript:return false;" data-val="true" data-val-required="@localizer["PronouncedDeceasedDateReq"]" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["PronouncedDeceasedBy"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.PronouncedDeceasedBy, new { @class = "form-control coroner-validation", data_val = "true", data_val_required = @localizer["PronouncedDeceasedByReq"] })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["BodyLocation"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								@Html.TextBoxFor(m => m.Log.BodyLocation, new { @class = "form-control coroner-validation", data_val = "true", data_val_required = @localizer["BodyLocationReq"] })
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["SeniorOIC"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<input type="text" id="coronerInstructors" name="coronerInstructors" class="form-control" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["DestinationLocation"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<input type="text" id="coronerDestination" name="coronerDestination" class="form-control" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["OthersHavingContact"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<input type="text" id="coronerOthers" name="coronerOthers" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" id="callbackInformation" style="display: none;">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@commonLocalizer["Call"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@commonLocalizer["Call"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<div class="btn-group">
+									<a id="selectCallOption" onclick=" resgrid.logs.newlog.selectCall(); " class="btn btn-default">@localizer["SelectCall"]</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["CallName"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<input class="form-control" id="CallbackCallName" readonly="true" type="text" value="">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@localizer["UnitsAndPersonnel"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div id="unitsList" class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["Units"]
+						</label>
+						<div class="col-sm-10">
+							<a id="selectUnit" onclick="resgrid.logs.newlog.showUnits();" class="btn btn-info">@localizer["AddUnitsToLog"]</a>
+							<div id="unitsContainer" class="col-xs-12">
+
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["Personnel"]
+						</label>
+						<div class="col-sm-10">
+							<div class="col-md-6" style="padding-left: 0;">
+								<select id="nonUnitPersonnel" name="nonUnitPersonnel"></select>
+								<br />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<span class="icon">
+						<i class="icon-reorder"></i>
+					</span>
+					<h5>@localizer["LogInfo"]</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group call-related">
+						<label class="col-sm-2 control-label">
+							@localizer["Condition"]
+						</label>
+						<div class="col-sm-10">
+							<input type="hidden" asp-for="Log.InitialReport">
+
+							<div id="editor-container4" style="width:100%; height: 250px;">
+								@Html.Raw(Model.Log.InitialReport)
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label required">
+							@localizer["Narrative"]
+						</label>
+						<div class="col-sm-10">
+							<input type="hidden" asp-for="Log.Narrative">
+
+							<div id="editor-container" style="width:100%;height:250px">
+								@Html.Raw(Model.Log.Narrative)
+							</div>
+						</div>
+					</div>
+					<div class="form-group call-related">
+						<label class="col-sm-2 control-label">
+							@localizer["Cause"]
+						</label>
+						<div class="col-sm-10">
+							<input type="hidden" asp-for="Log.Cause">
+
+							<div id="editor-container3" style="width:100%; height: 250px;">
+								@Html.Raw(Model.Log.Cause)
+							</div>
+						</div>
+					</div>
+					<div class="form-group call-related">
+						<label class="col-sm-2 control-label">
+							@localizer["Investigator"]
+						</label>
+						<div class="col-sm-10">
+							@Html.DropDownListFor(m => m.Log.InvestigatedByUserId, new SelectList(Model.Users, "Key", "Value"), new { @class = "sl2" })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">
+							@localizer["Attachments"]
+						</label>
+						<div class="col-sm-10">
+							<input name="files" id="files" type="file" multiple="multiple" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-4 col-sm-offset-2">
+							<a class="btn btn-white" asp-controller="Logs" asp-action="Index" asp-route-area="User">@commonLocalizer["Cancel"]</a>
+							<button class="btn btn-primary" type="submit">@commonLocalizer["Save"]</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+}
+
+<div class="callsWindow" id="callsWindow"></div>
+<div class="unitsWindow" id="unitsWindow"></div>
+
+@section Scripts
+{
+	<script src="~/js/app/internal/logs/resgrid.logs.newlog.js"></script>
+}

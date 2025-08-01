@@ -1,0 +1,48 @@
+﻿@using Resgrid.Model
+@using Resgrid.Web.Helpers
+@model Resgrid.Web.Areas.User.Models.Units.UnitsIndexView
+@{
+  ViewBag.Title = "Resgrid | Audit Logs";
+}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-4">
+    <h2>Audit Logs</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a asp-controller="Home" asp-action="Dashboard" asp-route-area="User">Home</a>
+      </li>
+      <li>
+        <a asp-controller="Security" asp-action="Index" asp-route-area="User">Security and Permissions</a>
+      </li>
+      <li class="active">
+        <strong>Audit Logs</strong>
+      </li>
+    </ol>
+  </div>
+</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+          <div class="ibox-title">
+            <h5>Audit Logs</h5>
+            <div class="ibox-tools">
+            </div>
+          </div>
+          <div class="ibox-content">
+            <div id="auditLogsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+@section Scripts
+{
+  <script id="auditCommand-template" type="text/x-kendo-template">
+    <a href="@Url.Action("ViewAudit", "Security", new { area = "User" })?auditLogId=#=AuditLogId#" class="btn btn-xs btn-info"><i class="icon-eye"></i><span class="hidden-xs"> View</span></a>
+  </script>
+
+  <script src="~/js/app/internal/security/resgrid.security.audits.js" type="text/javascript"></script>
+}

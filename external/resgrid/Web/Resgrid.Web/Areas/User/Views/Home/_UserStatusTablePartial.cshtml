@@ -1,0 +1,139 @@
+﻿@using System.Collections.ObjectModel
+@using Resgrid.Model
+@using Resgrid.Web.Helpers
+@model Resgrid.Web.Areas.User.Models.UserStatusTableModel
+@inject IStringLocalizer<Resgrid.Localization.Areas.User.Home.HomeDashboard> localizer
+
+<div class="table-responsive" style="overflow: visible;">
+	<table class='table table-striped'>
+		<tbody>
+			@foreach (var g in Model.UserStatusGroups.Where(x => x.Group != null && x.Group.ParentDepartmentGroupId == null))
+			{
+				var groupClass = "";
+				if (Model.UsersGroup != null && g.Group.Name == Model.UsersGroup.Name)
+				{
+					groupClass = "userGroup";
+				}
+
+				<tr class="info trheader @groupClass hidden-xs">
+					<td colspan="3">
+						<b>@g.Group.Name</b> <span class="sign"></span>
+					</td>
+					<td colspan="3" style="text-align: right;">
+						@if (ClaimsAuthorizationHelper.IsUserDepartmentOrGroupAdmin(g.Group.DepartmentGroupId) && Model.States == null)
+						{
+							<a class="btn btn-xs btn-default" data-confirm="@localizer["ConfirmSetStandByGroup"]@g.Group.Name" href="@Url.Action("ResetGroupToStandingBy", "Home", new {area = "User", groupId = g.Group.DepartmentGroupId})">@localizer["ResetGroupStandingBy"]</a>
+						}
+					</td>
+				</tr>
+
+				<tr>
+					<td><span class="user-info">@commonLocalizer["NameColumn"]</span></td>
+					<td><span class="user-info">@commonLocalizer["StaffingColumn"]</span></td>
+					<td><span class="user-info">@commonLocalizer["StatusColumn"]</span></td>
+					<td class="user-info">@commonLocalizer["EtaColumn"]</td>
+					<td class="hidden-xs"></td>
+					<td class="hidden-xs"></td>
+					<td class="hidden-xs"></td>
+				</tr>
+
+				if (g.UserStatuses.Any())
+				{
+					foreach (var u in g.UserStatuses)
+					{
+						<tr>
+							@Html.Partial("_UserStatusTableRowPartial", Tuple.Create(u.UserInfo.UserId, g.Group, u.CurrentStatus, u.CurrentStaffing, u.UserInfo.Name, u.UserInfo.RoleNames, Model))
+						</tr>
+
+					}
+				}
+
+				foreach (var g1 in Model.UserStatusGroups.Where(x => x.Group != null && x.Group.ParentDepartmentGroupId == g.Group.DepartmentGroupId))
+				{
+					<tr class="success">
+						<td colspan="3" style="padding-left: 20px;">
+							<b>@g1.Group.Name</b>
+						</td>
+						<td class="hidden-xs" colspan="3" style="text-align: right;">
+							@if (ClaimsAuthorizationHelper.IsUserDepartmentOrGroupAdmin(g1.Group.DepartmentGroupId) && Model.States == null)
+							{
+								<a class="btn btn-xs btn-default" data-confirm="@localizer["ConfirmSetStandByGroup"]@g.Group.Name" href="@Url.Action("ResetGroupToStandingBy", "Home", new { area = "User", groupId = g1.Group.DepartmentGroupId })">@localizer["ResetGroupStandingBy"]</a>
+							}
+						</td>
+					</tr>
+					<tr>
+						<td><span class="user-info">@commonLocalizer["NameColumn"]</span></td>
+						<td><span class="user-info">@commonLocalizer["StaffingColumn"]</span></td>
+						<td><span class="user-info">@commonLocalizer["StatusColumn"]</span></td>
+						<td class="hidden-xs"></td>
+						<td class="hidden-xs"></td>
+						<td class="hidden-xs"></td>
+					</tr>
+
+					if (g1.UserStatuses.Any())
+					{
+						foreach (var u in g1.UserStatuses)
+						{
+							<tr>
+								@Html.Partial("_UserStatusTableRowPartial", Tuple.Create(u.UserInfo.UserId, g1.Group, u.CurrentStatus, u.CurrentStaffing, u.UserInfo.Name, u.UserInfo.RoleNames, Model))
+							</tr>
+
+						}
+					}
+				}
+			}
+
+			@{
+			var unGroupedUsersGroup = Model.UserStatusGroups.FirstOrDefault(x => x.Group == null);
+			}
+
+			@if (unGroupedUsersGroup != null && unGroupedUsersGroup.UserStatuses.Any())
+			{
+				<tr class="info">
+					<td colspan="5">
+						<b>@commonLocalizer["UsersHeader"]</b>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="user-info">@commonLocalizer["NameColumn"]</span></td>
+					<td><span class="user-info">@commonLocalizer["StaffingColumn"]</span></td>
+					<td><span class="user-info">@commonLocalizer["StatusColumn"]</span></td>
+					<td class="hidden-xs"></td>
+					<td class="hidden-xs"></td>
+					<td class="hidden-xs"></td>
+				</tr>
+
+				foreach (var u in unGroupedUsersGroup.UserStatuses)
+				{
+					var dg = new DepartmentGroup();
+
+					<tr>
+						@Html.Partial("_UserStatusTableRowPartial", Tuple.Create(u.UserInfo.UserId, dg, u.CurrentStatus, u.CurrentStaffing, u.UserInfo.Name, u.UserInfo.RoleNames, Model))
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+</div>
+
+<script>
+	$('.trheader').click(function () {
+		var $this = $(this);
+		$(this).nextUntil('tr.trheader').slideToggle(100).promise().done(function () {
+			$this.find('span').text(function (_, value) {
+				return value == '-' ? '+' : '-';
+			});
+		});
+	});
+</script>
+<script type='text/javascript'>
+		//<![CDATA[
+		$(window).load(function () {
+			$('.submenu').hover(function () {
+				$(this).children('ul').removeClass('submenu-hide').addClass('submenu-show');
+			}, function () {
+				$(this).children('ul').removeClass('.submenu-show').addClass('submenu-hide');
+			}).find("a:first").append(" &raquo; ");
+		});
+		//]]>
+</script>

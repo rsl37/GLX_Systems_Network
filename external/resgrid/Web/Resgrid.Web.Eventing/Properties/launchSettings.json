@@ -1,0 +1,29 @@
+{
+  "profiles": {
+    "Resgrid.Web.Eventing": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "health/getcurrent",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:5003"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/health/getcurrent",
+      "publishAllPorts": true,
+      "useSSL": true
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:51713",
+      "sslPort": 44386
+    }
+  }
+}
