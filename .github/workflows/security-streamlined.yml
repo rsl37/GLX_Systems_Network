@@ -33,7 +33,6 @@ jobs:
           deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0,
             LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
             CDDL-1.0, CDDL-1.1
-          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
           comment-summary-in-pr: always
 
   security-analysis:
@@ -60,7 +59,7 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: 'GALAX_App_files/package-lock.json'
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files
@@ -74,7 +73,6 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript"
-          upload: true
 
   dependency-scan:
     name: Dependency Security
@@ -90,7 +88,7 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: 'GALAX_App_files/package-lock.json'
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files

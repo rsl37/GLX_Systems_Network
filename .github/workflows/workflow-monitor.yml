@@ -8,9 +8,8 @@ name: Workflow Health Monitor
   workflow_dispatch:
   workflow_run:
     workflows:
-      - "CI/CD Pipeline"
+      - "Comprehensive CI/CD Pipeline"
       - "Security Scan"
-      - "Quality & Performance"
     types: [completed]
 
 permissions:
@@ -36,9 +35,8 @@ jobs:
         with:
           script: |
             const workflows = [
-              'CI/CD Pipeline',
-              'Security Scan',
-              'Quality & Performance'
+              'Comprehensive CI/CD Pipeline',
+              'Security Scan'
             ];
             const results = [];
 
@@ -47,12 +45,10 @@ jobs:
                 // Try to find workflow by name first, fallback to ID mapping
                 let workflowId = workflowName.toLowerCase()
                   .replace(/[^a-z0-9]/g, '-');
-                if (workflowName === 'CI/CD Pipeline') {
-                  workflowId = 'main.yml';
+                if (workflowName === 'Comprehensive CI/CD Pipeline') {
+                  workflowId = 'comprehensive-checks.yml';
                 } else if (workflowName === 'Security Scan') {
                   workflowId = 'security-streamlined.yml';
-                } else if (workflowName === 'Quality & Performance') {
-                  workflowId = 'quality.yml';
                 }
 
                 const { data: runs } = await github.rest.actions
