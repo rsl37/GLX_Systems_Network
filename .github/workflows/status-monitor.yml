@@ -29,15 +29,19 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies
+      - name: Install dependencies for status check script
         run: |
+          mkdir -p temp-workspace
+          cd temp-workspace
+          npm init -y
           npm install @actions/core @actions/github
 
       - name: Run status check monitor
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_PATH: ./temp-workspace/node_modules
         run: |
-          node .github/scripts/check-status-updates.js
+          node .github/scripts/check-status-updates.cjs
 
       - name: Report status check issues
         if: github.event_name == 'workflow_run'
