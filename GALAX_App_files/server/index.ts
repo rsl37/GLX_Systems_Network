@@ -134,6 +134,10 @@ const pusher = new Pusher({
 
 console.log('🔌 Pusher initialized for real-time communication');
 
+// Initialize realtime manager
+const realtimeManager = new RealtimeManager();
+console.log('🔌 RealtimeManager initialized');
+
 const app = express();
 const server = createServer(app);
 
@@ -430,7 +434,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/proposals", governanceRoutes);
 app.use("/api/crisis-alerts", crisisRoutes);
 app.use("/api", miscRoutes);
-app.use("/api/help-requests", createHelpRequestRoutes(upload));
+app.use("/api/help-requests", createHelpRequestRoutes(upload, realtimeManager));
 
 // Pusher authentication endpoint
 app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) => {
