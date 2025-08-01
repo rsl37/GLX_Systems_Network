@@ -32,6 +32,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: './package-lock.json'
 
+      - name: Ensure cache directories exist
+        run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
+
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
