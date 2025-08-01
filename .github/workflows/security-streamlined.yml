@@ -1,6 +1,9 @@
 ---
 name: Security Scan
 
+# NOTE: For comprehensive license compliance checks, see license-compliance.yml workflow
+# This workflow focuses on security vulnerabilities and basic license restrictions
+
 'on':
   pull_request:
     branches: [main, develop, production]
