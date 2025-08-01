@@ -125,3 +125,7 @@ The email verification system is completely broken:
 - Address low-priority items after core fixes for better scalability and compliance.
 
 If you need a prioritized checklist or want details on how to fix specific bugs, let me know!
+
+// Copyright © 2025 GALAX Civic Networking.
+// Licensed under the PolyForm Shield License 1.0.0.
+// “GALAX” and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
