@@ -1,16 +1,19 @@
 import express from 'express';
 import { createServer } from 'http';
+import RealtimeManager from '../../server/realtimeManager.js';
 
 // Test server setup utility (Socket.IO removed for Vercel compatibility)
 export class TestServer {
   public app: express.Application;
   public server: any;
+  public realtimeManager: RealtimeManager;
   public port: number;
   public baseUrl: string;
 
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
+    this.realtimeManager = new RealtimeManager();
     this.port = 0; // Let system assign available port
     this.baseUrl = '';
   }
@@ -30,7 +33,8 @@ export class TestServer {
   }
 
   async stop(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      this.realtimeManager.shutdown();
       this.server.close(() => {
         resolve();
       });

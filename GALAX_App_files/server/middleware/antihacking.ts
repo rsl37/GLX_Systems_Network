@@ -711,7 +711,7 @@ export const enhancedSecurityHeaders = (
   res.setHeader("X-Honeypot-System", "active");
   res.setHeader(
     "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains; preload",
+    "max-age=31536000; includeSubDomains; preload", // 1 year = 31536000 seconds
   );
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");

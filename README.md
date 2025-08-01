@@ -65,12 +65,78 @@ npm run build:production
 # Run all tests
 npm test
 
+# Run security tests
+npm run test:security
+
 # Run E2E tests
 npm run test:e2e
 
 # Run with coverage
 npm run test:coverage
+
+# Run security audit
+npm run security:audit
+
+# Full security scan
+npm run security:scan
 ```
+
+---
+
+## 🔒 Security
+
+GALAX implements comprehensive security measures to protect against current and emerging threats, including zero-day vulnerabilities.
+
+### Security Features
+
+#### WebSocket Security
+- **WSS (WebSocket Secure)** encryption for all real-time communications
+- **Rate limiting** for connections and messages
+- **Cross-Site WebSocket Hijacking (CSWH)** protection
+- **Input validation** and sanitization for all messages
+- **Authentication tokens** for WebSocket connections
+
+#### AI/MCP Security
+- **Prompt injection detection** to prevent AI manipulation
+- **Model integrity verification** with cryptographic signatures
+- **AI audit logging** for suspicious activity monitoring
+- **Input/output sanitization** for AI interactions
+- **Rate limiting** for AI requests
+
+#### Web3 Security
+- **Smart contract validation** before deployment
+- **Transaction monitoring** for governance systems
+- **Multi-signature wallet support** for community funds
+- **Post-quantum cryptography** for future-proofing
+- **Real-time blockchain monitoring**
+
+#### Infrastructure Security
+- **JWT authentication** with secure token management
+- **Password hashing** with bcrypt
+- **Security headers** with Helmet.js
+- **CORS protection** for API endpoints
+- **Dependency scanning** with automated updates
+
+### Security Testing
+
+Run security tests to validate implementations:
+
+```bash
+# WebSocket security tests
+npm run test:security -- websocket-security
+
+# AI security tests  
+npm run test:security -- ai-security
+
+# Full security audit
+npm run security:audit
+```
+
+### Reporting Security Issues
+
+Report security vulnerabilities through [GitHub Security Advisories](https://github.com/rsl37/GALAX_Civic_Networking_App/security/advisories/new).
+
+**Please do not report security vulnerabilities in public issues.**
 
 ---
 

@@ -206,7 +206,7 @@ class CivicMCPServer {
       governance: {
         mayor: 'Jane Smith',
         city_council_members: 7,
-        next_election: 'November 2024',
+        next_election: 'November 2025',
         budget: '$45.2M annual budget'
       }
     };
@@ -259,21 +259,21 @@ class CivicMCPServer {
     const mockEvents = [
       {
         name: 'Town Hall Meeting',
-        date: '2024-02-15',
+        date: '2025-08-15',
         time: '7:00 PM',
         location: 'City Hall Auditorium',
         description: 'Monthly town hall meeting to discuss city issues and budget'
       },
       {
         name: 'Community Clean-up Day',
-        date: '2024-02-22',
+        date: '2025-08-22',
         time: '9:00 AM',
         location: 'Central Park',
         description: 'Volunteer event to clean up local parks and green spaces'
       },
       {
         name: 'Public Budget Hearing',
-        date: '2024-03-01',
+        date: '2025-09-01',
         time: '6:30 PM',
         location: 'City Council Chambers',
         description: 'Public hearing on proposed city budget for next fiscal year'

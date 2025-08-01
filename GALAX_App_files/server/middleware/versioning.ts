@@ -231,7 +231,7 @@ export const getApiVersionInfo = (req: Request, res: Response): void => {
           version: API_VERSIONS.v1,
           status: 'supported',
           documentation: '/docs/api/v1',
-          release_date: '2024-01-01',
+          release_date: '2025-01-01',
           features: ['Authentication', 'Help Requests', 'Crisis Alerts', 'Governance', 'Stablecoin']
         }
       },

@@ -30,7 +30,6 @@ const RECOMMENDED_ENV_VARS = [
   'JWT_REFRESH_SECRET',
   'ENCRYPTION_MASTER_KEY',
   'DATABASE_URL',     // Production database connection
-  'SOCKET_PATH',      // Custom Socket.IO path
   'FRONTEND_URL',     // Legacy frontend URL support
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
 ];
@@ -539,26 +538,6 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'fail',
         message: 'CLIENT_ORIGIN is not a valid URL format',
         details: { error: (error as Error).message }
-      });
-    }
-  }
-
-  // Validate SOCKET_PATH format if provided
-  const socketPath = process.env.SOCKET_PATH;
-  if (socketPath) {
-    if (socketPath.startsWith('/') && socketPath.length > 1) {
-      results.push({
-        check: 'SOCKET_PATH Format',
-        status: 'pass',
-        message: 'SOCKET_PATH is properly formatted',
-        details: { path: socketPath }
-      });
-    } else {
-      results.push({
-        check: 'SOCKET_PATH Format',
-        status: 'warning',
-        message: 'SOCKET_PATH should start with / and have additional path components',
-        details: { path: socketPath }
       });
     }
   }

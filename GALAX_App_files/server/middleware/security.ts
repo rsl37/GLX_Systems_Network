@@ -64,8 +64,8 @@ export const securityHeaders = helmet({
       ],
       connectSrc: [
         "'self'",
-        "ws:", // WebSocket connections
-        "wss:", // Secure WebSocket connections
+        // WebSocket protocols removed - using SSE instead 
+        // "ws:", "wss:", 
         "https://api.openstreetmap.org", // OpenStreetMap API
         "https://tile.openstreetmap.org", // OpenStreetMap tiles
       ],
@@ -242,7 +242,7 @@ export const corsConfig = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void,
   ) => {
-    const isDevelopment = process.env.NODE_ENV === "development";
+    const isDevelopment = process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined;
     const isProduction = process.env.NODE_ENV === "production";
     const isTest = process.env.NODE_ENV === "test";
 
@@ -251,8 +251,12 @@ export const corsConfig = {
       ...(isDevelopment
         ? [
             "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3002",
             "http://localhost:5173",
             "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001", 
+            "http://127.0.0.1:3002",
             "http://127.0.0.1:5173",
           ]
         : []),

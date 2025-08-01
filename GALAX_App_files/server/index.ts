@@ -26,6 +26,7 @@ import governanceRoutes from "./routes/governance.js";
 import crisisRoutes from "./routes/crisis.js";
 import miscRoutes from "./routes/misc.js";
 import createHelpRequestRoutes from "./routes/helpRequests.js";
+import createRealtimeRoutes from "./routes/realtime.js";
 
 // Import KYC functions (keeping legacy for now)
 import {
@@ -58,6 +59,9 @@ import {
   validateEndpointSecurity,
   validateJsonPayload,
 } from "./middleware/validation.js";
+
+// Import realtime manager
+import RealtimeManager from "./realtimeManager.js";
 
 // Import stablecoin functionality
 import stablecoinRoutes from "./stablecoin/routes.js";
@@ -101,6 +105,14 @@ import { postQuantumCrypto } from "./postQuantumCrypto.js";
 
 // Import deployment validation
 import { getDeploymentReadiness } from "./deployment-validation.js";
+
+// Import page verification system
+import {
+  generatePageVerificationToken,
+  requirePageVerification,
+  createAuthCorsConfig,
+  PAGE_VERIFICATION_CONFIG,
+} from "./middleware/pageVerification.js";
 
 dotenv.config();
 
@@ -180,7 +192,16 @@ app.get("/api/health", (req, res) => {
 
 // Security middleware stack
 app.use(securityHeaders);
-app.use(cors(corsConfig));
+
+// Main CORS configuration - exclude auth routes as they have their own CORS with page verification
+app.use((req, res, next) => {
+  // Skip main CORS for auth routes - they use createAuthCorsConfig with page verification
+  if (req.path.startsWith('/api/auth')) {
+    return next();
+  }
+  cors(corsConfig)(req, res, next);
+});
+
 app.use(validateIP);
 app.use(requestLogger);
 
@@ -403,8 +424,8 @@ app.post("/api/monitoring/errors", async (req, res): Promise<void> => {
 // Stablecoin API routes
 app.use("/api/stablecoin", stablecoinRoutes);
 
-// Mount modular routes
-app.use("/api/auth", authRoutes);
+// Mount modular routes with enhanced auth security
+app.use("/api/auth", cors(createAuthCorsConfig()), requirePageVerification, authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/proposals", governanceRoutes);
 app.use("/api/crisis-alerts", crisisRoutes);
@@ -906,7 +927,7 @@ app.use(
     setHeaders: (res, filePath) => {
       res.setHeader("X-Content-Type-Options", "nosniff");
       res.setHeader("Content-Disposition", "inline");
-      res.setHeader("Cache-Control", "public, max-age=31536000");
+      res.setHeader("Cache-Control", "public, max-age=31536000"); // 1 year = 31536000 seconds
     },
   }),
 );
@@ -1009,7 +1030,7 @@ export async function startServer(port: number) {
       console.log(`   🧠 Behavioral Analysis: ENABLED`);
       console.log(`   🔐 Rate Limiting & Account Lockout: ENABLED`);
       console.log(`🚀 Performance: Database indexes and connection optimizations active`);
-      console.log(`🧹 Socket management: Enhanced with connection cleanup and memory management`);
+      console.log(`🧹 Realtime management: Enhanced SSE connections with cleanup and memory management`);
     });
   } catch (err) {
     console.error("💥 Failed to start server:", err);
