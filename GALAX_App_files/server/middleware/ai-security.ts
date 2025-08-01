@@ -260,7 +260,7 @@ export class AIMCPSecurityMiddleware {
         // Verify hash if model data is provided
         const hash = crypto.createHash('sha256').update(modelData).digest('hex');
         // Compare the computed hash against known good hashes
-        const knownGoodHashes = this.config.allowedModelHashes;
+        const knownGoodHashes = this.config.knownGoodHashes || [];
         
         // If we have known good hashes, check against them
         if (knownGoodHashes.length > 0) {

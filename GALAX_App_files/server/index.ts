@@ -63,9 +63,6 @@ import {
 // Import realtime manager
 import RealtimeManager from "./realtimeManager.js";
 
-// Initialize realtime manager
-const realtimeManager = new RealtimeManager();
-
 // Import stablecoin functionality
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
@@ -135,7 +132,6 @@ const pusher = new Pusher({
   useTLS: true
 });
 
-
 // Initialize realtime manager
 const realtimeManager = new RealtimeManager();
 
@@ -143,9 +139,6 @@ console.log('🔌 RealtimeManager initialized');
 
 const app = express();
 const server = createServer(app);
-
-// Initialize realtime manager
-const realtimeManager = new RealtimeManager();
 
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({

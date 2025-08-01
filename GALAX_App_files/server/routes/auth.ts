@@ -85,29 +85,18 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
     const existingUser = await db
       .selectFrom('users')
       .select(['id', 'email', 'phone', 'username', 'wallet_address'])
-      .where((eb) => eb.or([
-        email ? eb('email', '=', email) : eb('id', '=', -1), // Never matches if email is null
-        phone ? eb('phone', '=', phone) : eb('id', '=', -1), // Never matches if phone is null
-        eb('username', '=', username),
-        walletAddress ? eb('wallet_address', '=', walletAddress) : eb('id', '=', -1) // Never matches if walletAddress is null
-      ]))
-      .executeTakeFirst();
-
-    let conflictField = null;
-    let conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
-
-    const existingUser = await db
-      .selectFrom('users')
-      .select(['id', 'email', 'phone', 'username', 'wallet_address'])
       .where((eb) => {
         const conditions = [];
         if (email) conditions.push(eb('email', '=', email));
         if (phone) conditions.push(eb('phone', '=', phone));
-        if (username) conditions.push(eb('username', '=', username));
+        conditions.push(eb('username', '=', username));
         if (walletAddress) conditions.push(eb('wallet_address', '=', walletAddress));
         return eb.or(conditions);
       })
       .executeTakeFirst();
+
+    let conflictField = null;
+    let conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
 
     if (existingUser) {
       console.log('❌ Registration failed: User already exists', {
