@@ -319,7 +319,12 @@ validate_license_documentation() {
         echo "✅ THIRD_PARTY_LICENSES.md exists" >> "$MAIN_REPORT"
         
         # Check last modification time
-        local last_modified=$(stat -c %Y "$PROJECT_ROOT/THIRD_PARTY_LICENSES.md")
+        local last_modified
+        if [[ "$(uname)" == "Darwin" ]]; then
+            last_modified=$(stat -f %m "$PROJECT_ROOT/THIRD_PARTY_LICENSES.md")
+        else
+            last_modified=$(stat -c %Y "$PROJECT_ROOT/THIRD_PARTY_LICENSES.md")
+        fi
         local days_old=$(( ($(date +%s) - last_modified) / 86400 ))
         
         echo "Last updated: $days_old days ago" >> "$MAIN_REPORT"
