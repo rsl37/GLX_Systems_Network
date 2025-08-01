@@ -1,12 +1,10 @@
+#!/usr/bin/env node
 /*
  * Copyright © 2025 GALAX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
  * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
-
-
-#!/usr/bin/env node
 
 // Test script to demonstrate TRUSTED_ORIGINS security validation
 import { validateEnvironmentVariables } from '../dist/server/deployment-validation.js';
