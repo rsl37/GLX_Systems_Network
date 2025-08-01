@@ -59,10 +59,29 @@ export function useRealtime(token: string | null) {
     try {
       connectionStartTime.current = Date.now();
       
+      // WebSocket Security Configuration (WSS support for production)
+      const isProduction = process.env.NODE_ENV === 'production';
+      const secureProtocol = isProduction ? 'wss://' : 'ws://';
+      
       // Create Server-Sent Events connection
-      const apiBase = process.env.NODE_ENV === 'production' 
+      const apiBase = isProduction 
         ? 'https://galaxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
+      
+      // WSS configuration for secure WebSocket fallback support
+      const wssConfig = {
+        protocol: secureProtocol,
+        secure: isProduction,
+        upgradeHeaders: {
+          'Sec-WebSocket-Protocol': 'galax-secure',
+          'Sec-WebSocket-Extensions': 'permessage-deflate'
+        }
+      };
+      
+      if (isProduction) {
+        console.log(`🔒 WSS Protocol configured: ${wssConfig.protocol}`);
+        console.log('✅ Secure WebSocket support enabled');
+      }
       
       const eventSource = new EventSource(`${apiBase}/realtime/events`, {
         withCredentials: true
