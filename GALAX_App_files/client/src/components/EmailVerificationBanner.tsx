@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -93,7 +93,7 @@ export function EmailVerificationBanner() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success || response.ok) {
         setResendSuccess(true);
         setTimeout(() => setResendSuccess(false), 5000);
@@ -135,7 +135,7 @@ export function EmailVerificationBanner() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button
                   onClick={resendVerification}
@@ -149,7 +149,7 @@ export function EmailVerificationBanner() {
                     'Resend Email'
                   )}
                 </Button>
-                
+
                 <Button
                   onClick={() => setIsHidden(true)}
                   variant="ghost"
@@ -160,7 +160,7 @@ export function EmailVerificationBanner() {
                 </Button>
               </div>
             </div>
-            
+
             {resendSuccess && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -172,7 +172,7 @@ export function EmailVerificationBanner() {
                 <span className="text-sm">Verification email sent successfully!</span>
               </motion.div>
             )}
-            
+
             {error && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}

@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 import * as React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Wallet, 
-  Shield, 
+import {
+  User,
+  Mail,
+  Phone,
+  Wallet,
+  Shield,
   Key,
   Award,
   Crown,
@@ -59,21 +59,21 @@ interface UserBadgesProps {
 export function UserBadges({ user, className = '' }: UserBadgesProps) {
   const getBadges = (): BadgeInfo[] => {
     const signupMethod = user.signup_method || 'email'; // Default to email if not specified
-    
+
     // Count verified authentication methods
     const verifiedMethods = [
       user.email_verified && user.email,
       user.phone_verified && user.phone,
       user.wallet_address
     ].filter(Boolean).length;
-    
+
     // Count total available authentication methods
     const totalMethods = [
       user.email,
       user.phone,
       user.wallet_address
     ].filter(Boolean).length;
-    
+
     // Check if original signup method is verified
     let originalMethodVerified = false;
     switch (signupMethod) {
@@ -87,13 +87,13 @@ export function UserBadges({ user, className = '' }: UserBadgesProps) {
         originalMethodVerified = !!user.wallet_address;
         break;
     }
-    
+
     // Check if user has added one other form of verification
     const hasOneOtherForm = totalMethods > 1;
-    
+
     // Check if user has all three forms of verification
     const hasAllThreeForms = totalMethods === 3;
-    
+
     // Check if user qualifies for Master Verifier
     const isMasterVerifier = user.email_verified && user.phone_verified && user.wallet_address && (user.kyc_verified || false);
 
@@ -292,7 +292,7 @@ export function UserBadges({ user, className = '' }: UserBadgesProps) {
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-            <div 
+            <div
               className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(earnedBadges.length / badges.length) * 100}%` }}
             />

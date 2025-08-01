@@ -30,7 +30,7 @@ export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeMa
     async (req: AuthRequest, res) => {
       try {
         const userId = validateAuthUser(req.userId);
-        
+
         const {
           title,
           description,

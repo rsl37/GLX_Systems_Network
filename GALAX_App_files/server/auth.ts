@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -16,7 +16,7 @@ import { validateJWTSecret } from './config/security.js';
 function getSecureJWTSecret(): string {
   const secret = process.env.JWT_SECRET;
   const isProduction = process.env.NODE_ENV === 'production';
-  
+
   if (!secret) {
     if (isProduction) {
       throw new Error('JWT_SECRET environment variable is required in production');
@@ -24,7 +24,7 @@ function getSecureJWTSecret(): string {
     console.warn('⚠️ JWT_SECRET not set - using insecure default for development');
     return 'insecure-dev-secret-change-in-production-32chars-minimum';
   }
-  
+
   // Validate secret strength
   const validation = validateJWTSecret(secret, isProduction);
   if (!validation.isValid) {
@@ -34,14 +34,14 @@ function getSecureJWTSecret(): string {
     }
     console.warn(`⚠️ ${message}`);
   }
-  
+
   return secret;
 }
 
 function getSecureJWTRefreshSecret(): string {
   const secret = process.env.JWT_REFRESH_SECRET;
   const isProduction = process.env.NODE_ENV === 'production';
-  
+
   if (!secret) {
     if (isProduction) {
       throw new Error('JWT_REFRESH_SECRET environment variable is required in production');
@@ -49,7 +49,7 @@ function getSecureJWTRefreshSecret(): string {
     console.warn('⚠️ JWT_REFRESH_SECRET not set - using insecure default for development');
     return 'insecure-dev-refresh-secret-change-in-production-32chars-minimum';
   }
-  
+
   // Validate secret strength
   const validation = validateJWTSecret(secret, isProduction);
   if (!validation.isValid) {
@@ -59,7 +59,7 @@ function getSecureJWTRefreshSecret(): string {
     }
     console.warn(`⚠️ ${message}`);
   }
-  
+
   return secret;
 }
 
@@ -97,7 +97,7 @@ export async function authenticateToken(req: AuthRequest, res: Response, next: N
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     req.userId = decoded.userId;
-    
+
     // Get username for Pusher auth
     try {
       const user = await db
@@ -109,7 +109,7 @@ export async function authenticateToken(req: AuthRequest, res: Response, next: N
     } catch (error) {
       req.username = 'Unknown';
     }
-    
+
     next();
   } catch (error) {
     res.status(403).json({ error: 'Invalid token' });

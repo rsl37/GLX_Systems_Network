@@ -261,13 +261,13 @@ app.use("/api", apiLimiter);
 // System endpoints
 app.get("/api/realtime/health", (req, res) => {
   console.log("🔌 Realtime health check - Pusher active");
-  res.json({ 
-    success: true, 
-    data: { 
+  res.json({
+    success: true,
+    data: {
       type: "Pusher WebSocket",
       status: "active",
       cluster: process.env.PUSHER_CLUSTER || 'us2'
-    } 
+    }
   });
 });
 
@@ -306,7 +306,7 @@ app.get("/api/debug/environment", (req, res) => {
       hasTrustedOrigins: !!process.env.TRUSTED_ORIGINS,
       trustedOriginsCount: process.env.TRUSTED_ORIGINS?.split(',').length || 0,
       hasDatabaseUrl: !!process.env.DATABASE_URL,
-      databaseType: process.env.DATABASE_URL?.includes('postgres') ? 'postgresql' : 
+      databaseType: process.env.DATABASE_URL?.includes('postgres') ? 'postgresql' :
                    process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'unknown',
       hasSmtpConfig: !!(process.env.SMTP_HOST && process.env.SMTP_USER),
       timestamp: new Date().toISOString(),
@@ -439,7 +439,7 @@ app.use("/api/help-requests", createHelpRequestRoutes(upload, realtimeManager));
 app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { socket_id, channel_name } = req.body;
-    
+
     if (!socket_id || !channel_name) {
       return sendError(res, 'Socket ID and channel name are required', 400);
     }
@@ -457,7 +457,7 @@ app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) =>
     } else if (channel_name.startsWith('private-help-request-')) {
       // Extract help request ID and verify user has access
       const helpRequestId = channel_name.replace('private-help-request-', '');
-      
+
       // TODO: Add proper authorization check for help requests
       // For now, allow all authenticated users
       const auth = pusher.authorizeChannel(socket_id, channel_name, {
@@ -499,7 +499,7 @@ app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) =
     }
 
     const messages = await query.execute();
-    
+
     res.json({
       success: true,
       messages: messages.map(msg => ({
@@ -521,13 +521,13 @@ app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) =
 app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { content, roomId } = req.body;
-    
+
     if (!content?.trim()) {
       return sendError(res, 'Message content is required', 400);
     }
 
     // Extract help request ID from roomId (format: help_request_123)
-    const helpRequestId = roomId?.startsWith('help_request_') 
+    const helpRequestId = roomId?.startsWith('help_request_')
       ? parseInt(roomId.replace('help_request_', ''))
       : null;
 
@@ -587,7 +587,7 @@ app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
 app.get("/api/chat/:helpRequestId/messages", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const helpRequestId = parseInt(req.params.helpRequestId);
-    
+
     if (isNaN(helpRequestId)) {
       return sendError(res, 'Invalid help request ID', 400);
     }
@@ -616,9 +616,9 @@ app.get("/api/chat/:helpRequestId/messages", authenticateToken, async (req: Auth
 app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { roomId } = req.body;
-    
+
     // Extract help request ID
-    const helpRequestId = roomId?.startsWith('help_request_') 
+    const helpRequestId = roomId?.startsWith('help_request_')
       ? parseInt(roomId.replace('help_request_', ''))
       : null;
 
@@ -646,7 +646,7 @@ app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
     }
 
     console.log(`User ${req.userId} joined room: ${roomId}`);
-    
+
     res.json({
       success: true,
       message: `Joined room: ${roomId}`,
@@ -661,9 +661,9 @@ app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
 app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { roomId } = req.body;
-    
+
     // Extract help request ID
-    const helpRequestId = roomId?.startsWith('help_request_') 
+    const helpRequestId = roomId?.startsWith('help_request_')
       ? parseInt(roomId.replace('help_request_', ''))
       : null;
 
@@ -691,7 +691,7 @@ app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => 
     }
 
     console.log(`User ${req.userId} left room: ${roomId}`);
-    
+
     res.json({
       success: true,
       message: `Left room: ${roomId}`,
@@ -726,7 +726,7 @@ app.get("/api/notifications", authenticateToken, async (req: AuthRequest, res) =
     }
 
     const notifications = await query.execute();
-    
+
     res.json({
       success: true,
       notifications: notifications.map(notif => ({
@@ -990,7 +990,7 @@ export async function startServer(port: number) {
         type: "system",
         severity: "info",
         ip: "system",
-        details: { 
+        details: {
           event: "Post-Quantum Security initialized",
           securityLevel: pqStatus.securityLevel,
           initialized: pqStatus.initialized

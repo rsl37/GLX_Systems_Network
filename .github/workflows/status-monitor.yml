@@ -60,21 +60,21 @@ jobs:
               ref: headSha
             });
 
-            const pendingStatuses = statuses.filter(status => 
-              status.state === 'pending' && 
+            const pendingStatuses = statuses.filter(status =>
+              status.state === 'pending' &&
               (new Date() - new Date(status.created_at)) > 300000 // 5 minutes old
             );
 
             if (pendingStatuses.length > 0) {
               console.log(`⚠️ Found ${pendingStatuses.length} stuck pending status(es)`);
-              
+
               // Force update stuck pending statuses
               for (const status of pendingStatuses) {
-                const newState = conclusion === 'success' ? 'success' : 
+                const newState = conclusion === 'success' ? 'success' :
                                 conclusion === 'failure' ? 'failure' : 'error';
-                
+
                 console.log(`Updating stuck status: ${status.context}`);
-                
+
                 await github.rest.repos.createCommitStatus({
                   owner: context.repo.owner,
                   repo: context.repo.repo,

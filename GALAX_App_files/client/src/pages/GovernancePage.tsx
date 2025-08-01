@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -18,10 +18,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Vote, 
-  Clock, 
-  User, 
+import {
+  Vote,
+  Clock,
+  User,
   Plus,
   Calendar,
   TrendingUp,
@@ -77,14 +77,14 @@ export function GovernancePage() {
     try {
       const token = localStorage.getItem('token');
       const params = new URLSearchParams();
-      
+
       if (filter.category) params.append('category', filter.category);
       if (filter.status) params.append('status', filter.status);
-      
+
       const response = await fetch(`/api/proposals?${params}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setProposals(data.data);
@@ -107,7 +107,7 @@ export function GovernancePage() {
         },
         body: JSON.stringify(newProposal)
       });
-      
+
       if (response.ok) {
         setShowCreateDialog(false);
         setNewProposal({
@@ -134,7 +134,7 @@ export function GovernancePage() {
         },
         body: JSON.stringify({ vote_type: voteType })
       });
-      
+
       if (response.ok) {
         fetchProposals();
       }
@@ -180,7 +180,7 @@ export function GovernancePage() {
     const end = new Date(deadline);
     const diffMs = end.getTime() - now.getTime();
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays <= 0) return 'Expired';
     if (diffDays === 1) return '1 day left';
     return `${diffDays} days left`;
@@ -189,7 +189,7 @@ export function GovernancePage() {
   const getVotePercentage = (votesFor: number, votesAgainst: number) => {
     const total = votesFor + votesAgainst;
     if (total === 0) return { forPercentage: 0, againstPercentage: 0 };
-    
+
     return {
       forPercentage: Math.round((votesFor / total) * 100),
       againstPercentage: Math.round((votesAgainst / total) * 100)
@@ -201,7 +201,7 @@ export function GovernancePage() {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return '1 day ago';
     return `${diffDays} days ago`;
@@ -246,7 +246,7 @@ export function GovernancePage() {
             </h1>
             <p className="text-gray-600">Participate in democratic decision-making</p>
           </div>
-          
+
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
               <Button className="galax-button">
@@ -268,7 +268,7 @@ export function GovernancePage() {
                     placeholder="Brief, clear title for your proposal"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -279,7 +279,7 @@ export function GovernancePage() {
                     rows={5}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="category">Category</Label>
@@ -297,7 +297,7 @@ export function GovernancePage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="deadline">Voting Deadline</Label>
                     <Input
@@ -309,7 +309,7 @@ export function GovernancePage() {
                     />
                   </div>
                 </div>
-                
+
                 <Button onClick={handleCreateProposal} className="galax-button w-full">
                   Create Proposal
                 </Button>
@@ -334,7 +334,7 @@ export function GovernancePage() {
               <p className="text-sm text-gray-600">Active Proposals</p>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4 text-center">
               <CheckCircle className="h-8 w-8 mx-auto mb-2 text-green-600" />
@@ -344,7 +344,7 @@ export function GovernancePage() {
               <p className="text-sm text-gray-600">Passed</p>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4 text-center">
               <Users className="h-8 w-8 mx-auto mb-2 text-purple-600" />
@@ -354,7 +354,7 @@ export function GovernancePage() {
               <p className="text-sm text-gray-600">Total Votes</p>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4 text-center">
               <TrendingUp className="h-8 w-8 mx-auto mb-2 text-orange-600" />
@@ -379,7 +379,7 @@ export function GovernancePage() {
                   <Vote className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">Filter by:</span>
                 </div>
-                
+
                 <Select value={filter.category} onValueChange={(value) => setFilter({...filter, category: value})}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Category" />
@@ -394,7 +394,7 @@ export function GovernancePage() {
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={filter.status} onValueChange={(value) => setFilter({...filter, status: value})}>
                   <SelectTrigger className="w-32">
                     <SelectValue placeholder="Status" />
@@ -435,7 +435,7 @@ export function GovernancePage() {
               const isExpired = new Date(proposal.deadline) < new Date();
               const hasVoted = proposal.user_vote;
               const isOwnProposal = proposal.created_by === user?.id;
-              
+
               return (
                 <Card key={proposal.id} className="galax-card hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
@@ -454,10 +454,10 @@ export function GovernancePage() {
                       </div>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     <p className="text-gray-700">{proposal.description}</p>
-                    
+
                     {/* Voting Progress */}
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
@@ -469,11 +469,11 @@ export function GovernancePage() {
                         </span>
                       </div>
                       <div className="flex h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="bg-green-500 transition-all duration-300"
                           style={{ width: `${forPercentage}%` }}
                         />
-                        <div 
+                        <div
                           className="bg-red-500 transition-all duration-300"
                           style={{ width: `${againstPercentage}%` }}
                         />
@@ -483,7 +483,7 @@ export function GovernancePage() {
                         <span>Quorum: {Math.max(10, Math.ceil(totalVotes * 0.1))}</span>
                       </div>
                     </div>
-                    
+
                     {/* Proposal Info */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div className="flex items-center gap-1 text-gray-500">
@@ -501,7 +501,7 @@ export function GovernancePage() {
                         </span>
                       </div>
                     </div>
-                    
+
                     {/* Voting Buttons */}
                     <div className="pt-4 border-t">
                       {hasVoted ? (
@@ -522,14 +522,14 @@ export function GovernancePage() {
                         </div>
                       ) : (
                         <div className="flex gap-2">
-                          <Button 
+                          <Button
                             onClick={() => handleVote(proposal.id, 'for')}
                             className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                           >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             Vote For
                           </Button>
-                          <Button 
+                          <Button
                             onClick={() => handleVote(proposal.id, 'against')}
                             variant="outline"
                             className="flex-1 border-red-500 text-red-600 hover:bg-red-50"
@@ -572,7 +572,7 @@ export function GovernancePage() {
                     <li>• Transparent and auditable results</li>
                   </ul>
                 </div>
-                
+
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-2">📝 Creating Proposals</h4>
                   <ul className="text-sm text-gray-600 space-y-1">

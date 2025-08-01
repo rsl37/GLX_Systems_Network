@@ -16,11 +16,11 @@ describe('Authentication API Contract', () => {
   beforeAll(async () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
-    
+
     // Setup authentication endpoints
     testServer.app.post('/api/auth/register', (req, res) => {
       const { email, password, firstName, lastName } = req.body;
-      
+
       // Validate required fields
       if (!email || !password || !firstName || !lastName) {
         return res.status(400).json({
@@ -60,7 +60,7 @@ describe('Authentication API Contract', () => {
 
     testServer.app.post('/api/auth/login', (req, res) => {
       const { email, password } = req.body;
-      
+
       if (!email || !password) {
         return res.status(400).json({
           error: 'Email and password are required'
@@ -95,7 +95,7 @@ describe('Authentication API Contract', () => {
 
     testServer.app.post('/api/auth/verify-email', (req, res) => {
       const { token, email } = req.body;
-      
+
       if (!token || !email) {
         return res.status(400).json({
           error: 'Token and email are required'

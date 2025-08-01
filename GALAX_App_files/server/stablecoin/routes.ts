@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -28,7 +28,7 @@ router.get('/status', async (req: Request, res: Response) => {
   try {
     const status = stablecoinService.getStatus();
     const metrics = stablecoinService.getMetrics();
-    
+
     res.json({
       success: true,
       data: {
@@ -59,7 +59,7 @@ router.get('/balance', authenticateToken, async (req: AuthRequest, res: Response
     }
 
     const balance = await stablecoinService.getUserBalance(req.user.userId);
-    
+
     if (!balance) {
       res.status(404).json({
         success: false,
@@ -96,7 +96,7 @@ router.get('/transactions', authenticateToken, async (req: AuthRequest, res: Res
 
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
     const transactions = await stablecoinService.getUserTransactions(req.user.userId, limit);
-    
+
     res.json({
       success: true,
       data: transactions
@@ -117,7 +117,7 @@ router.get('/supply-history', async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
     const history = await stablecoinService.getSupplyHistory(limit);
-    
+
     res.json({
       success: true,
       data: history
@@ -137,7 +137,7 @@ router.get('/supply-history', async (req: Request, res: Response) => {
 router.get('/metrics', async (req: Request, res: Response) => {
   try {
     const metrics = stablecoinService.getMetrics();
-    
+
     res.json({
       success: true,
       data: metrics
@@ -168,7 +168,7 @@ router.post('/rebalance', authenticateToken, async (req: AuthRequest, res: Respo
     // For now, anyone can trigger rebalance for testing
 
     const adjustment = await stablecoinService.performRebalance();
-    
+
     res.json({
       success: true,
       data: adjustment
@@ -196,7 +196,7 @@ router.post('/simulate-shock', authenticateToken, async (req: AuthRequest, res: 
     }
 
     const { severity } = req.body;
-    
+
     if (typeof severity !== 'number' || severity < 0 || severity > 1) {
       res.status(400).json({
         success: false,
@@ -206,7 +206,7 @@ router.post('/simulate-shock', authenticateToken, async (req: AuthRequest, res: 
     }
 
     stablecoinService.simulateMarketShock(severity);
-    
+
     res.json({
       success: true,
       message: `Market shock simulated with severity ${severity}`
@@ -234,10 +234,10 @@ router.put('/config', authenticateToken, async (req: AuthRequest, res: Response)
     }
 
     // TODO: Add admin role check
-    
+
     const config = req.body;
     stablecoinService.updateConfig(config);
-    
+
     res.json({
       success: true,
       message: 'Configuration updated successfully'
@@ -265,9 +265,9 @@ router.post('/set-price', authenticateToken, async (req: AuthRequest, res: Respo
     }
 
     // TODO: Add admin role check
-    
+
     const { price } = req.body;
-    
+
     if (typeof price !== 'number' || price <= 0) {
       res.status(400).json({
         success: false,
@@ -277,7 +277,7 @@ router.post('/set-price', authenticateToken, async (req: AuthRequest, res: Respo
     }
 
     stablecoinService.setPrice(price);
-    
+
     res.json({
       success: true,
       message: `Price set to ${price}`
@@ -298,10 +298,10 @@ router.get('/price-data', async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
     const metrics = stablecoinService.getMetrics();
-    
+
     // Get price history from oracle
     const priceHistory = metrics.price;
-    
+
     res.json({
       success: true,
       data: {

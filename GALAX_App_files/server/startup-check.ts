@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -11,7 +11,7 @@ import { db, healthCheck } from './database.js';
 
 export async function performStartupCheck() {
   console.log('🚀 Performing startup check...');
-  
+
   try {
     // Check environment variables
     console.log('🌍 Environment check:');
@@ -19,29 +19,29 @@ export async function performStartupCheck() {
     console.log('  - PORT:', process.env.PORT);
     console.log('  - DATABASE_URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Not set');
     console.log('  - JWT_SECRET:', process.env.JWT_SECRET ? '✅ Set' : '❌ Not set');
-    
+
     // Check database connection
     console.log('🗄️ Database connection check:');
     const dbHealth = await healthCheck();
-    
+
     if (dbHealth.primary.status === 'healthy') {
       console.log('✅ Database connection successful');
     } else {
       console.log('❌ Database connection failed:', 'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error');
       throw new Error(`Database connection failed: ${'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error'}`);
     }
-    
+
     // Check database diagnostics
     console.log('🗄️ Database diagnostics:');
     await runDatabaseDiagnostics();
-    
+
     // Check required tables
     console.log('📋 Required tables check:');
     const requiredTables = [
-      'users', 'help_requests', 'crisis_alerts', 'messages', 
+      'users', 'help_requests', 'crisis_alerts', 'messages',
       'notifications', 'password_reset_tokens', 'email_verification_tokens'
     ];
-    
+
     let allTablesExist = true;
     for (const tableName of requiredTables) {
       try {
@@ -49,7 +49,7 @@ export async function performStartupCheck() {
           .selectFrom(tableName as any)
           .select(db.fn.countAll().as('count'))
           .execute();
-        
+
         const count = result[0]?.count || 0;
         console.log(`  ✅ ${tableName}: ${count} records`);
       } catch (error) {
@@ -57,15 +57,15 @@ export async function performStartupCheck() {
         allTablesExist = false;
       }
     }
-    
+
     if (!allTablesExist) {
       console.log('❌ Some required tables are missing');
       return false;
     }
-    
+
     console.log('✅ Startup check completed successfully');
     return true;
-    
+
   } catch (error) {
     console.error('❌ Startup check failed:', error);
     console.error('🔍 This is likely the database issue you are experiencing');

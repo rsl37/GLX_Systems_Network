@@ -35,13 +35,13 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
-      
+
       - name: TypeScript Check
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "Running TypeScript type check..."
           npx tsc --noEmit --project ./tsconfig.json || echo "Type check completed with warnings"
-      
+
       - name: ESLint (if configured)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -51,7 +51,7 @@ jobs:
           else
             echo "✓ No ESLint config found - skipping lint step"
           fi
-      
+
       - name: Prettier Format Check (if configured)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -79,18 +79,18 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
-      
+
       - name: Security Audit
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "Running npm security audit..."
           npm audit --audit-level=moderate || echo "Security audit completed with warnings"
-      
+
       - name: Basic Secret Scan
         run: |
           echo "Scanning for potential secrets..."
           SECRET_FOUND=false
-          
+
           echo "Checking for hardcoded API keys..."
           if grep -r -E "(api[_-]?key|secret[_-]?key|auth[_-]?token)\s*[:=]\s*[\"'][a-zA-Z0-9_-]{20,}[\"']" \
              --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" \
@@ -99,7 +99,7 @@ jobs:
             echo "⚠️  Warning: Potential API keys found"
             SECRET_FOUND=true
           fi
-          
+
           echo "Checking for GitHub tokens..."
           if grep -r -E "ghp_[a-zA-Z0-9]{36}" \
              --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" \
@@ -108,7 +108,7 @@ jobs:
             echo "⚠️  Warning: GitHub tokens found"
             SECRET_FOUND=true
           fi
-          
+
           if [ "$SECRET_FOUND" = false ]; then
             echo "✓ No obvious secrets detected"
           fi
@@ -142,7 +142,7 @@ jobs:
               sleep 5
             fi
           done
-      
+
       - name: Build application
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -155,7 +155,7 @@ jobs:
               sleep 5
             fi
           done
-      
+
       - name: Run tests
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -168,7 +168,7 @@ jobs:
               sleep 5
             fi
           done
-      
+
       - name: Upload coverage (Node 20 only)
         if: matrix.node-version == 20
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -198,11 +198,11 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
-      
+
       - name: Build application
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run build
-      
+
       - name: Analyze bundle size
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -210,7 +210,7 @@ jobs:
           if [ -d "dist/public/assets" ]; then
             echo "JavaScript files:"
             find dist/public/assets/ -name "*.js" -exec ls -lh {} \;
-            
+
             # Check for large bundles
             LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k)
             if [ -n "$LARGE_FILES" ]; then
@@ -222,7 +222,7 @@ jobs:
           else
             echo "No build assets found"
           fi
-      
+
       - name: Lighthouse CI (if configured)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -250,18 +250,18 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
-      
+
       - name: Check environment setup
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "Checking for required environment files..."
           test -f .env.example && echo "✓ .env.example found" || echo "⚠️  .env.example not found"
           test -f .env.test && echo "✓ .env.test found" || echo "⚠️  .env.test not found"
-          
+
           echo "Checking for configuration files..."
           test -f vite.config.js && echo "✓ Vite config found" || echo "⚠️  Vite config not found"
           test -f tsconfig.json && echo "✓ TypeScript config found" || echo "⚠️  TypeScript config not found"
-      
+
       - name: Validate API endpoints (if test exists)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -271,7 +271,7 @@ jobs:
           else
             echo "✓ No API endpoint tests configured"
           fi
-      
+
       - name: Check data directory structure
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -301,11 +301,11 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
-      
+
       - name: Build for production
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run build
-      
+
       - name: Check build artifacts
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -317,27 +317,27 @@ jobs:
             echo "❌ Build directory not found"
             exit 1
           fi
-      
+
       - name: Validate deployment configuration
         run: |
           echo "Checking deployment readiness..."
           test -f vercel.json && echo "✓ Vercel config found" || echo "⚠️  No Vercel config"
-          
+
           # Check if key files exist for deployment
           test -f ./GALAX_App_files/package.json && echo "✓ Package.json found" || echo "❌ Package.json missing"
-          
+
           echo "✓ Deployment readiness check completed"
-      
+
       - name: Test application startup (basic)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "Testing basic application startup..."
-          
+
           # Copy test environment for startup test
           if [ -f ".env.test" ]; then
             cp .env.test .env
           fi
-          
+
           # Quick startup test (with timeout to prevent hanging)
           if npm run --if-present --silent start >/dev/null 2>&1; then
             (npm run start --if-present & echo $! > app_pid.txt) & timeout 30s wait $(cat app_pid.txt)
@@ -347,17 +347,17 @@ jobs:
             echo "⚠️  'start' script not found in package.json. Skipping application startup test, but continuing pipeline."
             true
           fi
-          
+
           # Wait for app to start
           sleep 15
-          
+
           # Basic health check (default port 3000)
           if curl -f -s http://localhost:3000 >/dev/null 2>&1; then
             echo "✓ Application started successfully"
           else
             echo "⚠️  Application startup test - unable to connect (may need manual verification)"
           fi
-          
+
           # Clean up
           kill $APP_PID 2>/dev/null || true
           sleep 2

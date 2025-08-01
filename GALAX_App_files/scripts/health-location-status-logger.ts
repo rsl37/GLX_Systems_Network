@@ -2,21 +2,21 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 /**
  * GALAX Health, Location, and Status Logger
- * 
+ *
  * Comprehensive logging and analysis system for health checks, location tracking,
  * and status monitoring across all branches (merged and unmerged) and commits.
- * 
+ *
  * This addresses the session management errors and deployment issues identified
  * in issue #93, including 401 authentication failures and process exit errors.
- * 
+ *
  * Usage:
  *   npm run health:log
  *   tsx scripts/health-location-status-logger.ts
@@ -82,7 +82,7 @@ interface HealthStatus {
 class HealthLocationStatusLogger {
   private logDir: string;
   private logs: LogEntry[] = [];
-  
+
   constructor() {
     this.logDir = join(__dirname, '../logs/health-location-status');
     this.ensureLogDirectory();
@@ -99,10 +99,10 @@ class HealthLocationStatusLogger {
       ...entry,
       timestamp: new Date().toISOString()
     };
-    
+
     this.logs.push(logEntry);
     console.log(`[${logEntry.timestamp}] ${logEntry.level.toUpperCase()} (${logEntry.type}): ${logEntry.message}`);
-    
+
     if (logEntry.details) {
       console.log('  Details:', JSON.stringify(logEntry.details, null, 2));
     }
@@ -138,11 +138,11 @@ class HealthLocationStatusLogger {
     try {
       // Get all branches including remote
       const allBranches = await this.executeGitCommand('git branch -a --format="%(refname:short) %(objectname:short) %(committerdate:iso8601) %(authorname)"');
-      
+
       for (const branchLine of allBranches.split('\n').filter(line => line.trim())) {
         const [name, commit, date, ...authorParts] = branchLine.split(' ');
         const author = authorParts.join(' ');
-        
+
         if (!name || name.includes('HEAD')) continue;
 
         // Check if branch is merged
@@ -162,7 +162,7 @@ class HealthLocationStatusLogger {
         const now = new Date();
         const branchDate = new Date(date);
         const daysSince = (now.getTime() - branchDate.getTime()) / (1000 * 3600 * 24);
-        
+
         let status: 'active' | 'stale' | 'merged' | 'abandoned' = 'active';
         if (isMerged) {
           status = 'merged';
@@ -234,10 +234,10 @@ class HealthLocationStatusLogger {
     try {
       // Get all commits from all branches
       const allCommits = await this.executeGitCommand('git log --all --oneline --format="%H|%h|%an|%ai|%s|%D"');
-      
+
       for (const commitLine of allCommits.split('\n').filter(line => line.trim())) {
         const [hash, shortHash, author, date, message, refs] = commitLine.split('|');
-        
+
         if (!hash) continue;
 
         // Get files changed in this commit
@@ -506,7 +506,7 @@ class HealthLocationStatusLogger {
       // Check current branch and commit
       const currentBranch = await this.executeGitCommand('git branch --show-current');
       const currentCommit = await this.executeGitCommand('git rev-parse HEAD');
-      
+
       this.log({
         type: 'location',
         level: 'info',
@@ -591,7 +591,7 @@ class HealthLocationStatusLogger {
         const envExample = readFileSync(envExamplePath, 'utf8');
         const requiredVars = ['JWT_SECRET', 'SESSION_SECRET', 'FRONTEND_URL'];
         const missingVars = requiredVars.filter(varName => !envExample.includes(varName));
-        
+
         if (missingVars.length > 0) {
           this.log({
             type: 'error',

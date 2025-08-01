@@ -64,8 +64,8 @@ export const securityHeaders = helmet({
       ],
       connectSrc: [
         "'self'",
-        // WebSocket protocols removed - using SSE instead 
-        // "ws:", "wss:", 
+        // WebSocket protocols removed - using SSE instead
+        // "ws:", "wss:",
         "https://api.openstreetmap.org", // OpenStreetMap API
         "https://tile.openstreetmap.org", // OpenStreetMap tiles
       ],
@@ -255,7 +255,7 @@ export const corsConfig = {
             "http://localhost:3002",
             "http://localhost:5173",
             "http://127.0.0.1:3000",
-            "http://127.0.0.1:3001", 
+            "http://127.0.0.1:3001",
             "http://127.0.0.1:3002",
             "http://127.0.0.1:5173",
           ]
@@ -316,7 +316,7 @@ export const corsConfig = {
     // Check against allowed origins (with pattern matching for Vercel domains)
     if (origin) {
       let isAllowed = allowedOrigins.includes(origin);
-      
+
       // If not in explicit list, check Vercel deployment patterns in production or test
       if (!isAllowed && (isProduction || isTest)) {
         const vercelPatterns = [
@@ -324,14 +324,14 @@ export const corsConfig = {
           /^https:\/\/galax-.*\.vercel\.app$/,
           /^https:\/\/.*galax.*\.vercel\.app$/,
         ];
-        
+
         isAllowed = vercelPatterns.some(pattern => pattern.test(origin));
-        
+
         if (isAllowed) {
           console.log(`✅ CORS: Allowed Vercel deployment pattern: ${origin}`);
         }
       }
-      
+
       if (isAllowed) {
         callback(null, true);
       } else {

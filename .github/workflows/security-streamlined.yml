@@ -202,9 +202,9 @@ jobs:
             ];
 
             for (const job of jobs) {
-              const state = job.result === 'success' ? 'success' : 
+              const state = job.result === 'success' ? 'success' :
                            job.result === 'failure' ? 'failure' : 'pending';
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

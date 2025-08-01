@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -63,13 +63,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         url: response.url,
         headers: Object.fromEntries(response.headers.entries())
       };
-      
+
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
           debugInfo = { ...debugInfo, responseData: errorData };
-          
+
           if (errorData.error && typeof errorData.error === 'object') {
             errorMessage = errorData.error.message || errorMessage;
           } else if (errorData.error && typeof errorData.error === 'string') {
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (process.env.NODE_ENV === 'development') {
             debugInfo = { ...debugInfo, responseText: text.substring(0, 500) };
           }
-          
+
           if (text.includes('<html') || text.includes('<!DOCTYPE')) {
             // This is common in Vercel when API routes aren't properly configured
             if (response.status === 404) {
@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error('Error parsing error response:', parseError);
         debugInfo = { ...debugInfo, parseError: parseError.message };
       }
-      
+
       // Enhanced error logging for production debugging
       console.error('🚨 API Request Failed:', {
         errorMessage,
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userAgent: navigator.userAgent,
         currentUrl: window.location.href
       });
-      
+
       // Provide more specific error messages based on common Vercel issues
       if (response.status === 404) {
         errorMessage = `API endpoint not found (${response.status}). Please check if your API routes are properly deployed.`;
@@ -119,11 +119,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else if (response.status === 502 || response.status === 503) {
         errorMessage = `Service temporarily unavailable (${response.status}). Please try again in a moment.`;
       } else if (response.status >= 400 && response.status < 500) {
-        errorMessage = errorMessage.includes('Request failed') 
+        errorMessage = errorMessage.includes('Request failed')
           ? `Client error (${response.status}): ${response.statusText || 'Bad Request'}`
           : errorMessage;
       }
-      
+
       throw new Error(errorMessage);
     }
 
@@ -160,10 +160,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         const apiData = await parseApiResponse(response);
-        
+
         // Handle both old and new response formats
         const userData = apiData.success ? apiData.data : apiData;
-        
+
         setUser({
           ...userData,
           email_verified: userData.email_verified === 1 || userData.email_verified === true,
@@ -197,10 +197,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         const apiData = await parseApiResponse(response);
-        
+
         // Handle both old and new response formats
         const userData = apiData.success ? apiData.data : apiData;
-        
+
         setUser({
           ...userData,
           email_verified: userData.email_verified === 1 || userData.email_verified === true,
@@ -217,7 +217,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Determine if it's an email or phone number
       const isEmail = emailOrPhone.includes('@');
-      const requestBody = isEmail 
+      const requestBody = isEmail
         ? { email: emailOrPhone, password }
         : { phone: emailOrPhone, password };
 
@@ -230,10 +230,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, verificationToken);
 
       const apiData = await parseApiResponse(response);
-      
+
       // Handle both old and new response formats
       const responseData = apiData.success ? apiData.data : apiData;
-      
+
       if (responseData.token) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
@@ -257,10 +257,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, verificationToken);
 
       const apiData = await parseApiResponse(response);
-      
+
       // Handle both old and new response formats
       const responseData = apiData.success ? apiData.data : apiData;
-      
+
       if (responseData.token) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
@@ -277,7 +277,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Determine if it's an email or phone number
       const isEmail = signupMethod === 'email' || (!signupMethod && emailOrPhone.includes('@'));
-      const requestBody = isEmail 
+      const requestBody = isEmail
         ? { email: emailOrPhone, password, username }
         : { phone: emailOrPhone, password, username };
 
@@ -290,10 +290,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, verificationToken);
 
       const apiData = await parseApiResponse(response);
-      
+
       // Handle both old and new response formats
       const responseData = apiData.success ? apiData.data : apiData;
-      
+
       if (responseData.token) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
@@ -317,10 +317,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, verificationToken);
 
       const apiData = await parseApiResponse(response);
-      
+
       // Handle both old and new response formats
       const responseData = apiData.success ? apiData.data : apiData;
-      
+
       if (responseData.token) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();

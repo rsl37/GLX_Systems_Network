@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -127,7 +127,7 @@ export function LoginPage() {
             <CardDescription className="text-lg text-gray-600">
               Civic Network Platform
             </CardDescription>
-            
+
             {/* Security verification indicator */}
             {process.env.NODE_ENV === 'production' && (
               <div className="mt-4">
@@ -150,7 +150,7 @@ export function LoginPage() {
               </div>
             )}
           </CardHeader>
-          
+
           <CardContent className="space-y-6">
             {/* Login Method Toggle */}
             <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
@@ -208,7 +208,7 @@ export function LoginPage() {
                   />
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -221,7 +221,7 @@ export function LoginPage() {
                   required
                 />
               </div>
-              
+
               {error && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
@@ -232,7 +232,7 @@ export function LoginPage() {
                   {error}
                 </motion.div>
               )}
-              
+
               <Button
                 type="submit"
                 className="w-full galax-button"
@@ -248,13 +248,13 @@ export function LoginPage() {
                 )}
               </Button>
             </form>
-            
+
             <div className="text-center">
               <Link to="/forgot-password" className="text-purple-600 hover:text-purple-700 text-sm hover:underline">
                 Forgot your password?
               </Link>
             </div>
-            
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-gray-300" />

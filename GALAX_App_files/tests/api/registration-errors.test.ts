@@ -16,11 +16,11 @@ describe('Registration Error Messages', () => {
   beforeAll(async () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
-    
+
     // Setup registration endpoint that matches the actual implementation
     testServer.app.post('/api/auth/register', (req, res) => {
       const { email, phone, password, username, walletAddress } = req.body;
-      
+
       // Validate required fields
       if (!username) {
         return res.status(400).json({

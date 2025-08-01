@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -93,7 +93,7 @@ export function EmailVerificationPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success || response.ok) {
         setIsVerified(true);
         // Refresh user data to update email verification status
@@ -135,7 +135,7 @@ export function EmailVerificationPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success || response.ok) {
         setResendSuccess(true);
         setTimeout(() => setResendSuccess(false), 5000);
@@ -212,11 +212,11 @@ export function EmailVerificationPage() {
                   <li>• Receive important notifications</li>
                 </ul>
               </div>
-              
+
               <p className="text-sm text-gray-600">
                 Redirecting to dashboard in a few seconds...
               </p>
-              
+
               <Button
                 onClick={() => navigate('/dashboard')}
                 className="galax-button w-full"
@@ -251,7 +251,7 @@ export function EmailVerificationPage() {
               {error ? 'Unable to verify email address. Please check the verification link or request a new one.' : 'Check your email for a verification link'}
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="space-y-4">
             {error ? (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -274,7 +274,7 @@ export function EmailVerificationPage() {
                 </div>
               </div>
             )}
-            
+
             {resendSuccess && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <div className="flex items-center gap-2 text-green-700">
@@ -286,7 +286,7 @@ export function EmailVerificationPage() {
                 </p>
               </div>
             )}
-            
+
             <div className="space-y-3">
               <Button
                 onClick={resendVerification}
@@ -306,7 +306,7 @@ export function EmailVerificationPage() {
                   </div>
                 )}
               </Button>
-              
+
               <Button
                 onClick={() => navigate('/dashboard')}
                 variant="ghost"
@@ -315,7 +315,7 @@ export function EmailVerificationPage() {
                 I'll verify later
               </Button>
             </div>
-            
+
             <div className="text-center text-xs text-gray-500">
               <p>
                 Didn't receive the email? Check your spam folder or try resending.

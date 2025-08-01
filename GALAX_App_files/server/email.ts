@@ -135,36 +135,36 @@ export async function sendPasswordResetEmail(
             <h1 style="color: white; margin: 0;">GALAX</h1>
             <p style="color: white; margin: 5px 0;">Civic Network Platform</p>
           </div>
-          
+
           <div style="padding: 30px; background: white; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px;">
             <h2 style="color: #333; margin-bottom: 20px;">Password Reset Request</h2>
-            
+
             <p style="color: #666; line-height: 1.6;">
               You requested a password reset for your GALAX account. Click the button below to reset your password:
             </p>
-            
+
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" 
-                 style="background: linear-gradient(135deg, #B593EE, #92A8D1); 
-                        color: white; 
-                        padding: 15px 30px; 
-                        text-decoration: none; 
-                        border-radius: 10px; 
+              <a href="${resetUrl}"
+                 style="background: linear-gradient(135deg, #B593EE, #92A8D1);
+                        color: white;
+                        padding: 15px 30px;
+                        text-decoration: none;
+                        border-radius: 10px;
                         font-weight: bold;
                         display: inline-block;">
                 Reset Password
               </a>
             </div>
-            
+
             <p style="color: #666; line-height: 1.6; font-size: 14px;">
               If you can't click the button, copy and paste this link into your browser:
             </p>
             <p style="color: #B593EE; word-break: break-all; font-size: 14px;">
               ${resetUrl}
             </p>
-            
+
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
-            
+
             <p style="color: #999; font-size: 12px; line-height: 1.5;">
               This link will expire in 24 hours. If you didn't request this password reset, please ignore this email.
               <br><br>
@@ -300,27 +300,27 @@ export async function sendEmailVerification(
             <h1 style="color: white; margin: 0;">GALAX</h1>
             <p style="color: white; margin: 5px 0;">Civic Network Platform</p>
           </div>
-          
+
           <div style="padding: 30px; background: white; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px;">
             <h2 style="color: #333; margin-bottom: 20px;">Welcome to GALAX, ${safeUsername}!</h2>
-            
+
             <p style="color: #666; line-height: 1.6;">
               Thank you for joining our civic network platform. To complete your registration and start participating in your community, please verify your email address.
             </p>
-            
+
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${verificationUrl}" 
-                 style="background: linear-gradient(135deg, #B593EE, #92A8D1); 
-                        color: white; 
-                        padding: 15px 30px; 
-                        text-decoration: none; 
-                        border-radius: 10px; 
+              <a href="${verificationUrl}"
+                 style="background: linear-gradient(135deg, #B593EE, #92A8D1);
+                        color: white;
+                        padding: 15px 30px;
+                        text-decoration: none;
+                        border-radius: 10px;
                         font-weight: bold;
                         display: inline-block;">
                 Verify Email Address
               </a>
             </div>
-            
+
             <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
               <h3 style="color: #333; margin-top: 0;">What you can do once verified:</h3>
               <ul style="color: #666; line-height: 1.6; margin: 10px 0;">
@@ -331,16 +331,16 @@ export async function sendEmailVerification(
                 <li>🏆 Earn reputation and community recognition</li>
               </ul>
             </div>
-            
+
             <p style="color: #666; line-height: 1.6; font-size: 14px;">
               If you can't click the button, copy and paste this link into your browser:
             </p>
             <p style="color: #B593EE; word-break: break-all; font-size: 14px;">
               ${verificationUrl}
             </p>
-            
+
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
-            
+
             <p style="color: #999; font-size: 12px; line-height: 1.5;">
               This verification link will expire in 24 hours. If you didn't create this account, please ignore this email.
               <br><br>

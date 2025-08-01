@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -16,10 +16,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  TrendingDown, 
+import {
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
   Minus,
   BarChart3,
   Shield,
@@ -92,7 +92,7 @@ export function StablecoinDashboard() {
   const fetchStablecoinData = async () => {
     try {
       setError(null);
-      
+
       // Fetch metrics
       const metricsResponse = await fetch('/api/stablecoin/metrics');
       if (!metricsResponse.ok) {
@@ -136,11 +136,11 @@ export function StablecoinDashboard() {
           'Content-Type': 'application/json'
         }
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to trigger rebalance');
       }
-      
+
       // Refresh data after rebalance
       await fetchStablecoinData();
     } catch (error) {
@@ -247,8 +247,8 @@ export function StablecoinDashboard() {
                 {metrics.stability.stabilityScore.toFixed(1)}
               </span>
             </div>
-            <Progress 
-              value={metrics.stability.stabilityScore} 
+            <Progress
+              value={metrics.stability.stabilityScore}
               className="mt-2"
             />
           </CardContent>
@@ -276,8 +276,8 @@ export function StablecoinDashboard() {
             <div className="text-2xl font-bold">
               {(metrics.supply.reserveRatio * 100).toFixed(1)}%
             </div>
-            <Progress 
-              value={metrics.supply.reserveRatio * 100} 
+            <Progress
+              value={metrics.supply.reserveRatio * 100}
               className="mt-2"
             />
           </CardContent>
@@ -348,7 +348,7 @@ export function StablecoinDashboard() {
               {(metrics.oracle.confidence * 100).toFixed(1)}% confidence
             </div>
           </div>
-          
+
           {metrics.oracle.issues.length > 0 && (
             <div className="mt-4 space-y-2">
               {metrics.oracle.issues.map((issue, index) => (
@@ -383,7 +383,7 @@ export function StablecoinDashboard() {
                 >
                   <div className="flex items-center space-x-3">
                     <Badge variant={
-                      adjustment.action === 'expand' ? 'default' : 
+                      adjustment.action === 'expand' ? 'default' :
                       adjustment.action === 'contract' ? 'destructive' : 'secondary'
                     }>
                       {adjustment.action.toUpperCase()}

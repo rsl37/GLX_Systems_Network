@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -95,15 +95,15 @@ export function OpenStreetMap({
     // Add new markers
     markers.forEach(markerData => {
       const marker = L.marker([markerData.lat, markerData.lng]);
-      
+
       if (markerData.title) {
         marker.bindTooltip(markerData.title);
       }
-      
+
       if (markerData.popup) {
         marker.bindPopup(markerData.popup);
       }
-      
+
       marker.addTo(mapInstanceRef.current!);
       markersRef.current.push(marker);
     });

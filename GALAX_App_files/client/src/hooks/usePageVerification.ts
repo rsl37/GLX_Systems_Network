@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -34,7 +34,7 @@ export function usePageVerification(pageType: 'login' | 'register') {
     try {
       // Get page content for verification
       const pageContent = document.documentElement.outerHTML;
-      
+
       // Create a simple checksum of key page elements
       const keyElements = extractKeyElements(pageType);
       const checksum = await createChecksum(keyElements.join(''));
@@ -72,15 +72,15 @@ export function usePageVerification(pageType: 'login' | 'register') {
 
   const extractKeyElements = (pageType: 'login' | 'register'): string[] => {
     const elements: string[] = [];
-    
+
     // Extract text content from key elements
     const title = document.querySelector('title')?.textContent || '';
     if (title) elements.push(title);
-    
+
     // Look for GALAX branding
     const galaxText = document.body.innerText.match(/GALAX[^a-z]*/gi);
     if (galaxText) elements.push(...galaxText);
-    
+
     // Look for page-specific elements
     if (pageType === 'login') {
       const loginElements = [
@@ -92,7 +92,7 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Forgot your password',
         'Sign up'
       ];
-      
+
       loginElements.forEach(text => {
         if (document.body.innerText.includes(text)) {
           elements.push(text);
@@ -108,14 +108,14 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Join GALAX',
         'Create your civic network account'
       ];
-      
+
       registerElements.forEach(text => {
         if (document.body.innerText.includes(text)) {
           elements.push(text);
         }
       });
     }
-    
+
     return elements;
   };
 

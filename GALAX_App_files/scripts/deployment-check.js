@@ -2,9 +2,9 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -12,10 +12,10 @@
 
 /**
  * GALAX Deployment Readiness Check Script
- * 
+ *
  * This script performs comprehensive validation of deployment prerequisites
  * and can be run before attempting to deploy the GALAX application.
- * 
+ *
  * Usage:
  *   npm run deployment:check
  *   tsx scripts/deployment-check.js
@@ -38,14 +38,14 @@ dotenv.config({ path: join(__dirname, '../.env') });
 async function runDeploymentCheck() {
   console.log('🚀 GALAX Deployment Readiness Check');
   console.log('=====================================\n');
-  
+
   console.log('DEBUG: About to call performDeploymentReadinessCheck...');
-  
+
   try {
     const report = await performDeploymentReadinessCheck();
-    
+
     console.log('DEBUG: Got report:', report.overall_status);
-    
+
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
@@ -57,33 +57,33 @@ async function runDeploymentCheck() {
     console.log(`  ❌ Failed: ${report.summary.failed}`);
     console.log(`  ⚠️  Warnings: ${report.summary.warnings}`);
     console.log(`  📊 Total: ${report.summary.total}`);
-    
+
     // Print detailed results
     console.log(`\n📋 DETAILED CHECK RESULTS`);
     console.log(`=========================`);
-    
+
     for (const check of report.checks) {
       const emoji = getCheckEmoji(check.status);
       console.log(`\n${emoji} ${check.check}`);
       console.log(`   Status: ${check.status.toUpperCase()}`);
       console.log(`   Message: ${check.message}`);
-      
+
       if (check.details && Object.keys(check.details).length > 0) {
         console.log(`   Details:`, check.details);
       }
     }
-    
+
     // Print recommendations
     console.log(`\n💡 RECOMMENDATIONS`);
     console.log(`==================`);
-    
+
     if (report.overall_status === 'ready') {
       console.log('✅ Your application is ready for deployment!');
       console.log('   You can proceed with the deployment process.');
     } else if (report.overall_status === 'warning') {
       console.log('⚠️  Your application is mostly ready for deployment.');
       console.log('   Please address the warnings below for optimal production setup:');
-      
+
       const warnings = report.checks.filter(c => c.status === 'warning');
       warnings.forEach(warning => {
         console.log(`   - ${warning.check}: ${warning.message}`);
@@ -91,13 +91,13 @@ async function runDeploymentCheck() {
     } else {
       console.log('❌ Your application is NOT ready for deployment.');
       console.log('   Please fix the following critical issues:');
-      
+
       const failures = report.checks.filter(c => c.status === 'fail');
       failures.forEach(failure => {
         console.log(`   - ${failure.check}: ${failure.message}`);
       });
     }
-    
+
     // Exit with appropriate code
     if (report.overall_status === 'not_ready') {
       console.log('\n❌ Deployment readiness check FAILED');
@@ -109,7 +109,7 @@ async function runDeploymentCheck() {
       console.log('\n✅ Deployment readiness check PASSED');
       process.exit(0);
     }
-    
+
   } catch (error) {
     console.error('\n❌ Deployment readiness check failed to run:');
     console.error(error);
@@ -160,10 +160,10 @@ Options:
 
 Environment Variables:
   The script reads from .env file in the root directory.
-  
+
   Required variables:
     NODE_ENV, PORT, DATA_DIRECTORY, JWT_SECRET, FRONTEND_URL
-  
+
   Optional variables:
     SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM
 

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import request from 'supertest';
 import express from 'express';
-import { 
-  zeroDayProtectionMiddleware, 
+import {
+  zeroDayProtectionMiddleware,
   zeroDayProtectionAdmin,
   initializeZeroDayProtection,
   updateThreatIntelligence,
@@ -27,12 +27,12 @@ describe('Zero-Day Protection System', () => {
     app = express();
     app.use(express.json());
     app.use(zeroDayProtectionMiddleware);
-    
+
     // Test endpoints
     app.get('/test', (req, res) => res.json({ message: 'test endpoint' }));
     app.post('/test', (req, res) => res.json({ message: 'test post' }));
     app.get('/api/admin/security/zero-day/:action', zeroDayProtectionAdmin);
-    
+
     // Initialize the system
     initializeZeroDayProtection();
   });
@@ -181,12 +181,12 @@ describe('Zero-Day Protection System', () => {
   describe('Behavioral Anomaly Detection', () => {
     it('should detect rapid request patterns', async () => {
       // Send multiple rapid requests
-      const promises = Array(15).fill(0).map(() => 
+      const promises = Array(15).fill(0).map(() =>
         request(app).get('/test')
       );
-      
+
       await Promise.all(promises);
-      
+
       // Next request should be flagged as anomalous
       const response = await request(app).get('/test');
       expect(response.headers['x-behavioral-analysis']).toBe('anomaly-detected');
@@ -195,17 +195,17 @@ describe('Zero-Day Protection System', () => {
     it('should detect suspicious user agents with high path diversity', async () => {
       // Set suspicious user agent and access many different paths
       const baseUA = 'python-requests/2.25.1';
-      
+
       // Access many different paths with suspicious UA
       const paths = Array(25).fill(0).map((_, i) => `/test${i}`);
       for (const path of paths) {
         await request(app).get(path).set('User-Agent', baseUA);
       }
-      
+
       const response = await request(app)
         .get('/test')
         .set('User-Agent', baseUA);
-      
+
       expect(response.headers['x-behavioral-analysis']).toBe('anomaly-detected');
     });
   });
@@ -264,24 +264,24 @@ describe('Zero-Day Protection System', () => {
 
       expect(response.status).toBe(200);
       expect(duration).toBeLessThan(1000); // Should be under 1 second
-      
+
       const scanTime = parseInt(response.headers['x-zero-day-scan-time'] as string);
       expect(scanTime).toBeLessThan(100); // Scan should be under 100ms
     });
 
     it('should handle multiple concurrent requests efficiently', async () => {
       const start = Date.now();
-      const promises = Array(10).fill(0).map(() => 
+      const promises = Array(10).fill(0).map(() =>
         request(app).get('/test')
       );
-      
+
       const responses = await Promise.all(promises);
       const duration = Date.now() - start;
 
       responses.forEach(response => {
         expect(response.status).toBe(200);
       });
-      
+
       expect(duration).toBeLessThan(2000); // 10 requests should complete in under 2 seconds
     });
   });
@@ -292,7 +292,7 @@ describe('Zero-Day Protection System', () => {
       expect(CLOUD_EDGE_THREATS.length).toBeGreaterThan(0);
       expect(NETWORK_INFRA_THREATS.length).toBeGreaterThan(0);
       expect(POST_QUANTUM_THREATS.length).toBeGreaterThan(0);
-      
+
       // Verify each threat has required properties
       [...AI_ML_THREATS, ...CLOUD_EDGE_THREATS, ...NETWORK_INFRA_THREATS, ...POST_QUANTUM_THREATS].forEach(threat => {
         expect(threat.id).toBeDefined();
@@ -309,15 +309,15 @@ describe('Zero-Day Protection System', () => {
       AI_ML_THREATS.forEach(threat => {
         expect(threat.category).toBe('ai_ml');
       });
-      
+
       CLOUD_EDGE_THREATS.forEach(threat => {
         expect(threat.category).toBe('cloud_edge');
       });
-      
+
       NETWORK_INFRA_THREATS.forEach(threat => {
         expect(threat.category).toBe('network_infra');
       });
-      
+
       POST_QUANTUM_THREATS.forEach(threat => {
         expect(threat.category).toBe('post_quantum_crypto');
       });

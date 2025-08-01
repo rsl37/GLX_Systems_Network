@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -14,14 +14,14 @@ let viteServer;
 
 async function startDev() {
   console.log('🚀 Starting development environment...');
-  
+
   // Perform startup check
   const checkPassed = await performStartupCheck();
   if (!checkPassed) {
     console.error('❌ Startup check failed, exiting...');
     process.exit(1);
   }
-  
+
   // Start the Express API server first
   console.log('🌐 Starting Express API server...');
   await startServer(3001);
@@ -37,7 +37,7 @@ async function startDev() {
     console.log(`✅ Vite dev server running on port ${viteServer.config.server.port}`);
     console.log(`🌍 Frontend: http://localhost:${viteServer.config.server.port}`);
     console.log(`🔧 API: http://localhost:3001/api`);
-    
+
   } catch (error) {
     console.error('❌ Failed to start Vite dev server:', error);
     process.exit(1);

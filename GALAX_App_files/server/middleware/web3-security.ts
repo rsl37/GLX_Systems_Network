@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -282,7 +282,7 @@ export class Web3SecurityMiddleware {
 
     // Check for rapid voting patterns (potential bot activity)
     const recentVotes = this.governanceTransactions.filter(
-      tx => tx.voterAddress === voterAddress && 
+      tx => tx.voterAddress === voterAddress &&
       (Date.now() - tx.timestamp.getTime()) < 60000 // Last minute
     );
 
@@ -298,7 +298,7 @@ export class Web3SecurityMiddleware {
 
     if (voterHistory.length > 0) {
       const avgVotingPower = voterHistory.reduce((sum, tx) => sum + tx.votingPower, 0) / voterHistory.length;
-      
+
       // If this voter typically has very low voting power but suddenly has high power
       if (avgVotingPower < 1000 && this.estimateVotingPower(voterAddress) > 10000) {
         anomalies.push('Unusual voting power increase detected');
@@ -441,7 +441,7 @@ export class Web3SecurityMiddleware {
    */
   private extractVoteType(functionName?: string): 'for' | 'against' | 'abstain' {
     if (!functionName) return 'abstain';
-    
+
     const lowerFn = functionName.toLowerCase();
     if (lowerFn.includes('against') || lowerFn.includes('no')) return 'against';
     if (lowerFn.includes('for') || lowerFn.includes('yes')) return 'for';
@@ -456,7 +456,7 @@ export class Web3SecurityMiddleware {
     const recentTxs = this.transactionEvents.filter(
       event => event.fromAddress === address
     ).length;
-    
+
     const MAX_VOTING_POWER = 100; // Maximum voting power cap
     const VOTING_POWER_MULTIPLIER = 2; // Multiplier for transaction-based voting power
     return Math.min(MAX_VOTING_POWER, recentTxs * VOTING_POWER_MULTIPLIER); // Cap at max voting power
@@ -552,7 +552,7 @@ export class Web3SecurityMiddleware {
    */
   private cleanupOldEvents(hoursToKeep = 24) {
     const cutoff = Date.now() - (hoursToKeep * 60 * 60 * 1000);
-    
+
     const initialCount = this.transactionEvents.length;
     this.transactionEvents = this.transactionEvents.filter(
       event => event.timestamp.getTime() > cutoff

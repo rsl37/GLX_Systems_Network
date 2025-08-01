@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -19,7 +19,7 @@ const ASSET_INLINE_LIMIT_BYTES = 4096;
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const isDevelopment = mode === 'development';
-  
+
   return {
     plugins: [
       react(),
@@ -100,7 +100,7 @@ export default defineConfig(({ mode }) => {
             router: ['react-router-dom'],
             ui: [
               '@radix-ui/react-avatar',
-              '@radix-ui/react-checkbox', 
+              '@radix-ui/react-checkbox',
               '@radix-ui/react-dialog',
               '@radix-ui/react-label',
               '@radix-ui/react-popover',
@@ -154,7 +154,7 @@ export default defineConfig(({ mode }) => {
     // Optimize dependencies
     optimizeDeps: {
       include: [
-        'react', 
+        'react',
         'react-dom',
         'react-router-dom' // Pre-bundle router since it's critical
       ],

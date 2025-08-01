@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -54,7 +54,7 @@ function AppContent() {
       <div className="relative z-10">
         {/* Email verification banner */}
         {user && <EmailVerificationBanner />}
-        
+
         <div className="pb-20">
           <React.Suspense fallback={<LoadingSpinner />}>
             <Routes>
@@ -115,7 +115,7 @@ function App() {
       onError={(error, errorInfo) => {
         // Log to console in development
         console.error('App Error Boundary:', error, errorInfo);
-        
+
         // In production, could send to monitoring service
         if (process.env.NODE_ENV === 'production') {
           // Analytics or error reporting service

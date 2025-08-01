@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -15,10 +15,10 @@ import React from 'react';
 import { StablecoinDashboard } from '../components/StablecoinDashboard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Coins, 
-  BarChart3, 
-  Shield, 
+import {
+  Coins,
+  BarChart3,
+  Shield,
   TrendingUp,
   Info,
   BookOpen
@@ -40,8 +40,8 @@ export function StablecoinPage() {
             </Badge>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl">
-            Experience the future of digital currency with our algorithmic stablecoin. 
-            Crowds Tokens automatically maintain price stability through protocol-controlled 
+            Experience the future of digital currency with our algorithmic stablecoin.
+            Crowds Tokens automatically maintain price stability through protocol-controlled
             monetary policies, providing a reliable store of value and medium of exchange.
           </p>
         </div>
@@ -57,8 +57,8 @@ export function StablecoinPage() {
             </CardHeader>
             <CardContent>
               <CardDescription>
-                Algorithmic monetary policy automatically adjusts token supply to maintain 
-                price stability around the $1.00 peg, reducing volatility and providing 
+                Algorithmic monetary policy automatically adjusts token supply to maintain
+                price stability around the $1.00 peg, reducing volatility and providing
                 predictable value.
               </CardDescription>
             </CardContent>
@@ -73,8 +73,8 @@ export function StablecoinPage() {
             </CardHeader>
             <CardContent>
               <CardDescription>
-                All supply adjustments are transparent and auditable. View real-time 
-                metrics, supply changes, and the reasoning behind each monetary policy 
+                All supply adjustments are transparent and auditable. View real-time
+                metrics, supply changes, and the reasoning behind each monetary policy
                 decision.
               </CardDescription>
             </CardContent>
@@ -89,7 +89,7 @@ export function StablecoinPage() {
             </CardHeader>
             <CardContent>
               <CardDescription>
-                The stablecoin is backed by reserves that provide additional stability 
+                The stablecoin is backed by reserves that provide additional stability
                 and confidence. Reserve ratios are maintained to ensure system resilience.
               </CardDescription>
             </CardContent>
@@ -192,8 +192,8 @@ export function StablecoinPage() {
                 <div>
                   <h5 className="font-medium text-yellow-800">Regulatory Compliance</h5>
                   <p className="text-sm text-yellow-700 mt-1">
-                    This stablecoin implementation is designed to comply with applicable regulations 
-                    for digital assets and stablecoins. All monetary policy decisions are transparent, 
+                    This stablecoin implementation is designed to comply with applicable regulations
+                    for digital assets and stablecoins. All monetary policy decisions are transparent,
                     auditable, and follow predetermined algorithmic rules to ensure fair and predictable operation.
                   </p>
                 </div>

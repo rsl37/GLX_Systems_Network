@@ -26,7 +26,7 @@ const requiredVars = ["NODE_ENV", "PORT", "JWT_SECRET"];
 
 const essentialVars = [
   "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET", "PUSHER_CLUSTER",  // Real-time features
-  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features  
+  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
   "TWILIO_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"            // SMS/Phone features
 ];
 
@@ -52,22 +52,22 @@ essentialVars.forEach((varName) => {
   const value = process.env[varName];
   const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-'];
   const isPlaceholder = value && placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder));
-  
+
   let status = "❌";
   let displayValue = "NOT SET";
-  
+
   if (value) {
     if (isPlaceholder) {
       status = "⚠️";
       displayValue = "[PLACEHOLDER - NEEDS REAL VALUE]";
     } else {
       status = "✅";
-      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS") 
-        ? "[HIDDEN]" 
+      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
+        ? "[HIDDEN]"
         : value;
     }
   }
-  
+
   console.log(`   ${status} ${varName}: ${displayValue}`);
 });
 

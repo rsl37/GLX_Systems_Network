@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -10,8 +10,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import multer from 'multer';
-import { 
-  sandboxingMiddleware, 
+import {
+  sandboxingMiddleware,
   sandboxFileUpload,
   sandboxAdmin,
   initializeSandboxing,
@@ -28,7 +28,7 @@ describe('Sandboxing System', () => {
     app = express();
     app.use(express.json());
     app.use(sandboxingMiddleware);
-    
+
     // Test endpoints
     app.get('/test', (req, res) => res.json({ message: 'test endpoint' }));
     app.post('/test', (req, res) => res.json({ message: 'test post' }));
@@ -37,7 +37,7 @@ describe('Sandboxing System', () => {
     });
     app.get('/api/admin/security/sandbox/:action', sandboxAdmin);
     app.post('/api/admin/security/sandbox/:action', sandboxAdmin);
-    
+
     // Initialize the system
     await initializeSandboxing();
   });
@@ -93,7 +93,7 @@ describe('Sandboxing System', () => {
     it('should block large file uploads', async () => {
       // Create a large buffer (> 10MB)
       const largeBuffer = Buffer.alloc(11 * 1024 * 1024, 'a');
-      
+
       const response = await request(app)
         .post('/upload')
         .attach('file', largeBuffer, 'large.txt');
@@ -129,7 +129,7 @@ describe('Sandboxing System', () => {
     });
 
     it('should block private network requests', () => {
-      // Without an active session, should return true (allow by default)  
+      // Without an active session, should return true (allow by default)
       const allowed = monitorNetworkAccess('http://192.168.1.1/config');
       expect(allowed).toBe(true); // Default behavior when no session
     });
@@ -268,10 +268,10 @@ describe('Sandboxing System', () => {
 
     it('should handle concurrent sandboxed requests', async () => {
       const start = Date.now();
-      const promises = Array(5).fill(0).map(() => 
+      const promises = Array(5).fill(0).map(() =>
         request(app).get('/test')
       );
-      
+
       const responses = await Promise.all(promises);
       const duration = Date.now() - start;
 
@@ -279,7 +279,7 @@ describe('Sandboxing System', () => {
         expect(response.status).toBe(200);
         expect(response.headers['x-sandbox-session']).toBeDefined();
       });
-      
+
       expect(duration).toBeLessThan(2000); // 5 requests should complete in under 2 seconds
     });
   });
@@ -299,7 +299,7 @@ describe('Sandboxing System', () => {
       for (let i = 0; i < 5; i++) {
         promises.push(request(app).get(`/test?iteration=${i}`));
       }
-      
+
       const responses = await Promise.all(promises);
       responses.forEach(response => {
         expect(response.status).toBe(200);

@@ -2,18 +2,18 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 /**
  * GALAX Branch and Commit Analyzer
- * 
+ *
  * Comprehensive analysis of all branches (merged and unmerged) and commits
  * with health, location, and status tracking as requested in Issue #93.
- * 
+ *
  * Usage:
  *   npm run branch:analyze
  *   tsx scripts/branch-commit-analyzer.ts
@@ -117,7 +117,7 @@ interface AnalysisReport {
 
 class BranchCommitAnalyzer {
   private repoPath: string;
-  
+
   constructor() {
     this.repoPath = join(__dirname, '../..');
   }
@@ -138,18 +138,18 @@ class BranchCommitAnalyzer {
    */
   async getAllBranches(): Promise<BranchAnalysis[]> {
     console.log('🔍 Analyzing all branches (merged and unmerged)...');
-    
+
     const branches: BranchAnalysis[] = [];
 
     try {
       // Get all branches including remotes with detailed info
       const branchOutput = await this.executeGit('branch -av --format="%(refname:short)|%(objectname)|%(objectname:short)|%(committerdate:iso8601)|%(authorname)|%(subject)|%(upstream)"');
-      
+
       const branchLines = branchOutput.split('\n').filter(line => line.trim() && !line.includes('HEAD'));
 
       for (const line of branchLines) {
         const [name, fullHash, shortHash, date, author, message, upstream] = line.split('|');
-        
+
         if (!name || name.trim() === '') continue;
 
         const cleanName = name.trim().replace('remotes/', '').replace('origin/', '');
@@ -188,7 +188,7 @@ class BranchCommitAnalyzer {
         const now = new Date();
         const branchDate = new Date(date);
         const daysSinceLastCommit = (now.getTime() - branchDate.getTime()) / (1000 * 60 * 60 * 24);
-        
+
         let status: 'merged' | 'unmerged' | 'active' | 'stale' | 'abandoned' = 'unmerged';
         if (isMerged) {
           status = 'merged';
@@ -235,7 +235,7 @@ class BranchCommitAnalyzer {
         };
 
         branches.push(branchAnalysis);
-        
+
         console.log(`  ✓ ${cleanName} (${status}) - ${branchCommits.length} commits`);
       }
 
@@ -255,19 +255,19 @@ class BranchCommitAnalyzer {
     try {
       // Get commits for this branch
       const commitOutput = await this.executeGit(`log ${branchName} --format="%H|%h|%an|%ae|%ai|%at|%s" --numstat`);
-      
+
       let currentCommit: any = null;
       const lines = commitOutput.split('\n');
-      
+
       for (const line of lines) {
         if (line.includes('|') && line.length > 40) {
           // This is a commit line
           if (currentCommit) {
             commits.push(currentCommit);
           }
-          
+
           const [hash, shortHash, author, email, date, timestamp, message] = line.split('|');
-          
+
           currentCommit = {
             hash,
             shortHash,
@@ -303,7 +303,7 @@ class BranchCommitAnalyzer {
             currentCommit.filesChanged.push(filename);
             currentCommit.insertions += parseInt(insertions) || 0;
             currentCommit.deletions += parseInt(deletions) || 0;
-            
+
             // Check health indicators
             if (filename.includes('auth') || filename.includes('login') || filename.includes('session')) {
               currentCommit.healthIndicators.affectsAuth = true;
@@ -323,7 +323,7 @@ class BranchCommitAnalyzer {
           }
         }
       }
-      
+
       // Add the last commit
       if (currentCommit) {
         commits.push(currentCommit);
@@ -334,7 +334,7 @@ class BranchCommitAnalyzer {
         try {
           const mergeCheck = await this.executeGit(`branch --contains ${commit.hash} | grep -v "^\\*" | head -5`);
           const mergedBranches = mergeCheck.split('\n').map(b => b.trim()).filter(b => b);
-          
+
           commit.mergeStatus.isMerged = mergedBranches.length > 0;
           commit.mergeStatus.mergedInto = mergedBranches;
           commit.mergeStatus.isUnmerged = !commit.mergeStatus.isMerged;
@@ -356,8 +356,8 @@ class BranchCommitAnalyzer {
   async analyzeSessionErrors(commits: CommitAnalysis[]): Promise<any> {
     console.log('🔍 Analyzing session and authentication patterns...');
 
-    const authRelatedCommits = commits.filter(commit => 
-      commit.healthIndicators.affectsAuth || 
+    const authRelatedCommits = commits.filter(commit =>
+      commit.healthIndicators.affectsAuth ||
       commit.message.toLowerCase().includes('auth') ||
       commit.message.toLowerCase().includes('session') ||
       commit.message.toLowerCase().includes('login') ||
@@ -421,9 +421,9 @@ class BranchCommitAnalyzer {
 
     const branches = await this.getAllBranches();
     const allCommits = branches.flatMap(branch => branch.commits);
-    
+
     // Remove duplicate commits (same hash)
-    const uniqueCommits = allCommits.filter((commit, index, array) => 
+    const uniqueCommits = allCommits.filter((commit, index, array) =>
       array.findIndex(c => c.hash === commit.hash) === index
     );
 
@@ -432,7 +432,7 @@ class BranchCommitAnalyzer {
     // Get repository information
     const currentBranch = await this.executeGit('branch --show-current');
     const remoteUrl = await this.executeGit('remote get-url origin || echo "unknown"');
-    
+
     const mergedBranches = branches.filter(b => b.status === 'merged').length;
     const unmergedBranches = branches.filter(b => b.status !== 'merged').length;
     const mergedCommits = uniqueCommits.filter(c => c.mergeStatus.isMerged).length;
@@ -510,8 +510,8 @@ class BranchCommitAnalyzer {
   private generateMarkdownSummary(report: AnalysisReport): string {
     return `# GALAX Branch and Commit Analysis Report
 
-**Generated:** ${report.timestamp}  
-**Repository:** ${report.repository.url}  
+**Generated:** ${report.timestamp}
+**Repository:** ${report.repository.url}
 **Current Branch:** ${report.repository.currentBranch}
 
 ## Executive Summary
@@ -549,24 +549,24 @@ ${report.summary.criticalIssues.map(issue => `⚠️ ${issue}`).join('\n')}
 ## Branch Status Details
 
 ### Merged Branches
-${report.branches.filter(b => b.status === 'merged').map(branch => 
+${report.branches.filter(b => b.status === 'merged').map(branch =>
 `- **${branch.name}** (${branch.type}) - Last commit: ${branch.lastCommit.shortHash} by ${branch.lastCommit.author}`
 ).join('\n')}
 
 ### Unmerged Branches
-${report.branches.filter(b => b.status !== 'merged').map(branch => 
+${report.branches.filter(b => b.status !== 'merged').map(branch =>
 `- **${branch.name}** (${branch.status}) - ${branch.commits.length} commits, ahead: ${branch.location.ahead}, behind: ${branch.location.behind}`
 ).join('\n')}
 
 ## Health and Location Status
 
 ### Branches with Issues
-${report.branches.filter(b => b.healthStatus.hasConflicts || b.healthStatus.hasErrors).map(branch => 
+${report.branches.filter(b => b.healthStatus.hasConflicts || b.healthStatus.hasErrors).map(branch =>
 `- **${branch.name}**: ${branch.healthStatus.hasConflicts ? 'Has Conflicts' : ''} ${branch.healthStatus.hasErrors ? 'Has Errors' : ''}`
 ).join('\n')}
 
 ### Recent Authentication Changes
-${report.sessionErrorAnalysis.authRelatedCommits > 0 ? 
+${report.sessionErrorAnalysis.authRelatedCommits > 0 ?
   `Found ${report.sessionErrorAnalysis.authRelatedCommits} authentication-related commits` :
   'No recent authentication changes found'}
 
@@ -605,7 +605,7 @@ Based on this analysis for Issue #93:
       console.log('\n✅ Analysis Complete!');
       console.log(`📊 Analyzed ${report.repository.totalBranches} branches and ${report.repository.totalCommits} commits`);
       console.log(`🔍 Found ${report.summary.criticalIssues.length} critical issues`);
-      
+
       if (report.summary.criticalIssues.length > 0) {
         console.log('\n⚠️  Critical Issues:');
         report.summary.criticalIssues.forEach(issue => console.log(`   - ${issue}`));

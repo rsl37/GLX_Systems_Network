@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -13,12 +13,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Home, 
-  HandHeart, 
-  AlertTriangle, 
-  Vote, 
-  Users, 
+import {
+  Home,
+  HandHeart,
+  AlertTriangle,
+  Vote,
+  Users,
   TrendingUp,
   Clock,
   MapPin,
@@ -61,27 +61,27 @@ export function DashboardPage() {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('token');
-      
+
       // Fetch user stats
       const statsResponse = await fetch('/api/user/stats', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setStats(statsData.data);
       }
-      
+
       // Fetch recent help requests
       const helpResponse = await fetch('/api/help-requests?limit=5', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (helpResponse.ok) {
         const helpData = await helpResponse.json();
         setRecentHelp(helpData.data);
       }
-      
+
     } catch (error) {
       console.error('Dashboard data fetch error:', error);
     } finally {
@@ -115,7 +115,7 @@ export function DashboardPage() {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
-    
+
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     return `${diffDays}d ago`;
@@ -176,7 +176,7 @@ export function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -191,7 +191,7 @@ export function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -205,7 +205,7 @@ export function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -236,7 +236,7 @@ export function DashboardPage() {
                 <p className="text-sm text-gray-600">Help Requested</p>
               </CardContent>
             </Card>
-            
+
             <Card className="galax-card">
               <CardContent className="p-4 text-center">
                 <Users className="h-8 w-8 mx-auto mb-2 text-blue-600" />
@@ -244,7 +244,7 @@ export function DashboardPage() {
                 <p className="text-sm text-gray-600">Help Offered</p>
               </CardContent>
             </Card>
-            
+
             <Card className="galax-card">
               <CardContent className="p-4 text-center">
                 <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-red-600" />
@@ -252,7 +252,7 @@ export function DashboardPage() {
                 <p className="text-sm text-gray-600">Crisis Reported</p>
               </CardContent>
             </Card>
-            
+
             <Card className="galax-card">
               <CardContent className="p-4 text-center">
                 <Vote className="h-8 w-8 mx-auto mb-2 text-green-600" />
@@ -260,7 +260,7 @@ export function DashboardPage() {
                 <p className="text-sm text-gray-600">Proposals Created</p>
               </CardContent>
             </Card>
-            
+
             <Card className="galax-card">
               <CardContent className="p-4 text-center">
                 <TrendingUp className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
@@ -378,7 +378,7 @@ export function DashboardPage() {
                     </div>
                     <Progress value={((user?.reputation_score || 0) % 100)} className="h-2" />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span>Help Completion Rate</span>
@@ -387,7 +387,7 @@ export function DashboardPage() {
                     <Progress value={85} className="h-2" />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">People Helped</span>

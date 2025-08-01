@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -88,7 +88,7 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
   // Database unique constraint error
   if (err.message.includes('UNIQUE constraint failed')) {
     let message = 'Duplicate field value entered';
-    
+
     if (err.message.includes('users.email')) {
       message = 'Email address is already registered';
     } else if (err.message.includes('users.username')) {
@@ -96,7 +96,7 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
     } else if (err.message.includes('users.wallet_address')) {
       message = 'Wallet address is already registered';
     }
-    
+
     error = { statusCode: 400, message } as AppError;
   }
 
@@ -115,13 +115,13 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
   // Multer file upload errors
   if (err.name === 'MulterError') {
     let message = 'File upload error';
-    
+
     if (err.message.includes('File too large')) {
       message = 'File size too large. Maximum size is 10MB';
     } else if (err.message.includes('Unexpected field')) {
       message = 'Invalid file field name';
     }
-    
+
     error = { statusCode: 400, message } as AppError;
   }
 
@@ -139,7 +139,7 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
   // Send error response
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Internal server error';
-  
+
   res.status(statusCode).json({
     success: false,
     error: {

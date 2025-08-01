@@ -2,15 +2,15 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 /**
  * Deployment Check Script
- * 
+ *
  * This script validates the environment configuration and generates
  * a deployment checklist specifically for fixing Vercel authentication issues.
  */
@@ -49,14 +49,14 @@ async function runDeploymentCheck() {
 
   try {
     const report = await performDeploymentReadinessCheck();
-    
+
     // Print summary in expected format
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
     console.log(`Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`);
     console.log(`Environment: ${report.environment}`);
     console.log(`Timestamp: ${report.timestamp}`);
-    
+
     // Exit with appropriate code based on status
     if (report.overall_status === 'not_ready') {
       process.exit(1);

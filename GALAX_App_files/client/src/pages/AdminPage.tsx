@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -13,11 +13,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Shield, 
-  ShieldCheck, 
+import {
+  Shield,
+  ShieldCheck,
   ShieldAlert,
-  Settings, 
+  Settings,
   Activity,
   Zap,
   Lock,
@@ -229,14 +229,14 @@ export function AdminPage() {
                   </div>
                   {getSecurityLevelBadge(securityStatus.overall.securityLevel)}
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Protection Score</span>
                     <span className="font-semibold">{securityStatus.overall.protectionScore}/130</span>
                   </div>
-                  <Progress 
-                    value={(securityStatus.overall.protectionScore / 130) * 100} 
+                  <Progress
+                    value={(securityStatus.overall.protectionScore / 130) * 100}
                     className="h-3"
                   />
                   <p className="text-sm text-gray-500">
@@ -342,7 +342,7 @@ export function AdminPage() {
                 </div>
 
                 <div className="flex space-x-4">
-                  <Button 
+                  <Button
                     onClick={testPostQuantumOperations}
                     disabled={testingPQ}
                     className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"

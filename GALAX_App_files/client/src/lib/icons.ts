@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -10,17 +10,17 @@
 // This helps with tree-shaking to reduce bundle size
 
 // Core UI icons
-export { 
-  Check, 
-  ChevronDown, 
-  ChevronUp, 
-  ChevronLeft, 
+export {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
   ChevronRight,
   X,
   Search
 } from 'lucide-react';
 
-// Navigation icons  
+// Navigation icons
 export {
   Home,
   HandHeart,

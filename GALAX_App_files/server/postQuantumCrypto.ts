@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -60,10 +60,10 @@ class PostQuantumCryptography {
     try {
       // Generate ML-KEM (CRYSTALS-Kyber) keys - FIPS 203 compliant
       const mlkem = this.generateMLKEMKeys();
-      
+
       // Generate ML-DSA (CRYSTALS-Dilithium) keys - FIPS 204 compliant
       const mldsa = this.generateMLDSAKeys();
-      
+
       // Generate SLH-DSA (SPHINCS+) keys - FIPS 205 compliant
       const slhdsa = this.generateSLHDSAKeys();
 
@@ -90,7 +90,7 @@ class PostQuantumCryptography {
     // ML-KEM-1024 parameters (Security Level 5)
     const publicKeySize = 1568; // bytes
     const secretKeySize = 3168; // bytes
-    
+
     return {
       publicKey: crypto.randomBytes(publicKeySize),
       secretKey: crypto.randomBytes(secretKeySize)
@@ -105,7 +105,7 @@ class PostQuantumCryptography {
     // ML-DSA-87 parameters (Security Level 5)
     const publicKeySize = 2592; // bytes
     const secretKeySize = 4896; // bytes
-    
+
     return {
       publicKey: crypto.randomBytes(publicKeySize),
       secretKey: crypto.randomBytes(secretKeySize)
@@ -120,7 +120,7 @@ class PostQuantumCryptography {
     // SLH-DSA-256s parameters (compact keys)
     const publicKeySize = 64; // bytes
     const secretKeySize = 128; // bytes
-    
+
     return {
       publicKey: crypto.randomBytes(publicKeySize),
       secretKey: crypto.randomBytes(secretKeySize)
@@ -139,7 +139,7 @@ class PostQuantumCryptography {
     // Simulated ML-KEM encapsulation
     const ciphertext = crypto.randomBytes(1568); // ML-KEM-1024 ciphertext size
     const sharedSecret = crypto.randomBytes(32); // 256-bit shared secret
-    
+
     return { ciphertext, sharedSecret };
   }
 
@@ -154,7 +154,7 @@ class PostQuantumCryptography {
     // Simulated ML-DSA signature
     const signatureSize = 4627; // ML-DSA-87 signature size
     const messageHash = crypto.createHash('sha256').update(message).digest();
-    
+
     // In real implementation, would use actual ML-DSA signing
     return crypto.randomBytes(signatureSize);
   }
@@ -183,15 +183,15 @@ class PostQuantumCryptography {
     // Step 1: Generate AES key and IV
     const aesKey = crypto.randomBytes(32);
     const iv = crypto.randomBytes(16);
-    
+
     // Step 2: Encrypt data with AES
     const cipher = crypto.createCipheriv('aes-256-gcm', aesKey, iv);
     const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
     const authTag = cipher.getAuthTag();
-    
+
     // Step 3: Encapsulate AES key with ML-KEM
     const { ciphertext } = await this.encapsulate(aesKey);
-    
+
     return {
       encrypted: Buffer.concat([iv, authTag, encrypted]),
       metadata: {
@@ -213,7 +213,7 @@ class PostQuantumCryptography {
     // Simulated ZK proof generation
     const proof = crypto.randomBytes(128);
     const commitment = crypto.createHash('sha256').update(statement).digest();
-    
+
     return { proof, commitment };
   }
 

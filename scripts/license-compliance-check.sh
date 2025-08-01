@@ -209,7 +209,11 @@ scan_npm_dependencies() {
                         ((counter++))
                     done < <(tail -n +$(($(grep -n "$line" "$temp_report" | cut -d: -f1) + 1)) "$temp_report")
                     
-                    if [[ -n "$license_info" && "$license_info" != "null" ]]; then
+                    # Special handling for main application packages
+                    if [[ "$pkg" == "galax-civic-platform@"* || "$pkg" == "galax-civic-networking-app@"* ]]; then
+                        echo "✅ $pkg: PolyForm-Shield-1.0.0 (Main Application)" >> "$MAIN_REPORT"
+                        ((total++))
+                    elif [[ -n "$license_info" && "$license_info" != "null" ]]; then
                         local compatibility=$(check_license_compatibility "$license_info" "$pkg")
                         ((total++))
                         
@@ -233,6 +237,7 @@ scan_npm_dependencies() {
                     else
                         echo "❓ $pkg: Unknown license (Review Required)" >> "$MAIN_REPORT"
                         ((warnings++))
+                        ((total++))
                     fi
                 fi
             done < "$temp_report"

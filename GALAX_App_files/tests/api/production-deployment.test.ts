@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -162,7 +162,7 @@ describe('Production Deployment Fixes', () => {
     it('should validate that required environment variables are set for production', () => {
       // This test verifies our environment validation logic
       const requiredVars = ['NODE_ENV', 'JWT_SECRET', 'CLIENT_ORIGIN'];
-      
+
       const currentEnv = process.env.NODE_ENV;
       process.env.NODE_ENV = 'production';
 

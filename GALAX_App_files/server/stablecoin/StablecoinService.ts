@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -47,7 +47,7 @@ export class StablecoinService {
   ) {
     this.contract = new StablecoinContract(contractConfig);
     this.oracle = new PriceOracle(oracleConfig);
-    
+
     // Connect oracle to contract
     this.oracle.addPriceListener((priceData: PriceData) => {
       this.contract.addPriceData(priceData);
@@ -91,7 +91,7 @@ export class StablecoinService {
         .addColumn('stability_score', 'real', col => col.notNull())
         .execute();
 
-      // Create supply adjustment history table  
+      // Create supply adjustment history table
       await db.schema
         .createTable('supply_adjustments')
         .ifNotExists()
@@ -120,13 +120,13 @@ export class StablecoinService {
     }
 
     this.isRunning = true;
-    
+
     // Load initial state from database
     await this.loadState();
-    
+
     // Start automatic rebalancing
     this.startRebalancing();
-    
+
     console.log('Stablecoin service started');
   }
 
@@ -135,12 +135,12 @@ export class StablecoinService {
    */
   stop(): void {
     this.isRunning = false;
-    
+
     if (this.rebalanceTimer) {
       clearInterval(this.rebalanceTimer);
       this.rebalanceTimer = null;
     }
-    
+
     this.oracle.stop();
     console.log('Stablecoin service stopped');
   }
@@ -157,9 +157,9 @@ export class StablecoinService {
           eb.fn.sum('crowds_balance').as('total_supply')
         ])
         .execute();
-      
+
       const totalSupply = Number(result[0]?.total_supply || 0);
-      
+
       // Initialize contract with current supply
       if (totalSupply > 0) {
         this.contract = new StablecoinContract(
@@ -168,7 +168,7 @@ export class StablecoinService {
           totalSupply * 0.2 // 20% initial reserve
         );
       }
-      
+
       console.log(`Loaded stablecoin state: ${totalSupply} total supply`);
     } catch (error) {
       console.error('Error loading stablecoin state:', error);
@@ -180,7 +180,7 @@ export class StablecoinService {
    */
   private startRebalancing(): void {
     const rebalanceInterval = this.contract.getConfig().rebalanceInterval;
-    
+
     this.rebalanceTimer = setInterval(async () => {
       await this.performRebalance();
     }, rebalanceInterval);
@@ -192,20 +192,20 @@ export class StablecoinService {
   async performRebalance(): Promise<SupplyAdjustment | null> {
     try {
       const adjustment = this.contract.rebalance();
-      
+
       if (adjustment && adjustment.action !== 'none') {
         // Save adjustment to database
         await this.saveSupplyAdjustment(adjustment);
-        
+
         // Apply balance changes to users proportionally
         await this.applySupplyAdjustment(adjustment);
-        
+
         // Save metrics
         await this.saveMetrics();
-        
+
         console.log(`Rebalance executed: ${adjustment.action} ${adjustment.amount.toFixed(2)} tokens`);
       }
-      
+
       return adjustment;
     } catch (error) {
       console.error('Error during rebalance:', error);
@@ -229,7 +229,7 @@ export class StablecoinService {
       }
 
       const totalCurrentBalance = users.reduce((sum, user) => sum + user.crowds_balance, 0);
-      
+
       if (totalCurrentBalance === 0) {
         return;
       }
@@ -238,9 +238,9 @@ export class StablecoinService {
       for (const user of users) {
         const userProportion = user.crowds_balance / totalCurrentBalance;
         const userAdjustment = adjustment.amount * userProportion;
-        
+
         let newBalance: number;
-        
+
         if (adjustment.action === 'expand') {
           newBalance = user.crowds_balance + userAdjustment;
         } else {
@@ -250,7 +250,7 @@ export class StablecoinService {
         // Update user balance
         await db
           .updateTable('users')
-          .set({ 
+          .set({
             crowds_balance: newBalance,
             updated_at: new Date().toISOString()
           })
@@ -301,7 +301,7 @@ export class StablecoinService {
     try {
       const metrics = this.contract.getStabilityMetrics();
       const supplyInfo = this.contract.getSupplyInfo();
-      
+
       await db
         .insertInto('stablecoin_metrics')
         .values({
@@ -407,7 +407,7 @@ export class StablecoinService {
         .orderBy('created_at', 'desc')
         .limit(limit)
         .execute();
-      
+
       // Map and cast the results to match the interface
       return results.map(row => ({
         ...row,

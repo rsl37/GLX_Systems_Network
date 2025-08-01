@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -79,7 +79,7 @@ export function ForgotPasswordPage() {
                   The reset link will expire in 24 hours.
                 </p>
               </div>
-              
+
               <div className="space-y-2">
                 <Button
                   onClick={() => {
@@ -91,7 +91,7 @@ export function ForgotPasswordPage() {
                 >
                   Send Another Email
                 </Button>
-                
+
                 <Link to="/login">
                   <Button variant="ghost" className="w-full">
                     <ArrowLeft className="h-4 w-4 mr-2" />

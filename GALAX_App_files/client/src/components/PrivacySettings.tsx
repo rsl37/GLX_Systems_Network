@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -15,12 +15,12 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { 
-  Eye, 
-  EyeOff, 
-  Mail, 
-  Phone, 
-  Wallet, 
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Phone,
+  Wallet,
   AlertTriangle,
   DollarSign,
   Shield,
@@ -30,7 +30,7 @@ import {
 interface PrivacySettingsProps {
   userPrivacySettings: {
     showEmail: boolean;
-    showPhone: boolean; 
+    showPhone: boolean;
     showWallet: boolean;
     walletDisplayMode: 'hidden' | 'public' | 'tip-button';
   };
@@ -154,7 +154,7 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
                 <Label className="text-base font-medium">Wallet Address</Label>
                 <p className="text-sm text-gray-600">
                   {user?.wallet_address ? (
-                    userPrivacySettings.walletDisplayMode === 'public' ? 
+                    userPrivacySettings.walletDisplayMode === 'public' ?
                       'Show full wallet address on your profile' :
                     userPrivacySettings.walletDisplayMode === 'tip-button' ?
                       'Show "Wallet Verified" badge with tip button' :
@@ -181,8 +181,8 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
                       {userPrivacySettings.walletDisplayMode === 'public' ? 'Full Address' : 'Tip Button Only'}
                     </strong>
                   </span>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => setShowWalletWarning(true)}
                   >
@@ -204,7 +204,7 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
               Wallet Address Display Options
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
@@ -230,7 +230,7 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
                       <strong>Tip Button Only (Recommended)</strong>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Show a "Wallet Verified" badge and tip button without revealing your actual wallet address. 
+                      Show a "Wallet Verified" badge and tip button without revealing your actual wallet address.
                       This keeps your privacy while allowing people to send you tips.
                     </p>
                   </div>
@@ -265,7 +265,7 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
             <Button variant="outline" onClick={handleCancelWalletWarning}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={() => pendingWalletSetting && handleWalletModeSelection(pendingWalletSetting)}
               disabled={!pendingWalletSetting || isLoading}
               className={pendingWalletSetting === 'public' ? 'bg-red-600 hover:bg-red-700' : ''}

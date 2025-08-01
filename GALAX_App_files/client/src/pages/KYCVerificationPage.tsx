@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -16,12 +16,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  FileText, 
-  CheckCircle, 
-  AlertCircle, 
-  RefreshCw, 
-  Shield, 
+import {
+  FileText,
+  CheckCircle,
+  AlertCircle,
+  RefreshCw,
+  Shield,
   Upload,
   Camera,
   AlertTriangle,
@@ -113,7 +113,7 @@ export function KYCVerificationPage() {
 
       const apiData = await parseApiResponse(response);
       setKycStatus(apiData.data);
-      
+
       if (apiData.data.hasVerification && apiData.data.status === 'approved') {
         setStep('complete');
       }
@@ -129,13 +129,13 @@ export function KYCVerificationPage() {
         setError('Document file size must be less than 10MB. Please compress your file or use a different format.');
         return;
       }
-      
+
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
       if (!allowedTypes.includes(file.type)) {
         setError('Only JPEG, PNG, and PDF files are allowed');
         return;
       }
-      
+
       setDocumentFile(file);
       setError('');
     }
@@ -148,13 +148,13 @@ export function KYCVerificationPage() {
         setError('Selfie file size must be less than 10MB. Please use a smaller image file.');
         return;
       }
-      
+
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       if (!allowedTypes.includes(file.type)) {
         setError('Only JPEG and PNG files are allowed for selfie');
         return;
       }
-      
+
       setSelfieFile(file);
       setError('');
     }
@@ -180,7 +180,7 @@ export function KYCVerificationPage() {
       formData.append('documentType', selectedDocumentType);
       formData.append('documentNumber', documentNumber);
       formData.append('document', documentFile);
-      
+
       if (selfieFile) {
         formData.append('selfie', selfieFile);
       }
@@ -194,7 +194,7 @@ export function KYCVerificationPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success) {
         setSuccess('Documents uploaded successfully! Your verification is now under review.');
         setStep('complete');
@@ -253,14 +253,14 @@ export function KYCVerificationPage() {
         <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
           <FileText className={`h-10 w-10 ${kycStatus.hasVerification && kycStatus.status === 'approved' ? 'text-green-500' : 'text-blue-500'}`} />
         </div>
-        
+
         <div>
           <h3 className="text-lg font-semibold">
             KYC Verification
           </h3>
           <p className="text-gray-600">
-            {kycStatus.hasVerification 
-              ? `Your verification status: ${kycStatus.status}` 
+            {kycStatus.hasVerification
+              ? `Your verification status: ${kycStatus.status}`
               : 'Verify your identity to access all platform features'
             }
           </p>
@@ -313,7 +313,7 @@ export function KYCVerificationPage() {
             </p>
           </div>
         )}
-        
+
         <Button
           onClick={() => navigate('/dashboard')}
           variant="ghost"
@@ -487,7 +487,7 @@ export function KYCVerificationPage() {
         >
           Continue to Dashboard
         </Button>
-        
+
         <Button
           onClick={() => {
             setStep('status');
@@ -519,7 +519,7 @@ export function KYCVerificationPage() {
               Verify your identity to unlock all platform features
             </CardDescription>
           </CardHeader>
-          
+
           {error && (
             <div className="mx-6 mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center gap-2 text-red-700">

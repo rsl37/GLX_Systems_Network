@@ -21,11 +21,11 @@ async function healthCheck(url: string, maxAttempts = 30): Promise<boolean> {
     } catch (error) {
       // Ignore and retry
     }
-    
+
     console.log(`⏳ Waiting for server... (${i + 1}/${maxAttempts})`);
     await setTimeout(2000);
   }
-  
+
   console.log(`❌ Health check failed: ${url}`);
   return false;
 }
@@ -33,7 +33,7 @@ async function healthCheck(url: string, maxAttempts = 30): Promise<boolean> {
 // Start the application for testing
 async function startAppForTesting() {
   console.log('🚀 Starting application for CI testing...');
-  
+
   const appProcess = spawn('npm', ['start'], {
     cwd: process.cwd(),
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -61,7 +61,7 @@ async function startAppForTesting() {
 
   // Test health endpoints
   const healthOk = await healthCheck('http://localhost:3001/api/health');
-  
+
   if (healthOk) {
     console.log('✅ Application health check passed');
   } else {
@@ -71,7 +71,7 @@ async function startAppForTesting() {
   // Clean up
   appProcess.kill('SIGTERM');
   await setTimeout(2000);
-  
+
   return healthOk;
 }
 

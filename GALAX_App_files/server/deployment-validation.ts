@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -148,12 +148,12 @@ interface DeploymentReadinessReport {
  */
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
-  
+
   // Check critical environment variables (required for basic functionality)
-  const isDevOrTest = process.env.NODE_ENV === 'test' || 
-                      process.env.NODE_ENV === 'development' || 
+  const isDevOrTest = process.env.NODE_ENV === 'test' ||
+                      process.env.NODE_ENV === 'development' ||
                       process.env.CI === 'true';
-  
+
   for (const envVar of CRITICAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
@@ -205,18 +205,18 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
   // Check essential environment variables (required for core features)
   // In test/CI/development environments, treat missing essential vars as warnings, not failures
-  const isNonProduction = process.env.NODE_ENV === 'test' || 
-                          process.env.NODE_ENV === 'development' || 
+  const isNonProduction = process.env.NODE_ENV === 'test' ||
+                          process.env.NODE_ENV === 'development' ||
                           process.env.CI === 'true';
-  
+
   for (const envVar of ESSENTIAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
       const status = isNonProduction ? 'warning' : 'fail';
-      const message = isNonProduction 
+      const message = isNonProduction
         ? `Essential environment variable ${envVar} is not set - some features may be limited in ${process.env.NODE_ENV} environment`
         : `Essential environment variable ${envVar} is not set - core features will not work`;
-      
+
       results.push({
         check: `Essential Environment Variable: ${envVar}`,
         status: status,
@@ -227,14 +227,14 @@ export function validateEnvironmentVariables(): ValidationResult[] {
       // Check for placeholder values that indicate incomplete configuration
       const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-', 'REQUIRED-'];
       const isPlaceholder = placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder.toLowerCase()));
-      
+
       if (isPlaceholder) {
         // In development/test environments, treat placeholder values as warnings, not failures
         const status = isNonProduction ? 'warning' : 'fail';
-        const message = isNonProduction 
+        const message = isNonProduction
           ? `Essential environment variable ${envVar} contains placeholder value - configure with real credentials for production`
           : `Essential environment variable ${envVar} contains placeholder value - must be configured with real service credentials`;
-        
+
         results.push({
           check: `Essential Environment Variable: ${envVar}`,
           status: status,
@@ -377,8 +377,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           check: 'SMTP Host Configuration',
           status: 'warning',
           message: `SMTP_HOST '${smtpHost}' is not in the list of verified providers. Consider using a mainstream email service for better deliverability.`,
-          details: { 
-            host: smtpHost, 
+          details: {
+            host: smtpHost,
             supported: false,
             suggestion: 'Consider using Gmail, Outlook, or another mainstream provider'
           }
@@ -403,14 +403,14 @@ export function validateEnvironmentVariables(): ValidationResult[] {
       const commonPorts = [25, 465, 587, 2525];
       const isCommonPort = commonPorts.includes(portNum);
       const isSecurePort = [465, 587].includes(portNum);
-      
+
       results.push({
         check: 'SMTP Port Configuration',
         status: 'pass',
         message: `SMTP_PORT is properly configured: ${smtpPort}${isSecurePort ? ' (secure)' : ''}`,
-        details: { 
-          port: portNum, 
-          common: isCommonPort, 
+        details: {
+          port: portNum,
+          common: isCommonPort,
           secure: isSecurePort,
           recommendation: isSecurePort ? 'secure port' : 'consider using port 587 or 465 for security'
         }
@@ -442,17 +442,17 @@ export function validateEnvironmentVariables(): ValidationResult[] {
       } else {
         const countryCode = countryCodeMatch[1];
         const phonePattern = INTERNATIONAL_PHONE_PATTERNS[countryCode];
-        
+
         if (phonePattern) {
           // Validate against specific country pattern
-          if (phonePattern.pattern.test(twilioPhone) && 
-              twilioPhone.length >= phonePattern.min && 
+          if (phonePattern.pattern.test(twilioPhone) &&
+              twilioPhone.length >= phonePattern.min &&
               twilioPhone.length <= phonePattern.max) {
             results.push({
               check: 'Twilio Phone Number Format',
               status: 'pass',
               message: `TWILIO_PHONE_NUMBER is properly formatted for country code ${countryCode}`,
-              details: { 
+              details: {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
@@ -464,7 +464,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
               check: 'Twilio Phone Number Format',
               status: 'warning',
               message: `TWILIO_PHONE_NUMBER format may not be standard for country code ${countryCode}`,
-              details: { 
+              details: {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
@@ -480,7 +480,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
               check: 'Twilio Phone Number Format',
               status: 'pass',
               message: `TWILIO_PHONE_NUMBER appears valid with country code ${countryCode} (generic validation)`,
-              details: { 
+              details: {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
@@ -492,7 +492,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
               check: 'Twilio Phone Number Format',
               status: 'warning',
               message: `TWILIO_PHONE_NUMBER length may be invalid for country code ${countryCode}`,
-              details: { 
+              details: {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
@@ -572,31 +572,31 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     let validOrigins = 0;
     let invalidOrigins = 0;
     let securityWarnings: string[] = [];
-    
+
     for (const origin of origins) {
       try {
         const url = new URL(origin);
         if (url.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')) {
           validOrigins++;
-          
+
           // Security validations to reduce attack surface
           if (process.env.NODE_ENV === 'production') {
             // Warn against development origins in production
             if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.includes('.local')) {
               securityWarnings.push(`Development origin '${origin}' should not be used in production`);
             }
-            
+
             // Warn against non-HTTPS in production
             if (url.protocol !== 'https:') {
               securityWarnings.push(`Non-HTTPS origin '${origin}' creates security risk in production`);
             }
           }
-          
+
           // Warn against overly broad wildcards or IP addresses in production
           if (process.env.NODE_ENV === 'production' && /^\d+\.\d+\.\d+\.\d+/.test(url.hostname)) {
             securityWarnings.push(`IP address origin '${origin}' reduces security - use domain names when possible`);
           }
-          
+
         } else {
           invalidOrigins++;
         }
@@ -604,25 +604,25 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         invalidOrigins++;
       }
     }
-    
+
     if (invalidOrigins === 0) {
       const status = securityWarnings.length > 0 ? 'warning' : 'pass';
-      const message = securityWarnings.length > 0 
+      const message = securityWarnings.length > 0
         ? `All ${validOrigins} trusted origins are formatted correctly, but ${securityWarnings.length} security concerns detected`
         : `All ${validOrigins} trusted origins are properly formatted with secure configuration`;
-        
+
       results.push({
         check: 'TRUSTED_ORIGINS Security',
         status,
         message,
-        details: { 
+        details: {
           total_origins: origins.length,
           valid_origins: validOrigins,
           security_warnings: securityWarnings,
           purpose: 'Version 3.0: third-party integrations, mobile contexts, enterprise deployments',
           security_notes: [
             'HTTPS enforced in production',
-            'Development origins blocked in production', 
+            'Development origins blocked in production',
             'Specific domains preferred over IP addresses',
             'Each origin explicitly validated'
           ]
@@ -633,7 +633,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'TRUSTED_ORIGINS Security',
         status: 'fail',
         message: `${invalidOrigins} of ${origins.length} trusted origins have invalid format or security issues`,
-        details: { 
+        details: {
           total_origins: origins.length,
           valid_origins: validOrigins,
           invalid_origins: invalidOrigins,
@@ -653,7 +653,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   // Validate NODE_ENV for production
   const nodeEnv = process.env.NODE_ENV;
   const isDevelopmentOrTest = nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
-  
+
   if (nodeEnv !== 'production') {
     if (isDevelopmentOrTest) {
       results.push({
@@ -732,7 +732,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
     for (const subdir of PRODUCTION_REQUIREMENTS.REQUIRED_DIRECTORIES) {
       const subdirPath = path.join(dataDirectory, subdir);
       const subdirExists = await fsExtra.pathExists(subdirPath);
-      
+
       if (!subdirExists) {
         results.push({
           check: `Required Directory: ${subdir}`,
@@ -763,7 +763,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
       // Use check-disk-space for accurate cross-platform disk space information
       const absoluteDataDirectory = path.resolve(dataDirectory);
       const diskSpace = await checkDiskSpace(absoluteDataDirectory);
-      
+
       // Convert from bytes to MB for consistency
       const totalSpaceMB = Math.round(diskSpace.size / (1024 * 1024));
       const freeSpaceMB = Math.round(diskSpace.free / (1024 * 1024));
@@ -785,17 +785,17 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
           check: 'Disk Space Availability',
           status: 'fail',
           message: `Insufficient disk space. Available: ${freeSpaceMB}MB, Required: ${PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB}MB`,
-          details: { 
+          details: {
             ...diskSpaceInfo,
             required_mb: PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB
           }
         });
       } else {
         const status = usedPercentage > 90 ? 'warning' : 'pass';
-        const message = usedPercentage > 90 
+        const message = usedPercentage > 90
           ? `Disk space is available but usage is high (${usedPercentage.toFixed(1)}%). Monitor closely.`
           : `Sufficient disk space available: ${freeSpaceMB}MB (${(100 - usedPercentage).toFixed(1)}% free)`;
-          
+
         results.push({
           check: 'Disk Space Availability',
           status,
@@ -811,7 +811,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
         check: 'Disk Space Availability',
         status: 'fail',
         message: `Failed to check disk space: ${(error as Error).message}`,
-        details: { 
+        details: {
           error: (error as Error).message,
           note: 'Cross-platform disk space check failed - this indicates a serious system issue'
         }
@@ -950,9 +950,9 @@ export function validateProductionConfig(): ValidationResult[] {
  */
 export async function performDeploymentReadinessCheck(): Promise<DeploymentReadinessReport> {
   console.log('🚀 Starting deployment readiness check...');
-  
+
   const allChecks: ValidationResult[] = [];
-  
+
   // Collect all validation results
   allChecks.push(...validateEnvironmentVariables());
   allChecks.push(...await validateFileSystem());
@@ -997,7 +997,7 @@ export async function performDeploymentReadinessCheck(): Promise<DeploymentReadi
 export const getDeploymentReadiness = async (req: Request, res: Response): Promise<void> => {
   try {
     const report = await performDeploymentReadinessCheck();
-    
+
     // Set appropriate HTTP status based on readiness
     let statusCode = 200;
     if (report.overall_status === 'not_ready') {

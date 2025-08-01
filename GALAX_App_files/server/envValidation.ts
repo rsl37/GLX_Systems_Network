@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 /**
  * Environment Variable Validation for Production Deployment
- * 
+ *
  * This module validates environment variables required for production deployment,
  * particularly for Vercel deployments where missing or incorrect environment
  * variables are a common cause of authentication failures.
@@ -154,7 +154,7 @@ export function validateEnvironment(): EnvironmentValidationResult {
   }
 
   const isValid = errors.length === 0;
-  
+
   if (isValid) {
     console.log('✅ Environment validation passed');
   } else {
@@ -187,11 +187,11 @@ function validateAuthConfiguration(
   const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
   const isProduction = process.env.NODE_ENV === 'production';
   const isTestOrCI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
-  
+
   // Validate JWT_SECRET with comprehensive security checks
   if (jwtSecret) {
     const validation = validateJWTSecret(jwtSecret, isProduction);
-    
+
     if (!validation.isValid || validation.severity === 'critical') {
       // In production mode, always enforce strict validation regardless of test environment
       if (isProduction) {
@@ -201,11 +201,11 @@ function validateAuthConfiguration(
         warnings.push(`JWT_SECRET is weak but acceptable for test environment`);
       } else {
         errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
-        
+
         if (validation.weakPatterns.length > 0) {
           const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
           const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
-          
+
           if (criticalPatterns.length > 0) {
             errors.push(`JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
           }
@@ -213,7 +213,7 @@ function validateAuthConfiguration(
             errors.push(`JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
           }
         }
-        
+
         recommendations.push('JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
       }
     } else if (validation.severity === 'warning') {
@@ -225,7 +225,7 @@ function validateAuthConfiguration(
   // Validate JWT_REFRESH_SECRET with the same comprehensive checks
   if (jwtRefreshSecret) {
     const validation = validateJWTSecret(jwtRefreshSecret, isProduction);
-    
+
     if (!validation.isValid || validation.severity === 'critical') {
       // In production mode, always enforce strict validation regardless of test environment
       if (isProduction) {
@@ -235,11 +235,11 @@ function validateAuthConfiguration(
         warnings.push(`JWT_REFRESH_SECRET is weak but acceptable for test environment`);
       } else {
         errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
-        
+
         if (validation.weakPatterns.length > 0) {
           const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
           const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
-          
+
           if (criticalPatterns.length > 0) {
             errors.push(`JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
           }
@@ -247,7 +247,7 @@ function validateAuthConfiguration(
             errors.push(`JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
           }
         }
-        
+
         recommendations.push('JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
       }
     } else if (validation.severity === 'warning') {
@@ -328,9 +328,9 @@ function validateProductionConfiguration(
   }
 
   // Check if common production URLs are configured
-  const hasVercelDomain = process.env.CLIENT_ORIGIN?.includes('vercel.app') || 
+  const hasVercelDomain = process.env.CLIENT_ORIGIN?.includes('vercel.app') ||
                           process.env.FRONTEND_URL?.includes('vercel.app');
-  
+
   if (!hasVercelDomain) {
     warnings.push('No Vercel domain detected in CORS configuration');
     recommendations.push('CORS: Ensure your Vercel app URL is included in CLIENT_ORIGIN or TRUSTED_ORIGINS');
@@ -396,17 +396,17 @@ export function generateDeploymentChecklist(validationResult: EnvironmentValidat
  */
 export function logEnvironmentStatus(): void {
   const validation = validateEnvironment();
-  
+
   if (!validation.isValid) {
     console.error('\n🚨 DEPLOYMENT ERROR: Environment validation failed');
     console.error('The following issues must be resolved before deployment:\n');
     validation.errors.forEach(error => console.error(`❌ ${error}`));
-    
+
     if (validation.recommendations.length > 0) {
       console.log('\n💡 Recommendations:');
       validation.recommendations.forEach(rec => console.log(`  - ${rec}`));
     }
-    
+
     console.log('\n📋 For a complete deployment checklist, run: npm run deployment:check');
   }
 }

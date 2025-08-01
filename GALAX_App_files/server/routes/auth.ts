@@ -165,7 +165,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       method: email ? 'email' : phone ? 'phone' : 'wallet',
       ip: req.ip,
     });
-    
+
     sendSuccess(res, {
       token,
       userId: user.id,
@@ -181,7 +181,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       origin: req.get('Origin'),
       timestamp: new Date().toISOString(),
     });
-    
+
     // Don't expose internal error details to client
     sendError(res, 'Registration failed. Please try again.', StatusCodes.INTERNAL_ERROR);
   }
@@ -280,7 +280,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
       method: email ? 'email' : phone ? 'phone' : 'wallet',
       ip: req.ip,
     });
-    
+
     sendSuccess(res, {
       token,
       userId: user.id,
@@ -296,7 +296,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
       origin: req.get('Origin'),
       timestamp: new Date().toISOString(),
     });
-    
+
     sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
   }
 });

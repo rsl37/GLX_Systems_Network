@@ -43,18 +43,18 @@ class SocialGoodMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location to search (city, state, or coordinates)' },
-                cause: { 
-                  type: 'string', 
+                cause: {
+                  type: 'string',
                   enum: ['environment', 'education', 'health', 'poverty', 'disaster', 'animals', 'seniors', 'children'],
                   description: 'Cause area for volunteering'
                 },
-                skills: { 
-                  type: 'array', 
+                skills: {
+                  type: 'array',
                   items: { type: 'string' },
                   description: 'Skills or interests to match'
                 },
-                timeCommitment: { 
-                  type: 'string', 
+                timeCommitment: {
+                  type: 'string',
                   enum: ['one-time', 'weekly', 'monthly', 'ongoing'],
                   description: 'Time commitment preference'
                 },
@@ -84,10 +84,10 @@ class SocialGoodMCPServer {
                 location: { type: 'string', description: 'Location (address or coordinates)' },
                 radius: { type: 'number', description: 'Search radius in miles', default: 15 },
                 openNow: { type: 'boolean', description: 'Only show locations open now', default: false },
-                services: { 
-                  type: 'array', 
-                  items: { 
-                    type: 'string', 
+                services: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
                     enum: ['food_pantry', 'soup_kitchen', 'food_delivery', 'nutrition_education']
                   },
                   description: 'Specific services needed'
@@ -103,13 +103,13 @@ class SocialGoodMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Affected area location' },
-                disasterType: { 
-                  type: 'string', 
+                disasterType: {
+                  type: 'string',
                   enum: ['hurricane', 'earthquake', 'flood', 'wildfire', 'tornado', 'winter_storm'],
                   description: 'Type of disaster'
                 },
-                needType: { 
-                  type: 'string', 
+                needType: {
+                  type: 'string',
                   enum: ['shelter', 'food', 'medical', 'supplies', 'transportation', 'financial_aid'],
                   description: 'Type of assistance needed'
                 }
@@ -124,12 +124,12 @@ class SocialGoodMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location to search' },
-                resourceType: { 
-                  type: 'string', 
+                resourceType: {
+                  type: 'string',
                   enum: ['housing', 'healthcare', 'job_training', 'childcare', 'mental_health', 'substance_abuse', 'legal_aid'],
                   description: 'Type of resource needed'
                 },
-                eligibility: { 
+                eligibility: {
                   type: 'object',
                   properties: {
                     income_level: { type: 'string', enum: ['low', 'moderate', 'any'] },
@@ -149,15 +149,15 @@ class SocialGoodMCPServer {
             inputSchema: {
               type: 'object',
               properties: {
-                needType: { 
-                  type: 'string', 
+                needType: {
+                  type: 'string',
                   enum: ['food_insecurity', 'housing', 'healthcare', 'education', 'disaster_relief', 'elder_care', 'child_care'],
                   description: 'Type of community need'
                 },
                 location: { type: 'string', description: 'Location where help is needed' },
                 description: { type: 'string', description: 'Detailed description of the need' },
-                urgency: { 
-                  type: 'string', 
+                urgency: {
+                  type: 'string',
                   enum: ['low', 'medium', 'high', 'emergency'],
                   description: 'Urgency level'
                 },
@@ -261,7 +261,7 @@ class SocialGoodMCPServer {
     }
 
     if (skills.length > 0) {
-      filteredOpportunities = filteredOpportunities.filter(opp => 
+      filteredOpportunities = filteredOpportunities.filter(opp =>
         skills.some(skill => opp.skills_needed.includes(skill))
       );
     }
@@ -389,7 +389,7 @@ class SocialGoodMCPServer {
     }
 
     if (services.length > 0) {
-      filteredFoodBanks = filteredFoodBanks.filter(fb => 
+      filteredFoodBanks = filteredFoodBanks.filter(fb =>
         services.some(service => fb.services.includes(service))
       );
     }

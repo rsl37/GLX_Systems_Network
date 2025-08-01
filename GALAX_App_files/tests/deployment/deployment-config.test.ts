@@ -12,7 +12,7 @@ import path from 'path';
 
 describe('Deployment Configuration Tests', () => {
   let deploymentCheck: ChildProcess;
-  
+
   beforeAll(() => {
     // Ensure we're testing from the correct directory
     process.chdir(path.resolve(__dirname, '../..'));
@@ -41,7 +41,7 @@ describe('Deployment Configuration Tests', () => {
       const fs = await import('fs');
       const dataPath = path.resolve('./data');
       expect(fs.existsSync(dataPath)).toBe(true);
-      
+
       const stats = fs.statSync(dataPath);
       expect(stats.isDirectory()).toBe(true);
     });
@@ -70,7 +70,7 @@ describe('Deployment Configuration Tests', () => {
       const fs = await import('fs');
       const envExamplePath = path.resolve('./.env.example');
       const content = fs.readFileSync(envExamplePath, 'utf-8');
-      
+
       // Check for required environment variables documentation
       expect(content).toContain('NODE_ENV');
       expect(content).toContain('PORT');
@@ -86,7 +86,7 @@ describe('Deployment Configuration Tests', () => {
       const fs = await import('fs');
       const vercelConfigPath = path.resolve('../vercel.json');
       expect(fs.existsSync(vercelConfigPath)).toBe(true);
-      
+
       const config = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf-8'));
       expect(config.buildCommand).toContain('npm run build');
       expect(config.outputDirectory).toBe('GALAX_App_files/dist/public');
@@ -111,7 +111,7 @@ describe('Deployment Configuration Tests', () => {
         DATA_DIRECTORY: './data',
         JWT_SECRET: 'test-jwt-secret-for-deployment-check-32characters-long'
       };
-      
+
       // Remove DATABASE_URL if it exists
       delete env.DATABASE_URL;
 
@@ -141,9 +141,9 @@ describe('Deployment Configuration Tests', () => {
 
       // Should not be in NOT_READY state (which would return exit code 1)
       expect(result.output).not.toContain('Overall Status: ❌ NOT_READY');
-      
+
       // Should show that deployment readiness completed (either WARNING or PASSED)
-      const hasWarningOrPass = result.output.includes('Overall Status: ⚠️ WARNING') || 
+      const hasWarningOrPass = result.output.includes('Overall Status: ⚠️ WARNING') ||
                               result.output.includes('Overall Status: ✅ READY');
       expect(hasWarningOrPass).toBe(true);
     });
@@ -177,7 +177,7 @@ describe('Deployment Configuration Tests', () => {
       const fs = await import('fs');
       const distPath = path.resolve('./dist');
       expect(fs.existsSync(distPath)).toBe(true);
-      
+
       const publicPath = path.resolve('./dist/public');
       expect(fs.existsSync(publicPath)).toBe(true);
     });

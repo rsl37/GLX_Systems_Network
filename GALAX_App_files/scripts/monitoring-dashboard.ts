@@ -2,19 +2,19 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 /**
  * GALAX Monitoring Dashboard
- * 
+ *
  * Aggregates and displays health, location, and status monitoring results
  * from all analysis tools. Provides a unified view of repository health
  * as requested in Issue #93.
- * 
+ *
  * Usage:
  *   npm run dashboard
  *   tsx scripts/monitoring-dashboard.ts
@@ -60,7 +60,7 @@ interface DashboardData {
 
 class MonitoringDashboard {
   private logsDir: string;
-  
+
   constructor() {
     this.logsDir = join(__dirname, '../logs');
   }
@@ -132,10 +132,10 @@ class MonitoringDashboard {
 
     // Check health logs for session errors
     if (healthData && healthData.logs) {
-      const errorLogs = healthData.logs.filter((log: any) => 
-        log.level === 'error' && 
-        (log.message.includes('401') || 
-         log.message.includes('session') || 
+      const errorLogs = healthData.logs.filter((log: any) =>
+        log.level === 'error' &&
+        (log.message.includes('401') ||
+         log.message.includes('session') ||
          log.message.includes('auth'))
       );
 
@@ -150,7 +150,7 @@ class MonitoringDashboard {
     // Check branch data for auth-related issues
     if (branchData && branchData.sessionErrorAnalysis) {
       const authAnalysis = branchData.sessionErrorAnalysis;
-      
+
       if (authAnalysis.authRelatedCommits > 0) {
         sessionErrors.detected = true;
         sessionErrors.count += authAnalysis.authRelatedCommits;
@@ -219,7 +219,7 @@ class MonitoringDashboard {
     if (healthData && healthData.logs && Array.isArray(healthData.logs)) {
       const errorLogs = healthData.logs.filter((log: any) => log.level === 'error');
       const warningLogs = healthData.logs.filter((log: any) => log.level === 'warn');
-      
+
       healthStatus.lastCheck = (healthData.logs && healthData.logs.length > 0) ? healthData.logs[0]?.timestamp || 'unknown' : 'unknown';
       healthStatus.issues = errorLogs.map((log: any) => log.message);
       healthStatus.warnings = warningLogs.map((log: any) => log.message);
@@ -344,20 +344,20 @@ class MonitoringDashboard {
 
     if (data.sessionErrors.patterns.length > 0) {
       console.log('\n   Error Patterns:');
-      data.sessionErrors.patterns.slice(0, 5).forEach(pattern => 
+      data.sessionErrors.patterns.slice(0, 5).forEach(pattern =>
         console.log(`   - ${pattern}`)
       );
     }
 
     if (data.sessionErrors.recommendations.length > 0) {
       console.log('\n   Recommendations:');
-      data.sessionErrors.recommendations.slice(0, 3).forEach(rec => 
+      data.sessionErrors.recommendations.slice(0, 3).forEach(rec =>
         console.log(`   - ${rec}`)
       );
     }
 
     console.log('\n' + '='.repeat(70));
-    
+
     if (data.alertLevel === 'red') {
       console.log('🚨 CRITICAL ALERT: Immediate attention required!');
     } else if (data.alertLevel === 'yellow') {
@@ -365,7 +365,7 @@ class MonitoringDashboard {
     } else {
       console.log('✅ ALL SYSTEMS HEALTHY: Continue normal operations');
     }
-    
+
     console.log('='.repeat(70));
   }
 
@@ -375,7 +375,7 @@ class MonitoringDashboard {
   generateHTML(data: DashboardData): string {
     const alertColor = {
       green: '#28a745',
-      yellow: '#ffc107', 
+      yellow: '#ffc107',
       red: '#dc3545'
     };
 
@@ -416,8 +416,8 @@ class MonitoringDashboard {
         </div>
 
         <div class="alert ${data.alertLevel}">
-            ${data.alertLevel === 'green' ? '✅ ALL SYSTEMS HEALTHY' : 
-              data.alertLevel === 'yellow' ? '⚠️ WARNING CONDITIONS DETECTED' : 
+            ${data.alertLevel === 'green' ? '✅ ALL SYSTEMS HEALTHY' :
+              data.alertLevel === 'yellow' ? '⚠️ WARNING CONDITIONS DETECTED' :
               '🚨 CRITICAL ISSUES REQUIRE ATTENTION'}
         </div>
 

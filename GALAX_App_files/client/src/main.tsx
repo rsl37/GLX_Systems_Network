@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -13,13 +13,13 @@ import App from './App';
 import './index.css';
 
 // Lazy load analytics for better initial load performance
-const AnalyticsWrapper = React.lazy(() => 
+const AnalyticsWrapper = React.lazy(() =>
   import('@vercel/analytics/react').then(module => ({
     default: () => <module.Analytics />
   }))
 );
 
-const SpeedInsightsWrapper = React.lazy(() => 
+const SpeedInsightsWrapper = React.lazy(() =>
   import('@vercel/speed-insights/react').then(module => ({
     default: () => <module.SpeedInsights />
   }))

@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -78,7 +78,7 @@ export function TwoFactorSetupPage() {
 
       const apiData = await parseApiResponse(response);
       setStatus(apiData.data);
-      
+
       if (apiData.data.enabled) {
         setStep('complete');
       }
@@ -107,7 +107,7 @@ export function TwoFactorSetupPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success) {
         setQrCode(apiData.data.qrCode);
         setSecret(apiData.data.secret);
@@ -146,7 +146,7 @@ export function TwoFactorSetupPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success) {
         setSuccess('Two-factor authentication enabled successfully!');
         await refreshUser();
@@ -185,7 +185,7 @@ export function TwoFactorSetupPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success) {
         setSuccess('Two-factor authentication disabled successfully!');
         await refreshUser();
@@ -217,14 +217,14 @@ export function TwoFactorSetupPage() {
         <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
           <Shield className={`h-10 w-10 ${status.enabled ? 'text-green-500' : 'text-blue-500'}`} />
         </div>
-        
+
         <div>
           <h3 className="text-lg font-semibold">
             Two-Factor Authentication
           </h3>
           <p className="text-gray-600">
-            {status.enabled 
-              ? 'Your account is protected with 2FA' 
+            {status.enabled
+              ? 'Your account is protected with 2FA'
               : 'Add an extra layer of security to your account'
             }
           </p>
@@ -271,7 +271,7 @@ export function TwoFactorSetupPage() {
                 Your account is protected with two-factor authentication.
               </p>
             </div>
-            
+
             <Button
               onClick={() => setStep('verify')}
               variant="outline"
@@ -281,7 +281,7 @@ export function TwoFactorSetupPage() {
             </Button>
           </div>
         )}
-        
+
         <Button
           onClick={() => navigate('/dashboard')}
           variant="ghost"
@@ -362,7 +362,7 @@ export function TwoFactorSetupPage() {
           {status.enabled ? 'Verify to Disable 2FA' : 'Verify Setup'}
         </h3>
         <p className="text-gray-600">
-          {status.enabled 
+          {status.enabled
             ? 'Enter your current 2FA code to disable two-factor authentication'
             : 'Enter the 6-digit code from your authenticator app'
           }
@@ -443,7 +443,7 @@ export function TwoFactorSetupPage() {
         >
           Continue to Dashboard
         </Button>
-        
+
         <Button
           onClick={() => setStep('status')}
           variant="outline"
@@ -472,7 +472,7 @@ export function TwoFactorSetupPage() {
               Secure your account with an additional layer of protection
             </CardDescription>
           </CardHeader>
-          
+
           {error && (
             <div className="mx-6 mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center gap-2 text-red-700">

@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -17,11 +17,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Mail, 
-  Phone, 
-  Wallet, 
-  Key, 
+import {
+  Mail,
+  Phone,
+  Wallet,
+  Key,
   Shield,
   CheckCircle,
   XCircle,
@@ -112,7 +112,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email: emailForm.email,
           currentPassword: emailForm.currentPassword
         })
@@ -145,14 +145,14 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
     try {
       const token = localStorage.getItem('token');
       const fullPhone = `${phoneForm.countryCode}${phoneForm.phone.replace(/^[\+\s0]+/, '').replace(/\s/g, '')}`;
-      
+
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           phone: fullPhone,
           currentPassword: phoneForm.currentPassword
         })
@@ -190,7 +190,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           wallet_address: walletForm.walletAddress
         })
       });
@@ -236,7 +236,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword
         })
@@ -508,16 +508,16 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                 )}
 
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={handleUpdateEmail}
                     disabled={isLoading}
                     className="flex-1"
                   >
                     {user?.email ? 'Update Email' : 'Add Email'}
                   </Button>
-                  
+
                   {user?.email && (
-                    <Button 
+                    <Button
                       variant="destructive"
                       onClick={handleRemoveEmail}
                       disabled={isLoading}
@@ -571,7 +571,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                   <div className="flex gap-2">
                     <CountryCodeSelector
                       value={phoneForm.countryCode}
-                      onChange={(dialCode: string, country: Country) => 
+                      onChange={(dialCode: string, country: Country) =>
                         setPhoneForm({ ...phoneForm, countryCode: dialCode })
                       }
                       className="flex-shrink-0"
@@ -601,16 +601,16 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                 )}
 
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={handleUpdatePhone}
                     disabled={isLoading}
                     className="flex-1"
                   >
                     {user?.phone ? 'Update Phone' : 'Add Phone'}
                   </Button>
-                  
+
                   {user?.phone && (
-                    <Button 
+                    <Button
                       variant="destructive"
                       onClick={handleRemovePhone}
                       disabled={isLoading}
@@ -658,7 +658,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                       placeholder="Enter wallet address or connect MetaMask"
                       className="flex-1 font-mono text-sm"
                     />
-                    <Button 
+                    <Button
                       type="button"
                       variant="outline"
                       onClick={connectWallet}
@@ -670,16 +670,16 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={handleUpdateWallet}
                     disabled={isLoading}
                     className="flex-1"
                   >
                     {user?.wallet_address ? 'Update Wallet' : 'Add Wallet'}
                   </Button>
-                  
+
                   {user?.wallet_address && (
-                    <Button 
+                    <Button
                       variant="destructive"
                       onClick={handleRemoveWallet}
                       disabled={isLoading}
@@ -734,7 +734,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                   />
                 </div>
 
-                <Button 
+                <Button
                   onClick={handleUpdatePassword}
                   disabled={isLoading}
                   className="w-full"

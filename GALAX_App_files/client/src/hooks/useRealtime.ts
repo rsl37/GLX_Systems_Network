@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -34,7 +34,7 @@ export function useRealtime(token: string | null) {
     lastError: null,
     connectionTime: null
   });
-  
+
   const retryTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const connectionStartTime = useRef<number>(0);
   const messageHandlersRef = useRef<Map<string, (data: any) => void>>(new Map());
@@ -58,16 +58,16 @@ export function useRealtime(token: string | null) {
 
     try {
       connectionStartTime.current = Date.now();
-      
+
       // WebSocket Security Configuration (WSS support for production)
       const isProduction = process.env.NODE_ENV === 'production';
       const secureProtocol = isProduction ? 'wss://' : 'ws://';
-      
+
       // Create Server-Sent Events connection
-      const apiBase = isProduction 
+      const apiBase = isProduction
         ? 'https://galaxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
-      
+
       // WSS configuration for secure WebSocket fallback support
       const wssConfig = {
         protocol: secureProtocol,
@@ -77,20 +77,20 @@ export function useRealtime(token: string | null) {
           'Sec-WebSocket-Extensions': 'permessage-deflate'
         }
       };
-      
+
       if (isProduction) {
         console.log(`🔒 WSS Protocol configured: ${wssConfig.protocol}`);
         console.log('✅ Secure WebSocket support enabled');
       }
-      
+
       const eventSource = new EventSource(`${apiBase}/realtime/events`, {
         withCredentials: true
       });
 
       eventSource.onopen = () => {
         console.log('📡 SSE connection opened');
-        setHealth(prev => ({ 
-          ...prev, 
+        setHealth(prev => ({
+          ...prev,
           connected: true,
           authenticated: true,
           connectionTime: Date.now() - connectionStartTime.current,
@@ -110,22 +110,22 @@ export function useRealtime(token: string | null) {
 
       eventSource.onerror = (error) => {
         console.error('❌ SSE connection error:', error);
-        setHealth(prev => ({ 
-          ...prev, 
+        setHealth(prev => ({
+          ...prev,
           connected: false,
           authenticated: false,
           lastError: 'Connection error'
         }));
-        
+
         // Attempt reconnection with exponential backoff
         if (health.retryAttempts < health.maxRetries) {
           const delay = Math.min(1000 * Math.pow(2, health.retryAttempts), 16000);
-          
+
           retryTimeoutRef.current = setTimeout(() => {
             setHealth(prev => ({ ...prev, retryAttempts: prev.retryAttempts + 1 }));
             initializeConnection();
           }, delay);
-          
+
           console.log(`🔄 SSE reconnection attempt ${health.retryAttempts + 1}/${health.maxRetries} in ${delay}ms`);
         }
       };
@@ -134,8 +134,8 @@ export function useRealtime(token: string | null) {
 
     } catch (error) {
       console.error('❌ Error initializing SSE connection:', error);
-      setHealth(prev => ({ 
-        ...prev, 
+      setHealth(prev => ({
+        ...prev,
         connected: false,
         authenticated: false,
         lastError: 'Connection failed'
@@ -151,24 +151,24 @@ export function useRealtime(token: string | null) {
         connectionId.current = message.data?.connectionId;
         console.log('✅ Connection established:', connectionId.current);
         break;
-      
+
       case 'heartbeat':
         // Update last activity
         setHealth(prev => ({ ...prev, connectionTime: Date.now() - connectionStartTime.current }));
         break;
-      
+
       case 'room_joined':
         console.log('🏠 Joined room:', message.data?.roomId);
         break;
-      
+
       case 'room_left':
         console.log('🚪 Left room:', message.data?.roomId);
         break;
-      
+
       case 'new_message':
         console.log('💬 New message received:', message.data);
         break;
-      
+
       default:
         console.log('📝 Unknown message type:', message.type);
     }
@@ -222,7 +222,7 @@ export function useRealtime(token: string | null) {
     }
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' 
+      const apiBase = process.env.NODE_ENV === 'production'
         ? 'https://galaxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
@@ -239,7 +239,7 @@ export function useRealtime(token: string | null) {
       });
 
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
         console.log('✅ Successfully joined room:', result.roomId);
         return true;
@@ -262,7 +262,7 @@ export function useRealtime(token: string | null) {
     }
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' 
+      const apiBase = process.env.NODE_ENV === 'production'
         ? 'https://galaxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
@@ -279,7 +279,7 @@ export function useRealtime(token: string | null) {
       });
 
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
         console.log('✅ Successfully left room:', result.roomId);
         return true;
@@ -301,7 +301,7 @@ export function useRealtime(token: string | null) {
     }
 
     try {
-      const apiBase = process.env.NODE_ENV === 'production' 
+      const apiBase = process.env.NODE_ENV === 'production'
         ? 'https://galaxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
@@ -318,7 +318,7 @@ export function useRealtime(token: string | null) {
       });
 
       const result = await response.json();
-      
+
       if (response.ok && result.success) {
         console.log('✅ Message sent successfully:', result.messageId);
         return { success: true, messageId: result.messageId };

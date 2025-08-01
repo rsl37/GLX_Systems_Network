@@ -44,8 +44,8 @@ class CivicMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location (city, state, or coordinates)' },
-                dataType: { 
-                  type: 'string', 
+                dataType: {
+                  type: 'string',
                   enum: ['demographics', 'economy', 'infrastructure', 'governance'],
                   description: 'Type of civic data to retrieve'
                 }
@@ -60,8 +60,8 @@ class CivicMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location to search around' },
-                serviceType: { 
-                  type: 'string', 
+                serviceType: {
+                  type: 'string',
                   enum: ['health', 'education', 'transportation', 'utilities', 'safety'],
                   description: 'Type of service to find'
                 },
@@ -77,8 +77,8 @@ class CivicMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location to search for events' },
-                eventType: { 
-                  type: 'string', 
+                eventType: {
+                  type: 'string',
                   enum: ['town_hall', 'community_meeting', 'public_hearing', 'volunteer', 'festival'],
                   description: 'Type of event'
                 },
@@ -93,15 +93,15 @@ class CivicMCPServer {
             inputSchema: {
               type: 'object',
               properties: {
-                issueType: { 
-                  type: 'string', 
+                issueType: {
+                  type: 'string',
                   enum: ['pothole', 'streetlight', 'traffic_signal', 'graffiti', 'trash', 'water_leak', 'other'],
                   description: 'Type of civic issue'
                 },
                 location: { type: 'string', description: 'Location of the issue (coordinates or address)' },
                 description: { type: 'string', description: 'Detailed description of the issue' },
-                priority: { 
-                  type: 'string', 
+                priority: {
+                  type: 'string',
                   enum: ['low', 'medium', 'high', 'emergency'],
                   description: 'Issue priority level'
                 },
@@ -117,8 +117,8 @@ class CivicMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location to find representatives for' },
-                level: { 
-                  type: 'string', 
+                level: {
+                  type: 'string',
                   enum: ['local', 'county', 'state', 'federal'],
                   description: 'Government level'
                 },
@@ -134,8 +134,8 @@ class CivicMCPServer {
               type: 'object',
               properties: {
                 location: { type: 'string', description: 'Location to search around' },
-                cause: { 
-                  type: 'string', 
+                cause: {
+                  type: 'string',
                   enum: ['education', 'health', 'environment', 'poverty', 'arts', 'animals', 'community'],
                   description: 'Nonprofit cause area'
                 },
@@ -252,7 +252,7 @@ class CivicMCPServer {
     };
 
     const services = mockServices[serviceType] || [];
-    
+
     return {
       content: [{
         type: 'text',
@@ -287,7 +287,7 @@ class CivicMCPServer {
       }
     ];
 
-    const filteredEvents = eventType 
+    const filteredEvents = eventType
       ? mockEvents.filter(event => event.name.toLowerCase().includes(eventType.replace('_', ' ')))
       : mockEvents;
 
@@ -391,7 +391,7 @@ class CivicMCPServer {
       }
     ];
 
-    const filteredNonprofits = cause 
+    const filteredNonprofits = cause
       ? mockNonprofits.filter(np => np.cause === cause)
       : mockNonprofits;
 

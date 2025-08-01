@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -12,9 +12,9 @@ import crypto from 'crypto';
 import { postQuantumCrypto } from '../postQuantumCrypto.js';
 import { antimalwareFileScanner, antimalwarePayloadScanner, getQuarantineStats, manageQuarantine } from './antimalware.js';
 import { antivirusFileScanner, realTimeProtection, antivirusAdmin, initializeAntivirus, globalScanStats } from './antivirus.js';
-import { 
-  ipBlockingMiddleware, 
-  attackDetectionMiddleware, 
+import {
+  ipBlockingMiddleware,
+  attackDetectionMiddleware,
   ddosProtectionMiddleware,
   botDetectionMiddleware,
   honeypotMiddleware,
@@ -26,20 +26,20 @@ import {
   suspiciousIPs,
   blockedIPs
 } from './antihacking.js';
-import { 
-  zeroDayProtectionMiddleware, 
-  zeroDayProtectionAdmin, 
-  initializeZeroDayProtection, 
+import {
+  zeroDayProtectionMiddleware,
+  zeroDayProtectionAdmin,
+  initializeZeroDayProtection,
   updateThreatIntelligence,
   zeroDayStats,
   AI_ML_THREATS,
   CLOUD_EDGE_THREATS,
   NETWORK_INFRA_THREATS
 } from './zeroDayProtection.js';
-import { 
-  sandboxingMiddleware, 
-  sandboxFileUpload, 
-  sandboxAdmin, 
+import {
+  sandboxingMiddleware,
+  sandboxFileUpload,
+  sandboxAdmin,
   initializeSandboxing,
   sandboxStats
 } from './sandboxing.js';
@@ -178,14 +178,14 @@ const logSecurityEvent = (event: Omit<SecurityEvent, 'id' | 'timestamp'>) => {
     timestamp: new Date(),
     ...event
   };
-  
+
   securityEvents.unshift(securityEvent);
-  
+
   // Keep only the most recent events
   if (securityEvents.length > MAX_SECURITY_EVENTS) {
     securityEvents.splice(MAX_SECURITY_EVENTS);
   }
-  
+
   // Log critical events immediately
   if (event.severity === 'critical') {
     console.error(`🚨 CRITICAL SECURITY EVENT [${securityEvent.id}]:`, {
@@ -202,37 +202,37 @@ const logSecurityEvent = (event: Omit<SecurityEvent, 'id' | 'timestamp'>) => {
 export const comprehensiveSecurityMiddleware = [
   // Enhanced security headers (first)
   enhancedSecurityHeaders,
-  
+
   // Zero-day protection (early detection of unknown threats)
   zeroDayProtectionMiddleware,
-  
+
   // Sandboxing (isolation and containment)
   sandboxingMiddleware,
-  
+
   // Real-time antivirus protection
   realTimeProtection,
-  
+
   // IP blocking (early blocking of known threats)
   ipBlockingMiddleware,
-  
+
   // DDoS protection
   ddosProtectionMiddleware,
-  
+
   // Honeypot detection
   honeypotMiddleware,
-  
+
   // Bot detection
   botDetectionMiddleware,
-  
+
   // Attack pattern detection
   attackDetectionMiddleware,
-  
+
   // Behavioral analysis
   behavioralAnalysisMiddleware,
-  
+
   // Antimalware payload scanning
   antimalwarePayloadScanner,
-  
+
   // CSRF protection (for state-changing requests)
   csrfProtectionMiddleware
 ];
@@ -241,10 +241,10 @@ export const comprehensiveSecurityMiddleware = [
 export const fileUploadSecurityMiddleware = [
   // Sandbox file upload monitoring
   sandboxFileUpload,
-  
+
   // Antimalware file scanning
   antimalwareFileScanner,
-  
+
   // Antivirus file scanning
   antivirusFileScanner
 ];
@@ -254,13 +254,13 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
   try {
     // Get antimalware stats
     const malwareStats = await getQuarantineStats();
-    
+
     // Get post-quantum security status
     const pqStatus = postQuantumCrypto.getStatus();
-    
+
     // Calculate protection score (0-160 for zero-day-protected)
     let protectionScore = 0;
-    
+
     if (SECURITY_CONFIG.antimalware.enabled) protectionScore += 15;
     if (SECURITY_CONFIG.antivirus.enabled) protectionScore += 15;
     if (SECURITY_CONFIG.antiHacking.enabled) protectionScore += 15;
@@ -269,23 +269,23 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     if (SECURITY_CONFIG.antiHacking.honeypot) protectionScore += 3;
     if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 3;
     if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 3;
-    
+
     // Zero-day protection (30 points)
     if (SECURITY_CONFIG.zeroDayProtection.enabled) protectionScore += 20;
     if (SECURITY_CONFIG.zeroDayProtection.aiMlProtection) protectionScore += 3;
     if (SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection) protectionScore += 3;
     if (SECURITY_CONFIG.zeroDayProtection.networkInfraProtection) protectionScore += 2;
     if (SECURITY_CONFIG.zeroDayProtection.behavioralAnomalyDetection) protectionScore += 2;
-    
+
     // Sandboxing protection (15 points)
     if (SECURITY_CONFIG.sandboxing.enabled) protectionScore += 10;
     if (SECURITY_CONFIG.sandboxing.fileUploadSandboxing) protectionScore += 2;
     if (SECURITY_CONFIG.sandboxing.networkMonitoring) protectionScore += 2;
     if (SECURITY_CONFIG.sandboxing.memoryMonitoring) protectionScore += 1;
-    
+
     // Add post-quantum bonus protection (30 points for quantum-safe level)
     if (pqStatus.initialized) protectionScore += 30;
-    
+
     // Determine security level including zero-day-protected level
     let securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe' | 'zero-day-protected';
     if (protectionScore >= 160) {
@@ -301,10 +301,10 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     } else {
       securityLevel = 'low';
     }
-    
+
     // Cap display score at 100 but track actual for quantum-safe level
     const displayScore = Math.min(protectionScore, 100);
-    
+
     const status: SecuritySystemStatus = {
       antimalware: {
         enabled: SECURITY_CONFIG.antimalware.enabled,
@@ -398,24 +398,24 @@ export const securityDashboardAdmin = {
       });
     }
   },
-  
+
   // Get security events
   getEvents: async (req: Request, res: Response) => {
     try {
       const { limit = 50, severity, type } = req.query;
-      
+
       let filteredEvents = securityEvents;
-      
+
       if (severity) {
         filteredEvents = filteredEvents.filter(e => e.severity === severity);
       }
-      
+
       if (type) {
         filteredEvents = filteredEvents.filter(e => e.type === type);
       }
-      
+
       const events = filteredEvents.slice(0, Number(limit));
-      
+
       res.json({
         success: true,
         data: {
@@ -436,30 +436,30 @@ export const securityDashboardAdmin = {
       });
     }
   },
-  
+
   // Update security configuration
   updateConfig: async (req: Request, res: Response) => {
     try {
       const { config } = req.body;
-      
+
       if (config.antimalware) {
         Object.assign(SECURITY_CONFIG.antimalware, config.antimalware);
       }
-      
+
       if (config.antivirus) {
         Object.assign(SECURITY_CONFIG.antivirus, config.antivirus);
       }
-      
+
       if (config.antiHacking) {
         Object.assign(SECURITY_CONFIG.antiHacking, config.antiHacking);
       }
-      
+
       if (config.postQuantum) {
         Object.assign(SECURITY_CONFIG.postQuantum, config.postQuantum);
       }
-      
+
       console.log('✅ Security configuration updated:', config);
-      
+
       res.json({
         success: true,
         data: {
@@ -479,12 +479,12 @@ export const securityDashboardAdmin = {
       });
     }
   },
-  
+
   // Emergency security lockdown
   emergencyLockdown: async (req: Request, res: Response) => {
     try {
       const { reason } = req.body;
-      
+
       // Enable maximum security including post-quantum protection
       SECURITY_CONFIG.antimalware.enabled = true;
       SECURITY_CONFIG.antivirus.enabled = true;
@@ -496,7 +496,7 @@ export const securityDashboardAdmin = {
       SECURITY_CONFIG.antiHacking.behavioralAnalysis = true;
       SECURITY_CONFIG.postQuantum.enabled = true;
       SECURITY_CONFIG.postQuantum.quantumResistant = true;
-      
+
       logSecurityEvent({
         type: 'attack',
         severity: 'critical',
@@ -505,9 +505,9 @@ export const securityDashboardAdmin = {
         action: 'Emergency lockdown enabled',
         status: 'blocked'
       });
-      
+
       console.error('🚨 EMERGENCY SECURITY LOCKDOWN ACTIVATED:', reason);
-      
+
       res.json({
         success: true,
         data: {
@@ -528,7 +528,7 @@ export const securityDashboardAdmin = {
       });
     }
   },
-  
+
   // Post-quantum security status
   getPostQuantumStatus: async (req: Request, res: Response) => {
     try {
@@ -549,18 +549,18 @@ export const securityDashboardAdmin = {
       });
     }
   },
-  
+
   // Test post-quantum cryptographic operations
   testPostQuantumOperations: async (req: Request, res: Response) => {
     try {
       const results = await postQuantumCrypto.testOperations();
-      
+
       res.json({
         success: true,
         data: {
           testResults: results,
-          message: results.success ? 
-            'All post-quantum operations completed successfully' : 
+          message: results.success ?
+            'All post-quantum operations completed successfully' :
             'Some post-quantum operations failed',
           timestamp: new Date().toISOString()
         },
@@ -584,7 +584,7 @@ export const securityDashboardAdmin = {
     try {
       const status = await getSecurityStatus();
       const recentEvents = securityEvents.slice(0, 100);
-      
+
       const report = {
         reportId: crypto.randomUUID(),
         generatedAt: new Date().toISOString(),
@@ -603,7 +603,7 @@ export const securityDashboardAdmin = {
         recommendations: generateSecurityRecommendations(status),
         configurationStatus: SECURITY_CONFIG
       };
-      
+
       res.json({
         success: true,
         data: report,
@@ -625,59 +625,59 @@ export const securityDashboardAdmin = {
 // Generate security recommendations based on current status
 const generateSecurityRecommendations = (status: SecuritySystemStatus): string[] => {
   const recommendations: string[] = [];
-  
+
   if (status.overall.protectionScore < 80) {
     recommendations.push('Enable all security modules for maximum protection');
   }
-  
+
   if (status.antiHacking.suspiciousIPs > 10) {
     recommendations.push('High number of suspicious IPs detected - consider reviewing and blocking');
   }
-  
+
   if (status.antivirus.virusesDetected > 0) {
     recommendations.push('Viruses detected - review quarantine and update definitions');
   }
-  
+
   if (status.antimalware.quarantinedFiles > 0) {
     recommendations.push('Malware threats quarantined - review and clean old files');
   }
-  
+
   if (!status.antiHacking.ddosProtectionActive) {
     recommendations.push('Enable DDoS protection for better resilience');
   }
-  
+
   // Note: Behavioral analysis is part of the anti-hacking system
   if (!SECURITY_CONFIG.antiHacking.behavioralAnalysis) {
     recommendations.push('Enable behavioral analysis for advanced threat detection');
   }
-  
+
   if (recommendations.length === 0) {
     recommendations.push('Security configuration is optimal');
   }
-  
+
   return recommendations;
 };
 
 // Initialize all security systems
 export const initializeSecuritySystems = async () => {
   console.log('🛡️ Initializing Comprehensive Security Protection...');
-  
+
   // Initialize antivirus system
   initializeAntivirus();
-  
+
   // Initialize zero-day protection system
   initializeZeroDayProtection();
-  
+
   // Initialize sandboxing system
   await initializeSandboxing();
-  
+
   // Initialize post-quantum cryptography
   try {
     await postQuantumCrypto.initialize();
   } catch (error) {
     console.warn('⚠️ Post-quantum initialization failed:', error.message);
   }
-  
+
   console.log('✅ Security Systems Status:');
   console.log(`   🦠 Antimalware Protection: ${SECURITY_CONFIG.antimalware.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🔍 Antivirus Protection: ${SECURITY_CONFIG.antivirus.enabled ? 'ENABLED' : 'DISABLED'}`);
@@ -691,7 +691,7 @@ export const initializeSecuritySystems = async () => {
   console.log(`   ☁️ Cloud/Edge Security: ${SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🌐 Network Infrastructure Security: ${SECURITY_CONFIG.zeroDayProtection.networkInfraProtection ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   📦 Sandboxing System: ${SECURITY_CONFIG.sandboxing.enabled ? 'ENABLED' : 'DISABLED'}`);
-  console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`); 
+  console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`);
   console.log('🚀 GALAX App Security Systems are FULLY OPERATIONAL with ZERO-DAY PROTECTION');
 };
 

@@ -11,7 +11,7 @@ import crypto from "crypto";
 
 /**
  * Page Verification System
- * 
+ *
  * This system ensures that authentication requests only come from legitimate
  * GALAX app pages by implementing a page verification mechanism.
  */
@@ -44,7 +44,7 @@ const PAGE_VERIFICATION_CONFIG = {
       'Username for Wallet'
     ],
     register: [
-      'GALAX Civic Networking App', 
+      'GALAX Civic Networking App',
       'Join GALAX',
       'Create your civic network account',
       'Username',
@@ -65,7 +65,7 @@ export function generatePageVerificationToken(
 ): string {
   const token = crypto.randomBytes(32).toString('hex');
   const now = Date.now();
-  
+
   const verifiedPage: VerifiedPage = {
     token,
     origin,
@@ -74,13 +74,13 @@ export function generatePageVerificationToken(
     userAgent,
     expiresAt: now + PAGE_VERIFICATION_CONFIG.tokenExpiry
   };
-  
+
   // Store the verified page
   verifiedPages.set(token, verifiedPage);
-  
+
   // Clean up old tokens for this origin
   cleanupTokensForOrigin(origin);
-  
+
   console.log(`🔐 Generated page verification token for ${pageType} page from ${origin}`);
   return token;
 }
@@ -90,31 +90,31 @@ export function generatePageVerificationToken(
  */
 export function verifyPageToken(token: string, origin: string, pageType: 'login' | 'register'): boolean {
   const verifiedPage = verifiedPages.get(token);
-  
+
   if (!verifiedPage) {
     console.warn(`⚠️ Page verification failed: Token not found for ${origin}`);
     return false;
   }
-  
+
   // Check if token is expired
   if (Date.now() > verifiedPage.expiresAt) {
     verifiedPages.delete(token);
     console.warn(`⚠️ Page verification failed: Token expired for ${origin}`);
     return false;
   }
-  
+
   // Check if origin matches
   if (verifiedPage.origin !== origin) {
     console.warn(`⚠️ Page verification failed: Origin mismatch for ${origin} (expected ${verifiedPage.origin})`);
     return false;
   }
-  
+
   // Check if page type matches
   if (verifiedPage.pageType !== pageType) {
     console.warn(`⚠️ Page verification failed: Page type mismatch for ${origin} (expected ${verifiedPage.pageType}, got ${pageType})`);
     return false;
   }
-  
+
   console.log(`✅ Page verification successful for ${pageType} page from ${origin}`);
   return true;
 }
@@ -126,7 +126,7 @@ function cleanupTokensForOrigin(origin: string): void {
   const now = Date.now();
   let tokenCount = 0;
   const tokensToDelete: string[] = [];
-  
+
   for (const [token, page] of verifiedPages.entries()) {
     if (page.origin === origin) {
       if (now > page.expiresAt) {
@@ -136,16 +136,16 @@ function cleanupTokensForOrigin(origin: string): void {
       }
     }
   }
-  
+
   // Delete expired tokens
   tokensToDelete.forEach(token => verifiedPages.delete(token));
-  
+
   // If too many tokens for this origin, delete oldest ones
   if (tokenCount > PAGE_VERIFICATION_CONFIG.maxTokensPerOrigin) {
     const originTokens = Array.from(verifiedPages.entries())
       .filter(([, page]) => page.origin === origin)
       .sort(([, a], [, b]) => a.timestamp - b.timestamp);
-    
+
     const tokensToRemove = originTokens.slice(0, tokenCount - PAGE_VERIFICATION_CONFIG.maxTokensPerOrigin);
     tokensToRemove.forEach(([token]) => verifiedPages.delete(token));
   }
@@ -163,11 +163,11 @@ export function requirePageVerification(
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined) {
     return next();
   }
-  
+
   const origin = req.get('Origin') || req.get('Referer');
   const pageVerificationToken = req.get('X-Page-Verification-Token');
   const pageType = req.path.includes('/login') ? 'login' : 'register';
-  
+
   if (!origin) {
     console.warn(`🚨 Auth request blocked: No origin header for ${req.path}`);
     res.status(403).json({
@@ -179,7 +179,7 @@ export function requirePageVerification(
     });
     return;
   }
-  
+
   if (!pageVerificationToken) {
     console.warn(`🚨 Auth request blocked: No page verification token for ${req.path} from ${origin}`);
     res.status(403).json({
@@ -191,9 +191,9 @@ export function requirePageVerification(
     });
     return;
   }
-  
+
   const isValidPage = verifyPageToken(pageVerificationToken, origin, pageType);
-  
+
   if (!isValidPage) {
     console.warn(`🚨 Auth request blocked: Invalid page verification for ${req.path} from ${origin}`);
     res.status(403).json({
@@ -205,7 +205,7 @@ export function requirePageVerification(
     });
     return;
   }
-  
+
   console.log(`✅ Auth request verified: ${req.path} from verified ${pageType} page at ${origin}`);
   next();
 }
@@ -227,7 +227,7 @@ export function createAuthCorsConfig() {
         ...(isDevelopment
           ? [
               "http://localhost:3000",
-              "http://localhost:3001", 
+              "http://localhost:3001",
               "http://localhost:3002",
               "http://localhost:5173",
               "http://127.0.0.1:3000",
@@ -312,15 +312,15 @@ export function createAuthCorsConfig() {
 setInterval(() => {
   const now = Date.now();
   const expiredTokens: string[] = [];
-  
+
   for (const [token, page] of verifiedPages.entries()) {
     if (now > page.expiresAt) {
       expiredTokens.push(token);
     }
   }
-  
+
   expiredTokens.forEach(token => verifiedPages.delete(token));
-  
+
   if (expiredTokens.length > 0) {
     console.log(`🧹 Cleaned up ${expiredTokens.length} expired page verification tokens`);
   }

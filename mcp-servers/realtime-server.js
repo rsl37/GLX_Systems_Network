@@ -39,7 +39,7 @@ class RealtimeMCPServer {
   setupHttpHandlers() {
     this.httpServer.on('request', (req, res) => {
       const url = new URL(req.url, 'http://localhost');
-      
+
       if (url.pathname === '/mcp-realtime/events') {
         this.handleSSEConnection(req, res);
       } else if (url.pathname === '/mcp-realtime/send-message' && req.method === 'POST') {
@@ -54,9 +54,9 @@ class RealtimeMCPServer {
   handleSSEConnection(req, res) {
     const url = new URL(req.url, 'http://localhost');
     const token = url.searchParams.get('token');
-    
+
     let userId = null;
-    
+
     if (token) {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret');
@@ -78,10 +78,10 @@ class RealtimeMCPServer {
     });
 
     const connectionId = `sse_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Store connection
     this.sseConnections.set(connectionId, { userId, response: res });
-    
+
     if (userId) {
       this.activeUsers.set(userId, connectionId);
     }
@@ -114,7 +114,7 @@ class RealtimeMCPServer {
     req.on('end', () => {
       try {
         const { roomId, message, userId } = JSON.parse(body);
-        
+
         // Broadcast to room
         this.broadcastToRoom(roomId, {
           type: 'new_message',
@@ -189,7 +189,7 @@ class RealtimeMCPServer {
 
   handleSendMessage(args) {
     const { roomId, message, userId } = args;
-    
+
     try {
       this.broadcastToRoom(roomId, {
         type: 'new_message',
@@ -223,7 +223,7 @@ class RealtimeMCPServer {
 
   handleBroadcastMessage(args) {
     const { message, type } = args;
-    
+
     try {
       this.broadcastToAll({
         type: type || 'announcement',
@@ -276,7 +276,7 @@ class RealtimeMCPServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    
+
     // Start HTTP server for SSE connections
     const PORT = process.env.MCP_REALTIME_PORT || 3003;
     this.httpServer.listen(PORT, () => {

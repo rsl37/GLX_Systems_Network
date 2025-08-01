@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -76,11 +76,11 @@ export class PriceOracle {
     const volatility = 0.001; // 0.1% volatility per update
     const meanReversion = 0.02; // 2% mean reversion strength
     const targetPrice = 1.0;
-    
+
     // Add random walk with mean reversion
     const randomFactor = (Math.random() - 0.5) * 2 * volatility;
     const meanReversionFactor = (targetPrice - this.currentPrice) * meanReversion;
-    
+
     const priceChange = randomFactor + meanReversionFactor;
     this.currentPrice = Math.max(0.01, this.currentPrice + priceChange);
 
@@ -94,7 +94,7 @@ export class PriceOracle {
 
     // Add to history
     this.priceHistory.push(priceData);
-    
+
     // Keep only last 1000 price points
     if (this.priceHistory.length > 1000) {
       this.priceHistory = this.priceHistory.slice(-1000);
@@ -112,7 +112,7 @@ export class PriceOracle {
     const baseVolume = 10000;
     const volatilityMultiplier = Math.abs(this.currentPrice - 1.0) * 5 + 1;
     const randomMultiplier = 0.5 + Math.random();
-    
+
     return baseVolume * volatilityMultiplier * randomMultiplier;
   }
 
@@ -121,21 +121,21 @@ export class PriceOracle {
    */
   private calculateConfidence(): number {
     let confidence = 1.0;
-    
+
     // Reduce confidence if price deviates too much from target
     const deviation = Math.abs(this.currentPrice - 1.0);
     confidence *= Math.max(0.3, 1 - deviation * 2);
-    
+
     // Reduce confidence if recent volatility is high
     if (this.priceHistory.length > 10) {
       const recentPrices = this.priceHistory.slice(-10).map(p => p.price);
       const mean = recentPrices.reduce((sum, p) => sum + p, 0) / recentPrices.length;
       const variance = recentPrices.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / recentPrices.length;
       const volatility = Math.sqrt(variance) / mean;
-      
+
       confidence *= Math.max(0.5, 1 - volatility * 10);
     }
-    
+
     return Math.max(0.1, Math.min(1.0, confidence));
   }
 
@@ -169,7 +169,7 @@ export class PriceOracle {
   } {
     const cutoffTime = Date.now() - periodMs;
     const periodPrices = this.priceHistory.filter(p => p.timestamp >= cutoffTime);
-    
+
     if (periodPrices.length === 0) {
       return {
         current: this.currentPrice,
@@ -186,13 +186,13 @@ export class PriceOracle {
     const high = Math.max(...prices);
     const low = Math.min(...prices);
     const average = prices.reduce((sum, p) => sum + p, 0) / prices.length;
-    
+
     // Calculate volatility (standard deviation)
     const variance = prices.reduce((sum, p) => sum + Math.pow(p - average, 2), 0) / prices.length;
     const volatility = Math.sqrt(variance);
-    
+
     // Calculate 24h change
-    const change24h = periodPrices.length > 0 ? 
+    const change24h = periodPrices.length > 0 ?
       ((current - periodPrices[0].price) / periodPrices[0].price) * 100 : 0;
 
     return {
@@ -240,7 +240,7 @@ export class PriceOracle {
    */
   setPrice(price: number, volume: number = 0): void {
     this.currentPrice = Math.max(0.01, price);
-    
+
     const priceData: PriceData = {
       price: this.currentPrice,
       timestamp: Date.now(),
@@ -272,9 +272,9 @@ export class PriceOracle {
     issues: string[];
   } {
     const now = Date.now();
-    const lastUpdate = this.priceHistory.length > 0 ? 
+    const lastUpdate = this.priceHistory.length > 0 ?
       this.priceHistory[this.priceHistory.length - 1].timestamp : 0;
-    
+
     const issues: string[] = [];
     let isHealthy = true;
 
@@ -287,7 +287,7 @@ export class PriceOracle {
     // Check confidence level
     const currentData = this.getCurrentPrice();
     const confidence = currentData?.confidence || 0;
-    
+
     if (confidence < this.config.minConfidence) {
       issues.push('Low price confidence');
       isHealthy = false;

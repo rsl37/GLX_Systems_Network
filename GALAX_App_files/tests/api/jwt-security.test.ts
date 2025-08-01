@@ -7,9 +7,9 @@
 
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { 
-  detectWeakSecretPatterns, 
-  validateJWTSecret, 
+import {
+  detectWeakSecretPatterns,
+  validateJWTSecret,
   estimateEntropy,
   getCharacterTypeDiversity,
   hasExcessiveRepeatedChars,
@@ -41,7 +41,7 @@ describe('JWT Secret Security Validation', () => {
     it('should detect regex-based weak patterns', () => {
       const weakSecrets = [
         '12345678', // Only numbers
-        'abcdefgh', // Only letters  
+        'abcdefgh', // Only letters
         'aaaaaaaa', // Repeated characters
         '123456789', // Sequential numbers
         'abcdefghi', // Sequential letters
@@ -102,7 +102,7 @@ describe('JWT Secret Security Validation', () => {
     it('should enforce minimum length requirements', () => {
       const shortSecret = 'short';
       const result = validateJWTSecret(shortSecret, false);
-      
+
       expect(result.isValid).toBe(false);
       expect(result.lengthOk).toBe(false);
       expect(result.severity).toBe('critical');
@@ -111,10 +111,10 @@ describe('JWT Secret Security Validation', () => {
 
     it('should have stricter requirements for production', () => {
       const secret = 'acceptable-dev-secret-32chars-long'; // 34 chars
-      
+
       const devResult = validateJWTSecret(secret, false);
       const prodResult = validateJWTSecret(secret, true);
-      
+
       expect(devResult.lengthOk).toBe(true);
       expect(prodResult.lengthOk).toBe(false);
       expect(prodResult.severity).toBe('critical');
@@ -140,7 +140,7 @@ describe('JWT Secret Security Validation', () => {
     it('should detect excessive repeated characters', () => {
       const secretWithRepeated = 'aaaa-good-secret-with-repeated-chars-32-minimum';
       const result = validateJWTSecret(secretWithRepeated, false);
-      
+
       expect(result.hasExcessiveRepeated).toBe(true);
       if (result.severity === 'ok') {
         expect(result.recommendations).toContain('Avoid repeated character patterns');
@@ -165,7 +165,7 @@ describe('JWT Secret Security Validation', () => {
     it('should provide helpful recommendations', () => {
       const shortSecret = 'weak';
       const shortResult = validateJWTSecret(shortSecret, false);
-      
+
       expect(shortResult.recommendations.length).toBeGreaterThan(0);
       // Since "weak" is short and weak, it should get the length message
       expect(shortResult.recommendations.join(' ')).toContain('Increase length to at least 32 characters');
@@ -173,7 +173,7 @@ describe('JWT Secret Security Validation', () => {
       // Test a weak pattern that gets the "Replace" message - use an actual default secret
       const weakPatternSecret = 'your-secret-key';
       const weakResult = validateJWTSecret(weakPatternSecret, false);
-      
+
       expect(weakResult.recommendations.join(' ')).toContain('Replace with a cryptographically secure random string');
     });
   });
@@ -225,14 +225,14 @@ describe('JWT Secret Security Validation', () => {
   describe('Security configuration integrity', () => {
     it('should have comprehensive weak pattern coverage', () => {
       const patterns = WEAK_SECRET_PATTERNS;
-      
+
       // Should have patterns for major categories
       expect(patterns.some(p => p.description.includes('placeholder'))).toBe(true);
       expect(patterns.some(p => p.description.includes('password'))).toBe(true);
       expect(patterns.some(p => p.type === 'regex')).toBe(true);
       expect(patterns.some(p => p.type === 'exact')).toBe(true);
       expect(patterns.some(p => p.type === 'contains')).toBe(true);
-      
+
       // Should have multiple severity levels
       expect(patterns.some(p => p.severity === 'critical')).toBe(true);
       expect(patterns.some(p => p.severity === 'high')).toBe(true);
@@ -251,7 +251,7 @@ describe('JWT Secret Security Validation', () => {
     it('should handle extremely long secrets', () => {
       const longSecret = 'a'.repeat(1000);
       const result = validateJWTSecret(longSecret, false);
-      
+
       // Should still detect weak patterns (all 'a's)
       expect(result.weakPatterns.length).toBeGreaterThan(0);
       expect(result.hasExcessiveRepeated).toBe(true);
@@ -260,7 +260,7 @@ describe('JWT Secret Security Validation', () => {
     it('should handle special characters in secrets', () => {
       const specialSecret = '!@#$%^&*()_+-=[]{}|;:,.<>?`~cryptographically-secure-random-string';
       const result = validateJWTSecret(specialSecret, true);
-      
+
       expect(result.lengthOk).toBe(true);
       // Check the actual character types present
       const actualTypes = getCharacterTypeDiversity(specialSecret);
@@ -272,7 +272,7 @@ describe('JWT Secret Security Validation', () => {
     it('should handle unicode characters', () => {
       const unicodeSecret = 'αβγδεζηθικλμνξοπρστυφχψω-32-chars-minimum-length';
       const result = validateJWTSecret(unicodeSecret, false);
-      
+
       expect(result.lengthOk).toBe(true);
       // Should not crash with unicode
       expect(typeof result.entropy).toBe('number');

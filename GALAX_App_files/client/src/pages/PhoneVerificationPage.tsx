@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -81,7 +81,7 @@ export function PhoneVerificationPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success || response.ok) {
         setSuccess('Verification code sent to your phone!');
         setStep('code');
@@ -119,7 +119,7 @@ export function PhoneVerificationPage() {
       });
 
       const apiData = await parseApiResponse(response);
-      
+
       if (apiData.success || response.ok) {
         setSuccess('Phone verified successfully!');
         await refreshUser();
@@ -166,13 +166,13 @@ export function PhoneVerificationPage() {
               {step === 'phone' ? 'Verify Your Phone' : 'Enter Verification Code'}
             </CardTitle>
             <CardDescription>
-              {step === 'phone' 
+              {step === 'phone'
                 ? 'Add your phone number for enhanced security and notifications'
                 : `We've sent a 6-digit code to ${phone}`
               }
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="space-y-4">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -283,7 +283,7 @@ export function PhoneVerificationPage() {
                     >
                       Resend Code
                     </Button>
-                    
+
                     <Button
                       onClick={() => {
                         setStep('phone');
@@ -300,7 +300,7 @@ export function PhoneVerificationPage() {
                 </div>
               </div>
             )}
-            
+
             <div className="text-center">
               <Button
                 onClick={() => navigate('/dashboard')}
@@ -310,7 +310,7 @@ export function PhoneVerificationPage() {
                 Skip for now
               </Button>
             </div>
-            
+
             <div className="text-center text-xs text-gray-500">
               <p>
                 Your phone number is encrypted and stored securely.

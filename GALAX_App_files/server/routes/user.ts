@@ -19,7 +19,7 @@ const router = Router();
 router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    
+
     console.log('👤 Profile request for user:', userId);
 
     const user = await db

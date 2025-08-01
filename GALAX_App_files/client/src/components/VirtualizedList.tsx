@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -68,10 +68,10 @@ export function VirtualizedList<T>({
   // Calculate item positions for variable height items
   const calculateItemPositions = useCallback(() => {
     if (!getItemSize) return;
-    
+
     const positions: ItemPosition[] = [];
     let currentTop = 0;
-    
+
     for (let i = 0; i < items.length; i++) {
       const height = getItemSize(i);
       positions.push({
@@ -80,7 +80,7 @@ export function VirtualizedList<T>({
       });
       currentTop += height;
     }
-    
+
     setItemPositions(positions);
   }, [items.length, getItemSize]);
 
@@ -105,29 +105,29 @@ export function VirtualizedList<T>({
       // Binary search for start index
       let startIndex = 0;
       let endIndex = itemPositions.length - 1;
-      
+
       while (startIndex <= endIndex) {
         const mid = Math.floor((startIndex + endIndex) / 2);
         const position = itemPositions[mid];
-        
+
         if (position.top + position.height < scrollTop) {
           startIndex = mid + 1;
         } else {
           endIndex = mid - 1;
         }
       }
-      
+
       const start = Math.max(0, startIndex - overscan);
-      
+
       // Find end index
       let end = start;
       let currentTop = itemPositions[start]?.top || 0;
-      
+
       while (end < itemPositions.length && currentTop < scrollTop + containerHeight + (overscan * itemHeight)) {
         currentTop = itemPositions[end].top + itemPositions[end].height;
         end++;
       }
-      
+
       return {
         start,
         end: Math.min(items.length, end + overscan)
@@ -139,7 +139,7 @@ export function VirtualizedList<T>({
         items.length,
         Math.ceil((scrollTop + containerHeight) / itemHeight) + overscan
       );
-      
+
       return { start, end };
     }
   }, [scrollTop, containerHeight, itemHeight, items.length, overscan, itemPositions, getItemSize]);
@@ -148,23 +148,23 @@ export function VirtualizedList<T>({
   const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
     const element = event.currentTarget;
     const newScrollTop = element.scrollTop;
-    
+
     setScrollTop(newScrollTop);
     setIsScrolling(true);
-    
+
     // Clear existing timeout
     if (scrollingTimeoutRef.current) {
       clearTimeout(scrollingTimeoutRef.current);
     }
-    
+
     // Set scrolling to false after a delay
     scrollingTimeoutRef.current = setTimeout(() => {
       setIsScrolling(false);
     }, 150);
-    
+
     // Call external scroll handler
     onScroll?.(newScrollTop);
-    
+
     // Check if we've reached the end
     if (onEndReached && !loading) {
       const scrollPercentage = (newScrollTop + containerHeight) / totalHeight;
@@ -172,23 +172,23 @@ export function VirtualizedList<T>({
         onEndReached();
       }
     }
-    
+
     lastScrollTop.current = newScrollTop;
   }, [containerHeight, totalHeight, onEndReached, onEndReachedThreshold, loading, onScroll]);
 
   // Render visible items
   const visibleItems = useMemo(() => {
     const items_to_render = [];
-    
+
     for (let i = visibleRange.start; i < visibleRange.end; i++) {
       if (i >= items.length) break;
-      
+
       const item = items[i];
       const key = keyExtractor(item, i);
-      
+
       let top: number;
       let height: number;
-      
+
       if (getItemSize && itemPositions[i]) {
         top = itemPositions[i].top;
         height = itemPositions[i].height;
@@ -196,9 +196,9 @@ export function VirtualizedList<T>({
         top = i * itemHeight;
         height = itemHeight;
       }
-      
+
       const isVisible = !isScrolling || (i >= visibleRange.start + overscan && i < visibleRange.end - overscan);
-      
+
       items_to_render.push(
         <motion.div
           key={key}
@@ -219,7 +219,7 @@ export function VirtualizedList<T>({
         </motion.div>
       );
     }
-    
+
     return items_to_render;
   }, [
     visibleRange,
@@ -273,7 +273,7 @@ export function VirtualizedList<T>({
           {headerComponent}
         </div>
       )}
-      
+
       <div
         ref={scrollElementRef}
         className="overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
@@ -291,7 +291,7 @@ export function VirtualizedList<T>({
             {visibleItems}
           </AnimatePresence>
         </div>
-        
+
         {loading && (
           <div className="flex items-center justify-center py-8">
             {loadingIndicator || (
@@ -303,7 +303,7 @@ export function VirtualizedList<T>({
           </div>
         )}
       </div>
-      
+
       {footerComponent && (
         <div className="sticky bottom-0 z-10 bg-white">
           {footerComponent}
@@ -331,10 +331,10 @@ export const useVirtualizedList = <T,>(
 
   const handleLoadMore = useCallback(async (loadMoreFn: () => Promise<T[]>) => {
     if (isLoading) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const newItems = await loadMoreFn();
       options?.onItemsChange?.(newItems);

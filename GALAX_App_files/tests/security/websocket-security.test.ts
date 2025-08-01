@@ -8,7 +8,7 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * Security Tests for WebSocket Security Middleware
  */
 
@@ -41,7 +41,7 @@ describe('WebSocket Security Middleware', () => {
     it('should handle wildcard origins', () => {
       const config = { ...defaultSecurityConfig, allowedOrigins: ['*.example.com'] };
       const middleware = new WebSocketSecurityMiddleware(config);
-      
+
       expect(middleware.validateOrigin('https://app.example.com')).toBe(true);
       expect(middleware.validateOrigin('https://api.example.com')).toBe(true);
       expect(middleware.validateOrigin('https://malicious.com')).toBe(false);
@@ -61,7 +61,7 @@ describe('WebSocket Security Middleware', () => {
       for (let i = 0; i <= defaultSecurityConfig.maxConnectionsPerIP; i++) {
         securityMiddleware.checkConnectionRateLimit('192.168.1.1');
       }
-      
+
       const result = securityMiddleware.checkConnectionRateLimit('192.168.1.1');
       expect(result).toBe(false);
     });
@@ -78,7 +78,7 @@ describe('WebSocket Security Middleware', () => {
       for (let i = 0; i <= defaultSecurityConfig.maxMessagesPerMinute; i++) {
         securityMiddleware.checkMessageRateLimit('user123');
       }
-      
+
       const result = securityMiddleware.checkMessageRateLimit('user123');
       expect(result).toBe(false);
     });
@@ -88,7 +88,7 @@ describe('WebSocket Security Middleware', () => {
     it('should validate clean messages', () => {
       const message = 'Hello, this is a normal civic message';
       const result = securityMiddleware.validateMessage(message);
-      
+
       expect(result.isValid).toBe(true);
       expect(result.sanitized).toBe(message);
       expect(result.threats).toHaveLength(0);
@@ -97,7 +97,7 @@ describe('WebSocket Security Middleware', () => {
     it('should detect and block XSS attempts', () => {
       const message = '<script>alert("xss")</script>';
       const result = securityMiddleware.validateMessage(message);
-      
+
       expect(result.isValid).toBe(false);
       expect(result.threats.length).toBeGreaterThan(0);
       expect(result.sanitized).not.toContain('<script>');
@@ -106,7 +106,7 @@ describe('WebSocket Security Middleware', () => {
     it('should detect SQL injection attempts', () => {
       const message = "'; DROP TABLE users; --";
       const result = securityMiddleware.validateMessage(message);
-      
+
       expect(result.isValid).toBe(false);
       expect(result.threats.length).toBeGreaterThan(0);
     });
@@ -114,7 +114,7 @@ describe('WebSocket Security Middleware', () => {
     it('should sanitize HTML content', () => {
       const message = '<div>Hello <b>world</b></div>';
       const result = securityMiddleware.validateMessage(message);
-      
+
       expect(result.sanitized).not.toContain('<div>');
       expect(result.sanitized).not.toContain('<b>');
       expect(result.sanitized).toContain('Hello world');
@@ -123,7 +123,7 @@ describe('WebSocket Security Middleware', () => {
     it('should reject overly long messages', () => {
       const message = 'a'.repeat(2000); // Exceeds 1000 char limit
       const result = securityMiddleware.validateMessage(message);
-      
+
       expect(result.isValid).toBe(false);
       expect(result.threats).toContain('Message too long');
     });
@@ -132,7 +132,7 @@ describe('WebSocket Security Middleware', () => {
       const result1 = securityMiddleware.validateMessage(null as any);
       const result2 = securityMiddleware.validateMessage(123 as any);
       const result3 = securityMiddleware.validateMessage({} as any);
-      
+
       expect(result1.isValid).toBe(false);
       expect(result2.isValid).toBe(false);
       expect(result3.isValid).toBe(false);
@@ -178,7 +178,7 @@ describe('WebSocket Security Middleware', () => {
     });
 
     it('should detect suspicious user agents', () => {
-      const headers = { 
+      const headers = {
         host: 'localhost:3000',
         'user-agent': 'curl/7.68.0'
       };
@@ -188,7 +188,7 @@ describe('WebSocket Security Middleware', () => {
     });
 
     it('should allow legitimate browser requests', () => {
-      const headers = { 
+      const headers = {
         host: 'localhost:3000',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       };
@@ -201,29 +201,29 @@ describe('WebSocket Security Middleware', () => {
   describe('Security Event Logging', () => {
     it('should log security events with proper structure', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-      
+
       securityMiddleware.logSecurityEvent('test_event', { test: 'data' }, 'high');
-      
+
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('Security Event [HIGH]')
       );
-      
+
       consoleSpy.mockRestore();
     });
 
     it('should include all required fields in security events', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation((message) => {
         const eventData = JSON.parse(message.split('Security Event [HIGH]: ')[1]);
-        
+
         expect(eventData).toHaveProperty('timestamp');
         expect(eventData).toHaveProperty('type', 'test_event');
         expect(eventData).toHaveProperty('severity', 'high');
         expect(eventData).toHaveProperty('details');
         expect(eventData).toHaveProperty('source', 'WebSocketSecurity');
       });
-      
+
       securityMiddleware.logSecurityEvent('test_event', { test: 'data' }, 'high');
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -235,9 +235,9 @@ describe('WebSocket Security Middleware', () => {
       securityMiddleware.checkConnectionRateLimit('192.168.1.2');
       securityMiddleware.checkMessageRateLimit('user1');
       securityMiddleware.checkAuthRateLimit('192.168.1.1');
-      
+
       const status = securityMiddleware.getRateLimitStatus();
-      
+
       expect(status).toHaveProperty('connections');
       expect(status).toHaveProperty('messages');
       expect(status).toHaveProperty('authAttempts');

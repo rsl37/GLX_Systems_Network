@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -12,18 +12,18 @@ import { Home, HandHeart, AlertTriangle, Vote, User } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 
 // Lazy load motion for better initial performance
-const motion = React.lazy(() => 
+const motion = React.lazy(() =>
   import('framer-motion').then(module => ({ default: module.motion }))
 );
 
 // Memoized navigation item component for better performance
-const NavigationItem = React.memo(({ 
-  item, 
-  isActive, 
-  onClick, 
-  index, 
-  focusedIndex, 
-  onFocus 
+const NavigationItem = React.memo(({
+  item,
+  isActive,
+  onClick,
+  index,
+  focusedIndex,
+  onFocus
 }: {
   item: any;
   isActive: boolean;
@@ -33,7 +33,7 @@ const NavigationItem = React.memo(({
   onFocus: (index: number) => void;
 }) => {
   const Icon = item.icon;
-  
+
   return (
     <Button
       key={item.path}
@@ -43,8 +43,8 @@ const NavigationItem = React.memo(({
       onFocus={() => onFocus(index)}
       onBlur={() => onFocus(-1)}
       className={`flex-1 flex flex-col items-center justify-center py-1 px-1 h-14 transition-all duration-200 ${
-        isActive 
-          ? 'text-blue-600 bg-blue-50 scale-95' 
+        isActive
+          ? 'text-blue-600 bg-blue-50 scale-95'
           : 'text-gray-600 hover:text-blue-500 hover:bg-blue-25'
       } ${focusedIndex === index ? 'ring-2 ring-blue-500 ring-offset-1' : ''}`}
       aria-label={item.ariaLabel}
@@ -72,37 +72,37 @@ export const BottomNavigation = React.memo(() => {
 
   // Memoize navigation items to prevent recreation on each render
   const navItems = React.useMemo(() => [
-    { 
-      path: '/dashboard', 
-      icon: Home, 
+    {
+      path: '/dashboard',
+      icon: Home,
       label: 'Dashboard',
       ariaLabel: 'Navigate to main dashboard',
       description: 'Access your personalized community dashboard'
     },
-    { 
-      path: '/help', 
-      icon: HandHeart, 
+    {
+      path: '/help',
+      icon: HandHeart,
       label: 'Requests',
       ariaLabel: 'Navigate to help requests section',
       description: 'Browse and manage help requests'
     },
-    { 
-      path: '/crisis', 
-      icon: AlertTriangle, 
+    {
+      path: '/crisis',
+      icon: AlertTriangle,
       label: 'Crisis',
       ariaLabel: 'Navigate to crisis alerts section',
       description: 'View and report emergency situations'
     },
-    { 
-      path: '/governance', 
-      icon: Vote, 
+    {
+      path: '/governance',
+      icon: Vote,
       label: 'Gov',
       ariaLabel: 'Navigate to governance section',
       description: 'Participate in community governance and voting'
     },
-    { 
-      path: '/profile', 
-      icon: User, 
+    {
+      path: '/profile',
+      icon: User,
       label: 'Profile',
       ariaLabel: 'Navigate to your profile page',
       description: 'View and edit your user profile'
@@ -118,7 +118,7 @@ export const BottomNavigation = React.memo(() => {
   const currentPath = location.pathname;
 
   return (
-    <nav 
+    <nav
       className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-purple-200 galax-glass z-50"
       role="navigation"
       aria-label="Main navigation"
@@ -126,7 +126,7 @@ export const BottomNavigation = React.memo(() => {
       <div className="flex justify-around items-center py-2 px-4">
         {navItems.map((item, index) => {
           const isActive = currentPath === item.path;
-          
+
           return (
             <NavigationItem
               key={item.path}

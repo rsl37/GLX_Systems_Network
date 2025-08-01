@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -17,11 +17,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  AlertTriangle, 
-  MapPin, 
-  Clock, 
-  User, 
+import {
+  AlertTriangle,
+  MapPin,
+  Clock,
+  User,
   Plus,
   Radio,
   Shield,
@@ -70,7 +70,7 @@ export function CrisisPage() {
       const response = await fetch('/api/crisis-alerts', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setCrisisAlerts(data.data);
@@ -98,7 +98,7 @@ export function CrisisPage() {
           radius: parseInt(newAlert.radius)
         })
       });
-      
+
       if (response.ok) {
         setShowCreateDialog(false);
         setNewAlert({
@@ -160,7 +160,7 @@ export function CrisisPage() {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
-    
+
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     return `${diffDays}d ago`;
@@ -206,7 +206,7 @@ export function CrisisPage() {
             </h1>
             <p className="text-gray-600">Community crisis alerts and emergency responses</p>
           </div>
-          
+
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
               <Button className="bg-red-600 hover:bg-red-700 text-white">
@@ -228,7 +228,7 @@ export function CrisisPage() {
                     placeholder="Brief description of the crisis"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -239,7 +239,7 @@ export function CrisisPage() {
                     rows={3}
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="severity">Severity Level</Label>
                   <Select value={newAlert.severity} onValueChange={(value) => setNewAlert({...newAlert, severity: value})}>
@@ -254,7 +254,7 @@ export function CrisisPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="latitude">Latitude</Label>
@@ -279,7 +279,7 @@ export function CrisisPage() {
                     />
                   </div>
                 </div>
-                
+
                 <Button
                   type="button"
                   variant="outline"
@@ -289,7 +289,7 @@ export function CrisisPage() {
                   <MapPin className="h-4 w-4 mr-2" />
                   Use Current Location
                 </Button>
-                
+
                 <div>
                   <Label htmlFor="radius">Alert Radius (meters)</Label>
                   <Input
@@ -300,7 +300,7 @@ export function CrisisPage() {
                     placeholder="1000"
                   />
                 </div>
-                
+
                 <Button onClick={handleCreateAlert} className="w-full bg-red-600 hover:bg-red-700">
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Create Alert
@@ -356,7 +356,7 @@ export function CrisisPage() {
               <p className="text-sm text-gray-600">Critical Alerts</p>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4 text-center">
               <Flame className="h-8 w-8 mx-auto mb-2 text-orange-600" />
@@ -366,7 +366,7 @@ export function CrisisPage() {
               <p className="text-sm text-gray-600">High Priority</p>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4 text-center">
               <CloudRain className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
@@ -376,7 +376,7 @@ export function CrisisPage() {
               <p className="text-sm text-gray-600">Medium Priority</p>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4 text-center">
               <Radio className="h-8 w-8 mx-auto mb-2 text-green-600" />
@@ -396,7 +396,7 @@ export function CrisisPage() {
           className="space-y-4"
         >
           <h2 className="text-xl font-semibold text-gray-800">Active Crisis Alerts</h2>
-          
+
           {crisisAlerts.length === 0 ? (
             <Card className="galax-card">
               <CardContent className="p-12 text-center">
@@ -420,10 +420,10 @@ export function CrisisPage() {
                       </Badge>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     <p className="text-gray-700">{alert.description}</p>
-                    
+
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex items-center gap-1 text-gray-500">
                         <MapPin className="h-3 w-3" />
@@ -434,7 +434,7 @@ export function CrisisPage() {
                         <span>{formatRadius(alert.radius)} radius</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-1 text-gray-500">
                         <User className="h-3 w-3" />
@@ -445,20 +445,20 @@ export function CrisisPage() {
                         {formatTimeAgo(alert.created_at)}
                       </div>
                     </div>
-                    
+
                     <div className="pt-2 border-t">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="flex-1"
                         >
                           <MapPin className="h-4 w-4 mr-2" />
                           View Location
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="flex-1"
                         >
                           <Radio className="h-4 w-4 mr-2" />
@@ -498,7 +498,7 @@ export function CrisisPage() {
                     <li>• Stay informed through official channels</li>
                   </ul>
                 </div>
-                
+
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-2">📱 Reporting Guidelines</h4>
                   <ul className="text-sm text-gray-600 space-y-1">

@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -20,10 +20,10 @@ interface MediaUploadProps {
   maxSize?: number; // in MB
 }
 
-export function MediaUpload({ 
-  onFileSelect, 
-  onFileRemove, 
-  selectedFile, 
+export function MediaUpload({
+  onFileSelect,
+  onFileRemove,
+  selectedFile,
   accept = "image/*,video/*,audio/*",
   maxSize = 10
 }: MediaUploadProps) {
@@ -44,7 +44,7 @@ export function MediaUpload({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
       handleFileSelection(files[0]);
@@ -53,13 +53,13 @@ export function MediaUpload({
 
   const handleFileSelection = (file: File) => {
     setError(null);
-    
+
     // Check file size
     if (file.size > maxSize * 1024 * 1024) {
       setError(`File size must be less than ${maxSize}MB`);
       return;
     }
-    
+
     // Check file type
     const allowedTypes = accept.split(',').map(type => type.trim());
     const isValidType = allowedTypes.some(type => {
@@ -68,12 +68,12 @@ export function MediaUpload({
       if (type === 'audio/*') return file.type.startsWith('audio/');
       return file.type === type;
     });
-    
+
     if (!isValidType) {
       setError('File type not supported');
       return;
     }
-    
+
     onFileSelect(file);
   };
 
@@ -112,7 +112,7 @@ export function MediaUpload({
       <label className="block text-sm font-medium text-gray-700">
         Media Upload (Optional)
       </label>
-      
+
       {selectedFile ? (
         <Card>
           <CardContent className="p-4">
@@ -143,8 +143,8 @@ export function MediaUpload({
       ) : (
         <Card
           className={`border-2 border-dashed cursor-pointer transition-colors ${
-            isDragging 
-              ? 'border-purple-500 bg-purple-50' 
+            isDragging
+              ? 'border-purple-500 bg-purple-50'
               : 'border-gray-300 hover:border-purple-400'
           }`}
           onDragOver={handleDragOver}
@@ -169,7 +169,7 @@ export function MediaUpload({
           </CardContent>
         </Card>
       )}
-      
+
       <input
         ref={fileInputRef}
         type="file"
@@ -177,7 +177,7 @@ export function MediaUpload({
         onChange={handleFileInput}
         className="hidden"
       />
-      
+
       {error && (
         <p className="text-red-500 text-sm">{error}</p>
       )}

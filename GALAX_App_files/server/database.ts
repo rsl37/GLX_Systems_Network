@@ -265,7 +265,7 @@ interface DatabaseStrategy {
 function getDatabaseStrategy(): DatabaseStrategy {
   const isProduction = process.env.NODE_ENV === 'production';
   const hasPostgresURL = !!DATABASE_URL;
-  
+
   if (isProduction && hasPostgresURL) {
     return {
       primary: 'postgresql',
@@ -307,7 +307,7 @@ try {
   process.exit(1); // Exit the application with a failure code
 }
 
-// PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data  
+// PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data
 let postgresPool: Pool | null = null;
 if (DATABASE_URL) {
   console.log("🗄️ PostgreSQL database initialization...");
@@ -354,13 +354,13 @@ console.log(`🎯 Fallback Database: ${strategy.fallback.toUpperCase()}`);
 const dbSelector = {
   // Use SQLite for: Local storage, file-based operations, development, offline mode
   sqlite: sqliteKysely,
-  
+
   // Use PostgreSQL for: Production, complex queries, concurrent operations, scalable data
   postgres: postgresKysely,
-  
+
   // Primary database (auto-selected based on environment and configuration)
   primary: db,
-  
+
   // Get optimal database for specific operations
   getOptimalDB: (operation: 'read' | 'write' | 'complex' | 'lightweight') => {
     switch (operation) {
@@ -376,11 +376,11 @@ const dbSelector = {
         return db;
     }
   },
-  
+
   // Check if specific database is available
   isPostgresAvailable: () => !!postgresKysely,
   isSqliteAvailable: () => !!sqliteKysely,
-  
+
   // Get database info
   getStrategy: () => strategy,
 };
@@ -390,11 +390,11 @@ const dbSelector = {
  */
 async function initializeDatabase() {
   console.log(`🔧 Initializing ${strategy.primary.toUpperCase()} database schema...`);
-  
+
   try {
     // Initialize primary database
     await initializeDatabaseSchema(db, strategy.primary);
-    
+
     // If we have both databases available, sync schema to fallback
     if (strategy.primary === 'postgresql' && postgresKysely && sqliteKysely) {
       console.log("🔄 Syncing schema to SQLite fallback...");
@@ -403,11 +403,11 @@ async function initializeDatabase() {
       console.log("🔄 Syncing schema to PostgreSQL...");
       await initializeDatabaseSchema(postgresKysely, 'postgresql');
     }
-    
+
     console.log("✅ Hybrid database schema initialized successfully");
   } catch (error) {
     console.error("❌ Failed to initialize database schema:", error);
-    
+
     // Try fallback database if primary fails
     if (strategy.primary === 'postgresql' && postgresKysely && sqliteKysely) {
       console.log("🔄 Falling back to SQLite...");
@@ -429,7 +429,7 @@ async function initializeDatabase() {
  */
 async function initializeDatabaseSchema(database: Kysely<DatabaseSchema>, dbType: 'sqlite' | 'postgresql') {
   const isPostgres = dbType === 'postgresql';
-  
+
   // Create users table
   await database.schema
     .createTable('users')
@@ -531,7 +531,7 @@ async function initializeDatabaseSchema(database: Kysely<DatabaseSchema>, dbType
  */
 async function createAdditionalTables(database: Kysely<DatabaseSchema>, dbType: 'sqlite' | 'postgresql') {
   const isPostgres = dbType === 'postgresql';
-  
+
   // Crisis alerts table
   await database.schema
     .createTable('crisis_alerts')
@@ -627,7 +627,7 @@ async function healthCheck() {
     // Check primary database
     await db.selectFrom('users').select('id').limit(1).execute();
     const primaryStatus = { status: 'healthy', db: strategy.primary, timestamp: new Date().toISOString() };
-    
+
     // Check fallback database if available
     let fallbackStatus = null;
     if (strategy.primary === 'postgresql' && sqliteKysely) {
@@ -645,20 +645,20 @@ async function healthCheck() {
         fallbackStatus = { status: 'unhealthy', db: 'postgresql', timestamp: new Date().toISOString() };
       }
     }
-    
-    return { 
+
+    return {
       primary: primaryStatus,
       fallback: fallbackStatus,
       strategy: strategy
     };
   } catch (error) {
     console.error("❌ Database health check failed:", error);
-    return { 
+    return {
       primary: {
-        status: 'unhealthy', 
+        status: 'unhealthy',
         db: strategy.primary,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString() 
+        timestamp: new Date().toISOString()
       },
       fallback: null,
       strategy: strategy
@@ -675,7 +675,7 @@ async function closeDatabase() {
       await postgresPool.end();
       console.log("🔌 PostgreSQL connections closed");
     }
-    
+
     if (sqliteDb) {
       sqliteDb.close();
       console.log("🔌 SQLite database closed");
@@ -696,15 +696,15 @@ function getInitializationPromise() {
 }
 
 // Export the database instance and utility functions
-export { 
-  db, 
+export {
+  db,
   dbSelector,
   postgresPool,
   sqliteDb,
-  healthCheck, 
-  closeDatabase, 
+  healthCheck,
+  closeDatabase,
   getInitializationPromise,
-  initializeDatabase 
+  initializeDatabase
 };
 
 // Auto-initialize database in non-test environments

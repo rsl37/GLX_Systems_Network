@@ -10,7 +10,7 @@
 
 /**
  * GitHub Actions Status Check Utility
- * 
+ *
  * This script helps monitor and debug status check updates for GitHub Actions workflows.
  * It's designed to address the issue where "pending" checks don't move to their status
  * sections after completion.
@@ -23,14 +23,14 @@ async function checkStatusUpdates() {
   try {
     const context = github.context;
     const token = core.getInput('github-token') || process.env.GITHUB_TOKEN;
-    
+
     if (!token) {
       console.log('⚠️ No GitHub token provided, cannot check status updates');
       return;
     }
 
     const octokit = github.getOctokit(token);
-    
+
     // Get the current commit SHA
     const sha = context.payload.pull_request?.head?.sha || context.sha;
     console.log(`🔍 Checking status updates for commit: ${sha}`);
@@ -43,7 +43,7 @@ async function checkStatusUpdates() {
     });
 
     console.log(`📊 Found ${statuses.length} status checks for this commit:`);
-    
+
     // Group statuses by context
     const statusByContext = {};
     statuses.forEach(status => {
@@ -62,12 +62,12 @@ async function checkStatusUpdates() {
     Object.entries(statusByContext).forEach(([contextName, contextStatuses]) => {
       // Get the latest status for this context
       const latestStatus = contextStatuses[0]; // GitHub returns them in reverse chronological order
-      
+
       console.log(`\n📋 ${contextName}:`);
       console.log(`   Latest Status: ${latestStatus.state}`);
       console.log(`   Description: ${latestStatus.description}`);
       console.log(`   Updated: ${latestStatus.updated_at}`);
-      
+
       // Count status types
       switch (latestStatus.state) {
         case 'pending':
@@ -138,7 +138,7 @@ async function checkStatusUpdates() {
       core.setOutput('success-count', successCount.toString());
       core.setOutput('failure-count', failureCount.toString());
       core.setOutput('total-workflows', runs.workflow_runs.length.toString());
-      
+
       if (pendingCount > 0) {
         core.setOutput('has-pending', 'true');
         core.warning(`${pendingCount} status checks are still pending and may need attention`);

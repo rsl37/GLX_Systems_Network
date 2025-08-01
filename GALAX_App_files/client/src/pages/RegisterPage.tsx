@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -50,12 +50,12 @@ export function RegisterPage() {
         // Clean the phone number: remove all non-digit characters except leading +
         // Remove all non-digit characters
         let cleanPhone = phone.replace(/[^\d]/g, '');
-        
+
         // Check if phone starts with a plus sign and handle it separately
         if (phone.startsWith('+')) {
           cleanPhone = `+${cleanPhone}`;
         }
-        
+
         // Check if phone already has a country code (starts with +)
         if (cleanPhone.startsWith('+')) {
           identifier = cleanPhone;
@@ -68,7 +68,7 @@ export function RegisterPage() {
           identifier = `${countryCode}${phoneWithoutLeadingZeros}`;
         }
       }
-      
+
       await register(identifier, password, username, signupMethod, verificationToken);
       navigate('/dashboard');
     } catch (err) {
@@ -157,7 +157,7 @@ export function RegisterPage() {
             <CardDescription className="text-lg text-gray-600">
               Create your civic network account
             </CardDescription>
-            
+
             {/* Security verification indicator */}
             {process.env.NODE_ENV === 'production' && (
               <div className="mt-4">
@@ -180,7 +180,7 @@ export function RegisterPage() {
               </div>
             )}
           </CardHeader>
-          
+
           <CardContent className="space-y-6">
             {/* Signup Method Toggle */}
             <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
@@ -217,7 +217,7 @@ export function RegisterPage() {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="identifier">
                   {signupMethod === 'email' ? 'Email' : 'Phone Number'}
@@ -251,7 +251,7 @@ export function RegisterPage() {
                   />
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -264,7 +264,7 @@ export function RegisterPage() {
                   required
                 />
               </div>
-              
+
               {error && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
@@ -275,7 +275,7 @@ export function RegisterPage() {
                   {error}
                 </motion.div>
               )}
-              
+
               <Button
                 type="submit"
                 className="w-full galax-button"
@@ -291,7 +291,7 @@ export function RegisterPage() {
                 )}
               </Button>
             </form>
-            
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-gray-300" />
@@ -329,7 +329,7 @@ export function RegisterPage() {
                 Sign in
               </Link>
             </div>
-            
+
             {/* Verification Notice */}
             <div className="text-center text-xs text-gray-500 bg-blue-50 p-3 rounded-xl">
               <div className="flex items-center justify-center gap-2 mb-1">

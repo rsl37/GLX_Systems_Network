@@ -82,7 +82,7 @@ export class TestServer {
 export const mockDb = {
   users: [] as any[],
   helpRequests: [] as any[],
-  
+
   clear() {
     this.users = [];
     this.helpRequests = [];

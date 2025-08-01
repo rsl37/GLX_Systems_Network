@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -26,11 +26,11 @@ interface CountryCodeSelectorProps {
   disabled?: boolean;
 }
 
-export function CountryCodeSelector({ 
-  value = '+1', 
-  onChange, 
+export function CountryCodeSelector({
+  value = '+1',
+  onChange,
   className,
-  disabled = false 
+  disabled = false
 }: CountryCodeSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -46,10 +46,10 @@ export function CountryCodeSelector({
 
   // Show popular countries first if no search query
   // Ensure no duplicates by filtering out countries that are already in popular countries
-  const remainingCountries = countries.filter(country => 
+  const remainingCountries = countries.filter(country =>
     !popularCountries.some(pop => pop.code === country.code)
   );
-  
+
   const displayCountries = searchQuery ? filteredCountries : [
     ...popularCountries,
     { code: 'separator', name: '---', dialCode: '', flag: '' },
@@ -65,9 +65,9 @@ export function CountryCodeSelector({
 
   return (
     <Select value={value} onValueChange={handleCountrySelect} disabled={disabled}>
-      <SelectTrigger 
+      <SelectTrigger
         className={cn(
-          "w-[120px] gap-2 galax-input", 
+          "w-[120px] gap-2 galax-input",
           className
         )}
       >
@@ -93,7 +93,7 @@ export function CountryCodeSelector({
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        
+
         {displayCountries.map((country, index) => {
           // Render separator
           if (country.code === 'separator') {
@@ -122,7 +122,7 @@ export function CountryCodeSelector({
             </SelectItem>
           );
         })}
-        
+
         {filteredCountries.length === 0 && searchQuery && (
           <div className="text-center py-6 text-sm text-gray-500">
             No countries found

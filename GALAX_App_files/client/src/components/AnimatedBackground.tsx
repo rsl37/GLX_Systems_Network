@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 import * as React from 'react';
 import { useEffect, useState, useMemo } from 'react';
 
-// Lazy load motion for better initial performance  
-const MotionDiv = React.lazy(() => 
+// Lazy load motion for better initial performance
+const MotionDiv = React.lazy(() =>
   import('framer-motion').then(module => ({ default: module.motion.div }))
 );
 
 // Memoized particle component for better performance
-const Particle = React.memo(({ 
-  x, 
-  y, 
-  delay, 
-  duration 
-}: { 
-  x: number; 
-  y: number; 
-  delay: number; 
-  duration: number; 
+const Particle = React.memo(({
+  x,
+  y,
+  delay,
+  duration
+}: {
+  x: number;
+  y: number;
+  delay: number;
+  duration: number;
 }) => (
   <React.Suspense fallback={null}>
     <MotionDiv
@@ -56,10 +56,10 @@ export const AnimatedBackground = React.memo(() => {
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setIsReduced(mediaQuery.matches);
-    
+
     const handleChange = (e: MediaQueryListEvent) => setIsReduced(e.matches);
     mediaQuery.addEventListener('change', handleChange);
-    
+
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
@@ -72,14 +72,14 @@ export const AnimatedBackground = React.memo(() => {
     };
 
     updateDimensions();
-    
+
     // Throttle resize events for better performance
     let timeoutId: NodeJS.Timeout;
     const throttledUpdate = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(updateDimensions, 100);
     };
-    
+
     window.addEventListener('resize', throttledUpdate);
     return () => {
       window.removeEventListener('resize', throttledUpdate);
@@ -90,10 +90,10 @@ export const AnimatedBackground = React.memo(() => {
   // Memoize particles generation for better performance
   const particles = useMemo(() => {
     if (isReduced || dimensions.width === 0) return [];
-    
+
     // Reduce particle count on smaller screens for better performance
     const particleCount = dimensions.width < 768 ? 8 : 15;
-    
+
     return Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       x: Math.random() * dimensions.width,
@@ -114,7 +114,7 @@ export const AnimatedBackground = React.memo(() => {
     <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
       {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-blue-50/50 to-pink-50/50" />
-      
+
       {/* Animated Particles */}
       {particles.map((particle) => (
         <Particle

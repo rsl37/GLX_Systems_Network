@@ -6,7 +6,7 @@
       "args": ["-y", "@cablate/mcp-google-map", "--port", "3000"],
       "tools": [
         "search_nearby",
-        "get_place_details", 
+        "get_place_details",
         "maps_geocode",
         "maps_reverse_geocode",
         "maps_distance_matrix",
@@ -17,7 +17,7 @@
         "GOOGLE_MAPS_API_KEY": "COPILOT_MCP_GOOGLE_MAPS_API_KEY"
       }
     },
-    
+
     "github-integration": {
       "type": "local",
       "command": "npx",
@@ -40,7 +40,7 @@
     },
 
     "web3-blockchain": {
-      "type": "local", 
+      "type": "local",
       "command": "npx",
       "args": ["-y", "@strangelove-ventures/web3-mcp"],
       "tools": [
@@ -75,7 +75,7 @@
 
     "civic-api-integration": {
       "type": "local",
-      "command": "node", 
+      "command": "node",
       "args": ["./mcp-servers/civic-server.js"],
       "tools": [
         "get_civic_data",

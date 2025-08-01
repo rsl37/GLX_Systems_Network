@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -39,7 +39,7 @@ declare global {
 // Version detection middleware
 export const detectApiVersion = (req: Request, res: Response, next: NextFunction): void => {
   let version: string = API_VERSIONS.current;
-  
+
   // Method 1: URL path versioning (/api/v1/users)
   const pathMatch = req.path.match(/^\/api\/(v\d+)\//);
   if (pathMatch) {
@@ -81,12 +81,12 @@ export const detectApiVersion = (req: Request, res: Response, next: NextFunction
   // Add version headers to response
   res.setHeader('X-API-Version', version);
   res.setHeader('X-Supported-Versions', API_VERSIONS.supported.join(', '));
-  
+
   if (isDeprecated) {
     res.setHeader('X-API-Deprecated', 'true');
     res.setHeader('Warning', `299 - "API version ${version} is deprecated"`);
   }
-  
+
   if (isSunset) {
     res.setHeader('X-API-Sunset', 'true');
     res.setHeader('Sunset', req.apiVersionInfo.sunsetDate || 'TBD');
@@ -98,7 +98,7 @@ export const detectApiVersion = (req: Request, res: Response, next: NextFunction
 // Version validation middleware
 export const validateApiVersion = (req: Request, res: Response, next: NextFunction): void => {
   const { apiVersionInfo } = req;
-  
+
   if (!apiVersionInfo) {
     res.status(500).json({
       success: false,
@@ -154,7 +154,7 @@ export const versionedRoute = (
 ) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const requestedVersion = req.apiVersion || API_VERSIONS.current;
-    
+
     if (!versions.includes(requestedVersion)) {
       res.status(400).json({
         success: false,
@@ -172,7 +172,7 @@ export const versionedRoute = (
 
     // Call the actual handler
     const result = handler(req, res, next);
-    
+
     // Handle promises
     if (result && typeof result.catch === 'function') {
       result.catch(next);
@@ -184,7 +184,7 @@ export const versionedRoute = (
 export const addVersioningHeaders = (req: Request, res: Response, next: NextFunction): void => {
   // Intercept json method to add versioning info
   const originalJson = res.json;
-  
+
   res.json = function(data: any) {
     // Add API version metadata to successful responses
     if (data && typeof data === 'object' && data.success !== false) {
@@ -197,7 +197,7 @@ export const addVersioningHeaders = (req: Request, res: Response, next: NextFunc
         timestamp: new Date().toISOString()
       };
     }
-    
+
     return originalJson.call(this, data);
   };
 

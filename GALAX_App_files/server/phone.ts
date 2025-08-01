@@ -208,7 +208,7 @@ export async function sendPhoneVerification(
     // Example Twilio integration:
     /*
     const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
-    
+
     await twilioClient.messages.create({
       body: `Your GALAX verification code is: ${code}. This code expires in 10 minutes.`,
       from: process.env.TWILIO_PHONE_NUMBER,

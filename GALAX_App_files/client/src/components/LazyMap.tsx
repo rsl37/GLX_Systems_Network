@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -30,7 +30,7 @@ interface LazyMapProps {
 
 // Loading component for the map
 const MapLoadingFallback = ({ height = '400px' }: { height?: string }) => (
-  <div 
+  <div
     className="flex items-center justify-center bg-gray-100 rounded-lg border"
     style={{ height }}
   >

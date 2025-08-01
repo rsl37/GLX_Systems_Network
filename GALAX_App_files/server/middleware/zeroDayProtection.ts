@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -255,12 +255,12 @@ function logSecurityEvent(event: Omit<SecurityEvent, 'id' | 'timestamp'>) {
     timestamp: new Date(),
     ...event
   };
-  
+
   securityEvents.unshift(securityEvent);
   if (securityEvents.length > MAX_EVENTS) {
     securityEvents.pop();
   }
-  
+
   // Update statistics
   if (event.type === 'zero_day_detection' && event.threat) {
     zeroDayStats.threatsDetected++;
@@ -270,11 +270,11 @@ function logSecurityEvent(event: Omit<SecurityEvent, 'id' | 'timestamp'>) {
       zeroDayStats.criticalThreats++;
     }
   }
-  
+
   if (event.type === 'threat_blocked') {
     zeroDayStats.blockedRequests++;
   }
-  
+
   console.log(`[ZERO-DAY-PROTECTION] ${event.severity.toUpperCase()}: ${event.description}`);
 }
 
@@ -282,7 +282,7 @@ function logSecurityEvent(event: Omit<SecurityEvent, 'id' | 'timestamp'>) {
 function analyzeBehavioralPatterns(req: Request): boolean {
   const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
   const now = Date.now();
-  
+
   let metrics = behavioralMetrics.get(clientIP);
   if (!metrics) {
     metrics = {
@@ -294,32 +294,32 @@ function analyzeBehavioralPatterns(req: Request): boolean {
     };
     behavioralMetrics.set(clientIP, metrics);
   }
-  
+
   // Update patterns
   const path = req.path;
   metrics.requestPattern.set(path, (metrics.requestPattern.get(path) || 0) + 1);
   metrics.timePattern.push(now);
-  
+
   // Analyze payload size
   const contentLength = parseInt(req.get('Content-Length') || '0');
   metrics.payloadSizePattern.push(contentLength);
-  
+
   // Keep only recent data (5 minutes)
   metrics.timePattern = metrics.timePattern.filter(t => now - t < BEHAVIORAL_WINDOW);
   metrics.payloadSizePattern = metrics.payloadSizePattern.slice(-100); // Keep last 100 requests
-  
+
   // Detect anomalies
   const timeGaps = [];
   for (let i = 1; i < metrics.timePattern.length; i++) {
     timeGaps.push(metrics.timePattern[i] - metrics.timePattern[i-1]);
   }
-  
+
   // Check for rapid requests (potential bot/script)
   const rapidRequests = timeGaps.filter(gap => gap < 100).length; // < 100ms between requests
   if (rapidRequests > 10) {
     return true; // Anomaly detected
   }
-  
+
   // Check for unusual payload sizes
   if (metrics.payloadSizePattern.length > 10) {
     const avgPayload = metrics.payloadSizePattern.reduce((a, b) => a + b, 0) / metrics.payloadSizePattern.length;
@@ -328,21 +328,21 @@ function analyzeBehavioralPatterns(req: Request): boolean {
       return true; // Anomaly detected
     }
   }
-  
+
   // Check for suspicious header patterns
   const userAgent = req.get('User-Agent') || '';
   const suspiciousHeaders = [
     'curl', 'wget', 'python', 'bot', 'scanner', 'crawler'
   ];
-  
-  const hasSuspiciousUA = suspiciousHeaders.some(pattern => 
+
+  const hasSuspiciousUA = suspiciousHeaders.some(pattern =>
     userAgent.toLowerCase().includes(pattern)
   );
-  
+
   if (hasSuspiciousUA && metrics.requestPattern.size > 20) { // Many different endpoints
     return true; // Anomaly detected
   }
-  
+
   return false;
 }
 
@@ -353,7 +353,7 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
   const userAgent = req.get('User-Agent') || '';
   const requestBody = JSON.stringify(req.body || {});
   const fullPath = req.path + (req.query ? '?' + JSON.stringify(req.query) : '');
-  
+
   // Check behavioral anomalies first
   const hasAnomalies = analyzeBehavioralPatterns(req);
   if (hasAnomalies) {
@@ -366,15 +366,15 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
       path: req.path,
       action: 'Monitoring increased, rate limiting applied'
     });
-    
+
     // Apply additional rate limiting for anomalous behavior
     res.set('X-Zero-Day-Status', 'anomaly-detected');
   }
-  
+
   // Check all zero-day threat patterns
   for (const threat of ALL_ZERO_DAY_THREATS) {
     let detected = false;
-    
+
     if (typeof threat.pattern === 'function') {
       detected = threat.pattern(req);
     } else {
@@ -382,11 +382,11 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
       const searchText = `${fullPath} ${userAgent} ${requestBody}`.toLowerCase();
       detected = threat.pattern.test(searchText);
     }
-    
+
     if (detected) {
       threat.detectionCount++;
       threat.lastDetected = new Date();
-      
+
       logSecurityEvent({
         type: 'zero_day_detection',
         severity: threat.severity,
@@ -397,7 +397,7 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
         threat,
         action: threat.countermeasure
       });
-      
+
       // Take countermeasures based on severity
       if (threat.severity === 'critical') {
         logSecurityEvent({
@@ -409,7 +409,7 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
           path: req.path,
           action: 'Request blocked, IP flagged for monitoring'
         });
-        
+
         return res.status(403).json({
           error: 'Security violation detected',
           code: 'ZERO_DAY_THREAT_BLOCKED',
@@ -426,15 +426,15 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
       }
     }
   }
-  
+
   // Add security headers for zero-day protection
   res.set('X-Zero-Day-Protection', 'active');
   res.set('X-Threat-Detection', 'enabled');
   res.set('X-Behavioral-Analysis', hasAnomalies ? 'anomaly-detected' : 'normal');
-  
+
   const processingTime = Date.now() - startTime;
   res.set('X-Zero-Day-Scan-Time', `${processingTime}ms`);
-  
+
   next();
 }
 
@@ -464,10 +464,10 @@ export function updateThreatIntelligence(): Promise<boolean> {
     setTimeout(() => {
       threatIntelligence.lastUpdate = new Date();
       threatIntelligence.newThreats += Math.floor(Math.random() * 3); // Simulate 0-2 new threats
-      
+
       console.log('[ZERO-DAY-PROTECTION] Threat intelligence updated');
       console.log(`[ZERO-DAY-PROTECTION] New threats in database: ${threatIntelligence.newThreats}`);
-      
+
       resolve(true);
     }, 1000);
   });
@@ -483,7 +483,7 @@ setInterval(async () => {
 // Admin endpoints for zero-day protection management
 export function zeroDayProtectionAdmin(req: Request, res: Response) {
   const { action } = req.params;
-  
+
   switch (action) {
     case 'status':
       return res.json({
@@ -494,14 +494,14 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
         behavioralMonitoring: behavioralMetrics.size,
         lastScan: new Date().toISOString()
       });
-      
+
     case 'events':
       const limit = parseInt(req.query.limit as string) || 50;
       return res.json({
         events: securityEvents.slice(0, limit),
         total: securityEvents.length
       });
-      
+
     case 'threats':
       return res.json({
         aiMlThreats: AI_ML_THREATS.map(t => ({
@@ -537,7 +537,7 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
           lastDetected: t.lastDetected
         }))
       });
-      
+
     case 'update-intelligence':
       updateThreatIntelligence().then(success => {
         res.json({
@@ -547,7 +547,7 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
         });
       });
       break;
-      
+
     case 'behavioral-analysis':
       const analysisData = Array.from(behavioralMetrics.entries()).map(([ip, metrics]) => ({
         ip,
@@ -556,12 +556,12 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
         recentActivity: metrics.timePattern.length,
         lastSeen: metrics.lastAnalysis
       }));
-      
+
       return res.json({
         totalClients: behavioralMetrics.size,
         analysisData: analysisData.slice(0, 100) // Limit to 100 entries
       });
-      
+
     default:
       return res.status(400).json({ error: 'Invalid action' });
   }
@@ -578,7 +578,7 @@ export function initializeZeroDayProtection() {
   console.log('[ZERO-DAY-PROTECTION] Behavioral anomaly detection: ACTIVE');
   console.log('[ZERO-DAY-PROTECTION] Automated threat intelligence: ACTIVE');
   console.log('[ZERO-DAY-PROTECTION] Zero-day protection system: READY');
-  
+
   // Initial threat intelligence update
   updateThreatIntelligence();
 }

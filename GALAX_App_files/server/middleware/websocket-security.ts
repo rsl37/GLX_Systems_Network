@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -89,7 +89,7 @@ export class WebSocketSecurityMiddleware {
    */
   checkConnectionRateLimit(ip: string): boolean {
     const currentCount = this.rateLimitState.connections.get(ip) || 0;
-    
+
     if (currentCount >= this.config.maxConnectionsPerIP) {
       console.warn(`🚨 Connection rate limit exceeded for IP: ${ip} (${currentCount}/${this.config.maxConnectionsPerIP})`);
       return false;
@@ -104,7 +104,7 @@ export class WebSocketSecurityMiddleware {
    */
   checkMessageRateLimit(userId: string): boolean {
     const currentCount = this.rateLimitState.messages.get(userId) || 0;
-    
+
     if (currentCount >= this.config.maxMessagesPerMinute) {
       console.warn(`🚨 Message rate limit exceeded for user: ${userId} (${currentCount}/${this.config.maxMessagesPerMinute})`);
       return false;
@@ -119,7 +119,7 @@ export class WebSocketSecurityMiddleware {
    */
   checkAuthRateLimit(ip: string): boolean {
     const currentCount = this.rateLimitState.authAttempts.get(ip) || 0;
-    
+
     if (currentCount >= this.config.maxAuthAttemptsPerMinute) {
       console.warn(`🚨 Auth rate limit exceeded for IP: ${ip} (${currentCount}/${this.config.maxAuthAttemptsPerMinute})`);
       return false;
@@ -233,7 +233,7 @@ export class WebSocketSecurityMiddleware {
       const suspiciousAgents = [
         /curl/i, /wget/i, /python/i, /java/i, /go-http/i, /node/i
       ];
-      
+
       if (suspiciousAgents.some(pattern => pattern.test(userAgent))) {
         console.warn(`🚨 Potential CSWH: Suspicious user agent: ${userAgent}`);
         return true;
@@ -266,14 +266,14 @@ export class WebSocketSecurityMiddleware {
    */
   private resetCounters() {
     const now = Date.now();
-    
+
     // Only reset if a minute has passed
     if (now - this.rateLimitState.lastReset >= 60000) {
       this.rateLimitState.connections.clear();
       this.rateLimitState.messages.clear();
       this.rateLimitState.authAttempts.clear();
       this.rateLimitState.lastReset = now;
-      
+
       console.log('🔄 WebSocket rate limit counters reset');
     }
   }
@@ -306,7 +306,7 @@ export class WebSocketSecurityMiddleware {
           userAgent: req.get('User-Agent'),
           endpoint: 'websocket_connection'
         }, 'medium');
-        
+
         res.status(429).json({
           error: 'Rate limit exceeded',
           retryAfter: '60 seconds'

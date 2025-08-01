@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -105,9 +105,9 @@ export class AIMCPSecurityMiddleware {
    * Validate and sanitize AI prompt input
    */
   validatePrompt(
-    prompt: string, 
-    userId: number, 
-    ipAddress: string, 
+    prompt: string,
+    userId: number,
+    ipAddress: string,
     modelVersion: string
   ): { isValid: boolean; sanitized: string; riskScore: number; threats: string[] } {
     const threats: string[] = [];
@@ -116,11 +116,11 @@ export class AIMCPSecurityMiddleware {
 
     // Basic validation
     if (!prompt || typeof prompt !== 'string') {
-      return { 
-        isValid: false, 
-        sanitized: '', 
-        riskScore: 100, 
-        threats: ['Invalid prompt format'] 
+      return {
+        isValid: false,
+        sanitized: '',
+        riskScore: 100,
+        threats: ['Invalid prompt format']
       };
     }
 
@@ -191,11 +191,11 @@ export class AIMCPSecurityMiddleware {
 
     // Basic validation
     if (!response || typeof response !== 'string') {
-      return { 
-        isValid: false, 
-        sanitized: '', 
-        riskScore: 100, 
-        threats: ['Invalid response format'] 
+      return {
+        isValid: false,
+        sanitized: '',
+        riskScore: 100,
+        threats: ['Invalid response format']
       };
     }
 
@@ -247,7 +247,7 @@ export class AIMCPSecurityMiddleware {
     }
 
     const existing = this.modelIntegrity.get(modelVersion);
-    
+
     // If we have a cached verification that's less than 5 minutes old, use it
     if (existing && (Date.now() - existing.verifiedAt.getTime()) < 5 * 60 * 1000) {
       return existing.isValid;
@@ -261,7 +261,7 @@ export class AIMCPSecurityMiddleware {
         const hash = crypto.createHash('sha256').update(modelData).digest('hex');
         // Compare the computed hash against known good hashes
         const knownGoodHashes = this.config.knownGoodHashes || [];
-        
+
         // If we have known good hashes, check against them
         if (knownGoodHashes.length > 0) {
           isValid = knownGoodHashes.includes(hash);
@@ -273,7 +273,7 @@ export class AIMCPSecurityMiddleware {
             console.log(`⚠️  Model ${modelVersion} passed version check but hash not yet verified`);
           }
         }
-        
+
         this.modelIntegrity.set(modelVersion, {
           version: modelVersion,
           hash,
@@ -287,7 +287,7 @@ export class AIMCPSecurityMiddleware {
       }
 
       console.log(`🔍 Model integrity check for ${modelVersion}: ${isValid ? 'PASSED' : 'FAILED'}`);
-      
+
     } catch (error) {
       console.error(`❌ Model integrity verification failed for ${modelVersion}:`, error);
       isValid = false;
@@ -424,8 +424,8 @@ export class AIMCPSecurityMiddleware {
   getSecurityMetrics() {
     const totalInteractions = this.auditLogs.length;
     const highRiskInteractions = this.auditLogs.filter(log => log.riskScore >= this.config.riskThreshold).length;
-    const averageRiskScore = totalInteractions > 0 
-      ? this.auditLogs.reduce((sum, log) => sum + log.riskScore, 0) / totalInteractions 
+    const averageRiskScore = totalInteractions > 0
+      ? this.auditLogs.reduce((sum, log) => sum + log.riskScore, 0) / totalInteractions
       : 0;
 
     return {
@@ -444,9 +444,9 @@ export class AIMCPSecurityMiddleware {
   clearOldLogs(olderThanHours = 24) {
     const cutoff = Date.now() - (olderThanHours * 60 * 60 * 1000);
     const initialCount = this.auditLogs.length;
-    
+
     this.auditLogs = this.auditLogs.filter(log => log.timestamp.getTime() > cutoff);
-    
+
     const removedCount = initialCount - this.auditLogs.length;
     if (removedCount > 0) {
       console.log(`🧹 Cleared ${removedCount} old AI audit logs`);

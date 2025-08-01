@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -19,7 +19,7 @@ import { encryptPersonalData, decryptPersonalData } from './encryption.js';
 export async function generate2FASecret(userId: number, username: string): Promise<{ secret: string; qrCode: string } | null> {
   try {
     console.log('🔐 Generating 2FA secret for user:', userId);
-    
+
     // Generate a secure secret
     const secret = speakeasy.generateSecret({
       name: `GALAX (${username})`,
@@ -37,7 +37,7 @@ export async function generate2FASecret(userId: number, username: string): Promi
     // Store encrypted secret in database (don't enable 2FA yet)
     await db
       .updateTable('users')
-      .set({ 
+      .set({
         two_factor_secret: encryptedSecret,
         updated_at: new Date().toISOString()
       })
@@ -64,7 +64,7 @@ export async function generate2FASecret(userId: number, username: string): Promi
 export async function enable2FA(userId: number, verificationCode: string): Promise<boolean> {
   try {
     console.log('🔒 Enabling 2FA for user:', userId);
-    
+
     // Get user's secret
     const user = await db
       .selectFrom('users')
@@ -96,7 +96,7 @@ export async function enable2FA(userId: number, verificationCode: string): Promi
     // Enable 2FA
     await db
       .updateTable('users')
-      .set({ 
+      .set({
         two_factor_enabled: 1,
         updated_at: new Date().toISOString()
       })
@@ -117,10 +117,10 @@ export async function enable2FA(userId: number, verificationCode: string): Promi
 export async function disable2FA(userId: number, verificationCode: string): Promise<boolean> {
   try {
     console.log('🔓 Disabling 2FA for user:', userId);
-    
+
     // Verify current 2FA code before disabling
     const isValid = await verify2FACode(userId, verificationCode);
-    
+
     if (!isValid) {
       console.log('❌ Invalid 2FA code for disabling');
       return false;
@@ -129,7 +129,7 @@ export async function disable2FA(userId: number, verificationCode: string): Prom
     // Disable 2FA and remove secret
     await db
       .updateTable('users')
-      .set({ 
+      .set({
         two_factor_enabled: 0,
         two_factor_secret: null,
         updated_at: new Date().toISOString()
@@ -151,7 +151,7 @@ export async function disable2FA(userId: number, verificationCode: string): Prom
 export async function verify2FACode(userId: number, verificationCode: string): Promise<boolean> {
   try {
     console.log('🔍 Verifying 2FA code for user:', userId);
-    
+
     // Get user's 2FA settings
     const user = await db
       .selectFrom('users')
@@ -199,7 +199,7 @@ export async function verify2FACode(userId: number, verificationCode: string): P
 export async function generateBackupCodes(userId: number): Promise<string[] | null> {
   try {
     console.log('🔑 Generating backup codes for user:', userId);
-    
+
     // Generate 10 backup codes
     const backupCodes = Array.from({ length: 10 }, () => {
       return randomBytes(6).toString('hex').toUpperCase();
@@ -212,7 +212,7 @@ export async function generateBackupCodes(userId: number): Promise<string[] | nu
     // For now, we'll add it to the users table (would be better in a separate table)
     await db
       .updateTable('users')
-      .set({ 
+      .set({
         // Note: This requires adding a backup_codes field to the users table
         // backup_codes: encryptedCodes,
         updated_at: new Date().toISOString()
@@ -234,7 +234,7 @@ export async function generateBackupCodes(userId: number): Promise<string[] | nu
 export async function validateBackupCode(userId: number, backupCode: string): Promise<boolean> {
   try {
     console.log('🔍 Validating backup code for user:', userId);
-    
+
     // This would require implementing backup code storage and validation
     // For now, return false as backup codes need additional database schema
     console.log('❌ Backup code validation not implemented yet (requires additional schema)');

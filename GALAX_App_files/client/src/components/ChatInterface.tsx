@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -34,7 +34,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const token = localStorage.getItem('token');
   const { health, joinRoom, onMessage, sendMessage: realtimeSendMessage } = useRealtime(token);
 
@@ -85,11 +85,11 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newMessage.trim() || !health?.authenticated || !realtimeSendMessage) return;
 
     const result = await realtimeSendMessage(helpRequestId, newMessage.trim());
-    
+
     if (result.success) {
       setNewMessage('');
     } else {
@@ -156,7 +156,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
             ⚠️ {health.lastError}
           </div>
         )}
-        
+
         {/* Messages */}
         <div className="h-64 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-lg">
           {messages.length === 0 ? (
@@ -179,7 +179,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
                     </AvatarFallback>
                   </Avatar>
                 )}
-                
+
                 <div
                   className={`max-w-xs px-3 py-2 rounded-lg ${
                     message.sender === currentUser
@@ -198,7 +198,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
                     {formatTime(message.timestamp)}
                   </p>
                 </div>
-                
+
                 {message.sender === currentUser && (
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={message.avatar || ''} />
@@ -230,7 +230,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
             )}
           </Button>
         </form>
-        
+
         {/* Pusher Status */}
         <div className="text-xs text-gray-500 text-center">
           Real-time via SSE • {health?.connected ? 'Connected' : 'Connecting...'}

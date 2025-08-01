@@ -18,16 +18,16 @@ describe('Real-time Communication Tests (Pusher)', () => {
   beforeAll(async () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
-    
+
     // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
     testServer.app.get('/api/realtime/health', (req, res) => {
-      res.json({ 
-        success: true, 
-        data: { 
+      res.json({
+        success: true,
+        data: {
           type: "Pusher WebSocket",
           status: "active",
           cluster: process.env.PUSHER_CLUSTER || 'us2'
-        } 
+        }
       });
     });
 
@@ -36,13 +36,13 @@ describe('Real-time Communication Tests (Pusher)', () => {
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Authorization token required' });
       }
-      
+
       const { socket_id, channel_name } = req.body;
       if (!socket_id || !channel_name) {
         return res.status(400).json({ error: 'Socket ID and channel name are required' });
       }
 
-      if (!channel_name.startsWith('private-user-notifications') && 
+      if (!channel_name.startsWith('private-user-notifications') &&
           !channel_name.startsWith('private-help-request-')) {
         return res.status(403).json({ error: 'Unauthorized channel access' });
       }

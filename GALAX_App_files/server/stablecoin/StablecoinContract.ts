@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -89,7 +89,7 @@ export class StablecoinContract {
    */
   addPriceData(priceData: PriceData): void {
     this.priceHistory.push(priceData);
-    
+
     // Keep only last 100 price points
     if (this.priceHistory.length > 100) {
       this.priceHistory = this.priceHistory.slice(-100);
@@ -112,14 +112,14 @@ export class StablecoinContract {
   getAveragePrice(periodMs: number): number {
     const cutoffTime = Date.now() - periodMs;
     const recentPrices = this.priceHistory.filter(p => p.timestamp >= cutoffTime);
-    
+
     if (recentPrices.length === 0) {
       return this.getCurrentPrice();
     }
 
     const weightedSum = recentPrices.reduce((sum, p) => sum + (p.price * p.confidence), 0);
     const weightSum = recentPrices.reduce((sum, p) => sum + p.confidence, 0);
-    
+
     return weightSum > 0 ? weightedSum / weightSum : this.getCurrentPrice();
   }
 
@@ -130,7 +130,7 @@ export class StablecoinContract {
     const currentPrice = this.getAveragePrice(300000); // 5-minute average
     const targetPrice = this.config.targetPrice;
     const deviation = Math.abs(currentPrice - targetPrice) / targetPrice;
-    
+
     // Check if price is within tolerance band
     if (deviation <= this.config.toleranceBand) {
       return {
@@ -154,9 +154,9 @@ export class StablecoinContract {
         (priceRatio - 1) * this.config.supplyAdjustmentRate,
         this.config.maxSupplyChange
       );
-      
+
       const expandAmount = this.totalSupply * adjustmentFactor;
-      
+
       return {
         action: 'expand',
         amount: expandAmount,
@@ -172,10 +172,10 @@ export class StablecoinContract {
         (1 - priceRatio) * this.config.supplyAdjustmentRate,
         this.config.maxSupplyChange
       );
-      
+
       const contractAmount = this.totalSupply * adjustmentFactor;
       const newSupply = Math.max(0, this.totalSupply - contractAmount);
-      
+
       return {
         action: 'contract',
         amount: contractAmount,
@@ -193,24 +193,24 @@ export class StablecoinContract {
    */
   rebalance(): SupplyAdjustment | null {
     const now = Date.now();
-    
+
     // Check if enough time has passed since last rebalance
     if (now - this.lastRebalance < this.config.rebalanceInterval) {
       return null;
     }
 
     const adjustment = this.calculateSupplyAdjustment();
-    
+
     if (adjustment.action !== 'none') {
       // Check reserve requirements for contractions
       if (adjustment.action === 'contract') {
         const newReserveRatio = adjustment.newSupply > 0 ? this.reservePool / adjustment.newSupply : 1;
-        
+
         if (newReserveRatio < this.config.reserveRatio) {
           // Insufficient reserves for full contraction
           const maxContractable = this.reservePool / this.config.reserveRatio;
           const adjustedContraction = this.totalSupply - maxContractable;
-          
+
           adjustment.amount = adjustedContraction;
           adjustment.newSupply = maxContractable;
           adjustment.reason += ' (limited by reserve ratio)';
@@ -245,12 +245,12 @@ export class StablecoinContract {
     if (amount > this.reservePool) {
       return false; // Insufficient reserves
     }
-    
+
     const newReserveRatio = (this.reservePool - amount) / this.totalSupply;
     if (newReserveRatio < this.config.reserveRatio) {
       return false; // Would violate reserve ratio
     }
-    
+
     this.reservePool -= amount;
     return true;
   }
@@ -279,7 +279,7 @@ export class StablecoinContract {
     // Calculate volatility over last 24 hours
     const dayMs = 24 * 60 * 60 * 1000;
     const recentPrices = this.priceHistory.filter(p => p.timestamp >= Date.now() - dayMs);
-    
+
     let volatility = 0;
     if (recentPrices.length > 1) {
       const prices = recentPrices.map(p => p.price);

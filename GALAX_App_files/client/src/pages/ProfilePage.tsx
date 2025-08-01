@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -20,11 +20,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Progress } from '@/components/ui/progress';
 import { AccountSettings } from '../components/AccountSettings';
 import { UserBadges } from '../components/UserBadges';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
   Calendar,
   Edit,
   Settings,
@@ -94,22 +94,22 @@ export function ProfilePage() {
   const fetchProfileData = async () => {
     try {
       const token = localStorage.getItem('token');
-      
+
       // Fetch user stats
       const statsResponse = await fetch('/api/user/stats', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setStats(statsData.data);
       }
-      
+
       // Fetch transactions
       const transactionsResponse = await fetch('/api/transactions', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (transactionsResponse.ok) {
         const transactionsData = await transactionsResponse.json();
         setTransactions(transactionsData.data);
@@ -119,7 +119,7 @@ export function ProfilePage() {
       const privacyResponse = await fetch('/api/user/privacy-settings', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (privacyResponse.ok) {
         const privacyData = await privacyResponse.json();
         setPrivacySettings(privacyData.data || {
@@ -129,7 +129,7 @@ export function ProfilePage() {
           walletDisplayMode: 'hidden'
         });
       }
-      
+
     } catch (error) {
       console.error('Profile data fetch error:', error);
     } finally {
@@ -148,7 +148,7 @@ export function ProfilePage() {
         },
         body: JSON.stringify(editForm)
       });
-      
+
       if (response.ok) {
         setIsEditing(false);
         await refreshUser();
@@ -167,7 +167,7 @@ export function ProfilePage() {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return '1 day ago';
     return `${diffDays} days ago`;
@@ -274,7 +274,7 @@ export function ProfilePage() {
                     <Camera className="h-4 w-4" />
                   </Button>
                 </div>
-                
+
                 <div className="flex-1 text-center md:text-left">
                   <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                     <h2 className="text-2xl font-bold text-gray-800">{user.username}</h2>
@@ -285,7 +285,7 @@ export function ProfilePage() {
                       </Badge>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-gray-600 mb-4">
                     {user.email && privacySettings.showEmail && (
                       <div className="flex items-center gap-1">
@@ -325,7 +325,7 @@ export function ProfilePage() {
                       Member since {formatTimeAgo(user.created_at || '')}
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-center md:justify-start gap-2">
                       <Star className={`h-4 w-4 ${reputationInfo.color}`} />
@@ -339,7 +339,7 @@ export function ProfilePage() {
                     <Progress value={reputationInfo.progress} className="h-2" />
                   </div>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Dialog open={isEditing} onOpenChange={setIsEditing}>
                     <DialogTrigger asChild>
@@ -403,7 +403,7 @@ export function ProfilePage() {
                       </div>
                     </DialogContent>
                   </Dialog>
-                  
+
                   <AccountSettings
                     trigger={
                       <Button variant="outline" size="sm">
@@ -438,7 +438,7 @@ export function ProfilePage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -452,7 +452,7 @@ export function ProfilePage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="galax-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -583,7 +583,7 @@ export function ProfilePage() {
                     <XCircle className="h-5 w-5 text-red-500" />
                   )}
                 </div>
-                
+
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-gray-500" />
@@ -617,7 +617,7 @@ export function ProfilePage() {
                     <XCircle className="h-5 w-5 text-red-500" />
                   )}
                 </div>
-                
+
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <Key className="h-5 w-5 text-gray-500" />
@@ -634,7 +634,7 @@ export function ProfilePage() {
                     <XCircle className="h-5 w-5 text-red-500" />
                   )}
                 </div>
-                
+
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <Lock className="h-5 w-5 text-gray-500" />

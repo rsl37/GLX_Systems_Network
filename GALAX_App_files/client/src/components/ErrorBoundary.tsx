@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -146,11 +146,11 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-8 h-8 text-red-600" />
             </div>
-            
+
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
               An unexpected error occurred
             </h1>
-            
+
             <p className="text-gray-600 mb-6">
               The application encountered a technical issue and couldn't complete your request. Our team has been automatically notified and is working on a fix.
             </p>
@@ -173,7 +173,7 @@ class ErrorBoundary extends Component<Props, State> {
                   Try Again ({this.maxRetries - this.retryCount} attempts left)
                 </button>
               )}
-              
+
               <button
                 onClick={this.handleHome}
                 className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
@@ -182,7 +182,7 @@ class ErrorBoundary extends Component<Props, State> {
                 <Home className="w-4 h-4" />
                 Go Home
               </button>
-              
+
               <button
                 onClick={this.handleReload}
                 className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
@@ -280,7 +280,7 @@ export const withErrorBoundary = <P extends object>(
   }
 ) => {
   const WrappedComponent = (props: P) => (
-    <ErrorBoundary 
+    <ErrorBoundary
       fallback={errorBoundaryConfig?.fallback}
       onError={errorBoundaryConfig?.onError}
     >
@@ -289,6 +289,6 @@ export const withErrorBoundary = <P extends object>(
   );
 
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-  
+
   return WrappedComponent;
 };

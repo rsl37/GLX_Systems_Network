@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -28,7 +28,7 @@ interface RealtimeMessage {
 class RealtimeManager {
   private connections = new Map<string, SSEConnection>();
   private cleanupInterval: NodeJS.Timeout;
-  
+
   // WSS (Secure WebSocket) configuration for security compliance
   private readonly wssConfig = {
     protocol: 'wss://',
@@ -56,7 +56,7 @@ class RealtimeManager {
   // Create SSE connection for authenticated user
   public createSSEConnection(userId: number, response: Response): string {
     const connectionId = this.generateConnectionId();
-    
+
     // Set SSE headers
     response.writeHead(200, {
       'Content-Type': 'text/event-stream',
@@ -153,7 +153,7 @@ class RealtimeManager {
   // Broadcast message to all connections in a room
   public broadcastToRoom(roomId: string, message: RealtimeMessage) {
     let sentCount = 0;
-    
+
     for (const connection of this.connections.values()) {
       if (connection.rooms.has(roomId) && !connection.response.destroyed) {
         this.sendSSEMessage(connection.response, message);
@@ -168,7 +168,7 @@ class RealtimeManager {
   // Broadcast message to all connections
   public broadcast(message: RealtimeMessage) {
     let sentCount = 0;
-    
+
     for (const connection of this.connections.values()) {
       if (!connection.response.destroyed) {
         this.sendSSEMessage(connection.response, message);
@@ -189,7 +189,7 @@ class RealtimeManager {
         return true;
       }
     }
-    
+
     console.log(`❌ User ${userId} not connected`);
     return false;
   }
@@ -201,7 +201,7 @@ class RealtimeManager {
       if (!message || message.trim().length === 0) {
         return { success: false, error: 'Message cannot be empty' };
       }
-      
+
       if (message.length > 1000) {
         return { success: false, error: 'Message too long (max 1000 characters)' };
       }
@@ -270,14 +270,14 @@ class RealtimeManager {
 
   private performCleanup() {
     console.log('🧹 Performing SSE cleanup...');
-    
+
     const now = Date.now();
     const maxIdleTime = 60 * 60 * 1000; // 1 hour
     let cleanedCount = 0;
 
     for (const [connectionId, connection] of this.connections.entries()) {
       const idleTime = now - connection.lastActivity.getTime();
-      
+
       if (idleTime > maxIdleTime || connection.response.destroyed) {
         console.log(`🧹 Cleaning up stale connection: ${connectionId}`);
         this.connections.delete(connectionId);
@@ -344,7 +344,7 @@ class RealtimeManager {
   // Graceful shutdown
   public shutdown() {
     console.log('📡 Shutting down realtime manager...');
-    
+
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
     }

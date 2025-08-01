@@ -8,7 +8,7 @@
 
 /*
  * Test User Management for CI/CD Authentication Testing
- * 
+ *
  * This utility provides automated test user creation and cleanup
  * for authentication testing in CI/CD pipelines.
  */
@@ -44,7 +44,7 @@ export class TestUserManager {
     const uniqueId = randomBytes(4).toString('hex');
     const baseEmail = process.env.TEST_EMAIL_BASE || 'test';
     const baseDomain = process.env.TEST_EMAIL_DOMAIN || 'example.com';
-    
+
     const testUser: TestUser = {
       id: `test_user_${uniqueId}`,
       // Use email aliasing for unique test emails
@@ -142,10 +142,10 @@ export class TestUserManager {
    */
   createAuthTestData() {
     const users = this.createScenarioUsers();
-    
+
     return {
       users,
-      
+
       // Valid registration data
       validRegistration: {
         email: users.regularUser.email,
@@ -286,33 +286,33 @@ export function cleanupTestUsers(): void {
 export const testConfig = {
   // Test database settings
   testDatabase: process.env.TEST_DATABASE_URL || 'sqlite::memory:',
-  
+
   // API endpoints for testing
   apiBaseUrl: process.env.TEST_API_URL || 'http://localhost:3001',
-  
+
   // Test timeouts
   requestTimeout: parseInt(process.env.TEST_REQUEST_TIMEOUT || '5000'),
-  
+
   // Rate limiting settings for testing
   rateLimitWindow: parseInt(process.env.TEST_RATE_LIMIT_WINDOW || '60000'),
   rateLimitMax: parseInt(process.env.TEST_RATE_LIMIT_MAX || '100'),
-  
+
   // Security test settings
   maxPasswordAttempts: parseInt(process.env.TEST_MAX_PASSWORD_ATTEMPTS || '5'),
   accountLockoutDuration: parseInt(process.env.TEST_LOCKOUT_DURATION || '300000'), // 5 minutes
-  
+
   // JWT settings for testing
   jwtSecret: process.env.TEST_JWT_SECRET || 'test-secret-key',
   jwtExpiry: process.env.TEST_JWT_EXPIRY || '1h',
-  
+
   // Email testing settings
   testEmailProvider: process.env.TEST_EMAIL_PROVIDER || 'mock',
   testEmailApiKey: process.env.TEST_EMAIL_API_KEY || '',
-  
+
   // Phone testing settings
   testPhoneProvider: process.env.TEST_PHONE_PROVIDER || 'mock',
   testPhoneApiKey: process.env.TEST_PHONE_API_KEY || '',
-  
+
   // Cleanup settings
   cleanupAfterTests: process.env.TEST_CLEANUP === 'true',
   keepTestDataOnFailure: process.env.TEST_KEEP_DATA_ON_FAILURE === 'true'

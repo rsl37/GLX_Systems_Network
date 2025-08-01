@@ -16,7 +16,7 @@ describe('API Health Endpoints', () => {
   beforeAll(async () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
-    
+
     // Setup health endpoint
     testServer.app.get('/api/health', (req, res) => {
       res.json({
@@ -78,7 +78,7 @@ describe('API Health Endpoints', () => {
       .get('/api/health')
       .expect(200);
     const duration = Date.now() - start;
-    
+
     expect(duration).toBeLessThan(1000); // Should respond within 1 second
   });
 });

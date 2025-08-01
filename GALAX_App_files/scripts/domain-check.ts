@@ -2,9 +2,9 @@
 
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -33,7 +33,7 @@ interface DomainCheckResult {
 class DomainChecker {
   async checkDomain(domain: string): Promise<DomainCheckResult> {
     console.log(`🔍 Checking domain: ${domain}`);
-    
+
     try {
       // Check DNS resolution
       const dnsResult = await this.checkDNS(domain);
@@ -49,7 +49,7 @@ class DomainChecker {
 
       // Check SSL certificate
       const sslResult = await this.checkSSL(domain);
-      
+
       return sslResult;
     } catch (error) {
       return {
@@ -65,7 +65,7 @@ class DomainChecker {
     try {
       const result = execSync(`dig +short ${domain} A`, { encoding: 'utf8' });
       const ips = result.trim().split('\n').filter(ip => ip);
-      
+
       if (ips.length === 0) {
         return {
           domain,
@@ -78,7 +78,7 @@ class DomainChecker {
       // Check if pointing to Vercel (common Vercel IPs)
       const vercelIPs = ['76.76.19.61', '76.76.21.61', '76.76.21.98', '76.76.19.98'];
       const pointsToVercel = ips.some(ip => vercelIPs.includes(ip.trim()));
-      
+
       if (!pointsToVercel) {
         return {
           domain,
@@ -236,11 +236,11 @@ class DomainChecker {
   private formatResult(result: DomainCheckResult): string {
     const icon = result.status === 'success' ? '✅' : result.status === 'warning' ? '⚠️' : '❌';
     let output = `${icon} ${result.domain}: ${result.message}`;
-    
+
     if (result.details) {
       output += `\n   Details: ${result.details}`;
     }
-    
+
     return output;
   }
 

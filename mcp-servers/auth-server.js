@@ -60,14 +60,14 @@ class AuthMCPServer {
                 userId: { type: 'string', description: 'User ID' },
                 username: { type: 'string', description: 'Username' },
                 email: { type: 'string', description: 'User email' },
-                roles: { 
-                  type: 'array', 
+                roles: {
+                  type: 'array',
                   items: { type: 'string' },
                   description: 'User roles/permissions',
                   default: ['user']
                 },
-                customClaims: { 
-                  type: 'object', 
+                customClaims: {
+                  type: 'object',
                   description: 'Additional custom claims to include in token'
                 }
               },
@@ -93,8 +93,8 @@ class AuthMCPServer {
               type: 'object',
               properties: {
                 token: { type: 'string', description: 'JWT token' },
-                requiredPermissions: { 
-                  type: 'array', 
+                requiredPermissions: {
+                  type: 'array',
                   items: { type: 'string' },
                   description: 'List of required permissions'
                 },
@@ -143,7 +143,7 @@ class AuthMCPServer {
     try {
       const options = ignoreExpiration ? { ignoreExpiration: true } : {};
       const decoded = jwt.verify(token, this.jwtSecret, options);
-      
+
       return {
         content: [{
           type: 'text',
@@ -188,11 +188,11 @@ class AuthMCPServer {
       };
 
       const accessToken = jwt.sign(payload, this.jwtSecret);
-      
+
       // Generate refresh token
       const refreshToken = crypto.randomBytes(32).toString('hex');
       const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60); // 7 days
-      
+
       // Store refresh token (in production, use database)
       this.refreshTokens.set(refreshToken, {
         userId,
@@ -241,7 +241,7 @@ class AuthMCPServer {
   async refreshToken({ refreshToken, userId }) {
     try {
       const storedToken = this.refreshTokens.get(refreshToken);
-      
+
       if (!storedToken) {
         throw new Error('Invalid refresh token');
       }
@@ -302,7 +302,7 @@ class AuthMCPServer {
     try {
       const decoded = jwt.verify(token, this.jwtSecret);
       const userPerms = this.userPermissions.get(decoded.userId);
-      
+
       if (!userPerms) {
         return {
           content: [{
@@ -316,7 +316,7 @@ class AuthMCPServer {
       }
 
       const userPermissions = userPerms.permissions;
-      const hasAllPermissions = requiredPermissions.every(perm => 
+      const hasAllPermissions = requiredPermissions.every(perm =>
         userPermissions.includes(perm) || userPermissions.includes('*')
       );
 
@@ -350,7 +350,7 @@ class AuthMCPServer {
     try {
       const decoded = jwt.verify(token, this.jwtSecret);
       const userPerms = this.userPermissions.get(decoded.userId);
-      
+
       const profile = {
         userId: decoded.userId,
         username: decoded.username,

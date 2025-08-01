@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
- * 
+ *
  * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory 
+ * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
@@ -19,11 +19,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import VirtualizedList, { useVirtualizedList } from '../components/VirtualizedList';
-import { 
-  HandHeart, 
-  MapPin, 
-  Clock, 
-  User, 
+import {
+  HandHeart,
+  MapPin,
+  Clock,
+  User,
   Plus,
   Filter,
   Search,
@@ -123,12 +123,12 @@ export function HelpRequestsPage() {
     if (searchDebounceTimer) {
       clearTimeout(searchDebounceTimer);
     }
-    
+
     const timer = setTimeout(() => {
       setFilter(prev => ({ ...prev, search: searchTerm }));
       setCurrentPage(1);
     }, 300);
-    
+
     setSearchDebounceTimer(timer);
   }, [searchDebounceTimer]);
 
@@ -149,10 +149,10 @@ export function HelpRequestsPage() {
       if (!append) {
         setIsLoading(true);
       }
-      
+
       const token = localStorage.getItem('token');
       const params = new URLSearchParams();
-      
+
       if (filter.category) params.append('category', filter.category);
       if (filter.urgency) params.append('urgency', filter.urgency);
       if (filter.status) params.append('status', filter.status);
@@ -161,23 +161,23 @@ export function HelpRequestsPage() {
       params.append('limit', pageSize.toString());
       params.append('sortBy', filter.sortBy);
       params.append('sortOrder', filter.sortOrder);
-      
+
       const response = await fetch(`/api/help-requests?${params}`, {
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'API-Version': 'v1'
         }
       });
-      
+
       if (response.ok) {
         const apiResponse: ApiResponse = await response.json();
-        
+
         if (append) {
           setHelpRequests(prev => [...prev, ...apiResponse.data]);
         } else {
           setHelpRequests(apiResponse.data);
         }
-        
+
         setPagination(apiResponse.pagination);
       } else {
         console.error('Failed to fetch help requests');
@@ -191,10 +191,10 @@ export function HelpRequestsPage() {
 
   const loadMoreItems = async (): Promise<HelpRequest[]> => {
     if (!pagination?.has_next_page) return [];
-    
+
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
-    
+
     // The useEffect will trigger fetchHelpRequests
     return [];
   };
@@ -210,7 +210,7 @@ export function HelpRequestsPage() {
         },
         body: JSON.stringify(newRequest)
       });
-      
+
       if (response.ok) {
         setShowCreateDialog(false);
         setNewRequest({
@@ -234,7 +234,7 @@ export function HelpRequestsPage() {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         fetchHelpRequests();
       }
@@ -283,16 +283,16 @@ export function HelpRequestsPage() {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
-    
+
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     return `${diffDays}d ago`;
   };
 
   // Memoized help request card component
-  const HelpRequestCard = React.memo(({ request, index, isVisible }: { 
-    request: HelpRequest; 
-    index: number; 
+  const HelpRequestCard = React.memo(({ request, index, isVisible }: {
+    request: HelpRequest;
+    index: number;
     isVisible: boolean;
   }) => (
     <motion.div
@@ -301,7 +301,7 @@ export function HelpRequestsPage() {
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className={`w-full ${viewMode === 'grid' ? 'px-3' : 'px-0'}`}
     >
-      <Card 
+      <Card
         className="galax-card hover:shadow-lg transition-shadow h-full"
         role="article"
         aria-labelledby={`request-title-${request.id}`}
@@ -311,7 +311,7 @@ export function HelpRequestsPage() {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <div aria-hidden="true">{getCategoryIcon(request.category)}</div>
-              <CardTitle 
+              <CardTitle
                 id={`request-title-${request.id}`}
                 className="text-lg line-clamp-1"
               >
@@ -319,13 +319,13 @@ export function HelpRequestsPage() {
               </CardTitle>
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <Badge 
+              <Badge
                 className={getUrgencyColor(request.urgency)}
                 aria-label={`Urgency: ${request.urgency}`}
               >
                 {request.urgency}
               </Badge>
-              <Badge 
+              <Badge
                 className={getStatusColor(request.status)}
                 aria-label={`Status: ${request.status}`}
               >
@@ -334,15 +334,15 @@ export function HelpRequestsPage() {
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-4">
-          <p 
+          <p
             id={`request-desc-${request.id}`}
             className="text-gray-600 text-sm line-clamp-3"
           >
             {request.description}
           </p>
-          
+
           <div className="flex items-center justify-between text-sm text-gray-500">
             <div className="flex items-center gap-1">
               <User className="h-3 w-3" aria-hidden="true" />
@@ -352,7 +352,7 @@ export function HelpRequestsPage() {
             </div>
             <div className="flex items-center gap-1">
               <Clock className="h-3 w-3" aria-hidden="true" />
-              <time 
+              <time
                 dateTime={request.created_at}
                 title={new Date(request.created_at).toLocaleString()}
               >
@@ -360,23 +360,23 @@ export function HelpRequestsPage() {
               </time>
             </div>
           </div>
-          
+
           {request.latitude && request.longitude && (
             <div className="flex items-center gap-1 text-sm text-gray-500">
               <MapPin className="h-3 w-3" aria-hidden="true" />
               <span>Location provided</span>
             </div>
           )}
-          
+
           {request.media_url && (
             <div className="text-sm text-gray-500" aria-label={`${request.media_type} attachment available`}>
               📎 {request.media_type} attachment
             </div>
           )}
-          
+
           <div className="pt-2">
             {request.status === 'posted' && (
-              <Button 
+              <Button
                 onClick={() => handleOfferHelp(request.id)}
                 className="galax-button w-full"
                 disabled={request.requester_username === user?.username}
@@ -386,15 +386,15 @@ export function HelpRequestsPage() {
                 Offer Help
               </Button>
             )}
-            
+
             {request.status === 'matched' && (
               <div className="text-center text-sm text-gray-600">
                 Helper: <span className="font-medium">{request.helper_username}</span>
               </div>
             )}
-            
+
             {request.status === 'completed' && (
-              <div 
+              <div
                 className="text-center text-sm text-green-600 font-medium"
                 aria-label="Request completed"
               >
@@ -469,12 +469,12 @@ export function HelpRequestsPage() {
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              
+
               {/* Page numbers */}
               {Array.from({ length: Math.min(5, pagination.total_pages) }, (_, i) => {
                 const pageNum = Math.max(1, pagination.current_page - 2) + i;
                 if (pageNum > pagination.total_pages) return null;
-                
+
                 return (
                   <Button
                     key={pageNum}
@@ -488,7 +488,7 @@ export function HelpRequestsPage() {
                   </Button>
                 );
               })}
-              
+
               <Button
                 variant="outline"
                 size="sm"
@@ -550,7 +550,7 @@ export function HelpRequestsPage() {
             </h1>
             <p className="text-gray-600">Connect with your community</p>
           </div>
-          
+
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
               <Button className="galax-button">
@@ -572,7 +572,7 @@ export function HelpRequestsPage() {
                     placeholder="Brief description of what you need"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -583,7 +583,7 @@ export function HelpRequestsPage() {
                     rows={3}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="category">Category</Label>
@@ -603,7 +603,7 @@ export function HelpRequestsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="urgency">Urgency</Label>
                     <Select value={newRequest.urgency} onValueChange={(value) => setNewRequest({...newRequest, urgency: value})}>
@@ -619,7 +619,7 @@ export function HelpRequestsPage() {
                     </Select>
                   </div>
                 </div>
-                
+
                 <Button onClick={handleCreateRequest} className="galax-button w-full">
                   Create Request
                 </Button>
@@ -641,7 +641,7 @@ export function HelpRequestsPage() {
                   <Filter className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">Filters:</span>
                 </div>
-                
+
                 <div className="flex-1">
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" aria-hidden="true" />
@@ -654,7 +654,7 @@ export function HelpRequestsPage() {
                     />
                   </div>
                 </div>
-                
+
                 <Select value={filter.category} onValueChange={(value) => setFilter({...filter, category: value})}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Category" />
@@ -671,7 +671,7 @@ export function HelpRequestsPage() {
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={filter.urgency} onValueChange={(value) => setFilter({...filter, urgency: value})}>
                   <SelectTrigger className="w-32">
                     <SelectValue placeholder="Urgency" />
@@ -684,7 +684,7 @@ export function HelpRequestsPage() {
                     <SelectItem value="critical">Critical</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={filter.status} onValueChange={(value) => setFilter({...filter, status: value})}>
                   <SelectTrigger className="w-32">
                     <SelectValue placeholder="Status" />
@@ -736,7 +736,7 @@ export function HelpRequestsPage() {
                 </Select>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-600">Sort by:</label>
               <Select
