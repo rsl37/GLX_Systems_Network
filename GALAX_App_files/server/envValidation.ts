@@ -196,7 +196,8 @@ function validateAuthConfiguration(
       // In production mode, always enforce strict validation regardless of test environment
       if (isProduction) {
         errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
-      } else if (isTestOrCI && jwtSecret.length >= 16) {
+      } else if (process.env.NODE_ENV === 'test' && jwtSecret.length >= 16) {
+        // Only use lenient validation for actual test environment, not development or CI
         warnings.push(`JWT_SECRET is weak but acceptable for test environment`);
       } else {
         errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
@@ -226,8 +227,11 @@ function validateAuthConfiguration(
     const validation = validateJWTSecret(jwtRefreshSecret, isProduction);
     
     if (!validation.isValid || validation.severity === 'critical') {
-      // Be more lenient in test/CI environments
-      if (isTestOrCI && jwtRefreshSecret.length >= 16) {
+      // In production mode, always enforce strict validation regardless of test environment
+      if (isProduction) {
+        errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+      } else if (process.env.NODE_ENV === 'test' && jwtRefreshSecret.length >= 16) {
+        // Only use lenient validation for actual test environment, not development or CI
         warnings.push(`JWT_REFRESH_SECRET is weak but acceptable for test environment`);
       } else {
         errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
