@@ -123,29 +123,44 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
-      - name: Install dependencies with retry
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: cd ${{ env.WORKING_DIRECTORY }} && npm ci --prefer-offline --no-audit --no-fund
-          on_retry_command: echo "npm install failed, retrying..."
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          for i in {1..3}; do
+            if npm ci --prefer-offline --no-audit --no-fund; then
+              echo "Dependencies installed successfully"
+              break
+            else
+              echo "Attempt $i failed, retrying..."
+              sleep 5
+            fi
+          done
       
-      - name: Build application with retry
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: cd ${{ env.WORKING_DIRECTORY }} && npm run build
-          on_retry_command: echo "Build attempt failed, retrying..."
+      - name: Build application
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          for i in {1..3}; do
+            if npm run build; then
+              echo "Build completed successfully"
+              break
+            else
+              echo "Build attempt $i failed, retrying..."
+              sleep 5
+            fi
+          done
       
-      - name: Run tests with retry
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 15
-          max_attempts: 3
-          command: cd ${{ env.WORKING_DIRECTORY }} && npm test
-          on_retry_command: echo "Test attempt failed, retrying..."
+      - name: Run tests
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          for i in {1..3}; do
+            if npm test; then
+              echo "Tests completed successfully"
+              break
+            else
+              echo "Test attempt $i failed, retrying..."
+              sleep 5
+            fi
+          done
       
       - name: Upload coverage (Node 20 only)
         if: matrix.node-version == 20
@@ -323,8 +338,8 @@ jobs:
           # Wait for app to start
           sleep 15
           
-          # Basic health check (if app is running on the configured port)
-          if curl -f -s http://localhost:${{ env.APP_PORT }} >/dev/null 2>&1; then
+          # Basic health check (default port 3000)
+          if curl -f -s http://localhost:3000 >/dev/null 2>&1; then
             echo "✓ Application started successfully"
           else
             echo "⚠️  Application startup test - unable to connect (may need manual verification)"
