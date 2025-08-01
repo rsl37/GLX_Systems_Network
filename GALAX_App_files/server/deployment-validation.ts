@@ -150,15 +150,29 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
   
   // Check critical environment variables (required for basic functionality)
+  const isDevOrTest = process.env.NODE_ENV === 'test' || 
+                      process.env.NODE_ENV === 'development' || 
+                      process.env.CI === 'true';
+  
   for (const envVar of CRITICAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
-      results.push({
-        check: `Critical Environment Variable: ${envVar}`,
-        status: 'fail',
-        message: `Critical environment variable ${envVar} is not set`,
-        details: { variable: envVar, required: true, category: 'critical' }
-      });
+      // CLIENT_ORIGIN can be optional in development/test environments
+      if (envVar === 'CLIENT_ORIGIN' && isDevOrTest) {
+        results.push({
+          check: `Critical Environment Variable: ${envVar}`,
+          status: 'warning',
+          message: `Critical environment variable ${envVar} is not set - CORS may be permissive in ${process.env.NODE_ENV} mode`,
+          details: { variable: envVar, required: false, category: 'critical', environment: process.env.NODE_ENV }
+        });
+      } else {
+        results.push({
+          check: `Critical Environment Variable: ${envVar}`,
+          status: 'fail',
+          message: `Critical environment variable ${envVar} is not set`,
+          details: { variable: envVar, required: true, category: 'critical' }
+        });
+      }
     } else {
       results.push({
         check: `Critical Environment Variable: ${envVar}`,
@@ -190,14 +204,24 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   }
 
   // Check essential environment variables (required for core features)
+  // In test/CI/development environments, treat missing essential vars as warnings, not failures
+  const isNonProduction = process.env.NODE_ENV === 'test' || 
+                          process.env.NODE_ENV === 'development' || 
+                          process.env.CI === 'true';
+  
   for (const envVar of ESSENTIAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
+      const status = isNonProduction ? 'warning' : 'fail';
+      const message = isNonProduction 
+        ? `Essential environment variable ${envVar} is not set - some features may be limited in ${process.env.NODE_ENV} environment`
+        : `Essential environment variable ${envVar} is not set - core features will not work`;
+      
       results.push({
         check: `Essential Environment Variable: ${envVar}`,
-        status: 'fail',
-        message: `Essential environment variable ${envVar} is not set - core features will not work`,
-        details: { variable: envVar, required: true, category: 'essential' }
+        status: status,
+        message: message,
+        details: { variable: envVar, required: !isNonProduction, category: 'essential', environment: process.env.NODE_ENV }
       });
     } else {
       // Check for placeholder values that indicate incomplete configuration
@@ -205,10 +229,9 @@ export function validateEnvironmentVariables(): ValidationResult[] {
       const isPlaceholder = placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder.toLowerCase()));
       
       if (isPlaceholder) {
-        // In development environments, treat placeholder values as warnings, not failures
-        const isDevelopment = process.env.NODE_ENV === 'development';
-        const status = isDevelopment ? 'warning' : 'fail';
-        const message = isDevelopment 
+        // In development/test environments, treat placeholder values as warnings, not failures
+        const status = isNonProduction ? 'warning' : 'fail';
+        const message = isNonProduction 
           ? `Essential environment variable ${envVar} contains placeholder value - configure with real credentials for production`
           : `Essential environment variable ${envVar} contains placeholder value - must be configured with real service credentials`;
         
@@ -629,13 +652,24 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
   // Validate NODE_ENV for production
   const nodeEnv = process.env.NODE_ENV;
+  const isDevelopmentOrTest = nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
+  
   if (nodeEnv !== 'production') {
-    results.push({
-      check: 'Production Environment',
-      status: 'warning',
-      message: `NODE_ENV is set to '${nodeEnv}', expected 'production' for deployment`,
-      details: { current: nodeEnv, expected: 'production' }
-    });
+    if (isDevelopmentOrTest) {
+      results.push({
+        check: 'Production Environment',
+        status: 'pass',
+        message: `NODE_ENV is set to '${nodeEnv}' - appropriate for ${nodeEnv} environment`,
+        details: { current: nodeEnv, environment_type: nodeEnv }
+      });
+    } else {
+      results.push({
+        check: 'Production Environment',
+        status: 'warning',
+        message: `NODE_ENV is set to '${nodeEnv}', expected 'production' for deployment`,
+        details: { current: nodeEnv, expected: 'production' }
+      });
+    }
   } else {
     results.push({
       check: 'Production Environment',

@@ -16,15 +16,19 @@
  */
 
 import dotenv from 'dotenv';
-import { performDeploymentReadinessCheck } from '../server/deployment-validation.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load environment variables
-dotenv.config({ path: join(__dirname, '../.env') });
+// Load environment variables based on NODE_ENV BEFORE importing other modules
+const nodeEnv = process.env.NODE_ENV || 'development';
+const envFile = nodeEnv === 'test' ? '.env.test' : '.env';
+dotenv.config({ path: join(__dirname, `../${envFile}`) });
+
+// Now import the deployment validation module after env vars are loaded
+import { performDeploymentReadinessCheck } from '../server/deployment-validation.js';
 
 /**
  * Get emoji for overall status
