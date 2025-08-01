@@ -100,12 +100,22 @@ try {
 
 // Run deployment check
 console.log('\n🔍 Running deployment readiness check...');
+
+// Verify if the deployment:check:production script exists in package.json
+if (!packageJson.scripts || !packageJson.scripts['deployment:check:production']) {
+  console.error('❌ Error: The "deployment:check:production" script is missing in package.json.');
+  console.error('Please add the script to your package.json and try again.');
+  process.exit(1);
+}
+
 try {
   execSync('npm run deployment:check:production', { stdio: 'inherit' });
   console.log('\n✅ Production setup completed successfully!');
 } catch (error) {
-  console.log('\n⚠️  Production setup completed, but deployment check failed.');
-  console.log('Please review the output above and configure any missing settings.');
+  console.error('\n❌ Error: Deployment readiness check failed.');
+  console.error('Details:', error.message);
+  console.error('Please review the output above and address any issues before proceeding.');
+  process.exit(1);
 }
 
 console.log('\n📋 Next Steps:');
