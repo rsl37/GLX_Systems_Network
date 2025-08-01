@@ -35,7 +35,7 @@ JWT_SECRET=your-64-character-secure-random-string
 CLIENT_ORIGIN=https://your-app-name.vercel.app
 FRONTEND_URL=https://your-app-name.vercel.app
 TRUSTED_ORIGINS=https://your-app-name.vercel.app,https://galaxcivicnetwork.me
-SOCKET_PATH=/socket.io
+REALTIME_PATH=/api/realtime
 ```
 
 ### 3. Vercel Dashboard Configuration

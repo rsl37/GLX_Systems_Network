@@ -250,7 +250,7 @@ export class AIMCPSecurityMiddleware {
         // In a real implementation, this would check against a known good hash
         // For now, we'll just store the hash for future reference
         // Compare the computed hash against known good hashes
-        const knownGoodHashes = this.config.allowedModelVersions; // Replace with actual hash storage
+        const knownGoodHashes = this.config.allowedModelHashes; // Use the correct property for hash storage
         isValid = knownGoodHashes.includes(hash);
         
         this.modelIntegrity.set(modelVersion, {
