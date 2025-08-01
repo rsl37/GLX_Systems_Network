@@ -24,11 +24,14 @@ cd GALAX_Civic_Networking_App
 
 # Option 1: Run commands from root directory (recommended)
 npm run setup              # Install dependencies
+npm run setup:env          # Set up environment variables (.env files)
+npm run test:env           # Test environment configuration
 npm run deployment:check   # Check deployment readiness
 npm run build              # Build the application
 npm start                  # Start development server
 
 # Additional commands available from root:
+npm run setup:env           # Set up environment variables (.env files)
 npm run test               # Run all tests
 npm run test:api           # Run API tests
 npm run test:socket        # Run Socket.IO tests  

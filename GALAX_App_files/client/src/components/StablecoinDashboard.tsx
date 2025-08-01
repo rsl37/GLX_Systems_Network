@@ -121,7 +121,7 @@ export function StablecoinDashboard() {
 
     } catch (error) {
       console.error('Error fetching stablecoin data:', error);
-      setError(error instanceof Error ? error.message : 'Unknown error');
+      setError(error instanceof Error ? error.message : 'Failed to load stablecoin data. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -145,7 +145,7 @@ export function StablecoinDashboard() {
       await fetchStablecoinData();
     } catch (error) {
       console.error('Error triggering rebalance:', error);
-      setError(error instanceof Error ? error.message : 'Rebalance failed');
+      setError(error instanceof Error ? error.message : 'Failed to trigger rebalance. Please try again or contact support if the issue persists.');
     }
   };
 

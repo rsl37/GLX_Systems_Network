@@ -10,11 +10,12 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageVerification } from '../hooks/usePageVerification';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles, User } from 'lucide-react';
+import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles, User, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CountryCodeSelector } from '@/components/CountryCodeSelector';
 import { Country } from '@/data/countries';
@@ -29,6 +30,7 @@ export function RegisterPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { register, registerWithWallet } = useAuth();
+  const { verificationToken, isVerifying, verificationError } = usePageVerification('register');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,6 +39,11 @@ export function RegisterPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       // Format phone number with country code if it's a phone signup
       let identifier = email;
       if (signupMethod === 'phone') {
@@ -62,10 +69,18 @@ export function RegisterPage() {
         }
       }
       
-      await register(identifier, password, username, signupMethod);
+      await register(identifier, password, username, signupMethod, verificationToken);
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      // Provide more helpful error messages
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        // Enhanced fallback message with more actionable guidance
+        setError('Unable to create account. Please verify your information is correct and try again. If the problem persists, contact support.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +88,7 @@ export function RegisterPage() {
 
   const handleWalletRegister = async () => {
     if (!username.trim()) {
-      setError('Username is required');
+      setError('Please enter a username to register with your wallet.');
       return;
     }
 
@@ -81,17 +96,37 @@ export function RegisterPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         if (accounts.length > 0) {
-          await registerWithWallet(accounts[0], username);
+          await registerWithWallet(accounts[0], username, verificationToken);
           navigate('/dashboard');
+        } else {
+          setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
         }
       } else {
-        setError('MetaMask not detected. Please install MetaMask to use wallet registration.');
+        setError('MetaMask wallet not detected. Please install MetaMask browser extension to continue.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wallet registration failed');
+      // Handle specific wallet registration errors
+      if (err instanceof Error) {
+        if (err.message.includes('User rejected')) {
+          setError('Wallet connection was denied. Please approve the connection request in MetaMask.');
+        } else if (err.message.includes('wallet_requestPermissions')) {
+          setError('MetaMask permissions denied. Please approve wallet access to continue.');
+        } else {
+          setError(err.message);
+        }
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Failed to register with your wallet. Please check your MetaMask connection and try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -122,6 +157,28 @@ export function RegisterPage() {
             <CardDescription className="text-lg text-gray-600">
               Create your civic network account
             </CardDescription>
+            
+            {/* Security verification indicator */}
+            {process.env.NODE_ENV === 'production' && (
+              <div className="mt-4">
+                {isVerifying ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                    <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                    Verifying page security...
+                  </div>
+                ) : verificationToken ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                    <Shield className="h-4 w-4" />
+                    Page verified and secure
+                  </div>
+                ) : verificationError ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-red-500">
+                    <AlertCircle className="h-4 w-4" />
+                    Security verification failed
+                  </div>
+                ) : null}
+              </div>
+            )}
           </CardHeader>
           
           <CardContent className="space-y-6">
@@ -222,7 +279,7 @@ export function RegisterPage() {
               <Button
                 type="submit"
                 className="w-full galax-button"
-                disabled={isLoading}
+                disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -260,7 +317,7 @@ export function RegisterPage() {
               variant="outline"
               className="w-full galax-button-accent"
               onClick={handleWalletRegister}
-              disabled={isLoading}
+              disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >
               <Wallet className="h-4 w-4 mr-2" />
               Register with MetaMask

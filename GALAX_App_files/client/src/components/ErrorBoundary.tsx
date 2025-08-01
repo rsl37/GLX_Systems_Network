@@ -148,11 +148,11 @@ class ErrorBoundary extends Component<Props, State> {
             </div>
             
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Oops! Something went wrong
+              An unexpected error occurred
             </h1>
             
             <p className="text-gray-600 mb-6">
-              We encountered an unexpected error. Don't worry, our team has been notified and is working on a fix.
+              The application encountered a technical issue and couldn't complete your request. Our team has been automatically notified and is working on a fix.
             </p>
 
             <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">

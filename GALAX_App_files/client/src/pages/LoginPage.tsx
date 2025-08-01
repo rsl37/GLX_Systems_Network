@@ -10,11 +10,12 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageVerification } from '../hooks/usePageVerification';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles } from 'lucide-react';
+import { AlertCircle, Wallet, Mail, Phone, Zap, Sparkles, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CountryCodeSelector } from '@/components/CountryCodeSelector';
 import { Country } from '@/data/countries';
@@ -28,6 +29,7 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, loginWithWallet } = useAuth();
+  const { verificationToken, isVerifying, verificationError } = usePageVerification('login');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,12 +38,24 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       // Format phone number with country code if it's a phone login
       const identifier = loginMethod === 'email' ? email : `${countryCode}${phone.replace(/^[\+\s0]+/, '')}`;
-      await login(identifier, password);
+      await login(identifier, password, verificationToken);
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      // Provide more specific error messages
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Unable to log in. Please check your credentials and try again. If the problem persists, contact support.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -52,17 +66,37 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
+      // Check if page verification is available
+      if (verificationError) {
+        throw new Error(`Security verification failed: ${verificationError}`);
+      }
+
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         if (accounts.length > 0) {
-          await loginWithWallet(accounts[0]);
+          await loginWithWallet(accounts[0], verificationToken);
           navigate('/dashboard');
+        } else {
+          setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
         }
       } else {
-        setError('MetaMask not detected. Please install MetaMask to use wallet login.');
+        setError('MetaMask wallet not detected. Please install MetaMask browser extension to continue.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wallet login failed');
+      // Handle specific wallet errors
+      if (err instanceof Error) {
+        if (err.message.includes('User rejected')) {
+          setError('Wallet connection was denied. Please approve the connection request in MetaMask.');
+        } else if (err.message.includes('wallet_requestPermissions')) {
+          setError('MetaMask permissions denied. Please approve wallet access to continue.');
+        } else {
+          setError(err.message);
+        }
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Failed to connect to your wallet. Please check your MetaMask connection and try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +127,28 @@ export function LoginPage() {
             <CardDescription className="text-lg text-gray-600">
               Civic Network Platform
             </CardDescription>
+            
+            {/* Security verification indicator */}
+            {process.env.NODE_ENV === 'production' && (
+              <div className="mt-4">
+                {isVerifying ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                    <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                    Verifying page security...
+                  </div>
+                ) : verificationToken ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                    <Shield className="h-4 w-4" />
+                    Page verified and secure
+                  </div>
+                ) : verificationError ? (
+                  <div className="flex items-center justify-center gap-2 text-sm text-red-500">
+                    <AlertCircle className="h-4 w-4" />
+                    Security verification failed
+                  </div>
+                ) : null}
+              </div>
+            )}
           </CardHeader>
           
           <CardContent className="space-y-6">
@@ -180,7 +236,7 @@ export function LoginPage() {
               <Button
                 type="submit"
                 className="w-full galax-button"
-                disabled={isLoading}
+                disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -212,7 +268,7 @@ export function LoginPage() {
               variant="outline"
               className="w-full galax-button-accent"
               onClick={handleWalletLogin}
-              disabled={isLoading}
+              disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >
               <Wallet className="h-4 w-4 mr-2" />
               Connect MetaMask

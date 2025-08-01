@@ -58,20 +58,17 @@
       }
     },
 
-    "realtime-websocket": {
+    "realtime-sse": {
       "type": "local",
       "command": "node",
-      "args": ["./mcp-servers/websocket-server.js"],
+      "args": ["./mcp-servers/realtime-server.js"],
       "tools": [
         "send_realtime_message",
-        "join_chat_room", 
-        "leave_chat_room",
         "get_active_users",
-        "broadcast_notification",
-        "get_chat_history"
+        "broadcast_message"
       ],
       "env": {
-        "WEBSOCKET_PORT": "8080",
+        "MCP_REALTIME_PORT": "3003",
         "JWT_SECRET": "COPILOT_MCP_JWT_SECRET"
       }
     },

@@ -24,11 +24,11 @@ export async function performStartupCheck() {
     console.log('🗄️ Database connection check:');
     const dbHealth = await healthCheck();
     
-    if (dbHealth.status === 'healthy') {
-      console.log('✅ PostgreSQL database connection successful');
+    if (dbHealth.primary.status === 'healthy') {
+      console.log('✅ Database connection successful');
     } else {
-      console.log('❌ PostgreSQL database connection failed:', dbHealth.error);
-      throw new Error(`Database connection failed: ${dbHealth.error}`);
+      console.log('❌ Database connection failed:', 'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error');
+      throw new Error(`Database connection failed: ${'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error'}`);
     }
     
     // Check database diagnostics

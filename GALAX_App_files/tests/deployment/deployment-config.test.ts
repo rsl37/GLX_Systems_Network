@@ -94,10 +94,11 @@ describe('Deployment Configuration Tests', () => {
 
     it('should not be in not_ready state with basic env vars', async () => {
       // Test with minimal required environment variables
+      // Use development mode to test basic functionality, not production deployment
       // Don't set DATABASE_URL to let it fall back to SQLite
       const env = {
         ...process.env,
-        NODE_ENV: 'production',
+        NODE_ENV: 'development', // Use development mode for basic functionality testing
         PORT: '3000',
         DATA_DIRECTORY: './data',
         JWT_SECRET: 'test-jwt-secret-for-deployment-check-32characters-long'

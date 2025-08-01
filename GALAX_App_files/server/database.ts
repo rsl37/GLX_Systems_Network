@@ -6,8 +6,11 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, SqliteDialect } from "kysely";
 import { Pool } from "pg";
+import Database from "better-sqlite3";
+import path from "path";
+import fs from "fs";
 
 export interface DatabaseSchema {
   users: {
@@ -248,180 +251,372 @@ export interface DatabaseSchema {
   };
 }
 
-// Database configuration - PostgreSQL for Vercel deployment
+// Hybrid Database Configuration - SQLite for development/lightweight, PostgreSQL for production/heavy operations
 const DATABASE_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
-if (!DATABASE_URL) {
-  console.error("❌ DATABASE_URL environment variable is required for PostgreSQL connection");
-  throw new Error("DATABASE_URL environment variable is required");
+// Database selection strategy
+interface DatabaseStrategy {
+  primary: 'sqlite' | 'postgresql';
+  fallback: 'sqlite' | 'postgresql';
+  useCase: string;
 }
 
-console.log("🗄️ Database initialization...");
-console.log("📊 Using PostgreSQL from DATABASE_URL");
-console.log(
-  "🔗 Database URL configured:",
-  DATABASE_URL.replace(/\/\/.*@/, "//***:***@"),
-); // Hide credentials in logs
+// Intelligent database selection based on use case and environment
+function getDatabaseStrategy(): DatabaseStrategy {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const hasPostgresURL = !!DATABASE_URL;
+  
+  if (isProduction && hasPostgresURL) {
+    return {
+      primary: 'postgresql',
+      fallback: 'sqlite',
+      useCase: 'production-scale'
+    };
+  } else if (hasPostgresURL) {
+    return {
+      primary: 'postgresql',
+      fallback: 'sqlite',
+      useCase: 'development-with-postgres'
+    };
+  } else {
+    return {
+      primary: 'sqlite',
+      fallback: 'postgresql',
+      useCase: 'development-lightweight'
+    };
+  }
+}
 
-// Create PostgreSQL connection pool
-const pool = new Pool({
-  connectionString: DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 10, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 2000, // How long to try connecting before timing out
-});
+const strategy = getDatabaseStrategy();
 
-// Create Kysely instance with PostgreSQL dialect
-const db = new Kysely<DatabaseSchema>({
-  dialect: new PostgresDialect({
-    pool,
+// SQLite Configuration - Best for: Local development, file-based data, lightweight operations, offline support
+const dataDir = process.env.DATA_DIRECTORY || './data';
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+let sqliteDb: Database | null = null;
+try {
+  sqliteDb = new Database(path.join(dataDir, 'galax.db'), {
+    verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
+  });
+  console.log("✅ SQLite database initialized successfully.");
+} catch (error) {
+  console.error("❌ Failed to initialize SQLite database:", error.message);
+  console.error("💡 Ensure the data directory is writable and the database file is not corrupted.");
+  process.exit(1); // Exit the application with a failure code
+}
+
+// PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data  
+let postgresPool: Pool | null = null;
+if (DATABASE_URL) {
+  console.log("🗄️ PostgreSQL database initialization...");
+  console.log("📊 Using PostgreSQL from DATABASE_URL");
+  console.log(
+    "🔗 Database URL configured:",
+    DATABASE_URL.replace(/\/\/.*@/, "//***:***@"),
+  ); // Hide credentials in logs
+
+  postgresPool = new Pool({
+    connectionString: DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 10, // Maximum number of clients in the pool
+    idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
+    connectionTimeoutMillis: 2000, // How long to try connecting before timing out
+  });
+} else {
+  console.log("🗄️ SQLite database initialization...");
+  console.log("📊 Using SQLite for development/lightweight operations");
+  console.log("🔗 Database file:", path.join(dataDir, 'galax.db'));
+}
+
+// Create database instances
+const sqliteKysely = new Kysely<DatabaseSchema>({
+  dialect: new SqliteDialect({
+    database: sqliteDb,
   }),
 });
 
+const postgresKysely = postgresPool ? new Kysely<DatabaseSchema>({
+  dialect: new PostgresDialect({
+    pool: postgresPool,
+  }),
+}) : null;
+
+// Primary database based on strategy
+const db = strategy.primary === 'postgresql' && postgresKysely ? postgresKysely : sqliteKysely;
+
+console.log(`🎯 Database Strategy: ${strategy.useCase}`);
+console.log(`🎯 Primary Database: ${strategy.primary.toUpperCase()}`);
+console.log(`🎯 Fallback Database: ${strategy.fallback.toUpperCase()}`);
+
+// Database selection utilities
+const dbSelector = {
+  // Use SQLite for: Local storage, file-based operations, development, offline mode
+  sqlite: sqliteKysely,
+  
+  // Use PostgreSQL for: Production, complex queries, concurrent operations, scalable data
+  postgres: postgresKysely,
+  
+  // Primary database (auto-selected based on environment and configuration)
+  primary: db,
+  
+  // Get optimal database for specific operations
+  getOptimalDB: (operation: 'read' | 'write' | 'complex' | 'lightweight') => {
+    switch (operation) {
+      case 'lightweight':
+        return sqliteKysely; // SQLite excels at simple queries
+      case 'complex':
+        return postgresKysely || sqliteKysely; // PostgreSQL for complex operations, fallback to SQLite
+      case 'read':
+        return strategy.primary === 'postgresql' ? (postgresKysely || sqliteKysely) : sqliteKysely;
+      case 'write':
+        return db; // Use primary database for writes
+      default:
+        return db;
+    }
+  },
+  
+  // Check if specific database is available
+  isPostgresAvailable: () => !!postgresKysely,
+  isSqliteAvailable: () => !!sqliteKysely,
+  
+  // Get database info
+  getStrategy: () => strategy,
+};
+
 /**
- * Initialize database schema - creates tables if they don't exist
+ * Initialize database schema for both SQLite and PostgreSQL
  */
 async function initializeDatabase() {
+  console.log(`🔧 Initializing ${strategy.primary.toUpperCase()} database schema...`);
+  
   try {
-    console.log("🔧 Initializing PostgreSQL database schema...");
-
-    // Create users table
-    await db.schema
-      .createTable('users')
-      .ifNotExists()
-      .addColumn('id', 'serial', (col) => col.primaryKey())
-      .addColumn('email', 'varchar(255)')
-      .addColumn('password_hash', 'text')
-      .addColumn('wallet_address', 'varchar(255)')
-      .addColumn('username', 'varchar(255)', (col) => col.notNull().unique())
-      .addColumn('avatar_url', 'text')
-      .addColumn('reputation_score', 'integer', (col) => col.defaultTo(0))
-      .addColumn('ap_balance', 'integer', (col) => col.defaultTo(0))
-      .addColumn('crowds_balance', 'integer', (col) => col.defaultTo(0))
-      .addColumn('gov_balance', 'integer', (col) => col.defaultTo(0))
-      .addColumn('roles', 'text', (col) => col.defaultTo('user'))
-      .addColumn('skills', 'text', (col) => col.defaultTo(''))
-      .addColumn('badges', 'text', (col) => col.defaultTo(''))
-      .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
-      .addColumn('updated_at', 'timestamp', (col) => col.defaultTo('now()'))
-      .addColumn('email_verified', 'integer', (col) => col.defaultTo(0))
-      .addColumn('phone', 'varchar(20)')
-      .addColumn('phone_verified', 'integer', (col) => col.defaultTo(0))
-      .addColumn('two_factor_enabled', 'integer', (col) => col.defaultTo(0))
-      .addColumn('two_factor_secret', 'text')
-      .execute();
-
-    // Create help_requests table
-    await db.schema
-      .createTable('help_requests')
-      .ifNotExists()
-      .addColumn('id', 'serial', (col) => col.primaryKey())
-      .addColumn('requester_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
-      .addColumn('helper_id', 'integer', (col) => col.references('users.id').onDelete('set null'))
-      .addColumn('title', 'varchar(255)', (col) => col.notNull())
-      .addColumn('description', 'text', (col) => col.notNull())
-      .addColumn('category', 'varchar(50)', (col) => col.notNull())
-      .addColumn('urgency', 'varchar(20)', (col) => col.notNull())
-      .addColumn('latitude', 'decimal(10, 8)')
-      .addColumn('longitude', 'decimal(11, 8)')
-      .addColumn('skills_needed', 'text', (col) => col.defaultTo(''))
-      .addColumn('media_url', 'text')
-      .addColumn('media_type', 'varchar(50)', (col) => col.defaultTo(''))
-      .addColumn('is_offline_created', 'integer', (col) => col.defaultTo(0))
-      .addColumn('offline_created_at', 'timestamp')
-      .addColumn('matching_score', 'integer', (col) => col.defaultTo(0))
-      .addColumn('status', 'varchar(20)', (col) => col.defaultTo('open'))
-      .addColumn('helper_confirmed_at', 'timestamp')
-      .addColumn('started_at', 'timestamp')
-      .addColumn('completed_at', 'timestamp')
-      .addColumn('rating', 'integer')
-      .addColumn('feedback', 'text')
-      .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
-      .addColumn('updated_at', 'timestamp', (col) => col.defaultTo('now()'))
-      .execute();
-
-    // Create messages table
-    await db.schema
-      .createTable('messages')
-      .ifNotExists()
-      .addColumn('id', 'serial', (col) => col.primaryKey())
-      .addColumn('help_request_id', 'integer', (col) => col.references('help_requests.id').onDelete('cascade'))
-      .addColumn('sender_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
-      .addColumn('message', 'text', (col) => col.notNull())
-      .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
-      .execute();
-
-    // Create notifications table
-    await db.schema
-      .createTable('notifications')
-      .ifNotExists()
-      .addColumn('id', 'serial', (col) => col.primaryKey())
-      .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
-      .addColumn('type', 'varchar(50)', (col) => col.notNull())
-      .addColumn('title', 'varchar(255)', (col) => col.notNull())
-      .addColumn('message', 'text', (col) => col.notNull())
-      .addColumn('data', 'text', (col) => col.defaultTo('{}'))
-      .addColumn('read_at', 'timestamp')
-      .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
-      .execute();
-
-    // Create other essential tables...
-    await createAdditionalTables();
-
-    console.log("✅ Database schema initialized successfully");
+    // Initialize primary database
+    await initializeDatabaseSchema(db, strategy.primary);
+    
+    // If we have both databases available, sync schema to fallback
+    if (strategy.primary === 'postgresql' && postgresKysely && sqliteKysely) {
+      console.log("🔄 Syncing schema to SQLite fallback...");
+      await initializeDatabaseSchema(sqliteKysely, 'sqlite');
+    } else if (strategy.primary === 'sqlite' && postgresKysely) {
+      console.log("🔄 Syncing schema to PostgreSQL...");
+      await initializeDatabaseSchema(postgresKysely, 'postgresql');
+    }
+    
+    console.log("✅ Hybrid database schema initialized successfully");
   } catch (error) {
     console.error("❌ Failed to initialize database schema:", error);
-    throw error;
+    
+    // Try fallback database if primary fails
+    if (strategy.primary === 'postgresql' && postgresKysely && sqliteKysely) {
+      console.log("🔄 Falling back to SQLite...");
+      try {
+        await initializeDatabaseSchema(sqliteKysely, 'sqlite');
+        console.log("✅ SQLite fallback initialized successfully");
+      } catch (fallbackError) {
+        console.error("❌ Fallback database initialization also failed:", fallbackError);
+        throw fallbackError;
+      }
+    } else {
+      throw error;
+    }
   }
+}
+
+/**
+ * Initialize schema for a specific database
+ */
+async function initializeDatabaseSchema(database: Kysely<DatabaseSchema>, dbType: 'sqlite' | 'postgresql') {
+  const isPostgres = dbType === 'postgresql';
+  
+  // Create users table
+  await database.schema
+    .createTable('users')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('email', 'varchar(255)')
+    .addColumn('password_hash', 'text')
+    .addColumn('wallet_address', 'varchar(255)')
+    .addColumn('username', 'varchar(255)', (col) => col.notNull().unique())
+    .addColumn('avatar_url', 'text')
+    .addColumn('reputation_score', 'integer', (col) => col.defaultTo(0))
+    .addColumn('ap_balance', 'integer', (col) => col.defaultTo(0))
+    .addColumn('crowds_balance', 'integer', (col) => col.defaultTo(0))
+    .addColumn('gov_balance', 'integer', (col) => col.defaultTo(0))
+    .addColumn('roles', 'text', (col) => col.defaultTo('user'))
+    .addColumn('skills', 'text', (col) => col.defaultTo(''))
+    .addColumn('badges', 'text', (col) => col.defaultTo(''))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .addColumn('updated_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .addColumn('email_verified', 'integer', (col) => col.defaultTo(0))
+    .addColumn('phone', 'varchar(20)')
+    .addColumn('phone_verified', 'integer', (col) => col.defaultTo(0))
+    .addColumn('two_factor_enabled', 'integer', (col) => col.defaultTo(0))
+    .addColumn('two_factor_secret', 'text')
+    .execute();
+
+  // Create help_requests table
+  await database.schema
+    .createTable('help_requests')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('requester_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
+    .addColumn('helper_id', 'integer', (col) => col.references('users.id').onDelete('set null'))
+    .addColumn('title', 'varchar(255)', (col) => col.notNull())
+    .addColumn('description', 'text', (col) => col.notNull())
+    .addColumn('category', 'varchar(50)', (col) => col.notNull())
+    .addColumn('urgency', 'varchar(20)', (col) => col.notNull())
+    .addColumn('latitude', isPostgres ? 'decimal(10, 8)' : 'numeric')
+    .addColumn('longitude', isPostgres ? 'decimal(11, 8)' : 'numeric')
+    .addColumn('skills_needed', 'text', (col) => col.defaultTo(''))
+    .addColumn('media_url', 'text')
+    .addColumn('media_type', 'varchar(50)', (col) => col.defaultTo(''))
+    .addColumn('is_offline_created', 'integer', (col) => col.defaultTo(0))
+    .addColumn('offline_created_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('matching_score', 'integer', (col) => col.defaultTo(0))
+    .addColumn('status', 'varchar(20)', (col) => col.defaultTo('open'))
+    .addColumn('helper_confirmed_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('started_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('completed_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('rating', 'integer')
+    .addColumn('feedback', 'text')
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .addColumn('updated_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .execute();
+
+  // Create messages table
+  await database.schema
+    .createTable('messages')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('help_request_id', 'integer', (col) => col.references('help_requests.id').onDelete('cascade'))
+    .addColumn('sender_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
+    .addColumn('message', 'text', (col) => col.notNull())
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .execute();
+
+  // Create notifications table
+  await database.schema
+    .createTable('notifications')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
+    .addColumn('type', 'varchar(50)', (col) => col.notNull())
+    .addColumn('title', 'varchar(255)', (col) => col.notNull())
+    .addColumn('message', 'text', (col) => col.notNull())
+    .addColumn('data', 'text', (col) => col.defaultTo('{}'))
+    .addColumn('read_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .execute();
+
+  // Create other essential tables...
+  await createAdditionalTables(database, dbType);
 }
 
 /**
  * Create additional tables for the application
  */
-async function createAdditionalTables() {
+async function createAdditionalTables(database: Kysely<DatabaseSchema>, dbType: 'sqlite' | 'postgresql') {
+  const isPostgres = dbType === 'postgresql';
+  
   // Crisis alerts table
-  await db.schema
+  await database.schema
     .createTable('crisis_alerts')
     .ifNotExists()
-    .addColumn('id', 'serial', (col) => col.primaryKey())
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
     .addColumn('title', 'varchar(255)', (col) => col.notNull())
     .addColumn('description', 'text', (col) => col.notNull())
     .addColumn('severity', 'varchar(20)', (col) => col.notNull())
-    .addColumn('latitude', 'decimal(10, 8)', (col) => col.notNull())
-    .addColumn('longitude', 'decimal(11, 8)', (col) => col.notNull())
+    .addColumn('latitude', isPostgres ? 'decimal(10, 8)' : 'real', (col) => col.notNull())
+    .addColumn('longitude', isPostgres ? 'decimal(11, 8)' : 'real', (col) => col.notNull())
     .addColumn('radius', 'integer', (col) => col.notNull())
     .addColumn('created_by', 'integer', (col) => col.references('users.id').onDelete('cascade'))
     .addColumn('status', 'varchar(20)', (col) => col.defaultTo('active'))
-    .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
-    .addColumn('updated_at', 'timestamp', (col) => col.defaultTo('now()'))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .addColumn('updated_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
     .execute();
 
   // Password reset tokens table
-  await db.schema
+  await database.schema
     .createTable('password_reset_tokens')
     .ifNotExists()
-    .addColumn('id', 'serial', (col) => col.primaryKey())
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
     .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
     .addColumn('token', 'varchar(255)', (col) => col.notNull().unique())
-    .addColumn('expires_at', 'timestamp', (col) => col.notNull())
-    .addColumn('used_at', 'timestamp')
-    .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.notNull())
+    .addColumn('used_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
     .execute();
 
   // Email verification tokens table
-  await db.schema
+  await database.schema
     .createTable('email_verification_tokens')
     .ifNotExists()
-    .addColumn('id', 'serial', (col) => col.primaryKey())
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
     .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
     .addColumn('token', 'varchar(255)', (col) => col.notNull().unique())
-    .addColumn('expires_at', 'timestamp', (col) => col.notNull())
-    .addColumn('used_at', 'timestamp')
-    .addColumn('created_at', 'timestamp', (col) => col.defaultTo('now()'))
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.notNull())
+    .addColumn('used_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
     .execute();
 
-  console.log("✅ Additional tables created successfully");
+  // Proposals table for governance system
+  await database.schema
+    .createTable('proposals')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('title', 'varchar(255)', (col) => col.notNull())
+    .addColumn('description', 'text', (col) => col.notNull())
+    .addColumn('category', 'varchar(50)', (col) => col.notNull())
+    .addColumn('created_by', 'integer', (col) => col.references('users.id').onDelete('cascade'))
+    .addColumn('deadline', isPostgres ? 'timestamp' : 'datetime', (col) => col.notNull())
+    .addColumn('status', 'varchar(20)', (col) => col.defaultTo('active'))
+    .addColumn('votes_for', 'integer', (col) => col.defaultTo(0))
+    .addColumn('votes_against', 'integer', (col) => col.defaultTo(0))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .execute();
+
+  // Votes table for governance system
+  await database.schema
+    .createTable('votes')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', (col) => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('proposal_id', 'integer', (col) => col.references('proposals.id').onDelete('cascade'))
+    .addColumn('user_id', 'integer', (col) => col.references('users.id').onDelete('cascade'))
+    .addColumn('vote_type', 'varchar(10)', (col) => col.notNull())
+    .addColumn('delegate_id', 'integer', (col) => col.references('users.id').onDelete('set null'))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', (col) => col.defaultTo(isPostgres ? 'now()' : "datetime('now')"))
+    .execute();
+
+  console.log(`✅ Additional ${dbType.toUpperCase()} tables created successfully`);
 }
 
 /**
@@ -429,14 +624,44 @@ async function createAdditionalTables() {
  */
 async function healthCheck() {
   try {
+    // Check primary database
     await db.selectFrom('users').select('id').limit(1).execute();
-    return { status: 'healthy', timestamp: new Date().toISOString() };
+    const primaryStatus = { status: 'healthy', db: strategy.primary, timestamp: new Date().toISOString() };
+    
+    // Check fallback database if available
+    let fallbackStatus = null;
+    if (strategy.primary === 'postgresql' && sqliteKysely) {
+      try {
+        await sqliteKysely.selectFrom('users').select('id').limit(1).execute();
+        fallbackStatus = { status: 'healthy', db: 'sqlite', timestamp: new Date().toISOString() };
+      } catch {
+        fallbackStatus = { status: 'unhealthy', db: 'sqlite', timestamp: new Date().toISOString() };
+      }
+    } else if (strategy.primary === 'sqlite' && postgresKysely) {
+      try {
+        await postgresKysely.selectFrom('users').select('id').limit(1).execute();
+        fallbackStatus = { status: 'healthy', db: 'postgresql', timestamp: new Date().toISOString() };
+      } catch {
+        fallbackStatus = { status: 'unhealthy', db: 'postgresql', timestamp: new Date().toISOString() };
+      }
+    }
+    
+    return { 
+      primary: primaryStatus,
+      fallback: fallbackStatus,
+      strategy: strategy
+    };
   } catch (error) {
     console.error("❌ Database health check failed:", error);
     return { 
-      status: 'unhealthy', 
-      error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString() 
+      primary: {
+        status: 'unhealthy', 
+        db: strategy.primary,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString() 
+      },
+      fallback: null,
+      strategy: strategy
     };
   }
 }
@@ -446,8 +671,15 @@ async function healthCheck() {
  */
 async function closeDatabase() {
   try {
-    await pool.end();
-    console.log("🔌 Database connections closed");
+    if (postgresPool) {
+      await postgresPool.end();
+      console.log("🔌 PostgreSQL connections closed");
+    }
+    
+    if (sqliteDb) {
+      sqliteDb.close();
+      console.log("🔌 SQLite database closed");
+    }
   } catch (error) {
     console.error("❌ Error closing database connections:", error);
   }
@@ -466,7 +698,9 @@ function getInitializationPromise() {
 // Export the database instance and utility functions
 export { 
   db, 
-  pool, 
+  dbSelector,
+  postgresPool,
+  sqliteDb,
   healthCheck, 
   closeDatabase, 
   getInitializationPromise,
