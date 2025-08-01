@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Resgrid.Workers.Console": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "RESGRID__DODBUPGRADE": "true"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "environmentVariables": {
+        "Key": "Value"
+      }
+    }
+  }
+}

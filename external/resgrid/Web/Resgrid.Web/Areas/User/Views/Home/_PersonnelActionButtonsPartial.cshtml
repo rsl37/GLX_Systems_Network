@@ -1,0 +1,98 @@
+﻿@model Resgrid.Web.Areas.User.Models.Home.PersonnelActionButtonsPartialView
+@inject IStringLocalizer<Resgrid.Localization.Areas.User.Home.HomeDashboard> localizer
+
+@if (Model.StaffingLevels == null)
+{
+	<div class='btn-group'>
+		<a class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-tag'></i> <span class='caret'></span></a>
+		<ul class='dropdown-menu dropdown-primary'>
+			<li role="presentation" class="dropdown-header">@localizer["SetStaffingLevel"]</li>
+			<li>
+				<a href="@Url.Action("SetStateForUser", "Home", new { area = "User", userId = Model.UserId, stateType = 0 })">
+					<i class='icon-ok-sign'></i>&nbsp;@commonLocalizer["Available"]
+				</a>
+			</li>
+			<li>
+				<a href="@Url.Action("SetStateForUser", "Home", new { area = "User", userId = Model.UserId, stateType = 1 })" rel="nofollow">
+					<i class='icon-plus-sign'></i>&nbsp;@commonLocalizer["Delayed"]
+				</a>
+			</li>
+			<li>
+				<a href="@Url.Action("SetStateForUser", "Home", new { area = "User", userId = Model.UserId, stateType = 2 })" rel="nofollow">
+					<i class='fa fa-minus-sign'></i>&nbsp;@commonLocalizer["Unavailable"]
+				</a>
+			</li>
+			<li>
+				<a href="@Url.Action("SetStateForUser", "Home", new { area = "User", userId = Model.UserId, stateType = 3 })" rel="nofollow">
+					<i class='icon-info-sign'></i>&nbsp;@commonLocalizer["Committed"]
+				</a>
+			</li>
+		</ul>
+	</div>
+}
+else
+{
+	<div class='btn-group'>
+		<a class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-tag'></i> <span class='caret'></span></a>
+		<ul class='dropdown-menu dropdown-primary'>
+			<li role="presentation" class="dropdown-header">@localizer["SetStaffingLevel"]</li>
+
+			@foreach (var state in Model.StaffingLevels.GetActiveDetails())
+			{
+				<li>
+					<a onclick="resgrid.home.dashboard.customStaffing(@Model.UserId, @state.CustomStateDetailId.ToString();">
+						@state.ButtonText
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+}
+
+@if (Model.States == null)
+{
+	<div class='btn-group'>
+		<a class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-flag'></i> <span class='caret'></span></a>
+		<ul class='dropdown-menu dropdown-primary'>
+			<li role="presentation" class="dropdown-header">@localizer["SetCurrentAction"]</li>
+			<li>
+				<a href="@Url.Action("SetActionForUser", "Home", new { area = "User", userId = Model.UserId, actionType = 0 })" rel="nofollow">
+					<i class='glyphicon glyphicon-play-circle'></i>&nbsp;@commonLocalizer["StandingBy"]
+				</a>
+			</li>
+			<li>
+				<a href="@Url.Action("SetActionForUser", "Home", new { area = "User", userId = Model.UserId, actionType = 2 })" rel="nofollow">
+					<i class='glyphicon glyphicon-ok-circle'></i>&nbsp;@commonLocalizer["Responding"]
+				</a>
+			</li>
+			<li>
+				<a href="@Url.Action("SetActionForUser", "Home", new { area = "User", userId = Model.UserId, actionType = 1 })" rel="nofollow">
+					<i class='glyphicon glyphicon-ban-circle'></i>&nbsp;@commonLocalizer["NotResponding"]
+				</a>
+			</li>
+			<li>
+				<a href="@Url.Action("SetActionForUser", "Home", new { area = "User", userId = Model.UserId, actionType = 3 })" rel="nofollow">
+					<i class='glyphicon glyphicon-upload'></i>&nbsp;@commonLocalizer["OnScene"]
+				</a>
+			</li>
+		</ul>
+	</div>
+}
+else
+{
+	<div class='btn-group'>
+		<a class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown' href='#'><i class='icon-tag'></i> <span class='caret'></span></a>
+		<ul class='dropdown-menu dropdown-primary'>
+			<li role="presentation" class="dropdown-header">@localizer["SetStaffingLevel"]</li>
+
+			@foreach (var state in Model.States.GetActiveDetails())
+			{
+				<li>
+					<a onclick="resgrid.home.dashboard.customUserAction(@Model.UserId, @state.CustomStateDetailId.ToString();">
+						@state.ButtonText
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+}
