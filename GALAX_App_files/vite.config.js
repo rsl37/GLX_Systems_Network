@@ -18,6 +18,7 @@ const ASSET_INLINE_LIMIT_BYTES = 4096;
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
+  const isDevelopment = !isProduction;
   
   return {
     plugins: [
