@@ -323,8 +323,8 @@ jobs:
           # Wait for app to start
           sleep 15
           
-          # Basic health check (if app is running on the configured port)
-          if curl -f -s http://localhost:${{ env.APP_PORT }} >/dev/null 2>&1; then
+          # Basic health check (default port 3000)
+          if curl -f -s http://localhost:3000 >/dev/null 2>&1; then
             echo "✓ Application started successfully"
           else
             echo "⚠️  Application startup test - unable to connect (may need manual verification)"

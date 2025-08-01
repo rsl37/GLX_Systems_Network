@@ -1,13 +1,21 @@
 ---
-name: Summarize new issues
+name: Issue Summary (Disabled)
 
-'on':
-  issues:
-    types: [opened]
+# This workflow is disabled as it uses experimental AI inference action
+# that may not be available in all GitHub environments
+on:
+  workflow_dispatch:
+    inputs:
+      enable_ai_summary:
+        description: 'Enable AI summary (experimental)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   summary:
     runs-on: ubuntu-latest
+    if: github.event.inputs.enable_ai_summary == 'true'
     permissions:
       issues: write
       contents: read
@@ -16,18 +24,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run AI inference
-        id: inference
-        uses: actions/ai-inference@v1
-        with:
-          prompt: |
-            Summarize the following GitHub issue in one paragraph:
-            Title: ${{ github.event.issue.title }}
-            Body: ${{ github.event.issue.body }}
-
-      - name: Comment with AI summary
+      - name: Basic issue summary
         run: |
-          gh issue comment $ISSUE_NUMBER --body '${{ steps.inference.outputs.response }}'
+          echo "Issue opened: ${{ github.event.issue.title }}"
+          echo "This workflow is currently disabled as AI inference action is experimental"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
