@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { useSocket } from '../hooks/useSocket';
+import { useRealtime } from '../hooks/useRealtime';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,8 +36,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const token = localStorage.getItem('token');
-  const socketConnection = useSocket(token);
-  const { health, sendMessage, joinRoom } = socketConnection;
+  const realtimeConnection = useRealtime(token);
 
   useEffect(() => {
     fetchMessages();
@@ -48,25 +47,19 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   }, [helpRequestId, token, joinRoom]);
 
   useEffect(() => {
-    // Use messages from the socket connection if available
-    if (socketConnection.messages) {
-      const helpRequestMessages = socketConnection.messages.filter(
-        msg => msg.type === 'chat' && msg.roomId === `help_request_${helpRequestId}`
-      );
+    if (realtimeConnection && realtimeConnection.health.authenticated) {
+      realtimeConnection.joinRoom(helpRequestId);
       
-      if (helpRequestMessages.length > 0) {
-        const formattedMessages = helpRequestMessages.map(msg => ({
-          id: parseInt(msg.id),
-          message: msg.content,
-          sender: msg.username,
-          avatar: null, // Will be fetched from user data
-          timestamp: msg.timestamp
-        }));
-        
-        setMessages(formattedMessages);
-      }
+      realtimeConnection.onMessage('new_message', (message: Message) => {
+        setMessages(prev => [...prev, message]);
+      });
+      
+      return () => {
+        realtimeConnection.offMessage('new_message');
+        realtimeConnection.leaveRoom(helpRequestId);
+      };
     }
-  }, [socketConnection.messages, helpRequestId]);
+  }, [realtimeConnection, helpRequestId, realtimeConnection?.health.authenticated]);
 
   useEffect(() => {
     scrollToBottom();
@@ -99,34 +92,15 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || isSending) return;
+    if (!newMessage.trim() || !realtimeConnection || !realtimeConnection.health.authenticated) return;
 
-    setIsSending(true);
+    const result = await realtimeConnection.sendMessage(helpRequestId, newMessage.trim());
     
-    try {
-      // Use the new Pusher-based sendMessage function
-      await sendMessage(newMessage.trim(), `help_request_${helpRequestId}`);
-      
-      // Optimistically add the message to the UI (Pusher will deliver the real message)
-      const optimisticMessage: Message = {
-        id: Date.now(), // Temporary ID
-        message: newMessage.trim(),
-        sender: currentUser,
-        avatar: null,
-        timestamp: new Date().toISOString()
-      };
-      
-      setMessages(prev => [...prev, optimisticMessage]);
+    if (result.success) {
       setNewMessage('');
-      
-      // No need to manually refresh - Pusher will deliver the real message
-      
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      // Show user-friendly error message
-      alert('Failed to send message. Please try again.');
-    } finally {
-      setIsSending(false);
+    } else {
+      console.error('Failed to send message:', result.error);
+      // Could show error toast here
     }
   };
 

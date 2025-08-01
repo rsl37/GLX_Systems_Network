@@ -166,18 +166,18 @@ if (databaseUrl) {
   console.log(`   ➖ DATABASE_URL: Not set (will use SQLite fallback)`);
 }
 
-// SOCKET_PATH validation
-const socketPath = process.env.SOCKET_PATH;
-if (socketPath) {
-  if (socketPath.startsWith("/") && socketPath.length > 1) {
-    console.log(`   ✅ SOCKET_PATH: Valid path "${socketPath}"`);
+// REALTIME_PATH validation
+const realtimePath = process.env.REALTIME_PATH;
+if (realtimePath) {
+  if (realtimePath.startsWith("/") && realtimePath.length > 1) {
+    console.log(`   ✅ REALTIME_PATH: Valid path "${realtimePath}"`);
   } else {
     console.log(
-      `   ⚠️ SOCKET_PATH: Should start with / and have additional components (current: "${socketPath}")`,
+      `   ⚠️ REALTIME_PATH: Should start with / and have additional components (current: "${realtimePath}")`,
     );
   }
 } else {
-  console.log(`   ➖ SOCKET_PATH: Not set (will use default /socket.io)`);
+  console.log(`   ➖ REALTIME_PATH: Not set (will use default /api/realtime)`);
 }
 
 console.log("\n📋 Summary:");

@@ -61,7 +61,7 @@ export function KYCVerificationPage() {
 
   const parseApiResponse = async (response: Response) => {
     if (!response.ok) {
-      let errorMessage = 'Request failed';
+      let errorMessage = 'Failed to process KYC verification request';
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -126,7 +126,7 @@ export function KYCVerificationPage() {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        setError('File size must be less than 10MB');
+        setError('Document file size must be less than 10MB. Please compress your file or use a different format.');
         return;
       }
       
@@ -145,7 +145,7 @@ export function KYCVerificationPage() {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        setError('File size must be less than 10MB');
+        setError('Selfie file size must be less than 10MB. Please use a smaller image file.');
         return;
       }
       
@@ -166,13 +166,13 @@ export function KYCVerificationPage() {
 
     try {
       if (!selectedDocumentType || !documentNumber || !documentFile) {
-        setError('Please fill in all required fields and upload your document');
+        setError('Please complete all required fields: select document type, enter document number, and upload your document.');
         return;
       }
 
       const authToken = localStorage.getItem('token');
       if (!authToken) {
-        setError('You must be logged in to submit KYC documents');
+        setError('Authentication required. Please log out and log back in to submit KYC documents.');
         return;
       }
 
@@ -203,9 +203,24 @@ export function KYCVerificationPage() {
     } catch (error) {
       console.error('KYC upload error:', error);
       if (error instanceof Error) {
-        setError(error.message);
+        // Handle specific error types
+        if (error.message.includes('network') || error.message.includes('fetch')) {
+          setError('Unable to connect to our servers. Please check your internet connection and try again.');
+        } else if (error.message.includes('timeout')) {
+          setError('Upload timed out. Please check your internet connection and try again with smaller files.');
+        } else if (error.message.includes('413') || error.message.includes('too large')) {
+          setError('File size too large. Please ensure your files are under 10MB and try again.');
+        } else if (error.message.includes('415') || error.message.includes('unsupported')) {
+          setError('Unsupported file format. Please upload JPEG, PNG, or PDF files only.');
+        } else if (error.message.includes('401') || error.message.includes('unauthorized')) {
+          setError('Your session has expired. Please log out and log back in to continue.');
+        } else if (error.message.includes('500')) {
+          setError('Our servers are experiencing issues. Please try again in a few minutes.');
+        } else {
+          setError(error.message);
+        }
       } else {
-        setError('Network error. Please try again.');
+        setError('Unable to submit KYC documents. Please check your information and try again.');
       }
     } finally {
       setIsLoading(false);

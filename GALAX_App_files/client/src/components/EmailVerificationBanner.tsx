@@ -29,7 +29,7 @@ export function EmailVerificationBanner() {
   const parseApiResponse = async (response: Response) => {
     // Check if response is OK
     if (!response.ok) {
-      let errorMessage = 'Request failed';
+      let errorMessage = 'Failed to process verification request';
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {

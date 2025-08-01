@@ -36,7 +36,7 @@ export function EmailVerificationPage() {
   const parseApiResponse = async (response: Response) => {
     // Check if response is OK
     if (!response.ok) {
-      let errorMessage = 'Request failed';
+      let errorMessage = 'Failed to process email verification request';
       try {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -248,7 +248,7 @@ export function EmailVerificationPage() {
               Verify Your Email
             </CardTitle>
             <CardDescription>
-              {error ? 'Email verification failed' : 'Check your email for a verification link'}
+              {error ? 'Unable to verify email address. Please check the verification link or request a new one.' : 'Check your email for a verification link'}
             </CardDescription>
           </CardHeader>
           

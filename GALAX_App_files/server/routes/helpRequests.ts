@@ -13,11 +13,12 @@ import { uploadLimiter } from '../middleware/rateLimiter.js';
 import { validateHelpRequest, validateFileUpload } from '../middleware/validation.js';
 import { fileUploadSecurity } from '../middleware/security.js';
 import { db } from '../database.js';
+import RealtimeManager from '../realtimeManager.js';
 
 const router = Router();
 
 // Create help request
-export function createHelpRequestRoutes(upload: any) {
+export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeManager) {
   router.post(
     '/',
     authenticateToken,
@@ -85,6 +86,20 @@ export function createHelpRequestRoutes(upload: any) {
           console.log('❌ Help request creation failed');
           return sendError(res, 'Failed to create help request', StatusCodes.INTERNAL_ERROR);
         }
+
+        // Broadcast new help request to all connected users
+        realtimeManager.broadcast({
+          type: 'new_help_request',
+          data: {
+            id: helpRequest.id,
+            title,
+            category,
+            urgency,
+            latitude: latitude ? parseFloat(latitude) : null,
+            longitude: longitude ? parseFloat(longitude) : null,
+            created_at: helpRequest.created_at,
+          }
+        });
 
         console.log('✅ Help request created:', helpRequest.id);
         sendSuccess(res, { id: helpRequest.id });
@@ -289,6 +304,16 @@ export function createHelpRequestRoutes(upload: any) {
           data: JSON.stringify({ helpRequestId, chatRoomId: chatRoom?.id }),
         })
         .execute();
+
+      // Broadcast status update
+      realtimeManager.broadcastToRoom(`help_request_${helpRequestId}`, {
+        type: 'status_update',
+        data: {
+          id: helpRequestId,
+          status: 'matched',
+          helper_id: userId,
+        }
+      });
 
       console.log('✅ Help offered successfully:', { helpRequestId, helperId: userId });
       sendSuccess(res, { chatRoomId: chatRoom?.id });

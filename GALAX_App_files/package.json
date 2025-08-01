@@ -10,7 +10,7 @@
     "setup:env": "scripts/setup-env.sh",
     "test": "scripts/ensure-test-dirs.sh && vitest run",
     "test:api": "scripts/ensure-test-dirs.sh && vitest --run tests/api",
-    "test:socket": "scripts/ensure-test-dirs.sh && vitest --run tests/socket",
+    "test:realtime": "scripts/ensure-test-dirs.sh && vitest --run tests/realtime",
     "test:watch": "scripts/ensure-test-dirs.sh && vitest",
     "test:coverage": "scripts/ensure-test-dirs.sh && vitest run --coverage",
     "test:ui": "scripts/ensure-test-dirs.sh && vitest --ui",
@@ -87,8 +87,6 @@
     "react-day-picker": "8.10.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^7.7.0",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
     "speakeasy": "^2.0.0",
     "tailwind-merge": "3.3.1",
     "tailwindcss-animate": "1.0.7"

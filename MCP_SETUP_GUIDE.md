@@ -13,7 +13,7 @@ The MCP configuration transforms GitHub Copilot into a civic networking developm
 - `.github/workflows/copilot-setup.yml` - Automated setup workflow
 
 ### Custom MCP Servers
-- `mcp-servers/websocket-server.js` - Real-time WebSocket communication
+- `mcp-servers/realtime-server.js` - Real-time SSE communication
 - `mcp-servers/civic-server.js` - Civic data and government services integration
 - `mcp-servers/auth-server.js` - JWT authentication and authorization
 - `mcp-servers/social-good-server.js` - Social good and community services
@@ -134,10 +134,10 @@ chmod +x *.js
 
 3. Test server functionality:
 ```bash
-npm run start:websocket  # Test WebSocket server
-npm run start:civic      # Test civic server
-npm run start:auth       # Test auth server
-npm run start:social     # Test social good server
+npm run start:realtime     # Test realtime SSE server
+npm run start:civic        # Test civic server
+npm run start:auth         # Test auth server
+npm run start:social       # Test social good server
 ```
 
 ## 🎯 Key Features Enabled
