@@ -15,6 +15,7 @@ interface AISecurityConfig {
   enableModelIntegrityCheck: boolean;
   enableAuditLogging: boolean;
   allowedModelVersions: string[];
+  allowedModelHashes: string[];
   riskThreshold: number;
 }
 
@@ -247,11 +248,20 @@ export class AIMCPSecurityMiddleware {
       if (modelData) {
         // Verify hash if model data is provided
         const hash = crypto.createHash('sha256').update(modelData).digest('hex');
-        // In a real implementation, this would check against a known good hash
-        // For now, we'll just store the hash for future reference
         // Compare the computed hash against known good hashes
-        const knownGoodHashes = this.config.allowedModelHashes; // Use the correct property for hash storage
-        isValid = knownGoodHashes.includes(hash);
+        const knownGoodHashes = this.config.allowedModelHashes;
+        
+        // If we have known good hashes, check against them
+        if (knownGoodHashes.length > 0) {
+          isValid = knownGoodHashes.includes(hash);
+        } else {
+          // If no known hashes yet, fall back to version check
+          // This allows initial setup and testing
+          isValid = this.config.allowedModelVersions.includes(modelVersion);
+          if (isValid) {
+            console.log(`⚠️  Model ${modelVersion} passed version check but hash not yet verified`);
+          }
+        }
         
         this.modelIntegrity.set(modelVersion, {
           version: modelVersion,
@@ -448,6 +458,7 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'civic-ai-v1',
     'copilot-civic'
   ],
+  allowedModelHashes: [], // Initially empty, will be populated as models are verified
   riskThreshold: 40
 };
 

@@ -82,6 +82,19 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
     });
 
     // Check if user already exists - check each field separately for specific error messages
+    const existingUser = await db
+      .selectFrom('users')
+      .select(['id', 'email', 'phone', 'username', 'wallet_address'])
+      .where((eb) => 
+        eb.or([
+          email ? eb('email', '=', email) : eb.lit(false),
+          phone ? eb('phone', '=', phone) : eb.lit(false),
+          eb('username', '=', username),
+          walletAddress ? eb('wallet_address', '=', walletAddress) : eb.lit(false)
+        ])
+      )
+      .executeTakeFirst();
+
     let conflictField = null;
     let conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
 

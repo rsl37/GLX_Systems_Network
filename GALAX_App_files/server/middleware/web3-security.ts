@@ -454,6 +454,7 @@ export class Web3SecurityMiddleware {
     ).length;
     
     const MAX_VOTING_POWER = 100; // Maximum voting power cap
+    const VOTING_POWER_MULTIPLIER = 5; // Multiplier for voting power calculation
     return Math.min(MAX_VOTING_POWER, recentTxs * VOTING_POWER_MULTIPLIER); // Cap at max voting power
   }
 
