@@ -93,6 +93,11 @@ export class AIMCPSecurityMiddleware {
       /suppress.*vot/gi,
       /election\s+fraud/gi,
       /destroy\s+democracy/gi,
+      // Additional civic-specific patterns for better detection
+      /generate\s+fake\s+news/gi,
+      /create\s+misinformation/gi,
+      /voter\s+suppression\s+tactics/gi,
+      /propaganda\s+message.*destroy/gi,
     ];
   }
 
