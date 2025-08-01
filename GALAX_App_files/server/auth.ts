@@ -77,7 +77,7 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function generateToken(userId: number): string {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
 }
 
 export interface AuthRequest extends Request {

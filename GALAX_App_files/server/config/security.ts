@@ -101,6 +101,12 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     severity: 'critical'
   },
   {
+    pattern: 'password',
+    type: 'contains',
+    description: 'Contains common weak password pattern',
+    severity: 'critical'
+  },
+  {
     pattern: '123456',
     type: 'exact',
     description: 'Numeric sequence',
@@ -125,9 +131,21 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     severity: 'high'
   },
   {
+    pattern: 'secret',
+    type: 'contains',
+    description: 'Contains generic secret word',
+    severity: 'high'
+  },
+  {
     pattern: 'test',
     type: 'exact',
     description: 'Test value',
+    severity: 'high'
+  },
+  {
+    pattern: 'test',
+    type: 'contains',
+    description: 'Contains test value',
     severity: 'high'
   },
   {
@@ -137,10 +155,28 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     severity: 'high'
   },
   {
+    pattern: 'development',
+    type: 'contains',
+    description: 'Contains development environment value',
+    severity: 'high'
+  },
+  {
     pattern: 'dev',
     type: 'exact',
     description: 'Development environment abbreviation',
     severity: 'high'
+  },
+  {
+    pattern: 'your-secret-key',
+    type: 'contains',
+    description: 'Contains default placeholder secret pattern',
+    severity: 'critical'
+  },
+  {
+    pattern: 'your-refresh-secret-key',
+    type: 'contains',
+    description: 'Contains default refresh token secret placeholder pattern',
+    severity: 'critical'
   },
 
   // Pattern-based weak secrets
