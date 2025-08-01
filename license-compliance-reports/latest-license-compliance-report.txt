@@ -1,0 +1,110 @@
+GALAX Civic Networking App - License Compliance Report
+=====================================================
+
+Report Generated: Fri Aug  1 19:47:08 UTC 2025
+Project Root: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App
+Main License: PolyForm Shield License 1.0.0
+
+
+=== GALAX Main Application Dependencies ===
+Directory: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files
+
+✅ galax-civic-platform@0.2.0: UNLICENSED (Compatible)
+
+Summary for GALAX Main Application:
+  Total packages: 1
+  Violations: 0
+  Warnings: 0
+  Compatible: 1
+
+=== MCP Servers Dependencies ===
+Directory: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/mcp-servers
+
+✅ @modelcontextprotocol/sdk@0.4.0: MIT (Compatible)
+✅ buffer-equal-constant-time@1.0.1: BSD-3-Clause (Compatible)
+✅ bytes@3.1.2: MIT (Compatible)
+✅ content-type@1.0.5: MIT (Compatible)
+✅ depd@2.0.0: MIT (Compatible)
+✅ ecdsa-sig-formatter@1.0.11: Apache-2.0 (Compatible)
+❓ galax-mcp-servers@1.0.0: UNKNOWN (Unknown - Review Required)
+✅ http-errors@2.0.0: MIT (Compatible)
+✅ iconv-lite@0.6.3: MIT (Compatible)
+✅ inherits@2.0.4: ISC (Compatible)
+✅ jsonwebtoken@9.0.2: MIT (Compatible)
+✅ jwa@1.4.2: MIT (Compatible)
+✅ jws@3.2.2: MIT (Compatible)
+✅ lodash.includes@4.3.0: MIT (Compatible)
+✅ lodash.isboolean@3.0.3: MIT (Compatible)
+✅ lodash.isinteger@4.0.4: MIT (Compatible)
+✅ lodash.isnumber@3.0.3: MIT (Compatible)
+✅ lodash.isplainobject@4.0.6: MIT (Compatible)
+✅ lodash.isstring@4.0.1: MIT (Compatible)
+✅ lodash.once@4.1.1: MIT (Compatible)
+✅ ms@2.1.3: MIT (Compatible)
+✅ raw-body@3.0.0: MIT (Compatible)
+✅ safe-buffer@5.2.1: MIT (Compatible)
+✅ safer-buffer@2.1.2: MIT (Compatible)
+✅ semver@7.7.2: ISC (Compatible)
+✅ setprototypeof@1.2.0: ISC (Compatible)
+✅ statuses@2.0.1: MIT (Compatible)
+✅ toidentifier@1.0.1: MIT (Compatible)
+✅ unpipe@1.0.0: MIT (Compatible)
+✅ zod@3.25.76: MIT (Compatible)
+
+Summary for MCP Servers:
+  Total packages: 30
+  Violations: 0
+  Warnings: 1
+  Compatible: 29
+
+=== External Projects License Check ===
+
+Resgrid Project:
+  License: Apache License
+  Status: ✅ Compatible (Apache-2.0)
+  NPM packages found: 50
+  Packages: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jasny-bootstrap/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jquery-datetimepicker/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/survey-angular/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/bootstrap-touchspin/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/c3/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/sweetalert/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/retina.js/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/survey-jquery/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/vide/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/chartist/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/autoprefixer/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jquery-ui-multidatespicker/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/fullcalendar/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/bootstrap-markdown/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/slick-carousel/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/rickshaw/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/rickshaw/examples/socket.io/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/tailwindcss/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/tailwindcss/postcss7-compat/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/d3/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/awesome-bootstrap-checkbox/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jquery-idletimer/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/metisMenu/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/twitter-bootstrap-wizard/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/postcss/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/survey-creator/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/cropper/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jplayer/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/algolia/autocomplete-theme-classic/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/algolia/autocomplete-js/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/surveyjs-widgets/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jquery-validate/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jQuery.dotdotdot/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/morrisjs/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/bootstrap-datepicker/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/geoman-io/leaflet-geoman-free/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/plyr/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jstree/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/formBuilder/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/blueimp-gallery/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/codemirror/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/peity/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/Ladda/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/tw-elements/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/tw-elements/dist/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/pace/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/lib/jquery-validation-unobtrusive/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/wwwroot/clib/material-table/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/package.json /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/external/resgrid/Web/Resgrid.Web/Areas/User/Apps/package.json
+
+=== License Documentation Validation ===
+
+✅ THIRD_PARTY_LICENSES.md exists
+Last updated: 0 days ago
+✅ Documentation is up to date
+
+Major dependency documentation check:
+  ✅ react is documented
+  ✅ express is documented
+  ✅ tailwindcss is documented
+  ✅ socket.io is documented
+  ✅ leaflet is documented
+  ✅ vite is documented
+  ✅ typescript is documented
+
+=== External API License Check ===
+
+📍 Google Maps API detected
+   License: Google Maps Platform Terms of Service
+   Status: ✅ Commercial use allowed with API key
+   Documentation: https://cloud.google.com/maps-platform/terms
+📡 Pusher API detected
+   License: Pusher Terms of Service
+   Status: ✅ Commercial use allowed with subscription
+   Documentation: https://pusher.com/legal/terms
+☁️ Vercel services detected
+   License: Vercel Terms of Service
+   Status: ✅ Commercial use allowed with subscription
+   Documentation: https://vercel.com/legal/terms
+
+=== COMPLIANCE SUMMARY ===
+
+Report completed: Fri Aug  1 19:47:09 UTC 2025
+Project: GALAX Civic Networking App
+Main License: PolyForm Shield License 1.0.0
+
+Results:
+  ✅ Successful checks: 43
+  ⚠️  Warnings (review required): 00
+  ❌ Violations (action required): 00
+
+✅ COMPLIANCE STATUS: PASSED
+All license checks passed successfully

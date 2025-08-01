@@ -3,7 +3,7 @@ name: Issue Summary (Disabled)
 
 # This workflow is disabled as it uses experimental AI inference action
 # that may not be available in all GitHub environments
-on:
+'on':
   workflow_dispatch:
     inputs:
       enable_ai_summary:
@@ -27,7 +27,8 @@ jobs:
       - name: Basic issue summary
         run: |
           echo "Issue opened: ${{ github.event.issue.title }}"
-          echo "This workflow is currently disabled as AI inference action is experimental"
+          echo "This workflow is currently disabled as AI inference action" \
+               "is experimental"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}

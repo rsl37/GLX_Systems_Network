@@ -251,10 +251,10 @@ jobs:
             });
 
             console.log(`Found ${statuses.length} existing statuses for commit ${headSha}`);
-            
+
             // Find pending statuses related to this workflow
-            const pendingStatuses = statuses.filter(status => 
-              status.state === 'pending' && 
+            const pendingStatuses = statuses.filter(status =>
+              status.state === 'pending' &&
               status.context.includes(workflowName)
             );
 
@@ -262,11 +262,11 @@ jobs:
 
             // Update pending statuses to match workflow conclusion
             for (const status of pendingStatuses) {
-              const newState = conclusion === 'success' ? 'success' : 
+              const newState = conclusion === 'success' ? 'success' :
                               conclusion === 'failure' ? 'failure' : 'error';
-              
+
               console.log(`Updating status ${status.context} from pending to ${newState}`);
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -281,10 +281,10 @@ jobs:
             // If no pending statuses found, create a general workflow status
             if (pendingStatuses.length === 0) {
               console.log(`No pending statuses found, creating new status for ${workflowName}`);
-              
-              const newState = conclusion === 'success' ? 'success' : 
+
+              const newState = conclusion === 'success' ? 'success' :
                               conclusion === 'failure' ? 'failure' : 'error';
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

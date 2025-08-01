@@ -408,9 +408,14 @@ generate_compliance_summary() {
     echo "" >> "$MAIN_REPORT"
     
     # Count violations and warnings
-    local violations=$(grep -c "❌" "$MAIN_REPORT" || echo "0")
-    local warnings=$(grep -c "⚠️" "$MAIN_REPORT" || echo "0")
-    local successes=$(grep -c "✅" "$MAIN_REPORT" || echo "0")
+    local violations=$(grep -c "❌" "$MAIN_REPORT" 2>/dev/null || echo "0")
+    local warnings=$(grep -c "⚠️" "$MAIN_REPORT" 2>/dev/null || echo "0")
+    local successes=$(grep -c "✅" "$MAIN_REPORT" 2>/dev/null || echo "0")
+    
+    # Ensure numeric values (strip any whitespace)
+    violations=$(echo "$violations" | tr -d ' \n\r')
+    warnings=$(echo "$warnings" | tr -d ' \n\r')
+    successes=$(echo "$successes" | tr -d ' \n\r')
     
     echo "Results:" >> "$MAIN_REPORT"
     echo "  ✅ Successful checks: $successes" >> "$MAIN_REPORT"
