@@ -141,6 +141,9 @@ console.log('⚡ RealtimeManager initialized for real-time connections');
 const app = express();
 const server = createServer(app);
 
+// Initialize realtime manager
+const realtimeManager = new RealtimeManager();
+
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
