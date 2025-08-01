@@ -81,21 +81,9 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       ip: req.ip,
     });
 
-    // Check if user already exists
-    const existingUser = await db
-      .selectFrom('users')
-      .selectAll()
-      .where((eb) =>
-        eb.or(
-          [
-            email ? eb('email', '=', email) : undefined,
-            phone ? eb('phone', '=', phone) : undefined,
-            eb('username', '=', username),
-            walletAddress ? eb('wallet_address', '=', walletAddress) : undefined,
-          ].filter(Boolean),
-        ),
-      )
-      .executeTakeFirst();
+    // Check if user already exists - check each field separately for specific error messages
+    let conflictField = null;
+    let conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
 
     if (existingUser) {
       console.log('❌ Registration failed: User already exists', {
@@ -237,7 +225,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
       if ((req as any).lockoutKey) {
         recordFailedAttempt((req as any).lockoutKey);
       }
-      return sendError(res, ErrorMessages.INVALID_CREDENTIALS, StatusCodes.UNAUTHORIZED);
+      return sendError(res, ErrorMessages.LOGIN_ACCOUNT_NOT_FOUND, StatusCodes.UNAUTHORIZED);
     }
 
     // Verify password for email/phone login
@@ -250,7 +238,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
         if ((req as any).lockoutKey) {
           recordFailedAttempt((req as any).lockoutKey);
         }
-        return sendError(res, ErrorMessages.INVALID_CREDENTIALS, StatusCodes.UNAUTHORIZED);
+        return sendError(res, ErrorMessages.LOGIN_ACCOUNT_NOT_FOUND, StatusCodes.UNAUTHORIZED);
       }
 
       const isValid = await comparePassword(password, user.password_hash);
@@ -262,7 +250,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
         if ((req as any).lockoutKey) {
           recordFailedAttempt((req as any).lockoutKey);
         }
-        return sendError(res, ErrorMessages.INVALID_CREDENTIALS, StatusCodes.UNAUTHORIZED);
+        return sendError(res, ErrorMessages.LOGIN_INVALID_PASSWORD, StatusCodes.UNAUTHORIZED);
       }
     }
 
