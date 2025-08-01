@@ -8,6 +8,10 @@
 
 import crypto from 'crypto';
 
+// Constants for voting power calculations
+const VOTING_POWER_MULTIPLIER = 10;
+const MAX_VOTING_POWER = 100000;
+
 interface Web3SecurityConfig {
   enableTransactionMonitoring: boolean;
   enableSmartContractValidation: boolean;
@@ -454,6 +458,7 @@ export class Web3SecurityMiddleware {
     ).length;
     
     const MAX_VOTING_POWER = 100; // Maximum voting power cap
+    const VOTING_POWER_MULTIPLIER = 2; // Multiplier for transaction-based voting power
     return Math.min(MAX_VOTING_POWER, recentTxs * VOTING_POWER_MULTIPLIER); // Cap at max voting power
   }
 

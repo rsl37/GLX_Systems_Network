@@ -13,7 +13,7 @@ import supertest from 'supertest';
 // Real-time Communication Tests using Pusher (replaces Socket.IO)
 describe('Real-time Communication Tests (Pusher)', () => {
   let testServer: TestServer;
-  let request: supertest.SuperTest<supertest.Test>;
+  let request: ReturnType<typeof supertest>;
 
   beforeAll(async () => {
     testServer = new TestServer();

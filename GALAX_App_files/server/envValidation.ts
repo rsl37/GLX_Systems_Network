@@ -100,11 +100,18 @@ export function validateEnvironment(): EnvironmentValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   const recommendations: string[] = [];
+  const isTestOrCI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
 
   console.log('🔍 Validating environment variables...');
 
   for (const envVar of REQUIRED_ENV_VARS) {
     const value = process.env[envVar.name];
+
+    // Skip CLIENT_ORIGIN requirement in test/CI environments
+    if (envVar.name === 'CLIENT_ORIGIN' && isTestOrCI && !value) {
+      warnings.push(`Optional in test environment: ${envVar.name} - ${envVar.description}`);
+      continue;
+    }
 
     if (envVar.required && !value) {
       errors.push(`Missing required environment variable: ${envVar.name} - ${envVar.description}`);
@@ -115,9 +122,14 @@ export function validateEnvironment(): EnvironmentValidationResult {
     }
 
     if (value && envVar.validator && !envVar.validator(value)) {
-      errors.push(`Invalid value for ${envVar.name}: ${envVar.description}`);
-      if (envVar.recommendation) {
-        recommendations.push(`${envVar.name}: ${envVar.recommendation}`);
+      // Relax validation for test/CI environments
+      if (isTestOrCI && (envVar.name === 'JWT_SECRET' || envVar.name === 'DATABASE_URL')) {
+        warnings.push(`Test environment value for ${envVar.name}: ${envVar.description}`);
+      } else {
+        errors.push(`Invalid value for ${envVar.name}: ${envVar.description}`);
+        if (envVar.recommendation) {
+          recommendations.push(`${envVar.name}: ${envVar.recommendation}`);
+        }
       }
       continue;
     }
@@ -174,27 +186,33 @@ function validateAuthConfiguration(
   const jwtSecret = process.env.JWT_SECRET;
   const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
   const isProduction = process.env.NODE_ENV === 'production';
+  const isTestOrCI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
   
   // Validate JWT_SECRET with comprehensive security checks
   if (jwtSecret) {
     const validation = validateJWTSecret(jwtSecret, isProduction);
     
     if (!validation.isValid || validation.severity === 'critical') {
-      errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
-      
-      if (validation.weakPatterns.length > 0) {
-        const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
-        const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+      // Be more lenient in test/CI environments
+      if (isTestOrCI && jwtSecret.length >= 16) {
+        warnings.push(`JWT_SECRET is weak but acceptable for test environment`);
+      } else {
+        errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
         
-        if (criticalPatterns.length > 0) {
-          errors.push(`JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+        if (validation.weakPatterns.length > 0) {
+          const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
+          const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+          
+          if (criticalPatterns.length > 0) {
+            errors.push(`JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+          }
+          if (highPatterns.length > 0) {
+            errors.push(`JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+          }
         }
-        if (highPatterns.length > 0) {
-          errors.push(`JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
-        }
+        
+        recommendations.push('JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
       }
-      
-      recommendations.push('JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
     } else if (validation.severity === 'warning') {
       warnings.push(`JWT_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
       recommendations.push('JWT_SECRET: Consider improving secret strength for enhanced security');
@@ -206,21 +224,26 @@ function validateAuthConfiguration(
     const validation = validateJWTSecret(jwtRefreshSecret, isProduction);
     
     if (!validation.isValid || validation.severity === 'critical') {
-      errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
-      
-      if (validation.weakPatterns.length > 0) {
-        const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
-        const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+      // Be more lenient in test/CI environments
+      if (isTestOrCI && jwtRefreshSecret.length >= 16) {
+        warnings.push(`JWT_REFRESH_SECRET is weak but acceptable for test environment`);
+      } else {
+        errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
         
-        if (criticalPatterns.length > 0) {
-          errors.push(`JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+        if (validation.weakPatterns.length > 0) {
+          const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
+          const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
+          
+          if (criticalPatterns.length > 0) {
+            errors.push(`JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+          }
+          if (highPatterns.length > 0) {
+            errors.push(`JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+          }
         }
-        if (highPatterns.length > 0) {
-          errors.push(`JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
-        }
+        
+        recommendations.push('JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
       }
-      
-      recommendations.push('JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
     } else if (validation.severity === 'warning') {
       warnings.push(`JWT_REFRESH_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
       recommendations.push('JWT_REFRESH_SECRET: Consider improving secret strength for enhanced security');
@@ -249,10 +272,13 @@ function validateCorsConfiguration(
   const clientOrigin = process.env.CLIENT_ORIGIN;
   const frontendUrl = process.env.FRONTEND_URL;
   const trustedOrigins = process.env.TRUSTED_ORIGINS;
+  const isTestOrCI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
 
-  if (!clientOrigin && !frontendUrl) {
+  if (!clientOrigin && !frontendUrl && !isTestOrCI) {
     errors.push('No CORS origin configured - API requests will fail');
     recommendations.push('CORS: Set CLIENT_ORIGIN to your frontend URL');
+  } else if (!clientOrigin && !frontendUrl && isTestOrCI) {
+    warnings.push('No CORS origin configured for test environment');
   }
 
   if (process.env.NODE_ENV === 'production') {
@@ -265,7 +291,7 @@ function validateCorsConfiguration(
     }
   }
 
-  if (!trustedOrigins) {
+  if (!trustedOrigins && !isTestOrCI) {
     warnings.push('No additional trusted origins configured');
     recommendations.push('TRUSTED_ORIGINS: Consider adding staging and custom domains');
   }

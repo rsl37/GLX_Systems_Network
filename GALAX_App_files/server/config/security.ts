@@ -13,6 +13,36 @@
  * that pose security risks in production environments.
  */
 
+/**
+ * WebSocket Security Configuration
+ * Ensures secure WebSocket connections using WSS protocol
+ */
+export interface WebSocketSecurityConfig {
+  protocol: 'wss' | 'ws';
+  enforceSSL: boolean;
+  corsOrigins: string[];
+  maxConnections: number;
+  heartbeatInterval: number;
+}
+
+export const DEFAULT_WEBSOCKET_CONFIG: WebSocketSecurityConfig = {
+  protocol: 'wss', // Always use secure WebSocket connections
+  enforceSSL: true,
+  corsOrigins: ['https://localhost:3000', 'https://galax-civic-networking-app.vercel.app'],
+  maxConnections: 1000,
+  heartbeatInterval: 30000
+};
+
+/**
+ * Get WebSocket connection URL with security enforcement
+ */
+export function getSecureWebSocketUrl(host: string = 'localhost:3001', path: string = '/socket.io'): string {
+  // Always use WSS for secure connections
+  const protocol = DEFAULT_WEBSOCKET_CONFIG.protocol;
+  const cleanHost = host.replace(/^https?:\/\//, '').replace(/^wss?:\/\//, '');
+  return `${protocol}://${cleanHost}${path}`;
+}
+
 export interface WeakSecretPattern {
   pattern: string | RegExp;
   type: 'exact' | 'regex' | 'contains';

@@ -18,6 +18,7 @@ const ASSET_INLINE_LIMIT_BYTES = 4096;
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
+  const isDevelopment = mode === 'development';
   
   return {
     plugins: [
@@ -143,7 +144,7 @@ export default defineConfig(({ mode }) => {
     },
     // Optimize build with better tree-shaking and production settings
     esbuild: {
-      sourcemap: isDevelopment,
+      sourcemap: !isProduction,
       drop: isProduction ? ['console', 'debugger'] : [], // Remove console logs in production
       legalComments: isProduction ? 'none' : 'eof', // Remove legal comments in production
       minifyIdentifiers: isProduction,

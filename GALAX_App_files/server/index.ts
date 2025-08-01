@@ -63,6 +63,9 @@ import {
 // Import realtime manager
 import RealtimeManager from "./realtimeManager.js";
 
+// Initialize realtime manager
+const realtimeManager = new RealtimeManager();
+
 // Import stablecoin functionality
 import stablecoinRoutes from "./stablecoin/routes.js";
 import { stablecoinService } from "./stablecoin/StablecoinService.js";
@@ -132,10 +135,17 @@ const pusher = new Pusher({
   useTLS: true
 });
 
-console.log('🔌 Pusher initialized for real-time communication');
+
+// Initialize realtime manager
+const realtimeManager = new RealtimeManager();
+
+console.log('🔌 RealtimeManager initialized');
 
 const app = express();
 const server = createServer(app);
+
+// Initialize realtime manager
+const realtimeManager = new RealtimeManager();
 
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({
@@ -430,7 +440,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/proposals", governanceRoutes);
 app.use("/api/crisis-alerts", crisisRoutes);
 app.use("/api", miscRoutes);
-app.use("/api/help-requests", createHelpRequestRoutes(upload));
+app.use("/api/help-requests", createHelpRequestRoutes(upload, realtimeManager));
 
 // Pusher authentication endpoint
 app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) => {

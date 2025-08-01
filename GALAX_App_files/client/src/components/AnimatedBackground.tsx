@@ -9,9 +9,9 @@
 import * as React from 'react';
 import { useEffect, useState, useMemo } from 'react';
 
-// Lazy load motion for better initial performance
-const motion = React.lazy(() => 
-  import('framer-motion').then(module => ({ default: module.motion }))
+// Lazy load motion for better initial performance  
+const MotionDiv = React.lazy(() => 
+  import('framer-motion').then(module => ({ default: module.motion.div }))
 );
 
 // Memoized particle component for better performance
@@ -27,21 +27,21 @@ const Particle = React.memo(({
   duration: number; 
 }) => (
   <React.Suspense fallback={null}>
-    {motion && React.createElement(motion.div, {
-      className: "absolute w-1 h-1 bg-blue-400/20 rounded-full",
-      initial: { x, y, opacity: 0 },
-      animate: {
+    <MotionDiv
+      className="absolute w-1 h-1 bg-blue-400/20 rounded-full"
+      initial={{ x, y, opacity: 0 }}
+      animate={{
         x: [x, x + 100, x - 50, x],
         y: [y, y - 100, y + 50, y],
         opacity: [0, 0.6, 0.3, 0]
-      },
-      transition: {
+      }}
+      transition={{
         duration,
         delay,
         repeat: Infinity,
         ease: "easeInOut"
-      }
-    })}
+      }}
+    />
   </React.Suspense>
 ));
 
