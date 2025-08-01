@@ -4,7 +4,7 @@
  * Security Tests for WebSocket Security Middleware
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { WebSocketSecurityMiddleware, defaultSecurityConfig } from '../../server/middleware/websocket-security.js';
 
 describe('WebSocket Security Middleware', () => {

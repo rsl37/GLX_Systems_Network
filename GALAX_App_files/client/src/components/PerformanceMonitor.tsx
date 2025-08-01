@@ -9,6 +9,12 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
+// Extended interface for PerformanceEventTiming
+interface PerformanceEventTiming extends PerformanceEntry {
+  processingStart?: number;
+  processingEnd?: number;
+}
+
 interface PerformanceMetrics {
   loadTime: number;
   domContentLoaded: number;
@@ -87,12 +93,16 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
         const fidObserver = new PerformanceObserver((entryList) => {
           const entries = entryList.getEntries();
           entries.forEach((entry) => {
-            const fidMetric = { firstInputDelay: entry.processingStart - entry.startTime };
-            setMetrics(prev => ({ ...prev, ...fidMetric }));
-            onMetricsUpdate?.(fidMetric);
-            
-            if (reportToConsole) {
-              console.log('⚡ FID:', (entry.processingStart - entry.startTime).toFixed(2), 'ms');
+            // Cast to PerformanceEventTiming for first-input entries
+            const eventEntry = entry as PerformanceEventTiming;
+            if (eventEntry.processingStart) {
+              const fidMetric = { firstInputDelay: eventEntry.processingStart - eventEntry.startTime };
+              setMetrics(prev => ({ ...prev, ...fidMetric }));
+              onMetricsUpdate?.(fidMetric);
+              
+              if (reportToConsole) {
+                console.log('⚡ FID:', (eventEntry.processingStart - eventEntry.startTime).toFixed(2), 'ms');
+              }
             }
           });
         });
