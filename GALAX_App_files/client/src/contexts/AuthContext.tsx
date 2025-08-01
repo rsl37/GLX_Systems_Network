@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check if response is OK
     if (!response.ok) {
       let errorMessage = 'Request failed';
-      let debugInfo = {
+      let debugInfo: any = {
         status: response.status,
         statusText: response.statusText,
         url: response.url,

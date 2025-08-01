@@ -15,7 +15,7 @@ interface AISecurityConfig {
   enableModelIntegrityCheck: boolean;
   enableAuditLogging: boolean;
   allowedModelVersions: string[];
-  allowedModelHashes: string[];
+  knownGoodHashes?: string[];
   riskThreshold: number;
 }
 
@@ -335,7 +335,7 @@ export class AIMCPSecurityMiddleware {
    */
   private detectHarmfulContent(text: string): boolean {
     const harmfulPatterns = [
-      /instructions?\s+for\s+(making|creating)\s+(bomb|explosive|weapon)/gi,
+      /instructions\s+for\s+(making|creating)\s+(a\s+)?(bomb|explosive|weapon)/gi,
       /how\s+to\s+(hack|break\s+into|steal)/gi,
       /personal\s+information.*?(ssn|social\s+security|credit\s+card)/gi,
       /vote\s+for.*?(specific\s+candidate|party)/gi, // Inappropriate political influence
@@ -350,10 +350,9 @@ export class AIMCPSecurityMiddleware {
    */
   private detectDataLeakage(text: string): boolean {
     const leakagePatterns = [
-      /password\s*(is\s*[:]\s*|[:=]\s*)\w+/gi,
-      /api[_\s]?key\s*[:=]\s*[\w-]+/gi,
-      /secret\s*[:=]\s*[\w-]+/gi,
-      /token\s*[:=]\s*[\w.-]+/gi,
+      /(?:password|pwd)\s*(?:[:=]|\bis\s*[:])?\s*\w+/gi,
+      /(?:api[_\s]?key|apikey)\s*(?:[:=]|\bis\s*[:])?\s*[\w-]+/gi,
+      /(?:secret|token)\s*(?:[:=]|\bis\s*[:])?\s*[\w.-]+/gi,
       /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, // Email addresses
       /\b\d{3}-\d{2}-\d{4}\b/g, // SSN pattern
       /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, // Credit card pattern
@@ -469,7 +468,7 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'civic-ai-v1',
     'copilot-civic'
   ],
-  allowedModelHashes: [
+  knownGoodHashes: [
     // Known good model hashes for verification
     '5dbbe3869b484fc6a9e44a8d0697d458c8413332294039d65f1f3a0a862ccb3a', // mock model data hash for tests
     'd2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2', // civic-ai-v1

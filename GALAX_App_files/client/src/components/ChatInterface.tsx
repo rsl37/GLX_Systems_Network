@@ -36,30 +36,24 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const token = localStorage.getItem('token');
-  const realtimeConnection = useRealtime(token);
+  const { health, joinRoom, onMessage, sendMessage: realtimeSendMessage } = useRealtime(token);
 
   useEffect(() => {
     fetchMessages();
     // Join the help request room for real-time updates
-    if (token) {
-      joinRoom(`help_request_${helpRequestId}`).catch(console.error);
+    if (token && joinRoom) {
+      joinRoom(helpRequestId).catch(console.error);
     }
   }, [helpRequestId, token, joinRoom]);
 
   useEffect(() => {
-    if (realtimeConnection && realtimeConnection.health.authenticated) {
-      realtimeConnection.joinRoom(helpRequestId);
-      
-      realtimeConnection.onMessage('new_message', (message: Message) => {
+    if (health?.authenticated && onMessage) {
+      // Set up message listener
+      onMessage('new_message', (message: Message) => {
         setMessages(prev => [...prev, message]);
       });
-      
-      return () => {
-        realtimeConnection.offMessage('new_message');
-        realtimeConnection.leaveRoom(helpRequestId);
-      };
     }
-  }, [realtimeConnection, helpRequestId, realtimeConnection?.health.authenticated]);
+  }, [health?.authenticated, onMessage]);
 
   useEffect(() => {
     scrollToBottom();
@@ -92,9 +86,9 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || !realtimeConnection || !realtimeConnection.health.authenticated) return;
+    if (!newMessage.trim() || !health?.authenticated || !realtimeSendMessage) return;
 
-    const result = await realtimeConnection.sendMessage(helpRequestId, newMessage.trim());
+    const result = await realtimeSendMessage(helpRequestId, newMessage.trim());
     
     if (result.success) {
       setNewMessage('');
@@ -239,7 +233,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
         
         {/* Pusher Status */}
         <div className="text-xs text-gray-500 text-center">
-          Real-time via Pusher • {health.pusherState}
+          Real-time via SSE • {health?.connected ? 'Connected' : 'Connecting...'}
         </div>
       </CardContent>
     </Card>

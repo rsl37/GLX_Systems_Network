@@ -117,3 +117,5 @@ export function OpenStreetMap({
     />
   );
 }
+
+export default OpenStreetMap;
