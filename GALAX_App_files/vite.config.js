@@ -143,7 +143,7 @@ export default defineConfig(({ mode }) => {
     },
     // Optimize build with better tree-shaking and production settings
     esbuild: {
-      sourcemap: isDevelopment,
+      sourcemap: !isProduction,
       drop: isProduction ? ['console', 'debugger'] : [], // Remove console logs in production
       legalComments: isProduction ? 'none' : 'eof', // Remove legal comments in production
       minifyIdentifiers: isProduction,
