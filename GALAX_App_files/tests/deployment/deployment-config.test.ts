@@ -1,3 +1,11 @@
+/*
+ * Copyright © 2025 GALAX Civic Networking.
+ * Licensed under the PolyForm Shield License 1.0.0.
+ * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * This project is unaffiliated with Tatsunoko Production or the original anime.
+ */
+
+
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { spawn, ChildProcess } from 'child_process';
 import path from 'path';

@@ -1,4 +1,12 @@
 /*
+ * Copyright © 2025 GALAX Civic Networking.
+ * Licensed under the PolyForm Shield License 1.0.0.
+ * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * This project is unaffiliated with Tatsunoko Production or the original anime.
+ */
+
+
+/*
  * Test User Management for CI/CD Authentication Testing
  * 
  * This utility provides automated test user creation and cleanup

@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+/*
+ * Copyright © 2025 GALAX Civic Networking.
+ * Licensed under the PolyForm Shield License 1.0.0.
+ * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * This project is unaffiliated with Tatsunoko Production or the original anime.
+ */
+
 /**
  * GALAX JWT Authentication MCP Server
  * Authentication and authorization server for the GALAX platform
