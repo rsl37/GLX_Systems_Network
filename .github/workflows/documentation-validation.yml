@@ -1,0 +1,443 @@
+---
+name: Intelligent Documentation Validation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**.md'
+      - '.github/scripts/doc-metadata.js'
+      - '.github/workflows/documentation-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/scripts/doc-metadata.js'
+      - '.github/workflows/documentation-validation.yml'
+  schedule:
+    # Check documentation freshness monthly on the 1st at 9 AM UTC
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
+    inputs:
+      force_full_check:
+        description: 'Force full documentation validation regardless of changes'
+        required: false
+        default: 'false'
+      update_metadata:
+        description: 'Update documentation metadata for all files'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  detect-doc-changes:
+    name: Detect Documentation Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      has_doc_changes: ${{ steps.changes.outputs.docs }}
+      has_code_changes: ${{ steps.changes.outputs.code }}
+      changed_docs: ${{ steps.list-docs.outputs.files }}
+      is_scheduled: ${{ github.event_name == 'schedule' }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for documentation changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: json
+          filters: |
+            docs:
+              - '**.md'
+              - '.github/scripts/doc-metadata.js'
+            code:
+              - 'GALAX_App_files/src/**'
+              - 'GALAX_App_files/server/**'
+              - 'GALAX_App_files/client/**'
+              - 'GALAX_App_files/package.json'
+              - 'package.json'
+              - 'vercel.json'
+
+      - name: List changed documentation files
+        id: list-docs
+        run: |
+          if [ "${{ steps.changes.outputs.docs }}" == "true" ]; then
+            echo "files=${{ steps.changes.outputs.docs_files }}" >> $GITHUB_OUTPUT
+          else
+            echo "files=[]" >> $GITHUB_OUTPUT
+          fi
+
+  validate-documentation:
+    name: Validate Documentation Best Practices
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: detect-doc-changes
+    if: needs.detect-doc-changes.outputs.has_doc_changes == 'true' || needs.detect-doc-changes.outputs.is_scheduled == 'true' || github.event.inputs.force_full_check == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Make documentation script executable
+        run: chmod +x .github/scripts/doc-metadata.js
+
+      - name: Validate documentation best practices
+        id: validate
+        run: |
+          if [ "${{ needs.detect-doc-changes.outputs.has_doc_changes }}" == "true" ] && [ "${{ github.event.inputs.force_full_check }}" != "true" ] && [ "${{ needs.detect-doc-changes.outputs.is_scheduled }}" != "true" ]; then
+            # Validate only changed files
+            echo "Validating changed documentation files..."
+            changed_files='${{ needs.detect-doc-changes.outputs.changed_docs }}'
+            echo "$changed_files" | jq -r '.[]' | while read -r file; do
+              if [ -f "$file" ]; then
+                echo "Validating: $file"
+                node .github/scripts/doc-metadata.js validate "$file"
+              fi
+            done
+          else
+            # Validate all documentation
+            echo "Validating all documentation files..."
+            node .github/scripts/doc-metadata.js validate
+          fi
+
+      - name: Check documentation freshness
+        id: freshness
+        if: needs.detect-doc-changes.outputs.is_scheduled == 'true' || github.event.inputs.force_full_check == 'true'
+        run: |
+          echo "Checking documentation freshness..."
+          node .github/scripts/doc-metadata.js check-freshness > freshness-report.json
+          
+          # Parse results and create summary
+          outdated_count=$(jq '.count' freshness-report.json)
+          echo "outdated_count=$outdated_count" >> $GITHUB_OUTPUT
+          
+          if [ "$outdated_count" -gt 0 ]; then
+            echo "found_outdated=true" >> $GITHUB_OUTPUT
+          else
+            echo "found_outdated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update documentation metadata
+        id: update-metadata
+        if: github.event.inputs.update_metadata == 'true' || (needs.detect-doc-changes.outputs.has_doc_changes == 'true' && github.event_name == 'push')
+        run: |
+          echo "Updating documentation metadata..."
+          
+          if [ "${{ needs.detect-doc-changes.outputs.has_doc_changes }}" == "true" ] && [ "${{ github.event.inputs.update_metadata }}" != "true" ]; then
+            # Update only changed files
+            changed_files='${{ needs.detect-doc-changes.outputs.changed_docs }}'
+            echo "$changed_files" | jq -r '.[]' | while read -r file; do
+              if [ -f "$file" ]; then
+                echo "Updating metadata for: $file"
+                node .github/scripts/doc-metadata.js update "$file"
+              fi
+            done
+          else
+            # Update all documentation metadata
+            node .github/scripts/doc-metadata.js update
+          fi
+          
+          # Check if there are changes to commit
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit metadata updates
+        if: steps.update-metadata.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "docs: Update documentation metadata [automated]
+
+          - Updated lastUpdated timestamps
+          - Refreshed metadata for best practices compliance
+          - Automated by documentation validation workflow"
+
+      - name: Push metadata updates
+        if: steps.update-metadata.outputs.has_changes == 'true' && github.event_name == 'push'
+        run: |
+          git push
+
+      - name: Create outdated documentation issue
+        if: steps.freshness.outputs.found_outdated == 'true' && needs.detect-doc-changes.outputs.is_scheduled == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const freshnessData = JSON.parse(fs.readFileSync('freshness-report.json', 'utf8'));
+            
+            const outdatedList = freshnessData.outdatedFiles
+              .map(file => `- \`${file.file}\`: ${file.reason}`)
+              .join('\n');
+            
+            const issueBody = `# 📅 Outdated Documentation Review Required
+
+            **Alert**: ${freshnessData.count} documentation file(s) are outdated (older than 6 months)
+
+            ## Files Requiring Review
+
+            ${outdatedList}
+
+            ## Recommended Actions
+
+            1. **Review each file** for accuracy and relevance
+            2. **Update content** to reflect current best practices and features
+            3. **Update metadata** using: \`node .github/scripts/doc-metadata.js update\`
+            4. **Consider archiving** files that are no longer relevant
+
+            ## Automation
+
+            This issue was automatically created by the documentation validation workflow. 
+            
+            - **Schedule**: Monthly on the 1st at 9 AM UTC
+            - **Criteria**: Files with \`lastUpdated\` older than 6 months
+            - **Next Check**: ${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+
+            /label documentation maintenance`;
+
+            // Check if there's already an open issue for outdated docs
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'documentation,maintenance'
+            });
+
+            const existingIssue = issues.find(issue => 
+              issue.title.includes('Outdated Documentation Review')
+            );
+
+            if (existingIssue) {
+              // Update existing issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssue.number,
+                body: issueBody
+              });
+              
+              console.log(`Updated existing issue #${existingIssue.number}`);
+            } else {
+              // Create new issue
+              const { data: newIssue } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `📅 Outdated Documentation Review Required (${freshnessData.count} files)`,
+                body: issueBody,
+                labels: ['documentation', 'maintenance', 'automated']
+              });
+              
+              console.log(`Created new issue #${newIssue.number}`);
+            }
+
+  check-documentation-impact:
+    name: Check Documentation Impact
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: detect-doc-changes
+    if: needs.detect-doc-changes.outputs.has_code_changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Node.js for analysis
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Make scripts executable
+        run: |
+          chmod +x .github/scripts/smart-doc-update.js
+          chmod +x .github/scripts/doc-metadata.js
+
+      - name: Analyze code changes for documentation impact
+        id: analyze
+        run: |
+          echo "Analyzing code changes for documentation impact..."
+          
+          # Get list of changed files
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | tr '\n' ',' | sed 's/,$//')
+          else
+            changed_files=$(git diff --name-only HEAD~1 | tr '\n' ',' | sed 's/,$//')
+          fi
+          
+          echo "Changed files: $changed_files"
+          
+          if [ -n "$changed_files" ]; then
+            # Use smart documentation update system
+            analysis_result=$(node .github/scripts/smart-doc-update.js analyze "$changed_files")
+            echo "analysis_result<<EOF" >> $GITHUB_OUTPUT
+            echo "$analysis_result" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            
+            # Extract specific flags for backward compatibility
+            total_docs=$(echo "$analysis_result" | jq '.summary.totalDocs')
+            high_priority=$(echo "$analysis_result" | jq '.summary.priorityCounts.high')
+            categories=$(echo "$analysis_result" | jq -r '.affectedCategories[]' | tr '\n' ',' | sed 's/,$//')
+            
+            echo "total_affected_docs=$total_docs" >> $GITHUB_OUTPUT
+            echo "high_priority_updates=$high_priority" >> $GITHUB_OUTPUT
+            echo "affected_categories=$categories" >> $GITHUB_OUTPUT
+            
+            # Set individual category flags for workflow logic
+            if echo "$categories" | grep -q "api"; then
+              echo "api_changes=true" >> $GITHUB_OUTPUT
+            fi
+            if echo "$categories" | grep -q "ui"; then
+              echo "ui_changes=true" >> $GITHUB_OUTPUT
+            fi
+            if echo "$categories" | grep -q "config"; then
+              echo "config_changes=true" >> $GITHUB_OUTPUT
+            fi
+            if echo "$categories" | grep -q "security"; then
+              echo "security_changes=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No changed files detected"
+            echo "total_affected_docs=0" >> $GITHUB_OUTPUT
+            echo "high_priority_updates=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create comprehensive documentation update report
+        if: steps.analyze.outputs.total_affected_docs != '0'
+        run: |
+          # Get list of changed files
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | tr '\n' ',' | sed 's/,$//')
+          else
+            changed_files=$(git diff --name-only HEAD~1 | tr '\n' ',' | sed 's/,$//')
+          fi
+          
+          # Generate comprehensive markdown report
+          node .github/scripts/smart-doc-update.js report "$changed_files" > doc-update-report.md
+          
+          echo "Generated comprehensive documentation update report"
+          cat doc-update-report.md
+
+      - name: Comment on PR with intelligent update report
+        if: github.event_name == 'pull_request' && steps.analyze.outputs.total_affected_docs != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('doc-update-report.md', 'utf8');
+            
+            // Add priority warning for high-priority updates
+            const analysisData = JSON.parse(`${{ steps.analyze.outputs.analysis_result }}`);
+            const highPriority = analysisData.summary.priorityCounts.high;
+            
+            let finalReport = report;
+            
+            if (highPriority > 0) {
+              finalReport = `> **⚠️ Warning**: This PR includes ${highPriority} high-priority documentation update(s) that should be addressed before merging.\n\n` + finalReport;
+            }
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: finalReport
+            });
+
+      - name: Auto-update affected documentation metadata
+        if: steps.analyze.outputs.total_affected_docs != '0' && github.event_name == 'push'
+        run: |
+          echo "Auto-updating metadata for affected documentation..."
+          
+          # Get list of changed files
+          changed_files=$(git diff --name-only HEAD~1 | tr '\n' ',' | sed 's/,$//')
+          
+          if [ -n "$changed_files" ]; then
+            # Update metadata for affected documentation
+            node .github/scripts/smart-doc-update.js update-metadata "$changed_files"
+            
+            # Check if there are changes to commit
+            if ! git diff --quiet; then
+              echo "Documentation metadata updates detected"
+              echo "has_metadata_updates=true" >> $GITHUB_OUTPUT
+            else
+              echo "No metadata updates needed"
+              echo "has_metadata_updates=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Commit automatic metadata updates
+        if: steps.analyze.outputs.has_metadata_updates == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "docs: Auto-update documentation metadata based on code changes
+
+          Affected categories: ${{ steps.analyze.outputs.affected_categories }}
+          Documents updated: ${{ steps.analyze.outputs.total_affected_docs }}
+          High priority updates: ${{ steps.analyze.outputs.high_priority_updates }}
+          
+          [automated by smart documentation system]"
+
+      - name: Push automatic metadata updates
+        if: steps.analyze.outputs.has_metadata_updates == 'true' && github.event_name == 'push'
+        run: git push
+
+  summary:
+    name: Documentation Validation Summary
+    runs-on: ubuntu-latest
+    needs: [detect-doc-changes, validate-documentation, check-documentation-impact]
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# 📚 Documentation Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.detect-doc-changes.outputs.has_doc_changes }}" == "true" ]; then
+            echo "✅ **Documentation changes detected and validated**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Parse changed files
+            changed_files='${{ needs.detect-doc-changes.outputs.changed_docs }}'
+            echo "**Changed files:**" >> $GITHUB_STEP_SUMMARY
+            echo "$changed_files" | jq -r '.[]' | while read -r file; do
+              echo "- \`$file\`" >> $GITHUB_STEP_SUMMARY
+            done
+          elif [ "${{ needs.detect-doc-changes.outputs.is_scheduled }}" == "true" ]; then
+            echo "📅 **Scheduled documentation freshness check completed**" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.detect-doc-changes.outputs.has_code_changes }}" == "true" ]; then
+            echo "🔍 **Code changes analyzed for documentation impact**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ **No documentation changes detected**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next scheduled check:** $(date -d '+1 month' '+%Y-%m-01 09:00 UTC')" >> $GITHUB_STEP_SUMMARY

@@ -1,3 +1,15 @@
+---
+title: "GALAX App Directory Structure"
+description: ""
+lastUpdated: "2025-08-02"
+nextReview: "2026-02-02"
+contentType: "documentation"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # GALAX App Directory Structure
 
 Below is an overview diagram of the GALAX App folder structure and main files:

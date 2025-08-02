@@ -1,3 +1,15 @@
+---
+title: "Deployment Configuration Guide"
+description: ""
+lastUpdated: "2025-08-02"
+nextReview: "2026-02-02"
+contentType: "deployment"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Deployment Configuration Guide
 
 This document provides step-by-step instructions for fixing deployment issues with the GALAX Civic Networking App.

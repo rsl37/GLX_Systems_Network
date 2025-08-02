@@ -1,3 +1,15 @@
+---
+title: "GALAX: Web3 Civic Networking Platform"
+description: "Main project overview and quick start guide for the GALAX civic networking platform with Web3 integration, post-quantum security, and real-time collaboration features"
+lastUpdated: "2025-08-02"
+nextReview: "2026-02-02"
+contentType: "overview"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: ["web3", "civic-networking", "post-quantum", "real-time", "security"]
+relatedDocs: ["ABOUT_GALAX.md", "PROJECT_STRUCTURE.md", "SECURITY.md", "DEPLOYMENT.md"]
+---
+
 # GALAX: Web3 Civic Networking Platform
 
 [![CI/CD Pipeline](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/main.yml)

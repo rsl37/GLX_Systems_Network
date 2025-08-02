@@ -1,3 +1,15 @@
+---
+title: "Security Policy"
+description: ""
+lastUpdated: "2025-08-02"
+nextReview: "2026-02-02"
+contentType: "security"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Security Policy
 
 ## 🔒 Security Overview
