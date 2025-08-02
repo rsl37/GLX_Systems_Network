@@ -4,8 +4,28 @@ name: Comprehensive CI/CD Pipeline
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'vercel.json'
+      - '.github/workflows/comprehensive-checks.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'vercel.json'
+      - '.github/workflows/comprehensive-checks.yml'
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run all checks regardless of file changes'
+        required: false
+        default: 'false'
 
 permissions:
   contents: read
@@ -18,10 +38,58 @@ env:
   WORKING_DIRECTORY: './GALAX_App_files'
 
 jobs:
+  detect-changes:
+    name: Detect Relevant Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      has_code_changes: ${{ steps.changes.outputs.code }}
+      has_frontend_changes: ${{ steps.changes.outputs.frontend }}
+      has_backend_changes: ${{ steps.changes.outputs.backend }}
+      has_config_changes: ${{ steps.changes.outputs.config }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for relevant changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            code:
+              - 'GALAX_App_files/src/**'
+              - 'GALAX_App_files/server/**'
+              - 'GALAX_App_files/client/**'
+              - 'GALAX_App_files/package.json'
+              - 'package.json'
+            frontend:
+              - 'GALAX_App_files/src/**'
+              - 'GALAX_App_files/client/**'
+              - 'GALAX_App_files/components.json'
+              - 'GALAX_App_files/tailwind.config.js'
+              - 'GALAX_App_files/vite.config.js'
+              - '!GALAX_App_files/server/**'
+            backend:
+              - 'GALAX_App_files/server/**'
+              - 'GALAX_App_files/api/**'
+              - 'GALAX_App_files/tsconfig.server.json'
+            config:
+              - 'GALAX_App_files/tsconfig.json'
+              - 'GALAX_App_files/vitest.config.js'
+              - 'GALAX_App_files/playwright.config.ts'
+              - 'GALAX_App_files/package.json'
+              - 'package.json'
+              - 'vercel.json'
+
   code-quality:
     name: Code Quality Checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -66,6 +134,8 @@ jobs:
     name: Security Checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -117,6 +187,8 @@ jobs:
     name: CI Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true'
     strategy:
       matrix:
         node-version: [18, 20]
@@ -185,6 +257,8 @@ jobs:
     name: Performance Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_frontend_changes == 'true' || github.event.inputs.force_run == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -237,6 +311,8 @@ jobs:
     name: Custom Application Checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -287,7 +363,12 @@ jobs:
     name: Deployment Readiness
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [code-quality, security-checks, continuous-integration]
+    needs: [detect-changes, code-quality, security-checks, continuous-integration]
+    if: |
+      always() && 
+      (needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true') &&
+      !cancelled() &&
+      !contains(needs.*.result, 'failure')
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js

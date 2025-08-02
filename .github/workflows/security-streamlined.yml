@@ -7,9 +7,34 @@ name: Security Scan
 'on':
   pull_request:
     branches: [main, develop, production]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'GALAX_App_files/package.json'
+      - 'package-lock.json'
+      - 'GALAX_App_files/package-lock.json'
+      - '.env*'
+      - 'GALAX_App_files/.env*'
+      - '.github/workflows/security-streamlined.yml'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'GALAX_App_files/package.json'
+      - 'package-lock.json'
+      - 'GALAX_App_files/package-lock.json'
+      - '.env*'
+      - 'GALAX_App_files/.env*'
   schedule:
     # Run security scans daily at 2 AM UTC
     - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run all security checks'
+        required: false
+        default: 'false'
 
 permissions:
   contents: read
@@ -19,10 +44,54 @@ permissions:
   checks: write
 
 jobs:
+  detect-security-changes:
+    name: Detect Security-Relevant Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name != 'schedule'
+    outputs:
+      needs_dependency_review: ${{ steps.changes.outputs.dependencies }}
+      needs_security_scan: ${{ steps.changes.outputs.security }}
+      needs_full_scan: ${{ steps.changes.outputs.full_scan }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for security-relevant changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            dependencies:
+              - 'package.json'
+              - 'GALAX_App_files/package.json'
+              - 'package-lock.json'
+              - 'GALAX_App_files/package-lock.json'
+              - 'npm-shrinkwrap.json'
+              - 'GALAX_App_files/npm-shrinkwrap.json'
+            security:
+              - 'GALAX_App_files/server/**'
+              - '.env*'
+              - 'GALAX_App_files/.env*'
+              - '**/*auth*'
+              - '**/*security*'
+              - '**/*middleware*'
+            full_scan:
+              - 'GALAX_App_files/**'
+              - 'package.json'
+              - 'package-lock.json'
+
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: |
+      github.event_name == 'pull_request' && 
+      (needs.detect-security-changes.outputs.needs_dependency_review == 'true' || 
+       github.event.inputs.force_run == 'true')
+    needs: detect-security-changes
     timeout-minutes: 10
 
     steps:
@@ -42,6 +111,11 @@ jobs:
     name: Security Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_full_scan == 'true'
     permissions:
       actions: read
       contents: read
@@ -84,6 +158,12 @@ jobs:
     name: Dependency Security
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_dependency_review == 'true' ||
+      needs.detect-security-changes.outputs.needs_security_scan == 'true'
 
     steps:
       - name: Checkout code
@@ -129,6 +209,11 @@ jobs:
     name: Secret Detection
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_security_scan == 'true'
 
     steps:
       - name: Checkout code
