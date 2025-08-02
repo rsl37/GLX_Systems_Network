@@ -28,7 +28,17 @@
     "dashboard": "cd GALAX_App_files && test -d node_modules || npm install && npm run dashboard",
     "monitor:full": "cd GALAX_App_files && test -d node_modules || npm install && npm run monitor:full",
     "install:app": "cd GALAX_App_files && test -d node_modules || npm install",
-    "setup": "cd GALAX_App_files && test -d node_modules || npm install"
+    "setup": "cd GALAX_App_files && test -d node_modules || npm install",
+    "lint": "eslint . --ext .js,.jsx,.json",
+    "lint:fix": "eslint . --ext .js,.jsx,.json --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:app": "cd GALAX_App_files && npm run lint",
+    "lint:app:fix": "cd GALAX_App_files && npm run lint:fix",
+    "format:app": "cd GALAX_App_files && npm run format",
+    "format:app:check": "cd GALAX_App_files && npm run format:check",
+    "quality:check": "npm run lint && npm run format:check && npm run lint:app && npm run format:app:check",
+    "quality:fix": "npm run lint:fix && npm run format && npm run lint:app:fix && npm run format:app"
   },
   "workspaces": [
     "GALAX_App_files"
@@ -48,5 +58,10 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "prettier": "^3.6.2"
   }
 }
