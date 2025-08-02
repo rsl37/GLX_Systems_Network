@@ -34,3 +34,8 @@ paths-ignore:
 packs:
   # Include JavaScript security pack but don't make it blocking
   - "codeql/javascript-queries:AlertSuppression.ql"
+
+# Filter out incremental analysis issues that can cause failures
+query-filters:
+  - exclude:
+      tags: exclude-from-incremental
