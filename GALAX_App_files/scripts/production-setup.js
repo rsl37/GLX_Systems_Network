@@ -96,8 +96,8 @@ if (existsSync(envPath)) {
     const existingEnv = readFileSync(envPath, 'utf8');
     writeFileSync(backupPath, existingEnv);
     console.log(`📋 Backed up existing .env to ${backupPath}`);
-  } catch {
-    console.log('⚠️  Could not create backup of existing .env file');
+  } catch (error) {
+    console.log('⚠️  Could not create backup of existing .env file:', error.message);
   }
 }
 
