@@ -26,7 +26,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        // Use system chromium if available
+        channel: process.env.CI ? 'chromium' : undefined,
+      },
     },
   ],
   webServer: process.env.CI
