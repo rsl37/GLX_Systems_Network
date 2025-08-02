@@ -60,7 +60,7 @@
       ]
     },
     {
-      "source": "/**/*.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)",
+      "source": "/**/*.{js,css,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}",
       "headers": [
         {
           "key": "Cache-Control",
@@ -80,8 +80,5 @@
     "app/api/**/*": {
       "runtime": "@vercel/node"
     }
-  },
-  "env": {
-    "NODE_ENV": "production"
   }
 }
