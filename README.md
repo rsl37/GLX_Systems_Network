@@ -82,6 +82,23 @@ npm run production:check   # Validate production configuration
 npm run test:env           # Test environment configuration
 ```
 
+### Code Quality & Linting
+```bash
+# Code linting and formatting (from GALAX_App_files directory)
+cd GALAX_App_files
+
+# Lint code for quality issues
+npm run lint              # Check for linting issues
+npm run lint:fix          # Auto-fix linting issues where possible
+
+# Format code consistently
+npm run format            # Format all files with Prettier
+npm run format:check      # Check if files are formatted correctly
+
+# Combined quality check
+npm run lint && npm run format:check
+```
+
 ---
 
 ## 🔒 Security

@@ -4,15 +4,21 @@ Below is an overview diagram of the GALAX App folder structure and main files:
 
 ```
 GALAX_App_files/
-├── components.json
-├── IMPLEMENTATION_STATUS.md
-├── package.json
-├── package-lock.json
-├── postcss.config.js
-├── tailwind.config.js
-├── tsconfig.json
-├── tsconfig.server.json
-├── vite.config.js
+├── .eslintrc.json              # ESLint configuration (legacy)
+├── .prettierignore            # Prettier ignore patterns
+├── .prettierrc                # Prettier configuration
+├── eslint.config.js           # Modern ESLint flat configuration
+├── components.json            # Radix UI component configuration
+├── IMPLEMENTATION_STATUS.md   # Implementation status tracking
+├── package.json              # Project dependencies and scripts
+├── package-lock.json         # Dependency lock file
+├── postcss.config.js         # PostCSS configuration
+├── tailwind.config.js        # Tailwind CSS configuration
+├── tsconfig.json             # TypeScript configuration
+├── tsconfig.server.json      # Server-specific TypeScript config
+├── vite.config.js            # Vite build configuration
+├── vitest.config.js          # Vitest testing configuration
+├── playwright.config.ts      # Playwright E2E testing configuration
 ├── client/
 │   ├── index.html
 │   ├── public/
@@ -22,19 +28,31 @@ GALAX_App_files/
 │   │   ├── favicon.ico
 │   │   ├── favicon.svg
 │   │   ├── manifest.json
-│   │   └── site.webmanifest
+│   │   ├── site.webmanifest
+│   │   └── sw.js             # Service worker for PWA
 │   └── src/
 │       ├── App.tsx
 │       ├── index.css
 │       ├── main.tsx
+│       ├── global.d.ts       # Global type definitions
 │       ├── components/
+│       │   ├── AccountSettings.tsx
 │       │   ├── AnimatedBackground.tsx
 │       │   ├── BottomNavigation.tsx
 │       │   ├── ChatInterface.tsx
+│       │   ├── CountryCodeSelector.tsx
 │       │   ├── EmailVerificationBanner.tsx
+│       │   ├── ErrorBoundary.tsx
+│       │   ├── LazyMap.tsx
 │       │   ├── MediaUpload.tsx
 │       │   ├── OpenStreetMap.tsx
+│       │   ├── PerformanceMonitor.tsx
+│       │   ├── PrivacySettings.tsx
+│       │   ├── StablecoinDashboard.tsx
+│       │   ├── UserBadges.tsx
+│       │   ├── VirtualizedList.tsx
 │       │   └── ui/
+│       │       ├── alert.tsx
 │       │       ├── avatar.tsx
 │       │       ├── badge.tsx
 │       │       ├── button.tsx
