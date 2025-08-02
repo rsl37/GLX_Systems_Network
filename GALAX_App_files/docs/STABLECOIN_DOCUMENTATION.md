@@ -4,6 +4,8 @@
 
 The GALAX platform features an advanced algorithmic stablecoin system that transforms Crowds Tokens into a price-stable digital currency. This system uses protocol-controlled monetary policies to automatically maintain price stability around a $1.00 USD peg through intelligent supply adjustments.
 
+> **🚀 CROWDS Framework Available**: For the next-generation self-healing, adaptive, and evolutionary stablecoin implementation, see the [CROWDS Stablecoin Framework](./CROWDS_STABLECOIN_FRAMEWORK.md). This document covers the current basic implementation.
+
 ## Table of Contents
 
 1. [How It Works](#how-it-works)
@@ -13,6 +15,27 @@ The GALAX platform features an advanced algorithmic stablecoin system that trans
 5. [Regulatory Compliance](#regulatory-compliance)
 6. [Security Features](#security-features)
 7. [Troubleshooting](#troubleshooting)
+8. [CROWDS Framework](#crowds-framework)
+
+---
+
+## CROWDS Framework
+
+The **CROWDS (Community Resilient Oversight Under Decentralized Systems)** stablecoin represents the next evolution of this platform, implementing a comprehensive self-healing, adaptive, and evolutionary framework. 
+
+### Key Features of CROWDS
+- **Four-Layer Architecture**: Intelligence, Detection, Response, and Evolution layers
+- **Crisis-Specific Adaptation**: Specialized responses for 20+ crisis categories
+- **Self-Learning Capabilities**: AI-driven continuous improvement
+- **Quantum-Safe Security**: Post-quantum cryptographic protection
+- **Evolutionary Governance**: Adaptive decision-making systems
+
+### Documentation Links
+- 📖 [CROWDS Stablecoin Framework](./CROWDS_STABLECOIN_FRAMEWORK.md) - Complete technical specification
+- 🛠️ [Implementation Guide](./CROWDS_IMPLEMENTATION_GUIDE.md) - Step-by-step setup instructions
+- 🚨 [Crisis Response Playbook](./CROWDS_CRISIS_RESPONSE_PLAYBOOK.md) - Emergency response protocols
+
+---
 
 ## How It Works
 
