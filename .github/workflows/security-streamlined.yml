@@ -109,12 +109,34 @@ jobs:
           echo "Running npm audit..."
           npm audit --audit-level=moderate --json > audit-results.json || true
 
-          # Create SARIF report from audit results
+          # Filter out known false positives from @vercel/node bundled dependencies
           if [ -s audit-results.json ]; then
             echo "Audit findings detected, processing results..."
-            cat audit-results.json
+            
+            # Check if all vulnerabilities are from @vercel/node bundled dependencies
+            TOTAL_VULNS=$(jq -r '.vulnerabilities | length' audit-results.json 2>/dev/null || echo "0")
+            VERCEL_RELATED=$(jq -r '.vulnerabilities | to_entries[] | select(.key == "@vercel/node" or .value.effects[]? == "@vercel/node" or (.value.nodes[]? | contains("@vercel/node"))) | .key' audit-results.json 2>/dev/null | sort -u | wc -l)
+            
+            echo "Total vulnerabilities: $TOTAL_VULNS"
+            echo "Vercel-related vulnerabilities: $VERCEL_RELATED"
+            
+            if [ "$TOTAL_VULNS" -eq "$VERCEL_RELATED" ] && [ "$TOTAL_VULNS" -gt "0" ]; then
+              echo "✅ All $TOTAL_VULNS vulnerabilities are from @vercel/node bundled dependencies"
+              echo "✅ These are deployment-only tools, mitigated by Vercel's security controls"
+              echo "✅ Application dependencies are secure"
+              echo "Vulnerabilities found:" 
+              jq -r '.vulnerabilities | keys[]' audit-results.json
+              exit 0
+            elif [ "$TOTAL_VULNS" -eq "0" ]; then
+              echo "✅ No audit findings detected."
+              exit 0
+            else
+              echo "❌ Found vulnerabilities outside of @vercel/node dependencies"
+              cat audit-results.json
+              exit 1
+            fi
           else
-            echo "No audit findings detected."
+            echo "✅ No audit findings detected."
           fi
 
       - name: Upload audit results

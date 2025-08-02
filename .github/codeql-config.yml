@@ -9,12 +9,15 @@ queries:
   - uses: security-and-quality
   - uses: security-extended  # Additional security checks
 
-# Focus on application code, ignore test files for cleaner results
+# Focus on application code, include more areas for comprehensive analysis
 paths:
   - GALAX_App_files/client/src
   - GALAX_App_files/server
   - GALAX_App_files/scripts
   - GALAX_App_files/src
+  - mcp-servers
+  - api
+  - scripts
 
 # Ignore common directories that don't need security analysis
 paths-ignore:
