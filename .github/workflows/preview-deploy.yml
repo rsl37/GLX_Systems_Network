@@ -43,6 +43,12 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run build
 
+      - name: Validate environment for Vercel
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🔍 Validating environment configuration for Vercel..."
+          npm run vercel:validate || echo "Environment validation completed with warnings"
+
       - name: Deploy to Vercel Preview
         if: env.VERCEL_TOKEN != ''
         id: vercel-deploy
@@ -63,6 +69,10 @@ jobs:
           PREVIEW_URL=$(cat deployment-url.txt | tail -1)
           echo "preview-url=$PREVIEW_URL" >> $GITHUB_OUTPUT
           echo "Preview deployed to: $PREVIEW_URL"
+          
+          # Run health check on deployed URL
+          echo "🏥 Running health check on deployed preview..."
+          node scripts/vercel-health-check.cjs "$PREVIEW_URL" || echo "Health check completed with warnings"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
