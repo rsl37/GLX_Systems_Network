@@ -374,6 +374,22 @@ class MonitoringDashboard {
   }
 
   /**
+   * Get alert message based on alert level
+   */
+  static getAlertMessage(alertLevel: 'green' | 'yellow' | 'red'): string {
+    switch (alertLevel) {
+      case 'green':
+        return '✅ ALL SYSTEMS HEALTHY';
+      case 'yellow':
+        return '⚠️ WARNING CONDITIONS DETECTED';
+      case 'red':
+        return '🚨 CRITICAL ISSUES REQUIRE ATTENTION';
+      default:
+        return '❓ UNKNOWN STATUS';
+    }
+  }
+
+  /**
    * Generate HTML dashboard
    */
   generateHTML(data: DashboardData): string {
