@@ -28,7 +28,11 @@
     "branch:analyze": "npx tsx scripts/branch-commit-analyzer.ts",
     "logs:all": "npm run health:log && npm run branch:analyze",
     "dashboard": "npx tsx scripts/monitoring-dashboard.ts",
-    "monitor:full": "npm run logs:all && npm run dashboard"
+    "monitor:full": "npm run logs:all && npm run dashboard",
+    "vercel:validate": "node scripts/validate-vercel-env.cjs",
+    "vercel:health": "node scripts/vercel-health-check.cjs",
+    "vercel:deploy-check": "npm run vercel:validate && npm run build && npm run vercel:health",
+    "vercel:troubleshoot": "node scripts/vercel-troubleshoot.cjs"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
