@@ -420,13 +420,7 @@ class MonitoringDashboard {
         </div>
 
         <div class="alert ${data.alertLevel}">
-            ${
-              data.alertLevel === 'green'
-                ? '✅ ALL SYSTEMS HEALTHY'
-                : data.alertLevel === 'yellow'
-                  ? '⚠️ WARNING CONDITIONS DETECTED'
-                  : '🚨 CRITICAL ISSUES REQUIRE ATTENTION'
-            }
+            ${MonitoringDashboard.getAlertMessage(data.alertLevel)}
         </div>
 
         <div class="cards">
