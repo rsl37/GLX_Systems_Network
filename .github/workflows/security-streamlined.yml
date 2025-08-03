@@ -227,8 +227,9 @@ jobs:
         uses: trufflesecurity/trufflehog@v3.90.2
         with:
           path: ./
-          base: main
-          head: HEAD
+          # For scheduled runs, scan entire repo history. For PR/push, compare commits
+          base: ${{ github.event_name == 'schedule' && '' || 'main' }}
+          head: ${{ github.event_name == 'schedule' && '' || 'HEAD' }}
           extra_args: --only-verified
 
   # Status reporting job to ensure proper PR status updates
