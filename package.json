@@ -22,6 +22,7 @@
     "test:e2e": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:e2e",
     "test:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:all",
     "test:env": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:env",
+    "test:services": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:services",
     "health:log": "cd GALAX_App_files && test -d node_modules || npm install && npm run health:log",
     "branch:analyze": "cd GALAX_App_files && test -d node_modules || npm install && npm run branch:analyze",
     "logs:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run logs:all",

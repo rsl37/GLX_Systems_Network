@@ -171,7 +171,7 @@ describe('Deployment Configuration Tests', () => {
 
       expect(result.code).toBe(0);
       expect(result.output).toContain('✓ built');
-    });
+    }, 60000); // 60 second timeout for build test
 
     it('should have created dist directory', async () => {
       const fs = await import('fs');

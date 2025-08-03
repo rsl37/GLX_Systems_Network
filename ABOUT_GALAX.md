@@ -2,7 +2,7 @@
 title: "About GALAX"
 description: ""
 lastUpdated: "2025-08-03"
-nextReview: "2026-02-02"
+nextReview: "2025-09-03"
 contentType: "documentation"
 maintainer: "GALAX Development Team"
 version: "1.0.0"
@@ -57,7 +57,9 @@ GALAX implements enterprise-grade security measures:
 
 ## 🎯 Vision
 
-Build a feature-rich, technologically advanced platform for civic engagement that can serve as a model for democratic participation in the digital age, combining cutting-edge security with user-friendly interfaces for maximum community impact.
+Build a feature-rich, technologically advanced platform for civic engagement that can serve 
+as a model for democratic participation in the digital age, combining cutting-edge security 
+with user-friendly interfaces for maximum community impact.
 
 ## 📈 Recent Achievements
 
