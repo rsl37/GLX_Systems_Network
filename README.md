@@ -2,7 +2,7 @@
 title: "GALAX: Web3 Civic Networking Platform"
 description: ""
 lastUpdated: "2025-08-03"
-nextReview: "2026-02-02"
+nextReview: "2025-09-03"
 contentType: "overview"
 maintainer: "GALAX Development Team"
 version: "1.0.0"

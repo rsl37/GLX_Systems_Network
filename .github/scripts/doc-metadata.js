@@ -45,9 +45,9 @@ class DocumentationManager {
     // Determine content type based on path and filename
     const contentType = this.determineContentType(relativePath, fileName);
     
-    // Calculate next review date (2 months from now)
+    // Calculate next review date (1 month from now)
     const nextReview = new Date();
-    nextReview.setMonth(nextReview.getMonth() + 2);
+    nextReview.setMonth(nextReview.getMonth() + 1);
     const reviewDate = nextReview.toISOString().split('T')[0];
 
     return {
@@ -157,6 +157,11 @@ relatedDocs: []
           metadata = this.generateMetadata(filePath, bodyContent);
           Object.assign(metadata, existingMetadata);
           metadata.lastUpdated = new Date().toISOString().split('T')[0];
+          
+          // Force update nextReview to new schedule (1 month from now)
+          const nextReview = new Date();
+          nextReview.setMonth(nextReview.getMonth() + 1);
+          metadata.nextReview = nextReview.toISOString().split('T')[0];
         } else {
           metadata = this.generateMetadata(filePath, content);
         }

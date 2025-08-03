@@ -2,7 +2,7 @@
 title: "Answer: Merge Conflicts for copilot/fix-66d97755-8c6d-458d-b633-02246155d86d"
 description: ""
 lastUpdated: "2025-08-03"
-nextReview: "2026-02-03"
+nextReview: "2025-09-03"
 contentType: "archive"
 maintainer: "GALAX Development Team"
 version: "1.0.0"
