@@ -8,6 +8,10 @@ dist/
 build/
 */build/
 
+# Security scan results
+audit-results.json
+*/audit-results.json
+
 # Environment variables
 .env
 .env.local
