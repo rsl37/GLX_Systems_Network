@@ -36,7 +36,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: |
             package-lock.json
-            GALAX_App_files/package-lock.json
+            GALAX_App_files/package.json
             mcp-servers/package.json
 
       - name: Install license scanning tools
@@ -53,7 +53,11 @@ jobs:
 
           # Install main app dependencies
           cd GALAX_App_files
-          npm ci --prefer-offline --no-audit --no-fund
+          if [ -f "package-lock.json" ]; then
+            npm ci --prefer-offline --no-audit --no-fund
+          else
+            npm install --prefer-offline --no-audit --no-fund
+          fi
           cd ..
 
           # Install MCP server dependencies if they exist
