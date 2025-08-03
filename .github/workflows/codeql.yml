@@ -28,13 +28,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
+      - name: Check if Code Scanning is available
+        id: code-scanning-check
+        run: |
+          # Check if code scanning is enabled for this repository
+          if curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts" \
+                  2>/dev/null | grep -v "Advanced Security must be enabled" | grep -q "\[\]"; then
+            echo "code_scanning_available=true" >> $GITHUB_OUTPUT
+            echo "✅ Code scanning appears to be available"
+          else
+            echo "code_scanning_available=false" >> $GITHUB_OUTPUT
+            echo "⚠️  Code scanning not available for this repository"
+            echo "   CodeQL requires Code Scanning to be enabled in repository settings"
+            echo "   See: https://github.com/${{ github.repository }}/settings/security_analysis"
+            echo "   For private repositories, this requires GitHub Advanced Security"
+          fi
+
+      - name: Initialize CodeQL (if available)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql-config.yml
 
       - name: Setup Node.js
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
@@ -42,6 +62,7 @@ jobs:
           cache-dependency-path: './package-lock.json'
 
       - name: Install dependencies
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         working-directory: ./GALAX_App_files
         run: |
           if [ ! -d "node_modules" ]; then
@@ -49,10 +70,34 @@ jobs:
           fi
 
       - name: Build application
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         working-directory: ./GALAX_App_files
         run: npm run build
 
       - name: Perform CodeQL Analysis
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
+
+      - name: CodeQL Not Available Notice
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'false'
+        run: |
+          echo "==================================================================================="
+          echo "⚠️  CodeQL Analysis Skipped"
+          echo "==================================================================================="
+          echo ""
+          echo "CodeQL analysis is not available for this repository because:"
+          echo "  • Code scanning is not enabled in repository settings"
+          echo "  • For private repositories, GitHub Advanced Security is required"
+          echo ""
+          echo "To enable CodeQL analysis:"
+          echo "  1. Go to repository Settings → Security & analysis"
+          echo "  2. Enable 'Code scanning alerts'"
+          echo "  3. For private repos: Enable 'GitHub Advanced Security'"
+          echo ""
+          echo "Repository settings: https://github.com/${{ github.repository }}/settings/security_analysis"
+          echo "Documentation: https://docs.github.com/en/code-security/code-scanning"
+          echo ""
+          echo "Alternative security analysis is available in the Security Scan workflow."
+          echo "==================================================================================="

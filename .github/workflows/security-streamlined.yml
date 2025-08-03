@@ -101,7 +101,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Dependency Review
+      - name: Check if GitHub Advanced Security is available
+        id: ghas-check
+        run: |
+          # Try to check if dependency graph is available by making a test API call
+          if curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  "https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots" \
+                  2>/dev/null | grep -q "dependency_graph_snapshots_url\|vulnerabilities"; then
+            echo "ghas_available=true" >> $GITHUB_OUTPUT
+            echo "✅ GitHub Advanced Security features appear to be available"
+          else
+            echo "ghas_available=false" >> $GITHUB_OUTPUT
+            echo "⚠️  GitHub Advanced Security features not available for this repository"
+            echo "   Dependency Review requires GitHub Advanced Security for private repositories"
+            echo "   See: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review"
+          fi
+
+      - name: Dependency Review (GHAS Available)
+        if: steps.ghas-check.outputs.ghas_available == 'true'
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: moderate
@@ -109,6 +127,123 @@ jobs:
             LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
             CDDL-1.0, CDDL-1.1
           comment-summary-in-pr: always
+
+      - name: Alternative Dependency Check (GHAS Not Available)
+        if: steps.ghas-check.outputs.ghas_available == 'false'
+        run: |
+          echo "⚠️  Dependency Review is not available - using npm audit as alternative"
+          echo "   To enable full dependency review, enable GitHub Advanced Security"
+          echo "   Repository settings: https://github.com/${{ github.repository }}/settings/security_analysis"
+          
+          # Run npm audit as alternative
+          cd GALAX_App_files
+          if [ -f "package-lock.json" ]; then
+            echo "Running npm audit for dependency security check..."
+            npm audit --audit-level=moderate || true
+            echo "Alternative dependency check completed"
+          else
+            echo "No package-lock.json found, skipping dependency check"
+          fi
+
+  security-analysis:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_full_scan == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if Code Scanning is available
+        id: code-scanning-check
+        run: |
+          # Check if code scanning is enabled for this repository
+          if curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts" \
+                  2>/dev/null | grep -v "Advanced Security must be enabled" | grep -q "\[\]"; then
+            echo "code_scanning_available=true" >> $GITHUB_OUTPUT
+            echo "✅ Code scanning appears to be available"
+          else
+            echo "code_scanning_available=false" >> $GITHUB_OUTPUT
+            echo "⚠️  Code scanning not available for this repository"
+            echo "   CodeQL requires Code Scanning to be enabled in repository settings"
+            echo "   See: https://github.com/${{ github.repository }}/settings/security_analysis"
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: './package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./GALAX_App_files
+        run: |
+          if [ ! -d "node_modules" ]; then
+            npm ci --prefer-offline --no-audit --no-fund
+          fi
+
+      - name: CodeQL Analysis (if available)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          config-file: ./.github/codeql-config.yml
+
+      - name: Build application (for CodeQL)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
+        working-directory: ./GALAX_App_files
+        run: |
+          echo "Building application for CodeQL analysis..."
+          npm run build
+
+      - name: Perform CodeQL Analysis
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+
+      - name: Alternative Static Analysis (if CodeQL unavailable)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'false'
+        run: |
+          echo "⚠️  CodeQL analysis is not available - using alternative static analysis"
+          echo "   To enable CodeQL, enable Code Scanning in repository settings"
+          
+          cd GALAX_App_files
+          
+          # Try to run ESLint if available
+          if npm list eslint > /dev/null 2>&1; then
+            echo "Running ESLint static analysis..."
+            npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-results.json || true
+            if [ -f "eslint-results.json" ]; then
+              echo "ESLint analysis completed - $(jq length eslint-results.json) issues found"
+            fi
+          else
+            echo "ESLint not available, running basic syntax checks..."
+            
+            # Basic TypeScript/JavaScript syntax checking
+            if command -v tsc >/dev/null 2>&1; then
+              echo "Running TypeScript compiler checks..."
+              npx tsc --noEmit --skipLibCheck || true
+            fi
+            
+            echo "Alternative static analysis completed"
+          fi
+
+      - name: Upload static analysis results
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('GALAX_App_files/eslint-results.json') != ''
+        with:
+          name: static-analysis-results
+          path: ./GALAX_App_files/eslint-results.json
+          retention-days: 7
 
   static-analysis:
     name: Static Analysis
@@ -236,7 +371,7 @@ jobs:
     name: Report Security Status
     runs-on: ubuntu-latest
     if: always()
-    needs: [dependency-review, static-analysis, dependency-scan, secret-scan]
+    needs: [dependency-review, security-analysis, static-analysis, dependency-scan, secret-scan]
     timeout-minutes: 5
 
     steps:
@@ -246,6 +381,7 @@ jobs:
           script: |
             const jobs = [
               { name: 'dependency-review', result: '${{ needs.dependency-review.result }}' },
+              { name: 'security-analysis', result: '${{ needs.security-analysis.result }}' },
               { name: 'static-analysis', result: '${{ needs.static-analysis.result }}' },
               { name: 'dependency-scan', result: '${{ needs.dependency-scan.result }}' },
               { name: 'secret-scan', result: '${{ needs.secret-scan.result }}' }
@@ -259,20 +395,9 @@ jobs:
             let status = 'success';
             let description = `Security checks completed (${successful.length}/${jobs.length} successful)`;
 
-            // Note: We're being more lenient here since static analysis might fail 
-            // due to missing linters, but the analysis itself may succeed
             if (failed.length > 0) {
-              // Check if the failure is only static-analysis (missing linter tools)
-              const nonStaticAnalysisFailures = failed.filter(job => job.name !== 'static-analysis');
-              
-              if (nonStaticAnalysisFailures.length > 0) {
-                status = 'failure';
-                description = `${nonStaticAnalysisFailures.length} critical security check(s) failed: ${nonStaticAnalysisFailures.map(j => j.name).join(', ')}`;
-              } else {
-                // Only static analysis failed, likely due to missing linter tools
-                status = 'success';
-                description = `Security checks completed. Note: Static analysis failed (linter tools may not be configured)`;
-              }
+              status = 'failure';
+              description = `${failed.length} security check(s) failed: ${failed.map(j => j.name).join(', ')}`;
             } else if (cancelled.length > 0) {
               status = 'cancelled';
               description = `${cancelled.length} security check(s) cancelled: ${cancelled.map(j => j.name).join(', ')}`;
@@ -281,15 +406,9 @@ jobs:
             console.log(`Security Scan Status: ${status}`);
             console.log(`Description: ${description}`);
             console.log('Job Results:', JSON.stringify(jobs, null, 2));
-            
-            if (failed.length > 0) {
-              console.log('⚠️  Note: If only static-analysis failed, this may be due to missing linter configuration.');
-              console.log('   Static analysis results are still available as workflow artifacts.');
-            }
 
-            // Only fail if there are non-static-analysis failures
-            const criticalFailures = failed.filter(job => job.name !== 'static-analysis');
-            if (criticalFailures.length > 0) {
+            // Set overall workflow status
+            if (status === 'failure') {
               core.setFailed(description);
             }
 
@@ -300,6 +419,7 @@ jobs:
           script: |
             const jobs = [
               { name: 'Dependency Review', result: '${{ needs.dependency-review.result }}' },
+              { name: 'Security Analysis', result: '${{ needs.security-analysis.result }}' },
               { name: 'Static Analysis', result: '${{ needs.static-analysis.result }}' },
               { name: 'Dependency Security', result: '${{ needs.dependency-scan.result }}' },
               { name: 'Secret Detection', result: '${{ needs.secret-scan.result }}' }
@@ -307,14 +427,14 @@ jobs:
 
             for (const job of jobs) {
               let state = job.result === 'success' ? 'success' :
-                         job.result === 'failure' ? 'failure' : 'pending';
+                         job.result === 'failure' ? 'failure' : 
+                         job.result === 'skipped' ? 'success' : 'pending';
               
               let description = `${job.name}: ${job.result}`;
               
-              // Special handling for Static Analysis that might fail due to missing linters
-              if (job.name === 'Static Analysis' && job.result === 'failure') {
-                state = 'success';  // Don't block on static analysis tool issues
-                description = `${job.name}: completed (linter tools may not be configured)`;
+              // Handle skipped jobs as successful (they were skipped for valid reasons)
+              if (job.result === 'skipped') {
+                description = `${job.name}: skipped (not required for this change)`;
               }
 
               await github.rest.repos.createCommitStatus({
