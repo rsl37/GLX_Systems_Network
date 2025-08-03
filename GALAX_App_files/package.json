@@ -19,6 +19,7 @@
     "test:e2e": "scripts/ensure-test-dirs.sh && playwright test",
     "test:all": "npm run test && npm run test:security && npm run test:e2e",
     "test:env": "npx tsx scripts/test-env.ts",
+    "test:services": "npx tsx scripts/test-service-connectivity.ts",
     "deployment:check": "npx tsx scripts/deployment-check.ts",
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
     "production:setup": "npx tsx scripts/production-setup.js",
