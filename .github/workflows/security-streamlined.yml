@@ -232,9 +232,16 @@ jobs:
           # Try to run ESLint if available
           if npm list eslint > /dev/null 2>&1; then
             echo "Running ESLint static analysis..."
-            npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-results.json || true
-            if [ -f "eslint-results.json" ]; then
-              echo "ESLint analysis completed - $(jq length eslint-results.json) issues found"
+            npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-results.json
+            ESLINT_EXIT_CODE=$?
+            if [ $ESLINT_EXIT_CODE -eq 0 ] || [ $ESLINT_EXIT_CODE -eq 1 ]; then
+              if [ -f "eslint-results.json" ]; then
+                echo "ESLint analysis completed - $(jq length eslint-results.json) issues found"
+              fi
+            else
+              echo "❌ ESLint failed with exit code $ESLINT_EXIT_CODE (configuration or runtime error)"
+              exit $ESLINT_EXIT_CODE
+            fi
             fi
           else
             echo "ESLint not available, running basic syntax checks..."
