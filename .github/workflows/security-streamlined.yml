@@ -132,6 +132,7 @@ jobs:
           cache-dependency-path: |
             ./package-lock.json
             ./GALAX_App_files/package.json
+            ./GALAX_App_files/package-lock.json
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files
