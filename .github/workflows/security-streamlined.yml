@@ -181,7 +181,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: |
             ./package-lock.json
-            ./GALAX_App_files/package.json
+            ./GALAX_App_files/package-lock.json
 
       - name: Ensure cache directories exist
         run: mkdir -p ./GALAX_App_files/node_modules
