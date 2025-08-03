@@ -73,10 +73,34 @@ For urgent security matters, create a security advisory with:
 ## 🔍 Security Monitoring
 
 ### Automated Security Checks
-- **Dedicated CodeQL Analysis**: GitHub Code Scanning with static code security scanning
-- **Dependency Scanning**: Vulnerability detection in dependencies
-- **Secret Scanning**: Detection of exposed credentials
-- **Security Audit**: Regular npm audit checks
+Our security workflows provide comprehensive protection through multiple layers:
+
+#### Core Security Features (Always Available)
+- **Dependency Scanning**: npm audit vulnerability detection in dependencies
+- **Secret Scanning**: TruffleHog-based detection of exposed credentials  
+- **Static Analysis**: ESLint security rules and custom analysis
+- **Node.js Security Scan**: njsscan static security code scanner
+
+#### Advanced Security Features (GitHub Advanced Security)
+- **CodeQL Analysis**: GitHub's semantic code analysis engine
+- **Dependency Review**: Advanced dependency vulnerability analysis
+- **SARIF Upload**: Security results integration with GitHub Security tab
+
+> **Note**: Advanced security features require GitHub Advanced Security for private repositories. 
+> Core security scanning continues to function regardless of Advanced Security availability.
+> See [GitHub Advanced Security documentation](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) for more information.
+
+### Security Workflow Behavior
+- **Graceful Degradation**: Workflows continue with available security tools when Advanced Security features are unavailable
+- **Comprehensive Coverage**: Multiple security tools ensure thorough vulnerability detection
+- **Artifact Preservation**: Security scan results are preserved as workflow artifacts when GitHub Security tab integration is unavailable
+- **Status Reporting**: Clear distinction between core security failures and Advanced Security unavailability
+
+### Security Scan Results
+- **GitHub Security Tab**: Available with GitHub Advanced Security enabled
+- **Workflow Artifacts**: Security scan results stored as downloadable artifacts
+- **Pull Request Comments**: Automated security status reporting in PRs
+- **Commit Status Checks**: Individual security check status indicators
 
 ### Real-time Monitoring
 - **Failed Authentication Attempts**: Account lockout after 5 attempts
