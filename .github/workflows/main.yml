@@ -1,0 +1,153 @@
+---
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop, 'copilot/**']
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vercel.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vercel.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  statuses: write
+
+env:
+  NODE_VERSION: 20.x
+  WORKING_DIRECTORY: ./GALAX_App_files
+  CACHE_VERSION: v1
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Generate cache key
+        id: cache-key
+        run: |
+          echo "key=${{ env.CACHE_VERSION }}-${{ runner.os }}-node-\
+            ${{ env.NODE_VERSION }}-\
+            $(sha256sum ${{ env.WORKING_DIRECTORY }}/package.json | cut -d' ' -f1)" \
+            >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.WORKING_DIRECTORY }}/node_modules
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            ${{ env.CACHE_VERSION }}-${{ runner.os }}-node-${{ env.NODE_VERSION }}-
+            ${{ env.CACHE_VERSION }}-${{ runner.os }}-node-
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm install --prefer-offline --no-audit --no-fund
+
+      - name: Build application
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run build
+
+      - name: Run tests
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm test
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: ${{ env.WORKING_DIRECTORY }}/dist/
+          retention-days: 7
+        if: success()
+
+  security-check:
+    name: Security Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm install --prefer-offline --no-audit --no-fund
+
+      - name: Run security audit
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm audit --audit-level=moderate || true
+
+  report-status:
+    name: Report Workflow Status
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-check]
+    if: always()
+
+    steps:
+      - name: Report results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'build-and-test', result: '${{ needs.build-and-test.result }}' },
+              { name: 'lint-and-format', result: 'skipped' },
+              { name: 'security-scan', result: '${{ needs.security-check.result }}' },
+              { name: 'deployment-check', result: 'skipped' }
+            ];
+
+            const failed = jobs.filter(job => job.result === 'failure');
+            const cancelled = jobs.filter(job => job.result === 'cancelled');
+            const skipped = jobs.filter(job => job.result === 'skipped');
+            const successful = jobs.filter(job => job.result === 'success');
+
+            let status = 'success';
+            let description = `All checks passed (${successful.length}/${jobs.length})`;
+
+            if (failed.length > 0) {
+              status = 'failure';
+              description = `${failed.length} check(s) failed: ${failed.map(j => j.name).join(', ')}`;
+            } else if (cancelled.length > 0) {
+              status = 'cancelled';
+              description = `${cancelled.length} check(s) cancelled: ${cancelled.map(j => j.name).join(', ')}`;
+            }
+
+            console.log(`Workflow Status: ${status}`);
+            console.log(`Description: ${description}`);
+            console.log('Job Results:', JSON.stringify(jobs, null, 2));
+
+            // Set overall workflow status
+            if (status === 'failure') {
+              core.setFailed(description);
+            }

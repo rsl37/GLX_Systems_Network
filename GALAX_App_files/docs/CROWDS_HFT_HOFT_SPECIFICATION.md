@@ -2,7 +2,7 @@
 title: "CROWDS as Holistically Fungible Token (HFT/HOFT): Complete Specification"
 description: ""
 lastUpdated: "2025-08-03"
-nextReview: "2026-02-03"
+nextReview: "2025-09-03"
 contentType: "specification"
 maintainer: "GALAX Development Team"
 version: "1.0.0"

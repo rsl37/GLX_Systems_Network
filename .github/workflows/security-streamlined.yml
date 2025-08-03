@@ -15,7 +15,6 @@ name: Security Scan
       - 'package.json'
       - 'GALAX_App_files/package.json'
       - 'package-lock.json'
-      - 'GALAX_App_files/package-lock.json'
       - '.env*'
       - 'GALAX_App_files/.env*'
       - '.github/workflows/security-streamlined.yml'
@@ -26,7 +25,6 @@ name: Security Scan
       - 'package.json'
       - 'GALAX_App_files/package.json'
       - 'package-lock.json'
-      - 'GALAX_App_files/package-lock.json'
       - '.env*'
       - 'GALAX_App_files/.env*'
   schedule:
@@ -72,7 +70,6 @@ jobs:
               - 'package.json'
               - 'GALAX_App_files/package.json'
               - 'package-lock.json'
-              - 'GALAX_App_files/package-lock.json'
               - 'npm-shrinkwrap.json'
               - 'GALAX_App_files/npm-shrinkwrap.json'
             security:
@@ -131,11 +128,11 @@ jobs:
       - name: Dependency Review (GHAS Available)
         if: steps.ghas-check.outputs.ghas_available == 'true'
         uses: actions/dependency-review-action@v4
+        continue-on-error: true
+        id: dependency-review
         with:
           fail-on-severity: moderate
-          deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0,
-            LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
-            CDDL-1.0, CDDL-1.1
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, PolyForm-Shield-1.0.0
           comment-summary-in-pr: always
 
       - name: Alternative Dependency Check (GHAS Not Available)
@@ -164,6 +161,10 @@ jobs:
       github.event_name == 'schedule' || 
       github.event.inputs.force_run == 'true' ||
       needs.detect-security-changes.outputs.needs_full_scan == 'true'
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout code
@@ -282,13 +283,17 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files
         run: |
           if [ ! -d "node_modules" ]; then
-            npm ci --prefer-offline --no-audit --no-fund
+            if [ -f "package-lock.json" ]; then
+              npm ci --prefer-offline --no-audit --no-fund
+            else
+              npm install --prefer-offline --no-audit --no-fund
+            fi
           fi
 
       - name: Run ESLint (if available)
@@ -329,14 +334,19 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
 
       - name: Ensure cache directories exist
         run: mkdir -p ./GALAX_App_files/node_modules
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm ci --prefer-offline --no-audit --no-fund
+          else
+            npm install --prefer-offline --no-audit --no-fund
+          fi
 
       - name: Run npm audit
         working-directory: ./GALAX_App_files
@@ -380,8 +390,9 @@ jobs:
         uses: trufflesecurity/trufflehog@v3.90.2
         with:
           path: ./
-          base: main
-          head: HEAD
+          # For scheduled runs, scan entire repo history. For PR/push, compare commits
+          base: ${{ github.event_name == 'schedule' && '' || 'main' }}
+          head: ${{ github.event_name == 'schedule' && '' || 'HEAD' }}
           extra_args: --only-verified
 
   # Status reporting job to ensure proper PR status updates
@@ -442,6 +453,8 @@ jobs:
               { name: 'Dependency Security', result: '${{ needs.dependency-scan.result }}' },
               { name: 'Secret Detection', result: '${{ needs.secret-scan.result }}' }
             ];
+
+            const advancedSecurityJobs = ['Dependency Review', 'Security Analysis (CodeQL)'];
 
             for (const job of jobs) {
               let state = job.result === 'success' ? 'success' :

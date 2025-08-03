@@ -2,7 +2,7 @@
 title: "It is also an anime trademark right? How do I contact the studio that made the anime and the author of the story? I would like to credit them as thanks and possibly get some of the author’s input."
 description: ""
 lastUpdated: "2025-08-03"
-nextReview: "2026-02-03"
+nextReview: "2025-09-03"
 contentType: "documentation"
 maintainer: "GALAX Development Team"
 version: "1.0.0"
