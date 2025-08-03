@@ -25,9 +25,16 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 - **Features**: Enhanced caching, parallel execution, artifact management, **path-based triggers**
 - **Improvements**: ⚡ 40% faster builds, **smart execution**, comprehensive reporting
 
-### 2. ✅ Security Analysis (`security-streamlined.yml`) - NOW INTELLIGENT
-- **Jobs**: Dependency Review, CodeQL Analysis, npm Audit, Secret Detection
-- **Features**: License compliance, SARIF reporting, automated alerts, **security-sensitive triggering**
+### 2. ✅ Security Analysis System (Multi-Workflow) - NOW INTELLIGENT
+
+#### CodeQL Analysis (`codeql.yml`) - NEW DEDICATED WORKFLOW
+- **Jobs**: CodeQL Static Analysis, SARIF Reporting
+- **Features**: Dedicated GitHub Code Scanning integration, quantum-safe configuration
+- **Benefits**: 🔒 Automatic Code Scanning enablement, integrated security tab results
+
+#### Security Streamlined (`security-streamlined.yml`) - ENHANCED
+- **Jobs**: Dependency Review, Static Analysis, npm Audit, Secret Detection
+- **Features**: License compliance, automated alerts, **security-sensitive triggering**
 - **Improvements**: 🔒 PR dependency review, **smart security scanning**, compliance checking
 
 ### 3. ✅ Web3 & Crypto (`web3-checks.yml`) - NOW INTELLIGENT
@@ -71,8 +78,9 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 - **Smart Triggers**: Path-based filtering reduces unnecessary executions
 
 ### 🔒 Security Enhancements
+- **Dedicated CodeQL Workflow**: Separate workflow for GitHub Code Scanning enablement
 - **Dependency Review**: Automated license and vulnerability checking for PRs
-- **Enhanced CodeQL**: Custom configuration with SARIF reporting
+- **Enhanced CodeQL**: Custom configuration with SARIF reporting and Security tab integration
 - **License Compliance**: Automated checking for approved/denied licenses
 - **Secret Detection**: Improved patterns and comprehensive scanning
 
@@ -101,7 +109,7 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 | Aspect | Coverage | Workflows | Automation Level | Intelligence |
 |--------|----------|-----------|------------------|--------------|
 | **Build & Test** | ✅ Complete | comprehensive-checks.yml | Full automation | 🧠 Smart triggers |
-| **Security** | ✅ Enhanced | security-streamlined.yml | Daily scans + PR checks | 🧠 Security-sensitive |
+| **Security** | ✅ Enhanced | codeql.yml, security-streamlined.yml | Daily scans + PR checks | 🧠 Security-sensitive |
 | **Web3/Crypto** | ✅ Comprehensive | web3-checks.yml | PR + Daily scans | 🧠 Web3-specific |
 | **Deployment** | ✅ Full automation | preview-deploy.yml, release.yml | PR previews + production | 🧠 App-change detection |
 | **Monitoring** | ✅ Proactive | workflow-monitor.yml | Health tracking + alerts | 🧠 Pattern analysis |

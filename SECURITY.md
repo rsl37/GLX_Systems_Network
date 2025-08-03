@@ -73,7 +73,7 @@ For urgent security matters, create a security advisory with:
 ## 🔍 Security Monitoring
 
 ### Automated Security Checks
-- **CodeQL Analysis**: Static code security scanning
+- **Dedicated CodeQL Analysis**: GitHub Code Scanning with static code security scanning
 - **Dependency Scanning**: Vulnerability detection in dependencies
 - **Secret Scanning**: Detection of exposed credentials
 - **Security Audit**: Regular npm audit checks
