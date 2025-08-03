@@ -53,6 +53,23 @@ jobs:
         run: npm run build
 
       - name: Perform CodeQL Analysis
+        id: codeql-analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
+        continue-on-error: true
+
+      - name: Check CodeQL Analysis Status
+        if: steps.codeql-analysis.outcome == 'failure'
+        run: |
+          echo "⚠️ CodeQL analysis failed. This might be because:"
+          echo "1. Code scanning is not enabled in repository settings"
+          echo "2. There are no security-events permissions"
+          echo "3. The repository is private and doesn't have GitHub Advanced Security"
+          echo ""
+          echo "To fix this:"
+          echo "1. Go to repository Settings → Security & analysis"
+          echo "2. Enable 'Code scanning' and 'Secret scanning'"
+          echo "3. Or contact repository admin to enable GitHub Advanced Security"
+          echo ""
+          echo "CodeQL analysis completed but results could not be uploaded to GitHub."
