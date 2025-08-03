@@ -1,3 +1,15 @@
+---
+title: "**GALAX Name Trademark Protection**"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "documentation"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
 # **GALAX Name Trademark Protection**
@@ -138,4 +150,3 @@ The trademark has been successfully maintained through required renewal filings,
 [^49]: https://developer.samsung.com/galaxy-store/ip-infringement.html
 
 [^50]: https://www.samsung.com/us/apps/samsung-wallet/
-

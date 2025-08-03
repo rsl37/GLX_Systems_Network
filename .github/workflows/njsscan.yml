@@ -38,5 +38,23 @@ jobs:
           args: '. --sarif --output results.sarif || true'
       - name: Upload njsscan report
         uses: github/codeql-action/upload-sarif@v3
+        continue-on-error: true
+        id: upload-sarif
         with:
           sarif_file: results.sarif
+
+      - name: Handle SARIF upload unavailable
+        if: steps.upload-sarif.outcome == 'failure'
+        run: |
+          echo "⚠️ SARIF upload is not available for this repository."
+          echo "This feature requires GitHub Advanced Security for private repositories."
+          echo "The njsscan analysis was completed successfully, but results cannot be uploaded to GitHub's security tab."
+          echo "Consider enabling GitHub Advanced Security or making the repository public to use this feature."
+
+      - name: Upload njsscan results as artifact
+        if: steps.upload-sarif.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: njsscan-results
+          path: results.sarif
+          retention-days: 7

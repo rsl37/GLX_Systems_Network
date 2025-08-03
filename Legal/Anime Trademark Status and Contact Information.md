@@ -1,3 +1,15 @@
+---
+title: "It is also an anime trademark right? How do I contact the studio that made the anime and the author of the story? I would like to credit them as thanks and possibly get some of the author’s input."
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "documentation"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
 # It is also an anime trademark right? How do I contact the studio that made the anime and the author of the story? I would like to credit them as thanks and possibly get some of the author’s input.
@@ -77,4 +89,3 @@ The series is based on the **original "Gatchaman" franchise created by Tatsunoko
 - Be prepared for a **lengthy approval process**
 
 Your plan to credit the original creators and seek their input shows excellent respect for intellectual property rights. However, you'll need to go through the proper licensing channels with Tatsunoko Production to use any elements from Gatchaman Crowds, including the GALAX app concept, regardless of whether you're creating something similar rather than identical.
-

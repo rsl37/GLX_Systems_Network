@@ -1,3 +1,15 @@
+---
+title: "Third-Party Licenses"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "legal"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Third-Party Licenses
 
 This document provides information about third-party software components used in the GALAX Civic Networking App and their respective licenses.

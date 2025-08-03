@@ -1,3 +1,15 @@
+---
+title: "GALAX Civic Networking App - Root Scripts"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "overview"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # GALAX Civic Networking App - Root Scripts
 
 This directory contains utility scripts that can be run from the repository root directory.

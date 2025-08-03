@@ -1,3 +1,15 @@
+---
+title: "Of these naming choices, how would each name and each letter of the GALAX acronym reflect my vision?:"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "documentation"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
 # Of these naming choices, how would each name and each letter of the GALAX acronym reflect my vision?:
@@ -192,4 +204,3 @@ Each acronym option reflects different aspects of your vision, from the technica
 [^39]: https://www.countyhealthrankings.org/strategies-and-solutions/what-works-for-health/strategies/social-media-for-civic-participation
 
 [^40]: https://www.peoplepowered.org/digital-participation
-

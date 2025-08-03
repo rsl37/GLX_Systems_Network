@@ -1,3 +1,15 @@
+---
+title: "About GALAX"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "documentation"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # About GALAX
 
 **GALAX: Web3 Civic Networking Platform** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
@@ -45,7 +57,9 @@ GALAX implements enterprise-grade security measures:
 
 ## 🎯 Vision
 
-Build a feature-rich, technologically advanced platform for civic engagement that can serve as a model for democratic participation in the digital age, combining cutting-edge security with user-friendly interfaces for maximum community impact.
+Build a feature-rich, technologically advanced platform for civic engagement that can serve 
+as a model for democratic participation in the digital age, combining cutting-edge security 
+with user-friendly interfaces for maximum community impact.
 
 ## 📈 Recent Achievements
 

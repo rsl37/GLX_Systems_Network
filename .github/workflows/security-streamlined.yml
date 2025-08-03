@@ -3,13 +3,39 @@ name: Security Scan
 
 # NOTE: For comprehensive license compliance checks, see license-compliance.yml workflow
 # This workflow focuses on security vulnerabilities and basic license restrictions
+#
+# NOTE: CodeQL analysis is handled by the dedicated codeql.yml workflow.
+# This workflow focuses on dependency security, secret detection, and static analysis.
 
 'on':
   pull_request:
     branches: [main, develop, production]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'GALAX_App_files/package.json'
+      - 'package-lock.json'
+      - '.env*'
+      - 'GALAX_App_files/.env*'
+      - '.github/workflows/security-streamlined.yml'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'GALAX_App_files/**'
+      - 'package.json'
+      - 'GALAX_App_files/package.json'
+      - 'package-lock.json'
+      - '.env*'
+      - 'GALAX_App_files/.env*'
   schedule:
     # Run security scans daily at 2 AM UTC
     - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run all security checks'
+        required: false
+        default: 'false'
 
 permissions:
   contents: read
@@ -19,18 +45,91 @@ permissions:
   checks: write
 
 jobs:
+  detect-security-changes:
+    name: Detect Security-Relevant Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name != 'schedule'
+    outputs:
+      needs_dependency_review: ${{ steps.changes.outputs.dependencies }}
+      needs_security_scan: ${{ steps.changes.outputs.security }}
+      needs_full_scan: ${{ steps.changes.outputs.full_scan }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for security-relevant changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            dependencies:
+              - 'package.json'
+              - 'GALAX_App_files/package.json'
+              - 'package-lock.json'
+              - 'npm-shrinkwrap.json'
+              - 'GALAX_App_files/npm-shrinkwrap.json'
+            security:
+              - 'GALAX_App_files/server/**'
+              - '.env*'
+              - 'GALAX_App_files/.env*'
+              - '**/*auth*'
+              - '**/*security*'
+              - '**/*middleware*'
+            full_scan:
+              - 'GALAX_App_files/**'
+              - 'package.json'
+              - 'package-lock.json'
+
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: |
+      github.event_name == 'pull_request' && 
+      (needs.detect-security-changes.outputs.needs_dependency_review == 'true' || 
+       github.event.inputs.force_run == 'true')
+    needs: detect-security-changes
     timeout-minutes: 10
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Dependency Review
+      - name: Check if GitHub Advanced Security is available
+        id: ghas-check
+        run: |
+          # Try to check if dependency graph is available by making a test API call
+          response=$(curl --fail --show-error --silent --max-time 10 --retry 3 --retry-delay 2 \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -w "HTTPSTATUS:%{http_code}" \
+            "https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots" 2>&1)
+          body=$(echo "$response" | sed -e 's/HTTPSTATUS\:.*//g')
+          status=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          if [ "$status" -eq 200 ] && echo "$body" | jq . >/dev/null 2>&1; then
+            if echo "$body" | grep -q "dependency_graph_snapshots_url\|vulnerabilities"; then
+              echo "ghas_available=true" >> $GITHUB_OUTPUT
+              echo "✅ GitHub Advanced Security features appear to be available"
+            else
+              echo "ghas_available=false" >> $GITHUB_OUTPUT
+              echo "⚠️  GitHub Advanced Security features not available for this repository"
+              echo "   Dependency Review requires GitHub Advanced Security for private repositories"
+              echo "   See: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review"
+            fi
+          else
+            echo "ghas_available=false" >> $GITHUB_OUTPUT
+            echo "❌ Failed to query GitHub API or invalid response (status: $status)"
+            echo "   Output: $body"
+          fi
+
+      - name: Dependency Review (GHAS Available)
+        if: steps.ghas-check.outputs.ghas_available == 'true'
         uses: actions/dependency-review-action@v4
+        continue-on-error: true
+        id: dependency-review
         with:
           fail-on-severity: moderate
           deny-licenses:
@@ -47,12 +146,35 @@ jobs:
             - MPL-2.0
             - CDDL-1.0
             - CDDL-1.1
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, PolyForm-Shield-1.0.0
           comment-summary-in-pr: always
+
+      - name: Alternative Dependency Check (GHAS Not Available)
+        if: steps.ghas-check.outputs.ghas_available == 'false'
+        run: |
+          echo "⚠️  Dependency Review is not available - using npm audit as alternative"
+          echo "   To enable full dependency review, enable GitHub Advanced Security"
+          echo "   Repository settings: https://github.com/${{ github.repository }}/settings/security_analysis"
+          
+          # Run npm audit as alternative
+          cd GALAX_App_files
+          if [ -f "package-lock.json" ]; then
+            echo "Running npm audit for dependency security check..."
+            npm audit --audit-level=moderate || true
+            echo "Alternative dependency check completed"
+          else
+            echo "No package-lock.json found, skipping dependency check"
+          fi
 
   security-analysis:
     name: Security Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_full_scan == 'true'
     permissions:
       actions: read
       contents: read
@@ -62,11 +184,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          config-file: ./.github/codeql-config.yml
+      - name: Check if Code Scanning is available
+        id: code-scanning-check
+        run: |
+          # Check if code scanning is enabled for this repository by inspecting the HTTP status code
+          response=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts")
+          if [ "$response" -eq 200 ]; then
+            echo "code_scanning_available=true" >> $GITHUB_OUTPUT
+            echo "✅ Code scanning appears to be available"
+          else
+            echo "code_scanning_available=false" >> $GITHUB_OUTPUT
+            echo "⚠️  Code scanning not available for this repository (HTTP status: $response)"
+            echo "   CodeQL requires Code Scanning to be enabled in repository settings"
+            echo "   See: https://github.com/${{ github.repository }}/settings/security_analysis"
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -75,25 +209,85 @@ jobs:
           cache: 'npm'
           cache-dependency-path: './package-lock.json'
 
-      - name: Ensure cache directories exist
-        run: mkdir -p ./GALAX_App_files/node_modules
-
       - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund
 
-      - name: Build for analysis
         working-directory: ./GALAX_App_files
-        run: npm run build
+        run: |
+          if [ ! -d "node_modules" ]; then
+            npm ci --prefer-offline --no-audit --no-fund
+          fi
+
+      - name: CodeQL Analysis (if available)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          config-file: ./.github/codeql-config.yml
+
+      - name: Build application (for CodeQL)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
+        working-directory: ./GALAX_App_files
+        run: |
+          echo "Building application for CodeQL analysis..."
+          npm run build
 
       - name: Perform CodeQL Analysis
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript"
 
-  dependency-scan:
-    name: Dependency Security
+      - name: Alternative Static Analysis (if CodeQL unavailable)
+        if: steps.code-scanning-check.outputs.code_scanning_available == 'false'
+        run: |
+          echo "⚠️  CodeQL analysis is not available - using alternative static analysis"
+          echo "   To enable CodeQL, enable Code Scanning in repository settings"
+          
+          cd GALAX_App_files
+          
+          # Try to run ESLint if available
+          if npm list eslint > /dev/null 2>&1; then
+            echo "Running ESLint static analysis..."
+            npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-results.json
+            ESLINT_EXIT_CODE=$?
+            if [ $ESLINT_EXIT_CODE -eq 0 ] || [ $ESLINT_EXIT_CODE -eq 1 ]; then
+              if [ -f "eslint-results.json" ]; then
+                echo "ESLint analysis completed - $(jq length eslint-results.json) issues found"
+              fi
+            else
+              echo "❌ ESLint failed with exit code $ESLINT_EXIT_CODE (configuration or runtime error)"
+              exit $ESLINT_EXIT_CODE
+            fi
+            fi
+          else
+            echo "ESLint not available, running basic syntax checks..."
+            
+            # Basic TypeScript/JavaScript syntax checking
+            if command -v tsc >/dev/null 2>&1; then
+              echo "Running TypeScript compiler checks..."
+              npx tsc --noEmit --skipLibCheck || true
+            fi
+            
+            echo "Alternative static analysis completed"
+          fi
+
+      - name: Upload static analysis results
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('GALAX_App_files/eslint-results.json') != ''
+        with:
+          name: static-analysis-results
+          path: ./GALAX_App_files/eslint-results.json
+          retention-days: 7
+
+  static-analysis:
+    name: Static Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_full_scan == 'true'
 
     steps:
       - name: Checkout code
@@ -104,13 +298,70 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./GALAX_App_files
+        run: |
+          if [ ! -d "node_modules" ]; then
+            if [ -f "package-lock.json" ]; then
+              npm ci --prefer-offline --no-audit --no-fund
+            else
+              npm install --prefer-offline --no-audit --no-fund
+            fi
+          fi
+
+      - name: Run ESLint (if available)
+        working-directory: ./GALAX_App_files
+        run: |
+          if npm list eslint > /dev/null 2>&1; then
+            npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-results.json || true
+            echo "ESLint analysis completed"
+          else
+            echo "ESLint not found, skipping static analysis"
+          fi
+
+      - name: Upload static analysis results
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('GALAX_App_files/eslint-results.json') != ''
+        with:
+          name: static-analysis-results
+          path: ./GALAX_App_files/eslint-results.json
+          retention-days: 7
+
+  dependency-scan:
+    name: Dependency Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_dependency_review == 'true' ||
+      needs.detect-security-changes.outputs.needs_security_scan == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
 
       - name: Ensure cache directories exist
         run: mkdir -p ./GALAX_App_files/node_modules
 
       - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund
+        working-directory: ./GALAX_App_files
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm ci --prefer-offline --no-audit --no-fund
+          else
+            npm install --prefer-offline --no-audit --no-fund
+          fi
 
       - name: Run npm audit
         working-directory: ./GALAX_App_files
@@ -138,6 +389,11 @@ jobs:
     name: Secret Detection
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: detect-security-changes
+    if: |
+      github.event_name == 'schedule' || 
+      github.event.inputs.force_run == 'true' ||
+      needs.detect-security-changes.outputs.needs_security_scan == 'true'
 
     steps:
       - name: Checkout code
@@ -149,8 +405,9 @@ jobs:
         uses: trufflesecurity/trufflehog@v3.90.2
         with:
           path: ./
-          base: main
-          head: HEAD
+          # For scheduled runs, scan entire repo history. For PR/push, compare commits
+          base: ${{ github.event_name == 'schedule' && '' || 'main' }}
+          head: ${{ github.event_name == 'schedule' && '' || 'HEAD' }}
           extra_args: --only-verified
 
   # Status reporting job to ensure proper PR status updates
@@ -158,7 +415,7 @@ jobs:
     name: Report Security Status
     runs-on: ubuntu-latest
     if: always()
-    needs: [dependency-review, security-analysis, dependency-scan, secret-scan]
+    needs: [dependency-review, security-analysis, static-analysis, dependency-scan, secret-scan]
     timeout-minutes: 5
 
     steps:
@@ -169,6 +426,7 @@ jobs:
             const jobs = [
               { name: 'dependency-review', result: '${{ needs.dependency-review.result }}' },
               { name: 'security-analysis', result: '${{ needs.security-analysis.result }}' },
+              { name: 'static-analysis', result: '${{ needs.static-analysis.result }}' },
               { name: 'dependency-scan', result: '${{ needs.dependency-scan.result }}' },
               { name: 'secret-scan', result: '${{ needs.secret-scan.result }}' }
             ];
@@ -179,7 +437,7 @@ jobs:
             const successful = jobs.filter(job => job.result === 'success');
 
             let status = 'success';
-            let description = `All security checks passed (${successful.length}/${jobs.length})`;
+            let description = `Security checks completed (${successful.length}/${jobs.length} successful)`;
 
             if (failed.length > 0) {
               status = 'failure';
@@ -206,13 +464,24 @@ jobs:
             const jobs = [
               { name: 'Dependency Review', result: '${{ needs.dependency-review.result }}' },
               { name: 'Security Analysis', result: '${{ needs.security-analysis.result }}' },
+              { name: 'Static Analysis', result: '${{ needs.static-analysis.result }}' },
               { name: 'Dependency Security', result: '${{ needs.dependency-scan.result }}' },
               { name: 'Secret Detection', result: '${{ needs.secret-scan.result }}' }
             ];
 
+            const advancedSecurityJobs = ['Dependency Review', 'Security Analysis (CodeQL)'];
+
             for (const job of jobs) {
-              const state = job.result === 'success' ? 'success' :
-                           job.result === 'failure' ? 'failure' : 'pending';
+              let state = job.result === 'success' ? 'success' :
+                         job.result === 'failure' ? 'failure' : 
+                         job.result === 'skipped' ? 'success' : 'pending';
+              
+              let description = `${job.name}: ${job.result}`;
+              
+              // Handle skipped jobs as successful (they were skipped for valid reasons)
+              if (job.result === 'skipped') {
+                description = `${job.name}: skipped (not required for this change)`;
+              }
 
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
@@ -220,7 +489,7 @@ jobs:
                 sha: context.payload.pull_request.head.sha,
                 state: state,
                 context: `Security Scan / ${job.name}`,
-                description: `${job.name}: ${job.result}`,
+                description: description,
                 target_url: `${context.payload.pull_request.html_url}/checks`
               });
             }

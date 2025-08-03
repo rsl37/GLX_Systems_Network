@@ -22,13 +22,21 @@
     "test:e2e": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:e2e",
     "test:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:all",
     "test:env": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:env",
+    "test:services": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:services",
     "health:log": "cd GALAX_App_files && test -d node_modules || npm install && npm run health:log",
     "branch:analyze": "cd GALAX_App_files && test -d node_modules || npm install && npm run branch:analyze",
     "logs:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run logs:all",
     "dashboard": "cd GALAX_App_files && test -d node_modules || npm install && npm run dashboard",
     "monitor:full": "cd GALAX_App_files && test -d node_modules || npm install && npm run monitor:full",
     "install:app": "cd GALAX_App_files && test -d node_modules || npm install",
-    "setup": "cd GALAX_App_files && test -d node_modules || npm install"
+    "setup": "cd GALAX_App_files && test -d node_modules || npm install",
+    "docs:validate": "node .github/scripts/doc-metadata.js validate",
+    "docs:update": "node .github/scripts/doc-metadata.js update",
+    "docs:check-freshness": "node .github/scripts/doc-metadata.js check-freshness",
+    "docs:list": "node .github/scripts/doc-metadata.js list",
+    "docs:analyze": "node .github/scripts/smart-doc-update.js analyze",
+    "docs:report": "node .github/scripts/smart-doc-update.js report",
+    "docs:auto-update": "node .github/scripts/smart-doc-update.js update-metadata"
   },
   "workspaces": [
     "GALAX_App_files"

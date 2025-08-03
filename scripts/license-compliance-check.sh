@@ -210,7 +210,7 @@ scan_npm_dependencies() {
                     done < <(tail -n +$(($(grep -n "$line" "$temp_report" | cut -d: -f1) + 1)) "$temp_report")
                     
                     # Special handling for main application packages
-                    if [[ "$pkg" == "galax-civic-platform@"* || "$pkg" == "galax-civic-networking-app@"* ]]; then
+                    if [[ "$pkg" == "galax-civic-platform@"* || "$pkg" == "galax-civic-networking-app@"* || "$pkg" == "galax-mcp-servers@"* ]]; then
                         echo "✅ $pkg: PolyForm-Shield-1.0.0 (Main Application)" >> "$MAIN_REPORT"
                         ((total++))
                     elif [[ -n "$license_info" && "$license_info" != "null" ]]; then

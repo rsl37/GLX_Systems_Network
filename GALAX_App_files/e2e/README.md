@@ -1,3 +1,15 @@
+---
+title: "End-to-End Tests"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "overview"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # End-to-End Tests
 
 This directory contains Playwright end-to-end tests for the GALAX Civic Networking App.

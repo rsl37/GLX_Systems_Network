@@ -22,13 +22,25 @@ This repository uses a comprehensive GitHub Actions workflow system designed for
 - Parallel job execution
 - Detailed reporting
 
-### 2. 🔒 Security Scan (`security-streamlined.yml`)
+### 2. 🔒 Security Scans (Multi-Workflow System)
+
+#### CodeQL Analysis (`codeql.yml`)
+**Triggers:** Push to main/develop, PRs to main, weekly schedule (Tuesdays 1:30 AM)
+**Duration:** ~10-15 minutes
+
+**Features:**
+- **Dedicated Code Scanning**: GitHub Code Scanning integration
+- **JavaScript/TypeScript Analysis**: Comprehensive static analysis
+- **SARIF Integration**: Results appear in Security tab
+- **Quantum-Safe Configuration**: Custom CodeQL config for advanced security
+
+#### Security Streamlined (`security-streamlined.yml`)
 **Triggers:** Push/PR to main/develop, daily schedule (2 AM UTC)
-**Duration:** ~15-25 minutes
+**Duration:** ~15-20 minutes
 
 **Jobs:**
 - **Dependency Review**: License compliance, vulnerability scanning (PR only)
-- **Security Analysis**: CodeQL static analysis with SARIF reporting
+- **Static Analysis**: ESLint and code quality checks
 - **Dependency Security**: npm audit with detailed reporting
 - **Secret Detection**: TruffleHog for secret scanning
 
@@ -36,7 +48,7 @@ This repository uses a comprehensive GitHub Actions workflow system designed for
 - Automated security reporting
 - License compliance checking
 - Daily automated scans
-- Integration with GitHub Security tab
+- Intelligent change detection
 
 ### 3. 📊 Quality & Performance (`quality.yml`)
 **Triggers:** Push/PR to main/develop

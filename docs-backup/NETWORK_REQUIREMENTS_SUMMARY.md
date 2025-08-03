@@ -1,3 +1,15 @@
+---
+title: "GALAX App - Network Requirements Summary"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "metrics"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # GALAX App - Network Requirements Summary
 
 ## Document Overview

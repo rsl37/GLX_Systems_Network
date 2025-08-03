@@ -1,3 +1,15 @@
+---
+title: "Original Merge Conflict Resolution Guide"
+description: ""
+lastUpdated: "2025-08-03"
+nextReview: "2025-09-03"
+contentType: "archive"
+maintainer: "GALAX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 **CURRENT STATUS UPDATE (July 23, 2025):**
 **✅ REPOSITORY VERIFIED CLEAN - NO UNMERGED FILES DETECTED**
 
