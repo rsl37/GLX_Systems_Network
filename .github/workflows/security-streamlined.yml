@@ -157,7 +157,6 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript"
-          upload: false  # Disable automatic upload to handle manually
         continue-on-error: true  # Don't fail workflow if upload fails
 
       - name: Upload CodeQL Results as Artifact
@@ -166,18 +165,11 @@ jobs:
         with:
           name: codeql-results
           path: |
-            ../results/javascript.sarif
+            ${{ runner.temp }}/codeql_databases/*/results/*.sarif
+            ../results/*.sarif
             ../codeql-failed-run.sarif
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Manual CodeQL Results Upload
-        if: always()  # Try upload even if previous steps failed
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ../results/javascript.sarif
-          category: "/language:javascript"
-        continue-on-error: true  # Allow this to fail gracefully
 
   dependency-scan:
     name: Dependency Security
