@@ -97,12 +97,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
 
       - name: TypeScript Check
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -143,12 +143,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
 
       - name: Security Audit
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -199,14 +199,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           for i in {1..3}; do
-            if npm ci --prefer-offline --no-audit --no-fund; then
+            if npm install --prefer-offline --no-audit --no-fund; then
               echo "Dependencies installed successfully"
               break
             else
@@ -266,12 +266,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
 
       - name: Build application
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -320,12 +320,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
 
       - name: Check environment setup
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -376,12 +376,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
 
       - name: Build for production
         working-directory: ${{ env.WORKING_DIRECTORY }}
