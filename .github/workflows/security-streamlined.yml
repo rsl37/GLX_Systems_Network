@@ -105,17 +105,27 @@ jobs:
         id: ghas-check
         run: |
           # Try to check if dependency graph is available by making a test API call
-          if curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                  -H "Accept: application/vnd.github.v3+json" \
-                  "https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots" \
-                  2>/dev/null | grep -q "dependency_graph_snapshots_url\|vulnerabilities"; then
-            echo "ghas_available=true" >> $GITHUB_OUTPUT
-            echo "✅ GitHub Advanced Security features appear to be available"
+          response=$(curl --fail --show-error --silent --max-time 10 --retry 3 --retry-delay 2 \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -w "HTTPSTATUS:%{http_code}" \
+            "https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots" 2>&1)
+          body=$(echo "$response" | sed -e 's/HTTPSTATUS\:.*//g')
+          status=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          if [ "$status" -eq 200 ] && echo "$body" | jq . >/dev/null 2>&1; then
+            if echo "$body" | grep -q "dependency_graph_snapshots_url\|vulnerabilities"; then
+              echo "ghas_available=true" >> $GITHUB_OUTPUT
+              echo "✅ GitHub Advanced Security features appear to be available"
+            else
+              echo "ghas_available=false" >> $GITHUB_OUTPUT
+              echo "⚠️  GitHub Advanced Security features not available for this repository"
+              echo "   Dependency Review requires GitHub Advanced Security for private repositories"
+              echo "   See: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review"
+            fi
           else
             echo "ghas_available=false" >> $GITHUB_OUTPUT
-            echo "⚠️  GitHub Advanced Security features not available for this repository"
-            echo "   Dependency Review requires GitHub Advanced Security for private repositories"
-            echo "   See: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review"
+            echo "❌ Failed to query GitHub API or invalid response (status: $status)"
+            echo "   Output: $body"
           fi
 
       - name: Dependency Review (GHAS Available)
