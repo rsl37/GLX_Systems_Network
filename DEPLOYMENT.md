@@ -2,7 +2,7 @@
 title: "Deployment Configuration Guide"
 description: ""
 lastUpdated: "2025-08-03"
-nextReview: "2026-02-02"
+nextReview: "2025-09-03"
 contentType: "deployment"
 maintainer: "GALAX Development Team"
 version: "1.0.0"
@@ -18,7 +18,8 @@ This document provides step-by-step instructions for fixing deployment issues wi
 
 **Problem:** Vercel deployment fails due to missing environment variables and directory structure issues.
 
-**Root Cause:** After the post-quantum cryptography implementation, the application requires additional environment configuration and directory structure that wasn't properly set up for deployment.
+**Root Cause:** After the post-quantum cryptography implementation, the application requires 
+additional environment configuration and directory structure that wasn't properly set up for deployment.
 
 ## Quick Fix Steps
 
