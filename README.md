@@ -263,6 +263,34 @@ GALAX_App_files/
 
 ---
 
+## 🔑 GitHub Actions Authentication
+
+This repository uses secure PAT_TOKEN authentication for enhanced workflow capabilities:
+
+### Security Features
+- 🔒 **Fine-grained permissions** (least privilege principle)
+- 🔒 **90-day token rotation** schedule with automated monitoring
+- 🔒 **Environment protection rules** for sensitive operations
+- 🔒 **Comprehensive audit logging** without credential exposure
+- 🔒 **Zero token exposure** in logs or artifacts
+- 🔒 **Graceful fallback mechanisms** to GITHUB_TOKEN when needed
+
+### Enhanced Capabilities
+- ✅ **Private repository access** during checkout operations
+- ✅ **Cross-repository operations** for dependencies and integrations
+- ✅ **Submodule initialization** with recursive checkout support
+- ✅ **Extended API operations** requiring elevated permissions
+
+### Implementation
+- **Token Storage**: Securely stored in repository secrets
+- **Environment Protection**: Multi-tier approval workflows
+- **Security Monitoring**: Automated PAT usage auditing every 6 hours
+- **Incident Response**: Immediate revocation procedures with fallback activation
+
+**📚 Complete Guide**: See [PAT Security Implementation Guide](docs/PAT_SECURITY_GUIDE.md) for detailed setup and security procedures.
+
+---
+
 ## 📖 Documentation
 
 ### Core Documentation
@@ -271,6 +299,7 @@ GALAX_App_files/
 - [Production Mode Guide](GALAX_App_files/PRODUCTION_MODE_GUIDE.md) - Production deployment setup
 - [Deployment Configuration](DEPLOYMENT.md) - Deployment troubleshooting
 - [Security Information](SECURITY.md) - Security policies and reporting
+- [PAT Security Guide](docs/PAT_SECURITY_GUIDE.md) - PAT_TOKEN authentication and security
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
 - [Workspace Guide](GALAX_Project_Workspace.md) - Development workspace setup
 - [MCP Setup Guide](MCP_SETUP_GUIDE.md) - GitHub Copilot MCP configuration
