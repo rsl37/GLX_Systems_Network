@@ -1,4 +1,4 @@
----
+- --
 title: "OpenSSF Scorecard Security Fixes"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # OpenSSF Scorecard Security Fixes
 
@@ -21,7 +21,7 @@ This document details the security vulnerabilities addressed to improve the Open
 - **Severity**: Moderate
 - **Issue**: esbuild ≤0.24.2 enables any website to send requests to the development server and read responses
 - **Advisory**: [GHSA-67mh-4wv8-2f99](https://github.com/advisories/GHSA-67mh-4wv8-2f99)
-- **Fix Applied**: 
+- **Fix Applied**:
   - Updated main esbuild dependency from 0.14.47 to 0.25.8
   - Added package overrides to force resolution of secure version
   - Added as direct dependency to ensure secure version is used
@@ -31,21 +31,21 @@ This document details the security vulnerabilities addressed to improve the Open
 - **Issues**:
   - Use of Insufficiently Random Values in undici - [GHSA-c76h-2ccp-4975](https://github.com/advisories/GHSA-c76h-2ccp-4975)
   - Denial of Service attack via bad certificate data - [GHSA-cxrh-j4jr-qwg3](https://github.com/advisories/GHSA-cxrh-j4jr-qwg3)
-- **Fix Applied**: 
+- **Fix Applied**:
   - Updated undici from 5.28.4 to 6.21.3
   - Added as direct dependency to override vulnerable nested dependency
 
 ### 3. path-to-regexp Vulnerability
-- **Severity**: High  
+- **Severity**: High
 - **Issue**: path-to-regexp (4.0.0 - 6.2.2) outputs backtracking regular expressions
 - **Advisory**: [GHSA-9wv6-86v2-598j](https://github.com/advisories/GHSA-9wv6-86v2-598j)
-- **Fix Applied**: 
+- **Fix Applied**:
   - Updated path-to-regexp from 6.1.0 to 8.2.0
   - Added as direct dependency to ensure secure version
 
 ### 4. @vercel/node Dependency Updates
 - **Issue**: @vercel/node bundled vulnerable versions of dependencies
-- **Fix Applied**: 
+- **Fix Applied**:
   - Updated @vercel/node from 4.0.0 to 5.3.8
   - Added specific overrides for nested dependencies
   - Configured resolutions to force secure versions
@@ -53,6 +53,7 @@ This document details the security vulnerabilities addressed to improve the Open
 ## Implementation Details
 
 ### Package.json Changes
+
 ```json
 {
   "dependencies": {
@@ -63,7 +64,7 @@ This document details the security vulnerabilities addressed to improve the Open
   },
   "overrides": {
     "esbuild": "^0.25.8",
-    "undici": "^6.0.0", 
+    "undici": "^6.0.0",
     "path-to-regexp": "^8.0.0",
     "@vercel/node": {
       "esbuild": "^0.25.8",
@@ -77,11 +78,12 @@ This document details the security vulnerabilities addressed to improve the Open
     "path-to-regexp": "^8.0.0"
   }
 }
+
 ```
 
 ### Security Impact
 - ✅ Eliminates moderate severity esbuild development server vulnerability
-- ✅ Fixes undici random value generation and certificate parsing issues  
+- ✅ Fixes undici random value generation and certificate parsing issues
 - ✅ Resolves high severity path-to-regexp backtracking vulnerability
 - ✅ Maintains application functionality and performance
 - ✅ Improves OpenSSF Scorecard rating

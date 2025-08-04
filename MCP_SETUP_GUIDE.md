@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX MCP Configuration Setup Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX MCP Configuration Setup Guide
 
@@ -44,20 +44,28 @@ The MCP configuration transforms GitHub Copilot into a civic networking developm
 Go to **Settings → Environments** and create an environment named `copilot` with these secrets:
 
 #### Core Services
+
 ```
+
 COPILOT_MCP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 COPILOT_MCP_GITHUB_TOKEN=ghp_your_github_personal_access_token
 COPILOT_MCP_JWT_SECRET=your_jwt_secret_key
 COPILOT_MCP_DATABASE_URL=postgresql://user:pass@host:port/db
+
 ```
 
 #### Web3 Integration
+
 ```
+
 COPILOT_MCP_ETH_PRIVATE_KEY=your_ethereum_private_key
+
 ```
 
 #### External APIs
+
 ```
+
 COPILOT_MCP_CIVIC_API_KEY=your_civic_data_api_key
 COPILOT_MCP_OPEN_DATA_KEY=your_open_data_api_key
 COPILOT_MCP_EMAIL_KEY=your_email_service_api_key
@@ -65,6 +73,7 @@ COPILOT_MCP_SMS_KEY=your_sms_service_api_key
 COPILOT_MCP_VOLUNTEER_KEY=your_volunteer_api_key
 COPILOT_MCP_CHARITY_KEY=your_charity_api_key
 COPILOT_MCP_ANALYTICS_KEY=your_analytics_api_key
+
 ```
 
 ### 3. Run Setup Workflow
@@ -130,26 +139,32 @@ Execute the Copilot setup workflow:
 If you prefer manual setup:
 
 1. Install MCP server dependencies:
+
 ```bash
 npm install -g @cablate/mcp-google-map
 npm install -g @strangelove-ventures/web3-mcp
 npm install -g @modelcontextprotocol/server-github
 npm install -g @modelcontextprotocol/server-postgres
+
 ```
 
 2. Set up custom servers:
+
 ```bash
 cd mcp-servers
 npm install
 chmod +x *.js
+
 ```
 
 3. Test server functionality:
+
 ```bash
 npm run start:realtime     # Test realtime SSE server
 npm run start:civic        # Test civic server
 npm run start:auth         # Test auth server
 npm run start:social       # Test social good server
+
 ```
 
 ## 🎯 Key Features Enabled
@@ -225,6 +240,6 @@ After setup, test GitHub Copilot integration by asking questions like:
 - Review MCP server logs for runtime issues
 - Open an issue for additional support
 
----
+- --
 
-*This MCP configuration enhances GitHub Copilot's understanding of civic networking applications and provides powerful tools for building community-focused features.*
+* This MCP configuration enhances GitHub Copilot's understanding of civic networking applications and provides powerful tools for building community-focused features.*

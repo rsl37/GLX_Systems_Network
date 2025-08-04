@@ -48,7 +48,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "📝 Creating test environment configuration..."
-          
+
           # Use test environment if available, otherwise create minimal config
           if [ -f ".env.test" ]; then
             echo "Using existing .env.test file"
@@ -63,19 +63,19 @@ jobs:
           NODE_ENV=test
           PORT=3000
           JWT_SECRET=test-jwt-secret-for-connectivity-testing-minimum-32-characters
-          
+
           # SMTP Configuration (test values)
           SMTP_HOST=smtp.gmail.com
           SMTP_PORT=587
           SMTP_USER=test-email@example.com
           SMTP_PASS=test-password
           SMTP_FROM=noreply@example.com
-          
+
           # Twilio Configuration (test values)
           TWILIO_SID=ACtest12345678901234567890123456
           TWILIO_AUTH_TOKEN=test-auth-token
           TWILIO_PHONE_NUMBER=+1234567890
-          
+
           # Pusher Configuration (test values)
           PUSHER_APP_ID=123456
           PUSHER_KEY=test-key
@@ -89,7 +89,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "📧 Testing SMTP Configuration..."
-          
+
           # Run service connectivity test focusing on SMTP
           npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "SMTP\|📧" || echo "SMTP test completed"
 
@@ -97,7 +97,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "📱 Testing Twilio Configuration..."
-          
+
           # Test Twilio API connectivity and configuration
           npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Twilio\|📱" || echo "Twilio test completed"
 
@@ -105,7 +105,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔄 Testing Pusher Configuration..."
-          
+
           # Test Pusher real-time messaging setup
           npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Pusher\|🔄" || echo "Pusher test completed"
 
@@ -113,7 +113,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🌐 Testing MetaMask/Web3 Configuration..."
-          
+
           # Test Web3 provider connectivity and MetaMask integration setup
           npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Web3\|MetaMask\|🌐" || echo "Web3 test completed"
 
@@ -121,7 +121,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔧 Running Complete Service Connectivity Test..."
-          
+
           # Run the complete test suite
           npx tsx scripts/test-service-connectivity.ts
 
@@ -129,7 +129,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "📦 Validating Service Dependencies..."
-          
+
           # Check for required service dependencies in package.json
           echo "Checking for SMTP dependencies..."
           if grep -q "nodemailer" package.json; then
@@ -137,14 +137,14 @@ jobs:
           else
             echo "⚠️ No nodemailer dependency found - SMTP functionality may be limited"
           fi
-          
+
           echo "Checking for Twilio dependencies..."
           if grep -q "twilio" package.json; then
             echo "✅ Twilio SDK found"
           else
             echo "⚠️ No Twilio SDK found - SMS functionality may be limited"
           fi
-          
+
           echo "Checking for Pusher dependencies..."
           if grep -q "pusher" package.json; then
             echo "✅ Pusher dependencies found"
@@ -152,7 +152,7 @@ jobs:
           else
             echo "⚠️ No Pusher dependencies found - real-time messaging may be limited"
           fi
-          
+
           echo "Checking for Web3/MetaMask dependencies..."
           if grep -qE "web3|ethers|@noble/post-quantum|crystals-kyber|dilithium" package.json; then
             echo "✅ Web3/Crypto dependencies found"
@@ -165,7 +165,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔗 Testing Service Integration Points..."
-          
+
           # Check for service integration in the codebase
           echo "Checking SMTP integration..."
           if find . -name "*.ts" -o -name "*.js" | xargs grep -l "nodemailer\|smtp" | grep -v node_modules | head -3; then
@@ -173,21 +173,21 @@ jobs:
           else
             echo "⚠️ No SMTP integration code detected"
           fi
-          
+
           echo "Checking Twilio integration..."
           if find . -name "*.ts" -o -name "*.js" | xargs grep -l "twilio" | grep -v node_modules | head -3; then
             echo "✅ Twilio integration code found"
           else
             echo "⚠️ No Twilio integration code detected"
           fi
-          
+
           echo "Checking Pusher integration..."
           if find . -name "*.ts" -o -name "*.js" | xargs grep -l "pusher" | grep -v node_modules | head -3; then
             echo "✅ Pusher integration code found"
           else
             echo "⚠️ No Pusher integration code detected"
           fi
-          
+
           echo "Checking Web3/MetaMask integration..."
           if find . -name "*.ts" -o -name "*.js" | xargs grep -l "web3\|metamask\|ethereum" | grep -v node_modules | head -3; then
             echo "✅ Web3/MetaMask integration code found"
@@ -198,7 +198,7 @@ jobs:
       - name: Network Connectivity Tests
         run: |
           echo "🌐 Testing Network Connectivity to Service Providers..."
-          
+
           # Test connectivity to service provider endpoints
           echo "Testing SMTP providers..."
           for host in smtp.gmail.com smtp-mail.outlook.com smtp.mail.yahoo.com; do
@@ -208,14 +208,14 @@ jobs:
               echo "⚠️ $host:587 not reachable (may be normal in CI)"
             fi
           done
-          
+
           echo "Testing Twilio API..."
           if curl -s --max-time 5 https://api.twilio.com > /dev/null; then
             echo "✅ Twilio API reachable"
           else
             echo "⚠️ Twilio API not reachable"
           fi
-          
+
           echo "Testing Pusher API..."
           for cluster in us2 us3 eu ap1; do
             if curl -s --max-time 5 https://api-$cluster.pusherapp.com > /dev/null; then
@@ -223,7 +223,7 @@ jobs:
               break
             fi
           done
-          
+
           echo "Testing Web3 providers..."
           for provider in ethereum.publicnode.com cloudflare-eth.com; do
             if curl -s --max-time 5 https://$provider > /dev/null; then
@@ -237,12 +237,12 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔒 Running Service Configuration Security Checks..."
-          
+
           # Check for hardcoded credentials (basic scan)
           echo "Checking for hardcoded service credentials..."
-          
+
           SECRET_FOUND=false
-          
+
           # Check for hardcoded API keys in TypeScript/JavaScript files
           if find . -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" | \
              xargs grep -l "api[_-]key\|secret[_-]key\|auth[_-]token" | \
@@ -250,7 +250,7 @@ jobs:
             echo "⚠️ Warning: Potential hardcoded API keys found in source files"
             SECRET_FOUND=true
           fi
-          
+
           # Check for Twilio credentials
           if find . -name "*.ts" -o -name "*.js" | \
              xargs grep -E "AC[a-z0-9]{32}" | \
@@ -258,7 +258,7 @@ jobs:
             echo "⚠️ Warning: Potential Twilio SID found in source files"
             SECRET_FOUND=true
           fi
-          
+
           # Check for email credentials
           if find . -name "*.ts" -o -name "*.js" | \
              xargs grep -E "smtp.*password|email.*pass" | \
@@ -266,7 +266,7 @@ jobs:
             echo "⚠️ Warning: Potential email credentials found in source files"
             SECRET_FOUND=true
           fi
-          
+
           if [ "$SECRET_FOUND" = false ]; then
             echo "✅ No obvious hardcoded service credentials detected"
           else
@@ -293,7 +293,7 @@ jobs:
           echo "🔄 Pusher Configuration: ${{ needs.service-connectivity-tests.result }}"
           echo "🌐 MetaMask/Web3 Configuration: ${{ needs.service-connectivity-tests.result }}"
           echo ""
-          
+
           if [[ "${{ needs.service-connectivity-tests.result }}" == "failure" ]]; then
             echo "❌ CRITICAL SERVICE ISSUES DETECTED"
             echo ""
@@ -334,7 +334,7 @@ jobs:
             All essential services are properly configured and reachable:
 
             - 📧 **SMTP**: Email functionality ready
-            - 📱 **Twilio**: SMS/phone verification ready  
+            - 📱 **Twilio**: SMS/phone verification ready
             - 🔄 **Pusher**: Real-time messaging ready
             - 🌐 **Web3/MetaMask**: Blockchain functionality ready
 

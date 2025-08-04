@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX App - Network Requirements Summary"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX App - Network Requirements Summary
 
@@ -19,7 +19,7 @@ This directory contains comprehensive firewall and network configuration documen
 ## Available Documentation
 
 ### 1. [FIREWALL_CONFIGURATION.md](FIREWALL_CONFIGURATION.md)
-**Primary comprehensive guide** covering all network requirements:
+* *Primary comprehensive guide** covering all network requirements:
 - Complete service categorization (Authentication, API, Telemetry, etc.)
 - Detailed URL and domain lists
 - Port requirements and protocols
@@ -28,7 +28,7 @@ This directory contains comprehensive firewall and network configuration documen
 - Environment-specific configurations
 
 ### 2. [GITHUB_SERVICES_FIREWALL.md](GITHUB_SERVICES_FIREWALL.md)
-**GitHub-specific detailed reference** covering:
+* *GitHub-specific detailed reference** covering:
 - All GitHub service endpoints (API, Actions, Copilot, Security)
 - Authentication and OAuth requirements
 - Package registry access
@@ -37,7 +37,7 @@ This directory contains comprehensive firewall and network configuration documen
 - Testing and validation procedures
 
 ### 3. [QUICK_FIREWALL_SETUP.md](QUICK_FIREWALL_SETUP.md)
-**Quick reference for immediate implementation**:
+* *Quick reference for immediate implementation**:
 - Essential domains for immediate access
 - Firewall rule examples for multiple platforms
 - Copy-paste configurations for common firewall systems
@@ -48,28 +48,34 @@ This directory contains comprehensive firewall and network configuration documen
 For immediate firewall configuration, allow these critical domains:
 
 ### Essential Domains
+
 ```
+
 # Core Services
 github.com
-*.github.com
-*.githubusercontent.com
+* .github.com
+* .githubusercontent.com
 api.github.com
 
 # Package Management
 registry.npmjs.org
-*.npmjs.org
+* .npmjs.org
 
 # Application Services
-*.tile.openstreetmap.org
+* .tile.openstreetmap.org
 cdnjs.cloudflare.com
+
 ```
 
 ### Required Ports
+
 ```
+
 443/tcp  # HTTPS (Primary)
 80/tcp   # HTTP (Redirects)
 587/tcp  # SMTP (Email)
 22/tcp   # SSH (Git)
+
 ```
 
 ## Implementation Priority
@@ -145,6 +151,7 @@ curl -I https://registry.npmjs.org
 # Application-specific tests
 npm ping
 git ls-remote https://github.com/user/repo.git
+
 ```
 
 ### Health Monitoring
@@ -218,8 +225,8 @@ For questions or issues with network configuration:
 - Network administration: Consult with your IT/Security team
 - Service outages: Check status pages for external services
 
----
+- --
 
-**Last Updated:** 2024-12-28  
-**Version:** 1.0  
-**Maintainer:** GALAX App Development Team
+* *Last Updated:** 2024-12-28
+* *Version:** 1.0
+* *Maintainer:** GALAX App Development Team

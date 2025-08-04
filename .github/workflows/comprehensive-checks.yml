@@ -47,7 +47,7 @@ jobs:
       has_frontend_changes: ${{ steps.changes.outputs.frontend }}
       has_backend_changes: ${{ steps.changes.outputs.backend }}
       has_config_changes: ${{ steps.changes.outputs.config }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -365,7 +365,7 @@ jobs:
     timeout-minutes: 10
     needs: [detect-changes, code-quality, security-checks, continuous-integration]
     if: |
-      always() && 
+      always() &&
       (needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true') &&
       !cancelled() &&
       !contains(needs.*.result, 'failure')

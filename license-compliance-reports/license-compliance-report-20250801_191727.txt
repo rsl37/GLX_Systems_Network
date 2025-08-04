@@ -8,4 +8,3 @@ Main License: PolyForm Shield License 1.0.0
 
 === GALAX Main Application Dependencies ===
 Directory: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files
-

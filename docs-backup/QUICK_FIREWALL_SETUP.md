@@ -1,4 +1,4 @@
----
+- --
 title: "Quick Firewall Configuration - GALAX App"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Quick Firewall Configuration - GALAX App
 
@@ -19,44 +19,52 @@ This file provides a quick reference for configuring firewalls to allow the GALA
 ## Critical Domains (Must Allow)
 
 ```
+
 # GitHub Services (Authentication, API, CI/CD)
 github.com
-*.github.com
-*.githubusercontent.com
+* .github.com
+* .githubusercontent.com
 api.github.com
 
 # Package Management (npm)
 registry.npmjs.org
-*.npmjs.org
+* .npmjs.org
 
 # Map Services (OpenStreetMap)
-*.tile.openstreetmap.org
+* .tile.openstreetmap.org
 
 # CDN Services (Static Assets)
 cdnjs.cloudflare.com
+
 ```
 
 ## Ports Required
 
 ```
+
 443/tcp  # HTTPS (Primary)
 80/tcp   # HTTP (Redirects to HTTPS)
 587/tcp  # SMTP (Email)
 22/tcp   # SSH (Git operations)
+
 ```
 
 ## Development Ports (If Applicable)
 
 ```
+
 3000/tcp # Frontend development server
 3001/tcp # Backend API server
 5173/tcp # Vite development server
+
 ```
 
 ## Firewall Rules (Generic Format)
 
 ### Allow Outbound HTTPS
+
 ```
+
 ALLOW tcp/443 to github.com
 ALLOW tcp/443 to *.github.com
 ALLOW tcp/443 to *.githubusercontent.com
@@ -64,24 +72,32 @@ ALLOW tcp/443 to registry.npmjs.org
 ALLOW tcp/443 to *.npmjs.org
 ALLOW tcp/443 to *.tile.openstreetmap.org
 ALLOW tcp/443 to cdnjs.cloudflare.com
+
 ```
 
 ### Allow Outbound HTTP (for redirects)
+
 ```
+
 ALLOW tcp/80 to github.com
 ALLOW tcp/80 to registry.npmjs.org
 ALLOW tcp/80 to *.tile.openstreetmap.org
+
 ```
 
 ### Allow SSH (for Git operations)
+
 ```
+
 ALLOW tcp/22 to github.com
 ALLOW tcp/22 to ssh.github.com
+
 ```
 
 ## pfSense Configuration
 
 ```
+
 # Navigate to Firewall > Rules > LAN
 # Add these outbound rules:
 
@@ -97,6 +113,7 @@ Destination: Single host or alias
   - cdnjs.cloudflare.com
 Port: 443
 Action: Pass
+
 ```
 
 ## iptables Configuration
@@ -111,6 +128,7 @@ iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
 
 # Note: Wildcard domains require DNS resolution or IP ranges
+
 ```
 
 ## Windows Firewall Configuration
@@ -119,11 +137,13 @@ iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
 # PowerShell commands for Windows Firewall
 New-NetFirewallRule -DisplayName "GALAX-GitHub" -Direction Outbound -RemoteAddress github.com -Protocol TCP -RemotePort 443 -Action Allow
 New-NetFirewallRule -DisplayName "GALAX-npm" -Direction Outbound -RemoteAddress registry.npmjs.org -Protocol TCP -RemotePort 443 -Action Allow
+
 ```
 
 ## Cisco ASA Configuration
 
 ```
+
 # Access list for outbound traffic
 access-list OUTBOUND permit tcp any host github.com eq 443
 access-list OUTBOUND permit tcp any host api.github.com eq 443
@@ -131,11 +151,13 @@ access-list OUTBOUND permit tcp any host registry.npmjs.org eq 443
 
 # Apply to interface
 access-group OUTBOUND out interface inside
+
 ```
 
 ## Fortinet FortiGate Configuration
 
 ```
+
 # Create address objects
 config firewall address
     edit "github.com"
@@ -158,11 +180,13 @@ config firewall policy
         set service "HTTPS"
     next
 end
+
 ```
 
 ## Palo Alto Configuration
 
 ```
+
 # Create address objects
 set address github.com fqdn github.com
 set address npm-registry fqdn registry.npmjs.org
@@ -173,6 +197,7 @@ set rulebase security rules GALAX-App source any
 set rulebase security rules GALAX-App destination [ github.com npm-registry ]
 set rulebase security rules GALAX-App service application-default
 set rulebase security rules GALAX-App action allow
+
 ```
 
 ## Proxy Configuration
@@ -192,6 +217,7 @@ npm config set https-proxy http://proxy.company.com:8080
 # Git proxy configuration
 git config --global http.proxy http://proxy.company.com:8080
 git config --global https.proxy http://proxy.company.com:8080
+
 ```
 
 ## Testing Commands
@@ -212,6 +238,7 @@ dig github.com
 # Test from application perspective
 npm ping
 git ls-remote https://github.com/user/repo.git
+
 ```
 
 ## Troubleshooting

@@ -6,7 +6,7 @@ This directory contains comprehensive screenshots of all pages, features, and me
 
 ### Authentication Flow
 1. **01-login-page.png** - Main login page with email authentication option
-2. **02-login-page-phone.png** - Login page with phone authentication option  
+2. **02-login-page-phone.png** - Login page with phone authentication option
 3. **03-register-page.png** - Registration page with email option
 4. **04-register-page-phone.png** - Registration page with phone option
 5. **05-forgot-password-page.png** - Password reset request page
@@ -27,7 +27,7 @@ The new screenshots (8-11) demonstrate interactive app functionality through sim
 - **Screenshot 8**: Shows the complete registration form including username, email, password fields, and the important verification notice at the bottom
 - **Screenshot 9**: Demonstrates form interaction with user data input showing how forms behave with actual data entry
 
-### Password Recovery Workflow  
+### Password Recovery Workflow
 - **Screenshot 10**: Clean forgot password interface showing the email input field and clear call-to-action
 - **Screenshot 11**: Simulated password reset action with email entered, demonstrating the user workflow for password recovery
 
@@ -73,7 +73,7 @@ While authentication system integration is in development, the screenshots demon
 ### Core App Actions (Post-Authentication)
 Based on the application architecture, users will have access to:
 - **Community Help System**: Request and offer help within the civic network
-- **Crisis Management**: Report and respond to emergency situations in the community  
+- **Crisis Management**: Report and respond to emergency situations in the community
 - **Governance Participation**: Create and vote on community proposals
 - **Profile Management**: Manage user settings, skills, and civic reputation
 - **Stablecoin Transactions**: Handle community currency and economic activities

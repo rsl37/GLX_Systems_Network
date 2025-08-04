@@ -1,4 +1,4 @@
----
+- --
 title: "Environment Setup Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Environment Setup Guide
 
@@ -21,6 +21,7 @@ The easiest way to set up your environment is to use the automated setup script:
 ```bash
 cd GALAX_App_files
 ./scripts/setup-env.sh
+
 ```
 
 This script will:
@@ -49,6 +50,7 @@ If you prefer to set up manually:
 ```bash
 cd GALAX_App_files
 cp .env.example .env
+
 ```
 
 Then edit `.env` with your preferred values. For development, the key variables are:
@@ -59,6 +61,7 @@ PORT=3001
 JWT_SECRET=your-secure-jwt-secret-at-least-32-characters
 CLIENT_ORIGIN=http://localhost:5173
 DATABASE_URL=  # Leave empty for SQLite, or set PostgreSQL URL
+
 ```
 
 ### 2. Frontend Environment (GALAX_App_files/client/.env)
@@ -66,6 +69,7 @@ DATABASE_URL=  # Leave empty for SQLite, or set PostgreSQL URL
 ```bash
 cd GALAX_App_files/client
 cp .env.example .env
+
 ```
 
 Then edit `client/.env`:
@@ -74,6 +78,7 @@ Then edit `client/.env`:
 REACT_APP_PUSHER_KEY=your-pusher-key
 REACT_APP_PUSHER_CLUSTER=us2
 REACT_APP_API_URL=http://localhost:3001/api
+
 ```
 
 ## Environment Variables Reference
@@ -108,6 +113,7 @@ After setting up your environment files, test the configuration:
 
 ```bash
 npm run test:env
+
 ```
 
 This will verify that all required variables are set and properly formatted.

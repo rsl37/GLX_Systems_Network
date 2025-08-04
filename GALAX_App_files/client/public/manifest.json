@@ -59,7 +59,11 @@
       ]
     }
   ],
-  "categories": ["social", "government", "utilities"],
+  "categories": [
+    "social",
+    "government",
+    "utilities"
+  ],
   "orientation": "portrait-primary",
   "prefer_related_applications": false
 }

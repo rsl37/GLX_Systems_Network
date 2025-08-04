@@ -86,8 +86,8 @@ async function testSMTPConfig(): Promise<void> {
     if (!smtpUser) missing.push("SMTP_USER");
     if (!smtpPass) missing.push("SMTP_PASS");
     if (!smtpFrom) missing.push("SMTP_FROM");
-    
-    addResult("SMTP", "❌ FAIL", "Missing required environment variables", 
+
+    addResult("SMTP", "❌ FAIL", "Missing required environment variables",
       `Missing: ${missing.join(", ")}`);
     return;
   }
@@ -95,15 +95,15 @@ async function testSMTPConfig(): Promise<void> {
   // Validate SMTP configuration
   const port = parseInt(smtpPort, 10);
   if (isNaN(port) || port < 1 || port > 65535) {
-    addResult("SMTP", "❌ FAIL", "Invalid SMTP_PORT", 
+    addResult("SMTP", "❌ FAIL", "Invalid SMTP_PORT",
       `Port ${smtpPort} is not a valid port number`);
     return;
   }
 
   // Check for placeholder values
   const placeholders = ["your-", "example", "placeholder", "change-this"];
-  const hasPlaceholders = placeholders.some(p => 
-    smtpHost.toLowerCase().includes(p) || 
+  const hasPlaceholders = placeholders.some(p =>
+    smtpHost.toLowerCase().includes(p) ||
     smtpUser.toLowerCase().includes(p) ||
     smtpFrom.toLowerCase().includes(p)
   );
@@ -143,8 +143,8 @@ async function testTwilioConfig(): Promise<void> {
     if (!twilioSid) missing.push("TWILIO_SID");
     if (!twilioAuthToken) missing.push("TWILIO_AUTH_TOKEN");
     if (!twilioPhoneNumber) missing.push("TWILIO_PHONE_NUMBER");
-    
-    addResult("Twilio", "❌ FAIL", "Missing required environment variables", 
+
+    addResult("Twilio", "❌ FAIL", "Missing required environment variables",
       `Missing: ${missing.join(", ")}`);
     return;
   }
@@ -164,8 +164,8 @@ async function testTwilioConfig(): Promise<void> {
 
   // Check for placeholder values
   const placeholders = ["your-", "example", "placeholder", "change-this"];
-  const hasPlaceholders = placeholders.some(p => 
-    twilioSid.toLowerCase().includes(p) || 
+  const hasPlaceholders = placeholders.some(p =>
+    twilioSid.toLowerCase().includes(p) ||
     twilioAuthToken.toLowerCase().includes(p) ||
     twilioPhoneNumber.toLowerCase().includes(p)
   );
@@ -205,8 +205,8 @@ async function testPusherConfig(): Promise<void> {
     if (!pusherKey) missing.push("PUSHER_KEY");
     if (!pusherSecret) missing.push("PUSHER_SECRET");
     if (!pusherCluster) missing.push("PUSHER_CLUSTER");
-    
-    addResult("Pusher", "❌ FAIL", "Missing required environment variables", 
+
+    addResult("Pusher", "❌ FAIL", "Missing required environment variables",
       `Missing: ${missing.join(", ")}`);
     return;
   }
@@ -220,8 +220,8 @@ async function testPusherConfig(): Promise<void> {
 
   // Check for placeholder values
   const placeholders = ["your-", "example", "placeholder", "change-this"];
-  const hasPlaceholders = placeholders.some(p => 
-    pusherAppId.toLowerCase().includes(p) || 
+  const hasPlaceholders = placeholders.some(p =>
+    pusherAppId.toLowerCase().includes(p) ||
     pusherKey.toLowerCase().includes(p) ||
     pusherSecret.toLowerCase().includes(p) ||
     pusherCluster.toLowerCase().includes(p)
@@ -235,7 +235,7 @@ async function testPusherConfig(): Promise<void> {
 
   // Test Pusher API connectivity using cluster
   const pusherHostname = `api-${pusherCluster}.pusherapp.com`;
-  
+
   try {
     const isReachable = await testHttpsConnectivity(pusherHostname);
     if (isReachable) {
@@ -259,7 +259,7 @@ async function testWeb3Config(): Promise<void> {
     const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
 
     const web3Libs = ["web3", "ethers", "@web3js", "viem", "@noble/post-quantum", "crystals-kyber", "dilithium-js"];
-    const foundLibs = web3Libs.filter(lib => 
+    const foundLibs = web3Libs.filter(lib =>
       Object.keys(deps).some(dep => dep.includes(lib))
     );
 
@@ -278,12 +278,12 @@ async function testWeb3Config(): Promise<void> {
   // Test Web3 provider connectivity
   const providers = [
     "eth-mainnet.alchemyapi.io",
-    "mainnet.infura.io", 
+    "mainnet.infura.io",
     "ethereum.publicnode.com"
   ];
 
   const reachableProviders = [];
-  
+
   for (const provider of providers) {
     try {
       const isReachable = await testHttpsConnectivity(provider);
@@ -296,7 +296,7 @@ async function testWeb3Config(): Promise<void> {
   }
 
   if (reachableProviders.length > 0) {
-    addResult("Web3 Providers", "✅ PASS", 
+    addResult("Web3 Providers", "✅ PASS",
       `Web3 providers reachable: ${reachableProviders.length}/${providers.length}`,
       `Reachable: ${reachableProviders.join(", ")}`);
   } else {
@@ -327,7 +327,7 @@ async function runServiceTests(): Promise<void> {
     });
 
     console.log("\n🏁 Overall Status:");
-    
+
     if (hasFailures) {
       console.log("❌ FAILED - Critical service configuration issues detected");
       console.log("   Please fix the failing services before deployment");

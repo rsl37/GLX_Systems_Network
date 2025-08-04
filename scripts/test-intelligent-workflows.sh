@@ -24,7 +24,7 @@ echo "   Includes: Build, test, frontend validation, preview deployment"
 echo "   Skipped: ❌ Web3 tests (if no Web3 code changed)"
 echo ""
 
-echo "3. 🔧 Backend-Only Changes" 
+echo "3. 🔧 Backend-Only Changes"
 echo "   Files: GALAX_App_files/server/api/users.ts"
 echo "   Expected: ✅ Full CI/CD + Enhanced security scans"
 echo "   Includes: Build, test, security analysis, deployment"

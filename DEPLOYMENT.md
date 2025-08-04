@@ -1,4 +1,4 @@
----
+- --
 title: "Deployment Configuration Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Deployment Configuration Guide
 
@@ -16,9 +16,9 @@ This document provides step-by-step instructions for fixing deployment issues wi
 
 ## Issue Resolution
 
-**Problem:** Vercel deployment fails due to missing environment variables and directory structure issues.
+* *Problem:** Vercel deployment fails due to missing environment variables and directory structure issues.
 
-**Root Cause:** After the post-quantum cryptography implementation, the application requires 
+* *Root Cause:** After the post-quantum cryptography implementation, the application requires
 additional environment configuration and directory structure that wasn't properly set up for deployment.
 
 ## Quick Fix Steps
@@ -26,29 +26,31 @@ additional environment configuration and directory structure that wasn't properl
 ### 1. Required Directories
 The following directories must exist for deployment:
 - `data/logs` - For application logging
-- `data/uploads` - For file uploads  
+- `data/uploads` - For file uploads
 - `data` - For SQLite database (fallback)
 
 These are now automatically created during the Vercel build process.
 
 ### 2. Essential Environment Variables
 
-**REQUIRED** - Set these in your Vercel dashboard:
+* *REQUIRED** - Set these in your Vercel dashboard:
 
 ```bash
 NODE_ENV=production
 PORT=3000
 DATA_DIRECTORY=./data
 JWT_SECRET=your-64-character-secure-random-string
+
 ```
 
-**RECOMMENDED** - For full functionality:
+* *RECOMMENDED** - For full functionality:
 
 ```bash
 CLIENT_ORIGIN=https://your-app-name.vercel.app
 FRONTEND_URL=https://your-app-name.vercel.app
 TRUSTED_ORIGINS=https://your-app-name.vercel.app,https://galaxcivicnetwork.me
 REALTIME_PATH=/api/realtime
+
 ```
 
 ### 3. Vercel Dashboard Configuration
@@ -68,8 +70,10 @@ REALTIME_PATH=/api/realtime
 ### 4. Generate Secure Secrets
 
 Generate a secure JWT secret:
+
 ```bash
 openssl rand -hex 32
+
 ```
 
 Copy the output and use it as your `JWT_SECRET` value.
@@ -77,19 +81,23 @@ Copy the output and use it as your `JWT_SECRET` value.
 ### 5. Optional Features Configuration
 
 For email functionality:
+
 ```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 SMTP_FROM=noreply@your-domain.com
+
 ```
 
 For SMS/phone verification:
+
 ```bash
 TWILIO_SID=your-twilio-account-sid
 TWILIO_AUTH_TOKEN=your-twilio-auth-token
 TWILIO_PHONE_NUMBER=+1234567890
+
 ```
 
 ## Files Added/Modified
@@ -127,16 +135,16 @@ After configuring environment variables:
 ## Common Issues & Solutions
 
 ### "Environment variable not set" errors
-**Solution:** Add all required environment variables to Vercel dashboard
+* *Solution:** Add all required environment variables to Vercel dashboard
 
-### "Required directory does not exist" errors  
-**Solution:** The updated `vercel.json` now creates these automatically
+### "Required directory does not exist" errors
+* *Solution:** The updated `vercel.json` now creates these automatically
 
 ### CORS errors after deployment
-**Solution:** Ensure `CLIENT_ORIGIN` exactly matches your Vercel app URL
+* *Solution:** Ensure `CLIENT_ORIGIN` exactly matches your Vercel app URL
 
 ### Authentication errors
-**Solution:** Verify `JWT_SECRET` is set and is at least 32 characters
+* *Solution:** Verify `JWT_SECRET` is set and is at least 32 characters
 
 ## Support
 

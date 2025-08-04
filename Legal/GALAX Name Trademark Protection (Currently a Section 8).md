@@ -1,4 +1,4 @@
----
+- --
 title: "**GALAX Name Trademark Protection**"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
@@ -18,7 +18,7 @@ The name **GALAX** is protected as a **trademark**, not a copyright. This distin
 
 ## **Trademark Registration Details**
 
-**GALAX** is a registered trademark owned by **Galaxy Microsystems Limited** (also known as Galaxy Microsystems Pte. Ltd.)[^1][^2]. The trademark registration includes:
+* *GALAX** is a registered trademark owned by **Galaxy Microsystems Limited** (also known as Galaxy Microsystems Pte. Ltd.)[^1][^2]. The trademark registration includes:
 
 - **Registration Number**: 4823678
 - **Serial Number**: 86388943

@@ -98,10 +98,9 @@
       "maxDuration": 10
     }
   },
-  "regions": ["iad1"],
+  "regions": [
+    "iad1"
+  ],
   "cleanUrls": true,
-  "trailingSlash": false,
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "trailingSlash": false
 }

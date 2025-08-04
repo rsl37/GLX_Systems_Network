@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Production Mode Setup Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Production Mode Setup Guide
 
@@ -23,6 +23,7 @@ This guide covers setting up the GALAX Civic Networking App for production deplo
 ```bash
 cd GALAX_App_files
 npm run production:setup
+
 ```
 
 This script will:
@@ -45,10 +46,10 @@ If you prefer manual configuration:
    ```bash
    # Generate JWT secret (64 characters)
    openssl rand -hex 32
-   
-   # Generate refresh token secret (64 characters)  
+
+   # Generate refresh token secret (64 characters)
    openssl rand -hex 32
-   
+
    # Generate encryption master key (64 characters)
    openssl rand -hex 32
    ```
@@ -71,9 +72,9 @@ The automated deployment validation passes **42 out of 43 checks** with **WARNIN
 - ✅ **Production Mode**: NODE_ENV correctly set to production
 - ⚠️ **Single Warning**: SQLite database format (PostgreSQL recommended for production scale)
 
-**Test Suite**: 53/53 tests passing with 100% success rate  
-**Security Audit**: Zero vulnerabilities detected  
-**Build Process**: Optimized production bundles with gzip compression
+* *Test Suite**: 53/53 tests passing with 100% success rate
+* *Security Audit**: Zero vulnerabilities detected
+* *Build Process**: Optimized production bundles with gzip compression
 
 ## 🛡️ Production Security Features
 
@@ -101,46 +102,58 @@ The automated deployment validation passes **42 out of 43 checks** with **WARNIN
 ## 📋 Required Environment Variables
 
 ### Core Settings
+
 ```bash
 NODE_ENV=production
 PORT=3000
 DATA_DIRECTORY=./data
+
 ```
 
 ### Security Keys (Auto-generated)
+
 ```bash
 JWT_SECRET=your-secure-64-character-hex-string
 JWT_REFRESH_SECRET=your-secure-refresh-token-secret
 ENCRYPTION_MASTER_KEY=your-secure-encryption-key
+
 ```
 
 ### Frontend URLs (Update for your domain)
+
 ```bash
 CLIENT_ORIGIN=https://galaxcivicnetwork.me
 FRONTEND_URL=https://galaxcivicnetwork.me
 TRUSTED_ORIGINS=https://galaxcivicnetwork.me,https://your-domain.vercel.app
 SOCKET_PATH=/socket.io
+
 ```
 
 ### Database (Recommended: PostgreSQL)
+
 ```bash
 DATABASE_URL=postgres://user:password@host:port/database
+
 ```
 
 ### Email Service (Configure for notifications)
+
 ```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@domain.com
 SMTP_PASS=your-app-password
 SMTP_FROM=noreply@galaxcivicnetwork.me
+
 ```
 
 ### SMS Service (Configure for phone verification)
+
 ```bash
 TWILIO_SID=your-twilio-account-sid
 TWILIO_AUTH_TOKEN=your-twilio-auth-token
 TWILIO_PHONE_NUMBER=+1234567890
+
 ```
 
 ## 🚀 Deployment Options
@@ -171,6 +184,7 @@ COPY GALAX_App_files/ .
 RUN npm install && npm run build:production
 EXPOSE 3000
 CMD ["npm", "run", "start:production"]
+
 ```
 
 ### Traditional Server
@@ -181,13 +195,16 @@ npm run build:production
 
 # Start production server
 npm run start:production
+
 ```
 
 ## 🔍 Production Validation
 
 ### Pre-deployment Check
+
 ```bash
 npm run production:check
+
 ```
 
 This validates:

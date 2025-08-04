@@ -1,4 +1,4 @@
----
+- --
 title: "It is also an anime trademark right? How do I contact the studio that made the anime and the author of the story? I would like to credit them as thanks and possibly get some of the author’s input."
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
@@ -25,13 +25,13 @@ Yes, **Gatchaman Crowds is protected as an anime trademark and copyright**. The 
 
 ### Tatsunoko Production Co., Ltd.
 
-**Official Contact Details:**
+* *Official Contact Details:**
 
 - **Address:** 2-10-5 Nippori, Arakawa-ku, Tokyo 116-0014, Japan
 - **Phone:** +81-3-3806-6264
 - **Official Website:** https://www.tatsunoko.co.jp/
 
-**For Business Inquiries and Licensing:**
+* *For Business Inquiries and Licensing:**
 
 - **Business Development Department:** Available through their main office number
 - **Email Contact:** While specific email addresses aren't publicly listed, business inquiries can be submitted through their official website contact form
@@ -41,7 +41,7 @@ Yes, **Gatchaman Crowds is protected as an anime trademark and copyright**. The 
 
 ### Director and Main Creative Force
 
-**Kenji Nakamura** - The director of Gatchaman Crowds. He is known for his innovative approach to storytelling and was the primary creative vision behind the series, including the GALAX app concept.
+* *Kenji Nakamura** - The director of Gatchaman Crowds. He is known for his innovative approach to storytelling and was the primary creative vision behind the series, including the GALAX app concept.
 
 ### Original Concept
 
@@ -66,7 +66,7 @@ The series is based on the **original "Gatchaman" franchise created by Tatsunoko
 
 ### Professional Intermediaries
 
-**For International Licensing:**
+* *For International Licensing:**
 
 - Consider contacting **Japanese licensing agencies** that specialize in anime properties
 - **Entertainment lawyers** in Japan who handle international licensing deals

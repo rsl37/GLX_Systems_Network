@@ -1,4 +1,4 @@
----
+- --
 title: "About GALAX"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,11 +8,11 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # About GALAX
 
-**GALAX: Web3 Civic Networking Platform** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
+* *GALAX: Web3 Civic Networking Platform** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
 
 ## 🎯 Mission
 
@@ -32,7 +32,7 @@ To build a next-generation civic networking platform that empowers communities t
 - **Security**: Post-quantum cryptography (NIST standards)
 - **Deployment**: Vercel with automated CI/CD
 
-### Development Tools  
+### Development Tools
 - **GitHub & Copilot**: Code collaboration and AI-powered development
 - **Vercel**: Production hosting platform for the GALAX application
 - **Vitest & Playwright**: Comprehensive testing framework
@@ -57,8 +57,8 @@ GALAX implements enterprise-grade security measures:
 
 ## 🎯 Vision
 
-Build a feature-rich, technologically advanced platform for civic engagement that can serve 
-as a model for democratic participation in the digital age, combining cutting-edge security 
+Build a feature-rich, technologically advanced platform for civic engagement that can serve
+as a model for democratic participation in the digital age, combining cutting-edge security
 with user-friendly interfaces for maximum community impact.
 
 ## 📈 Recent Achievements
@@ -69,6 +69,6 @@ with user-friendly interfaces for maximum community impact.
 - ✅ **Real-time Security**: WebSocket protection and AI security controls
 - ✅ **Testing Excellence**: Comprehensive test suites across all modules
 
----
+- --
 
-*Building stronger communities through innovative technology and secure civic engagement* 🌟
+* Building stronger communities through innovative technology and secure civic engagement* 🌟

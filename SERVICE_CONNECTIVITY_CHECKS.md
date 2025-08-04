@@ -7,7 +7,7 @@ This document describes the service connectivity checks implemented for the GALA
 The service connectivity checks validate four essential services:
 
 - 📧 **SMTP** - Email functionality (password reset, notifications)
-- 📱 **Twilio** - SMS/phone verification 
+- 📱 **Twilio** - SMS/phone verification
 - 🔄 **Pusher** - Real-time messaging and notifications
 - 🌐 **MetaMask/Web3** - Blockchain connectivity and post-quantum cryptography
 
@@ -35,6 +35,7 @@ npm run test:services
 
 # From the GALAX_App_files directory
 npm run test:services
+
 ```
 
 ### GitHub Actions
@@ -48,27 +49,33 @@ The workflow runs automatically on:
 ## Environment Variables Required
 
 ### SMTP Configuration
+
 ```bash
 SMTP_HOST=smtp.gmail.com          # SMTP server hostname
 SMTP_PORT=587                     # SMTP server port (usually 587 or 465)
 SMTP_USER=your-email@gmail.com    # SMTP username/email
 SMTP_PASS=your-app-password       # SMTP password (use app passwords for Gmail)
 SMTP_FROM=noreply@yourapp.com     # From email address
+
 ```
 
 ### Twilio Configuration
+
 ```bash
 TWILIO_SID=AC...                  # Twilio Account SID (34 characters, starts with AC)
 TWILIO_AUTH_TOKEN=your-token      # Twilio Auth Token
 TWILIO_PHONE_NUMBER=+1234567890   # Twilio phone number with country code
+
 ```
 
 ### Pusher Configuration
+
 ```bash
 PUSHER_APP_ID=123456              # Pusher App ID (numeric)
 PUSHER_KEY=your-pusher-key        # Pusher application key
 PUSHER_SECRET=your-pusher-secret  # Pusher application secret
 PUSHER_CLUSTER=us2                # Pusher cluster (us2, us3, eu, ap1, etc.)
+
 ```
 
 ### Web3/MetaMask
@@ -87,7 +94,9 @@ The script provides detailed feedback on each service:
 - ❌ **FAIL** - Service has critical configuration problems
 
 ### Example Output
+
 ```
+
 🔧 GALAX Service Connectivity Tests
 =====================================
 
@@ -107,6 +116,7 @@ The script provides detailed feedback on each service:
 
 🏁 Overall Status:
 ✅ PASSED - All services are properly configured
+
 ```
 
 ## Validation Checks

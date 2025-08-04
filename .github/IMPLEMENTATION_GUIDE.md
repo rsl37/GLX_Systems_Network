@@ -31,22 +31,23 @@ Navigate to **Settings → Branches → Add Rule** for your main branch:
 ```yaml
 Required Status Checks:
 ✅ Build and Test
-✅ Code Quality  
+✅ Code Quality
 ✅ Security Check
 ✅ Security Analysis
 ✅ Code Coverage
 ✅ Accessibility Testing
+
 ```
 
 #### 2. Configure Repository Secrets (Optional but Recommended)
 Go to **Settings → Secrets and Variables → Actions**:
 
-**For Vercel Deployments:**
+* *For Vercel Deployments:**
 - `VERCEL_TOKEN`: Your Vercel API token
-- `VERCEL_ORG_ID`: Your Vercel organization ID  
+- `VERCEL_ORG_ID`: Your Vercel organization ID
 - `VERCEL_PROJECT_ID`: Your Vercel project ID
 
-**For Enhanced Reporting:**
+* *For Enhanced Reporting:**
 - `CODECOV_TOKEN`: For detailed code coverage reports
 - `LHCI_GITHUB_APP_TOKEN`: For Lighthouse CI integration
 

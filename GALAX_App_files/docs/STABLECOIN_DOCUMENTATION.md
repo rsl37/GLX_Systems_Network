@@ -1,4 +1,4 @@
----
+- --
 title: "Algorithmic Stablecoin Documentation"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Algorithmic Stablecoin Documentation
 
@@ -20,20 +20,20 @@ The GALAX platform features an advanced algorithmic stablecoin system that trans
 
 ## Table of Contents
 
-1. [How It Works](#how-it-works)
-2. [User Guide](#user-guide)
-3. [API Reference](#api-reference)
-4. [Technical Implementation](#technical-implementation)
-5. [Regulatory Compliance](#regulatory-compliance)
-6. [Security Features](#security-features)
-7. [Troubleshooting](#troubleshooting)
-8. [CROWDS Framework](#crowds-framework)
+1. [How It Works](# how-it-works)
+2. [User Guide](# user-guide)
+3. [API Reference](# api-reference)
+4. [Technical Implementation](# technical-implementation)
+5. [Regulatory Compliance](# regulatory-compliance)
+6. [Security Features](# security-features)
+7. [Troubleshooting](# troubleshooting)
+8. [CROWDS Framework](# crowds-framework)
 
----
+- --
 
 ## CROWDS Framework
 
-The **CROWDS (Community Resilient Oversight Under Decentralized Systems)** stablecoin represents the next evolution of this platform, implementing a comprehensive self-healing, adaptive, and evolutionary framework. 
+The **CROWDS (Community Resilient Oversight Under Decentralized Systems)** stablecoin represents the next evolution of this platform, implementing a comprehensive self-healing, adaptive, and evolutionary framework.
 
 ### Key Features of CROWDS
 - **Four-Layer Architecture**: Intelligence, Detection, Response, and Evolution layers
@@ -47,7 +47,7 @@ The **CROWDS (Community Resilient Oversight Under Decentralized Systems)** stabl
 - 🛠️ [Implementation Guide](./CROWDS_IMPLEMENTATION_GUIDE.md) - Step-by-step setup instructions
 - 🚨 [Crisis Response Playbook](./CROWDS_CRISIS_RESPONSE_PLAYBOOK.md) - Emergency response protocols
 
----
+- --
 
 ## How It Works
 
@@ -135,6 +135,7 @@ All user-specific endpoints require authentication via Bearer token:
 
 ```http
 Authorization: Bearer <your_jwt_token>
+
 ```
 
 ### Endpoints
@@ -142,7 +143,8 @@ Authorization: Bearer <your_jwt_token>
 #### GET /api/stablecoin/status
 Returns overall system status and health metrics.
 
-**Response:**
+* *Response:**
+
 ```json
 {
   "success": true,
@@ -170,12 +172,14 @@ Returns overall system status and health metrics.
     }
   }
 }
+
 ```
 
 #### GET /api/stablecoin/balance
 Returns authenticated user's token balance information.
 
-**Response:**
+* *Response:**
+
 ```json
 {
   "success": true,
@@ -186,15 +190,17 @@ Returns authenticated user's token balance information.
     "last_rebalance_participation": "2025-01-14T11:30:00Z"
   }
 }
+
 ```
 
 #### GET /api/stablecoin/transactions
 Returns user's transaction history.
 
-**Parameters:**
+* *Parameters:**
 - `limit` (optional): Number of transactions to return (default: 50, max: 100)
 
-**Response:**
+* *Response:**
+
 ```json
 {
   "success": true,
@@ -209,15 +215,17 @@ Returns user's transaction history.
     }
   ]
 }
+
 ```
 
 #### GET /api/stablecoin/supply-history
 Returns recent supply adjustment history.
 
-**Parameters:**
+* *Parameters:**
 - `limit` (optional): Number of adjustments to return (default: 20, max: 50)
 
-**Response:**
+* *Response:**
+
 ```json
 {
   "success": true,
@@ -233,12 +241,14 @@ Returns recent supply adjustment history.
     }
   ]
 }
+
 ```
 
 #### GET /api/stablecoin/metrics
 Returns detailed stability and performance metrics.
 
-**Response:**
+* *Response:**
+
 ```json
 {
   "success": true,
@@ -271,12 +281,14 @@ Returns detailed stability and performance metrics.
     }
   }
 }
+
 ```
 
 #### POST /api/stablecoin/rebalance
 Triggers manual rebalancing (admin/testing only).
 
-**Response:**
+* *Response:**
+
 ```json
 {
   "success": true,
@@ -287,6 +299,7 @@ Triggers manual rebalancing (admin/testing only).
     "newSupply": 1002500
   }
 }
+
 ```
 
 ### Error Responses
@@ -298,6 +311,7 @@ All endpoints return errors in consistent format:
   "success": false,
   "error": "Error description"
 }
+
 ```
 
 Common HTTP status codes:
@@ -312,6 +326,7 @@ Common HTTP status codes:
 ### Architecture Overview
 
 ```
+
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Price Oracle  │    │  Smart Contract │    │  Database Layer │
 │                 │    │   Simulation    │    │                 │
@@ -330,6 +345,7 @@ Common HTTP status codes:
                     │ • User Management       │
                     │ • API Endpoints         │
                     └─────────────────────────┘
+
 ```
 
 ### Configuration Parameters
@@ -347,11 +363,13 @@ interface StablecoinConfig {
   maxSupplyChange: 0.05;      // Example: 5% max change per rebalance
   rebalanceInterval: 300000;  // Example: 5 minutes between checks (in milliseconds)
 }
+
 ```
 
 ### Database Schema
 
 #### Stablecoin Transactions
+
 ```sql
 CREATE TABLE stablecoin_transactions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -364,9 +382,11 @@ CREATE TABLE stablecoin_transactions (
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
 ```
 
 #### Supply Adjustments
+
 ```sql
 CREATE TABLE supply_adjustments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -378,9 +398,11 @@ CREATE TABLE supply_adjustments (
   new_supply REAL NOT NULL,
   timestamp TEXT NOT NULL
 );
+
 ```
 
 #### Metrics History
+
 ```sql
 CREATE TABLE stablecoin_metrics (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -393,6 +415,7 @@ CREATE TABLE stablecoin_metrics (
   volatility REAL NOT NULL,
   stability_score REAL NOT NULL
 );
+
 ```
 
 ## Regulatory Compliance
@@ -498,6 +521,6 @@ In case of system issues:
 
 For technical support or questions about the stablecoin system, please refer to the [GALAX documentation](../README.md) or contact the development team.
 
----
+- --
 
-*This documentation reflects the current algorithmic stablecoin implementation. For the most up-to-date information, please refer to the system dashboard and API responses.*
+* This documentation reflects the current algorithmic stablecoin implementation. For the most up-to-date information, please refer to the system dashboard and API responses.*

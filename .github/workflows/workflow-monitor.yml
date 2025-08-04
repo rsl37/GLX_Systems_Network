@@ -86,12 +86,12 @@ jobs:
         run: |
           # Store workflow data for processing
           WORKFLOW_DATA='${{ steps.workflow-status.outputs.result }}'
-          
+
           # Calculate health metrics
           CRITICAL_COUNT=$(echo "$WORKFLOW_DATA" | jq '[.[] | select(.status | contains("🔴"))] | length')
           WARNING_COUNT=$(echo "$WORKFLOW_DATA" | jq '[.[] | select(.status | contains("🟡"))] | length')
           OVERALL_HEALTH=$([ "$CRITICAL_COUNT" -eq 0 ] && echo "🟢 Healthy" || echo "🔴 Needs Attention")
-          
+
           # Generate the health report
           cat << EOF > workflow-health-report.md
           # 🔍 Workflow Health Report

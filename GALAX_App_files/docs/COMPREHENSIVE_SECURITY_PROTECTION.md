@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX App - Comprehensive Security Protection System"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX App - Comprehensive Security Protection System
 ## Added 2025-01-13 21:59:45 UTC
@@ -20,9 +20,9 @@ The GALAX App now features a **comprehensive security protection system** that i
 ## 🔒 Security Components Implemented
 
 ### 1. 🦠 Antimalware Protection System
-**File:** `server/middleware/antimalware.ts`
+* *File:** `server/middleware/antimalware.ts`
 
-**Features:**
+* *Features:**
 - **Real-time file scanning** with 13+ malware signatures
 - **Request payload inspection** for malicious content
 - **Automatic quarantine system** for detected threats
@@ -37,16 +37,16 @@ The GALAX App now features a **comprehensive security protection system** that i
   - Executable file detection
   - PowerShell malware
 
-**Endpoints:**
+* *Endpoints:**
 - `GET /api/admin/security/antimalware/quarantine` - View quarantined files
 - `POST /api/admin/security/antimalware/clean` - Clean old quarantine files
 
-**Protection Level:** Critical threats automatically blocked and quarantined
+* *Protection Level:** Critical threats automatically blocked and quarantined
 
-### 2. 🔍 Antivirus Protection System  
-**File:** `server/middleware/antivirus.ts`
+### 2. 🔍 Antivirus Protection System
+* *File:** `server/middleware/antivirus.ts`
 
-**Features:**
+* *Features:**
 - **Comprehensive virus scanning** with 13+ virus signatures
 - **Real-time protection** with automatic definition updates (every 4 hours)
 - **Multiple hash algorithms** (SHA-256, MD5, SHA-1) for detection
@@ -65,18 +65,18 @@ The GALAX App now features a **comprehensive security protection system** that i
 - **Quarantine system** with detailed virus reports
 - **Scan performance tracking** and statistics
 
-**Endpoints:**
+* *Endpoints:**
 - `GET /api/admin/security/antivirus/stats` - Virus scan statistics
 - `POST /api/admin/security/antivirus/update` - Manual definition updates
 - `GET /api/admin/security/antivirus/quarantine` - View quarantined viruses
 - `POST /api/admin/security/antivirus/clean` - Clean old quarantine
 
-**Protection Level:** Viruses automatically quarantined, definitions auto-updated
+* *Protection Level:** Viruses automatically quarantined, definitions auto-updated
 
 ### 3. 🛡️ Anti-Hacking Protection System
-**File:** `server/middleware/antihacking.ts`
+* *File:** `server/middleware/antihacking.ts`
 
-**Features:**
+* *Features:**
 - **Advanced attack pattern detection** with 13+ attack signatures
 - **SQL injection prevention** (Union attacks, stacked queries, comment injection)
 - **XSS protection** (Script tags, event handlers, JavaScript URLs)
@@ -91,17 +91,17 @@ The GALAX App now features a **comprehensive security protection system** that i
 - **IP blocking system** (automatic after 5 attempts or critical attack)
 - **Enhanced security headers** (HSTS, CSP, XSS protection, etc.)
 
-**Endpoints:**
+* *Endpoints:**
 - `GET /api/admin/security/antihacking/stats` - Attack statistics
 - `POST /api/admin/security/antihacking/block-ip` - Manual IP blocking
 - `POST /api/admin/security/antihacking/unblock-ip` - IP unblocking
 
-**Protection Level:** Critical attacks blocked immediately, progressive IP blocking
+* *Protection Level:** Critical attacks blocked immediately, progressive IP blocking
 
 ### 4. 🎛️ Centralized Security Management
-**File:** `server/middleware/securityManager.ts`
+* *File:** `server/middleware/securityManager.ts`
 
-**Features:**
+* *Features:**
 - **Unified security dashboard** with real-time statistics
 - **Security event logging** with severity classification
 - **Emergency lockdown capability**
@@ -111,7 +111,7 @@ The GALAX App now features a **comprehensive security protection system** that i
 - **Security level assessment** (current: MAXIMUM)
 - **Real-time threat monitoring**
 
-**Admin Endpoints:**
+* *Admin Endpoints:**
 - `GET /api/admin/security/status` - Overall security status
 - `GET /api/admin/security/events` - Security event log
 - `POST /api/admin/security/config` - Update security settings
@@ -122,25 +122,29 @@ The GALAX App now features a **comprehensive security protection system** that i
 
 ### File Upload Protection
 Enhanced file upload endpoints now include:
+
 ```typescript
-app.post('/api/kyc/upload', 
-  authenticateToken, 
+app.post('/api/kyc/upload',
+  authenticateToken,
   uploadLimiter,
   ...fileUploadSecurityMiddleware, // Antimalware + Antivirus scanning
-  kycUpload.fields([...]), 
+  kycUpload.fields([...]),
   async (req, res) => { ... }
 );
+
 ```
 
 ### Comprehensive Security Middleware Stack
 Applied to all routes:
+
 ```typescript
 app.use(comprehensiveSecurityMiddleware);
+
 ```
 
 Includes:
 - Enhanced security headers
-- Real-time antivirus protection  
+- Real-time antivirus protection
 - IP blocking
 - DDoS protection
 - Honeypot detection
@@ -154,9 +158,9 @@ Includes:
 
 ### Current Protection Level: **MAXIMUM** (100/100 score)
 
-**Enabled Protections:**
+* *Enabled Protections:**
 - ✅ Antimalware Protection (25 points)
-- ✅ Antivirus Protection (25 points)  
+- ✅ Antivirus Protection (25 points)
 - ✅ Anti-Hacking Protection (25 points)
 - ✅ DDoS Protection (5 points)
 - ✅ Bot Detection (5 points)
@@ -166,7 +170,7 @@ Includes:
 
 ### Detection Capabilities:
 - **Malware Signatures:** 10+ patterns
-- **Virus Signatures:** 13+ families  
+- **Virus Signatures:** 13+ families
 - **Attack Patterns:** 13+ categories
 - **Honeypot Traps:** 14 paths
 - **Bot Patterns:** 9+ user agent patterns
@@ -174,14 +178,17 @@ Includes:
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```bash
 # Optional - for production virus definition updates
 VIRUS_DEFINITIONS_URL=https://your-definitions-server.com/api
 ENCRYPTION_MASTER_KEY=your-master-key-here
+
 ```
 
 ### Security Configuration
 Located in `SECURITY_CONFIG` object in `securityManager.ts`:
+
 ```typescript
 const SECURITY_CONFIG = {
   antimalware: {
@@ -207,6 +214,7 @@ const SECURITY_CONFIG = {
     behavioralAnalysis: true
   }
 };
+
 ```
 
 ## 🚨 Emergency Response
@@ -219,11 +227,13 @@ const SECURITY_CONFIG = {
 5. **Honeypot Triggers:** Immediate suspicious IP marking
 
 ### Manual Emergency Lockdown:
+
 ```bash
 POST /api/admin/security/lockdown
 {
   "reason": "Security incident detected"
 }
+
 ```
 
 This activates maximum security across all systems.
@@ -248,14 +258,17 @@ This activates maximum security across all systems.
 
 ### EICAR Test File Support:
 The antivirus system correctly detects the standard EICAR test file:
+
 ```
+
 X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
+
 ```
 
 ### Honeypot Paths:
 The following paths are monitored for unauthorized access:
 - `/admin`
-- `/wp-admin` 
+- `/wp-admin`
 - `/phpMyAdmin`
 - `/mysql`
 - `/administrator`
@@ -268,21 +281,21 @@ The following paths are monitored for unauthorized access:
 
 ## ✅ Compliance Achieved
 
-**User Request:** "Make sure the app has antimalware, antivirus, and anti hacking protection"
+* *User Request:** "Make sure the app has antimalware, antivirus, and anti hacking protection"
 
-**Implementation Status:**
+* *Implementation Status:**
 - ✅ **Antimalware Protection:** FULLY IMPLEMENTED
   - Real-time file scanning
   - Payload inspection
   - Automatic quarantine
   - 10+ malware signatures
-  
-- ✅ **Antivirus Protection:** FULLY IMPLEMENTED  
+
+- ✅ **Antivirus Protection:** FULLY IMPLEMENTED
   - Comprehensive virus scanning
   - Multiple detection algorithms
   - Auto-updating definitions
   - 13+ virus families covered
-  
+
 - ✅ **Anti-Hacking Protection:** FULLY IMPLEMENTED
   - SQL injection prevention
   - XSS protection
@@ -310,9 +323,9 @@ The following paths are monitored for unauthorized access:
    - New attack pattern additions
    - Performance optimization
 
----
+- --
 
-**Security Status:** 🛡️ **MAXIMUM PROTECTION ACTIVE**
-**Implementation Date:** 2025-01-13 21:59:45 UTC
-**Protection Score:** 100/100
-**All Requirements:** ✅ FULLY SATISFIED
+* *Security Status:** 🛡️ **MAXIMUM PROTECTION ACTIVE**
+* *Implementation Date:** 2025-01-13 21:59:45 UTC
+* *Protection Score:** 100/100
+* *All Requirements:** ✅ FULLY SATISFIED

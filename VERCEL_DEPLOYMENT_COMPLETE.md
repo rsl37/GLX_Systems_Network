@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Civic Networking App - Vercel Deployment Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,19 +8,19 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Civic Networking App - Vercel Deployment Guide
 
 ## 🚀 Overview
-This guide provides step-by-step instructions for deploying the GALAX Civic Networking App to Vercel after the architectural overhaul completed in PR #172.
+This guide provides step-by-step instructions for deploying the GALAX Civic Networking App to Vercel after the architectural overhaul completed in PR # 172.
 
 ## ✅ What Was Changed
 The application has been completely restructured to work with Vercel's serverless architecture:
 
 ### Major Changes:
 - **WebSocket → Pusher Migration**: Replaced Socket.IO with Pusher for real-time communication
-- **Database Migration**: Migrated from SQLite to PostgreSQL for serverless compatibility  
+- **Database Migration**: Migrated from SQLite to PostgreSQL for serverless compatibility
 - **Serverless Functions**: Restructured Express server to work as Vercel serverless functions
 - **Build Process**: Fixed all TypeScript compilation errors and updated build configuration
 - **Test Infrastructure**: Updated test setup to work without Socket.IO dependencies
@@ -79,6 +79,7 @@ SMTP_PASS=your-app-password
 
 # Optional: Google Maps
 NEXT_PUBLIC_GOOGLE_MAPS_ID=your-google-maps-api-key
+
 ```
 
 ## 🚀 Deployment Steps
@@ -180,36 +181,52 @@ The application now uses HTTP polling instead of WebSockets:
 ### Common Issues:
 
 #### 1. Database Connection Errors
+
 ```
+
 Error: Database connection failed
+
 ```
-**Solution**: 
+
+* *Solution**:
 - Verify `DATABASE_URL` is correctly set
 - Check PostgreSQL database is accessible
 - Ensure database exists and user has permissions
 
 #### 2. CORS Errors
+
 ```
+
 Access to fetch at 'api/...' from origin '...' has been blocked by CORS policy
+
 ```
-**Solution**:
+
+* *Solution**:
 - Update `CLIENT_ORIGIN` and `TRUSTED_ORIGINS` environment variables
 - Ensure URLs match your Vercel deployment URL exactly
 
 #### 3. Function Timeout
+
 ```
+
 Function execution timed out
+
 ```
-**Solution**:
+
+* *Solution**:
 - Optimize database queries
 - Add connection pooling (already implemented)
 - Check for infinite loops in code
 
 #### 4. Environment Variables Not Found
+
 ```
+
 JWT_SECRET environment variable is required
+
 ```
-**Solution**:
+
+* *Solution**:
 - Verify all environment variables are set in Vercel Dashboard
 - Redeploy after setting environment variables
 

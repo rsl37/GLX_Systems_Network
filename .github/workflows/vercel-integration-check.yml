@@ -39,78 +39,78 @@ jobs:
       - name: Validate vercel.json configuration
         run: |
           echo "🔍 Validating Vercel configuration..."
-          
+
           # Check if vercel.json exists
           if [ ! -f "vercel.json" ]; then
             echo "❌ vercel.json not found"
             exit 1
           fi
-          
+
           # Validate JSON syntax
           if ! jq . vercel.json > /dev/null 2>&1; then
             echo "❌ Invalid JSON syntax in vercel.json"
             exit 1
           fi
-          
+
           # Check required fields
           echo "Checking required Vercel configuration fields..."
-          
+
           # Build command
           if ! jq -e '.buildCommand' vercel.json > /dev/null; then
             echo "❌ buildCommand not specified in vercel.json"
             exit 1
           fi
-          
+
           # Output directory
           if ! jq -e '.outputDirectory' vercel.json > /dev/null; then
             echo "❌ outputDirectory not specified in vercel.json"
             exit 1
           fi
-          
+
           # Security headers
           if ! jq -e '.headers' vercel.json > /dev/null; then
             echo "⚠️  No security headers configured"
           else
             echo "✅ Security headers found"
-            
+
             # Check for essential security headers
             HEADERS=$(jq -r '.headers[0].headers[]?.key' vercel.json 2>/dev/null | tr '\n' ' ')
-            
+
             if [[ "$HEADERS" =~ "Strict-Transport-Security" ]]; then
               echo "✅ HSTS header configured"
             else
               echo "⚠️  HSTS header missing"
             fi
-            
+
             if [[ "$HEADERS" =~ "Content-Security-Policy" ]]; then
               echo "✅ CSP header configured"
             else
               echo "⚠️  CSP header missing"
             fi
-            
+
             if [[ "$HEADERS" =~ "X-Frame-Options" ]]; then
               echo "✅ X-Frame-Options header configured"
             else
               echo "⚠️  X-Frame-Options header missing"
             fi
           fi
-          
+
           echo "✅ Vercel configuration validation completed"
 
       - name: Check environment variable configuration
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔍 Checking environment variable configuration..."
-          
+
           # Check if .env.example exists
           if [ ! -f ".env.example" ]; then
             echo "⚠️  .env.example not found"
           else
             echo "✅ .env.example found"
-            
+
             # Check for essential environment variables
             ENV_VARS=("NODE_ENV" "JWT_SECRET" "CLIENT_ORIGIN" "DATABASE_URL")
-            
+
             for var in "${ENV_VARS[@]}"; do
               if grep -q "^$var=" .env.example; then
                 echo "✅ $var is documented in .env.example"
@@ -119,7 +119,7 @@ jobs:
               fi
             done
           fi
-          
+
           # Check for .env.vercel
           if [ ! -f ".env.vercel" ]; then
             echo "⚠️  .env.vercel not found"
@@ -151,37 +151,37 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🏗️ Testing build with Vercel configuration..."
-          
+
           # Simulate Vercel build process
           BUILD_CMD=$(jq -r '.buildCommand' ../vercel.json)
           OUTPUT_DIR=$(jq -r '.outputDirectory' ../vercel.json)
-          
+
           echo "Build command: $BUILD_CMD"
           echo "Output directory: $OUTPUT_DIR"
-          
+
           # Change to correct directory and run build
           cd ..
           eval "$BUILD_CMD"
-          
+
           # Check if output directory exists and has content
           if [ ! -d "$OUTPUT_DIR" ]; then
             echo "❌ Output directory $OUTPUT_DIR does not exist"
             exit 1
           fi
-          
+
           if [ ! -f "$OUTPUT_DIR/index.html" ]; then
             echo "❌ index.html not found in output directory"
             exit 1
           fi
-          
+
           echo "✅ Build output validation successful"
-          
+
           # Check bundle sizes
           echo "📊 Analyzing bundle sizes..."
           if [ -d "$OUTPUT_DIR/assets" ]; then
             find "$OUTPUT_DIR/assets" -name "*.js" -exec ls -lh {} \; | \
               awk '{print $5 " " $9}' | sort -hr | head -10
-            
+
             # Check for oversized bundles
             LARGE_FILES=$(find "$OUTPUT_DIR/assets" -name "*.js" -size +1M)
             if [ -n "$LARGE_FILES" ]; then
@@ -204,21 +204,21 @@ jobs:
       - name: Check Vercel secrets configuration
         run: |
           echo "🔍 Checking Vercel deployment configuration..."
-          
+
           # Check if workflows reference Vercel secrets
           WORKFLOWS_WITH_VERCEL=$(grep -r "VERCEL_TOKEN\|VERCEL_ORG_ID\|VERCEL_PROJECT_ID" .github/workflows/ | cut -d: -f1 | sort -u)
-          
+
           if [ -n "$WORKFLOWS_WITH_VERCEL" ]; then
             echo "✅ Found workflows with Vercel integration:"
             echo "$WORKFLOWS_WITH_VERCEL"
           else
             echo "⚠️  No workflows found with Vercel integration"
           fi
-          
+
           # Check preview deployment workflow
           if [ -f ".github/workflows/preview-deploy.yml" ]; then
             echo "✅ Preview deployment workflow exists"
-            
+
             # Check if it has proper conditional deployment
             if grep -q "if: env.VERCEL_TOKEN != ''" .github/workflows/preview-deploy.yml; then
               echo "✅ Preview deployment has proper secret checking"
@@ -228,11 +228,11 @@ jobs:
           else
             echo "⚠️  Preview deployment workflow not found"
           fi
-          
+
           # Check production deployment workflow
           if [ -f ".github/workflows/release.yml" ]; then
             echo "✅ Production release workflow exists"
-            
+
             if grep -q "VERCEL_TOKEN" .github/workflows/release.yml; then
               echo "✅ Production deployment includes Vercel integration"
             else
@@ -254,33 +254,33 @@ jobs:
       - name: Validate security headers
         run: |
           echo "🔒 Validating security headers configuration..."
-          
+
           if [ ! -f "vercel.json" ]; then
             echo "❌ vercel.json not found"
             exit 1
           fi
-          
+
           # Extract and analyze headers
           echo "Checking configured security headers:"
-          
+
           # CSP validation
           CSP=$(jq -r '.headers[].headers[]? | select(.key == "Content-Security-Policy") | .value' vercel.json 2>/dev/null)
           if [ -n "$CSP" ]; then
             echo "✅ Content-Security-Policy configured"
-            
+
             # Check for common CSP directives
             if [[ "$CSP" =~ "default-src" ]]; then
               echo "  ✅ default-src directive present"
             else
               echo "  ⚠️  default-src directive missing"
             fi
-            
+
             if [[ "$CSP" =~ "script-src" ]]; then
               echo "  ✅ script-src directive present"
             else
               echo "  ⚠️  script-src directive missing"
             fi
-            
+
             if [[ "$CSP" =~ "style-src" ]]; then
               echo "  ✅ style-src directive present"
             else
@@ -289,18 +289,18 @@ jobs:
           else
             echo "❌ Content-Security-Policy not configured"
           fi
-          
+
           # HSTS validation
           HSTS=$(jq -r '.headers[].headers[]? | select(.key == "Strict-Transport-Security") | .value' vercel.json 2>/dev/null)
           if [ -n "$HSTS" ]; then
             echo "✅ HSTS configured: $HSTS"
-            
+
             if [[ "$HSTS" =~ "max-age=" ]]; then
               echo "  ✅ max-age directive present"
             else
               echo "  ⚠️  max-age directive missing"
             fi
-            
+
             if [[ "$HSTS" =~ "includeSubDomains" ]]; then
               echo "  ✅ includeSubDomains directive present"
             else
@@ -309,7 +309,7 @@ jobs:
           else
             echo "❌ HSTS not configured"
           fi
-          
+
           # X-Frame-Options validation
           FRAME_OPTIONS=$(jq -r '.headers[].headers[]? | select(.key == "X-Frame-Options") | .value' vercel.json 2>/dev/null)
           if [ -n "$FRAME_OPTIONS" ]; then
@@ -343,7 +343,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🧪 Running deployment readiness tests..."
-          
+
           # Check if deployment test script exists
           if grep -q '"deployment:check"' package.json; then
             echo "Running deployment check script..."
@@ -351,7 +351,7 @@ jobs:
           else
             echo "No deployment check script found"
           fi
-          
+
           # Basic API endpoint test
           if [ -f "scripts/test-api-endpoints.ts" ] || [ -f "scripts/test-api-endpoints.js" ]; then
             echo "Running API endpoint tests..."

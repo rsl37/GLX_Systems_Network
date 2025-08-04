@@ -4,10 +4,10 @@ This guide implements the **GitHub Admin Bypass Options** for solo developers wo
 
 ## Problem Statement Addressed
 
-As identified in issue #99, solo developers face three main blocking issues:
+As identified in issue # 99, solo developers face three main blocking issues:
 
 1. **Copilot collaboration review requirements** (requiring 2 human reviewers)
-2. **CodeQL status checks** (waiting for scan completion)  
+2. **CodeQL status checks** (waiting for scan completion)
 3. **Commit signature verification** (unsigned commits)
 
 ## Solution Overview
@@ -155,19 +155,19 @@ Consider upgrading to GitHub Rulesets for:
 ## Troubleshooting Common Issues
 
 ### Issue: Admin Bypass Not Available
-**Solution**: 
+* *Solution**:
 - Verify you have **repository admin permissions**
 - Check that **"Include administrators"** is disabled in protection rules
 - Ensure you're using the correct repository permissions
 
 ### Issue: CodeQL Blocking Merges
-**Solution**:
+* *Solution**:
 - Use **admin bypass** for urgent merges
 - Check **workflow status** in Actions tab
 - Consider making CodeQL **advisory only**
 
 ### Issue: Too Many Required Checks
-**Solution**:
+* *Solution**:
 - Start with **core checks only** (build, unit tests)
 - Make additional checks **advisory**
 - Use **admin bypass** for development velocity

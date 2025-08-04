@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX: Web3 Civic Networking Platform"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX: Web3 Civic Networking Platform
 
@@ -16,9 +16,9 @@ relatedDocs: []
 [![Security Checks](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Security%20Checks/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
 [![Code Quality](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Code%20Quality/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/quality.yml)
 
-**GALAX** is a next-generation web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance.
+* *GALAX** is a next-generation web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance.
 
----
+- --
 
 ## 🚀 Quick Start
 
@@ -27,6 +27,7 @@ relatedDocs: []
 - npm or yarn package manager
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/rsl37/GALAX_Civic_Networking_App.git
@@ -40,9 +41,11 @@ npm start
 
 # Build for production
 npm run build
+
 ```
 
 ### Testing
+
 ```bash
 # Run all tests
 npm test
@@ -52,13 +55,15 @@ npm run test:e2e
 
 # Run with coverage
 npm run test:coverage
+
 ```
 
----
+- --
 
 ## 🏗️ Project Structure
 
 ```
+
 GALAX_App_files/
 ├── client/                    # React frontend application
 │   ├── src/                   # Source code
@@ -75,9 +80,10 @@ GALAX_App_files/
 ├── docs/                    # Technical documentation
 ├── tests/                   # Test suites
 └── scripts/                 # Build and utility scripts
+
 ```
 
----
+- --
 
 ## ✨ Key Features
 
@@ -89,7 +95,7 @@ GALAX_App_files/
 - **🧪 Comprehensive Testing**: Unit, integration, and E2E tests
 - **🚀 CI/CD Ready**: Automated workflows and Vercel deployment
 
----
+- --
 
 ## 📖 Documentation
 
@@ -99,7 +105,7 @@ GALAX_App_files/
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
 - [Workspace Guide](GALAX_Project_Workspace.md) - Development workspace setup
 
----
+- --
 
 ## 🤝 Contributing
 
@@ -109,13 +115,13 @@ GALAX_App_files/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
----
+- --
 
 ## 📄 License
 
 This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICENSE](LICENSE) file for details.
 
----
+- --
 
 ## 🔗 Links
 
@@ -123,9 +129,9 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 - **Documentation**: [Project Docs](docs/)
 - **Issues**: [GitHub Issues](https://github.com/rsl37/GALAX_Civic_Networking_App/issues)
 
----
+- --
 
-*Building stronger communities through technology* 🌟
+* Building stronger communities through technology* 🌟
 │       │   ├── MediaUpload.tsx
 │       │   ├── OpenStreetMap.tsx
 │       │   └── ui/
@@ -149,48 +155,49 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
     ├── index.ts
     ├── (other .ts files)
     └── middleware/
+
 ```
 
----
+- --
 
 ## 📑 Key Documentation
 
-- [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)  
-  *Complete directory tree and file/folder explanations.*
+- [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)
+  * Complete directory tree and file/folder explanations.*
 
-- [`SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md`](GALAX_App_files/docs/SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md)  
-  *Analysis of social features, feedback systems, reputation, and gamification.*
+- [`SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md`](GALAX_App_files/docs/SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md)
+  * Analysis of social features, feedback systems, reputation, and gamification.*
 
-- [`TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md`](GALAX_App_files/docs/TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md)  
-  *Technical UI/UX, real-time architecture, accessibility, and recommendations.*
+- [`TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md`](GALAX_App_files/docs/TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md)
+  * Technical UI/UX, real-time architecture, accessibility, and recommendations.*
 
-- [`IMPLEMENTATION_STATUS.md`](GALAX_App_files/IMPLEMENTATION_STATUS.md)  
-  *Progress report, missing features, and action priorities.*
+- [`IMPLEMENTATION_STATUS.md`](GALAX_App_files/IMPLEMENTATION_STATUS.md)
+  * Progress report, missing features, and action priorities.*
 
----
+- --
 
 ## 🚀 How To Use This Workspace
 
-1. **Install dependencies:**  
+1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. **Run the development server:**  
+2. **Run the development server:**
    ```bash
    npm run start
    ```
 
-3. **Open the app:**  
+3. **Open the app:**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-4. **Explore the codebase:**  
+4. **Explore the codebase:**
    - Frontend: `client/src/`
    - Backend/API: `server/`
    - Database: `data/`
    - Docs: `docs/`
 
----
+- --
 
 ## 🛠️ Features & Roadmap
 
@@ -206,7 +213,7 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 
 See [`IMPLEMENTATION_STATUS.md`](GALAX_App_files/IMPLEMENTATION_STATUS.md) for priorities and remaining tasks.
 
----
+- --
 
 ## 🧑‍💻 Contributing
 
@@ -220,33 +227,34 @@ Use our conflict detection script to check for unmerged files:
 
 ```bash
 ./scripts/check-conflicts.sh
+
 ```
 
 This script will:
 - ✅ Check for unmerged files (`git ls-files -u`)
-- ✅ Scan for conflict markers in source code  
+- ✅ Scan for conflict markers in source code
 - ✅ Verify build system functionality
 - ✅ Provide summary of repository health
 
 For detailed analysis, see [`MERGE_CONFLICT_STATUS_REPORT.md`](MERGE_CONFLICT_STATUS_REPORT.md).
 
----
+- --
 
 ## 📜 License
 
-This project is licensed under the **PolyForm Shield License 1.0.0**.  
+This project is licensed under the **PolyForm Shield License 1.0.0**.
 See the [LICENSE](LICENSE) file for complete terms and conditions.
 
 The PolyForm Shield license allows for broad usage while protecting against direct competition with the software.
 
----
+- --
 
 ## 👩‍🚀 Authors & Contact
 
 - **Product Owner:** rsl37
 - **Copilot Assistant:** GitHub Copilot
 
----
+- --
 
 ## 🚀 Deployment & Hosting
 
@@ -284,18 +292,21 @@ This repository requires access to various external services for proper operatio
 
 ### Quick Firewall Fix
 For immediate access, ensure these domains are allowlisted:
-```
-github.com, *.github.com, *.githubusercontent.com
-registry.npmjs.org, *.npmjs.org
-*.tile.openstreetmap.org
-cdnjs.cloudflare.com
+
 ```
 
----
+github.com, *.github.com, *.githubusercontent.com
+registry.npmjs.org, *.npmjs.org
+* .tile.openstreetmap.org
+cdnjs.cloudflare.com
+
+```
+
+- --
 
 ## 🔗 Notes
 
 - This workspace was generated by GitHub Copilot using a series of detailed design, assessment, and planning chats.
 - For the full history and design rationale, see the chat logs and included documentation.
 
----
+- --

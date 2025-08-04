@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Civic Networking App - Complete Vercel Integration Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Civic Networking App - Complete Vercel Integration Guide
 
@@ -32,6 +32,7 @@ Branch protection for 'main':
   - Require branches to be up to date before merging
   - Include administrators
   - Restrict pushes that create files larger than 100MB
+
 ```
 
 #### Required Status Checks
@@ -76,6 +77,7 @@ SMTP_FROM=noreply@yourdomain.com
 TWILIO_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=+1234567890
+
 ```
 
 #### GitHub Secrets (Required for Auto-Deployment)
@@ -85,9 +87,10 @@ Configure these in GitHub Repository Settings → Secrets and Variables → Acti
 VERCEL_TOKEN=your_vercel_token_here
 VERCEL_ORG_ID=your_vercel_org_id_here
 VERCEL_PROJECT_ID=your_vercel_project_id_here
+
 ```
 
-**To get Vercel secrets:**
+* *To get Vercel secrets:**
 1. Go to [Vercel Settings → Tokens](https://vercel.com/account/tokens)
 2. Create a new token with deployment permissions
 3. In your Vercel project dashboard, find the Project ID in Settings → General
@@ -143,6 +146,7 @@ npm run deployment:check
 
 # Validate build for Vercel
 npm run build
+
 ```
 
 ### Environment Setup
@@ -177,6 +181,7 @@ vercel env pull .env.local
 
 # Run local development
 npm start
+
 ```
 
 ## 🏥 Health Monitoring & Validation
@@ -202,6 +207,7 @@ npm run vercel:health
 
 # Check specific URL
 node scripts/vercel-health-check.js https://your-app.vercel.app
+
 ```
 
 ### Monitoring Endpoints
@@ -216,8 +222,9 @@ Monitor these endpoints for deployment health:
 
 ### 1. "Request Failed" Errors
 
-**Cause**: CORS misconfiguration
-**Solution**:
+* *Cause**: CORS misconfiguration
+* *Solution**:
+
 ```bash
 # Verify CLIENT_ORIGIN matches your Vercel URL exactly
 CLIENT_ORIGIN=https://your-exact-vercel-url.vercel.app
@@ -225,12 +232,14 @@ CLIENT_ORIGIN=https://your-exact-vercel-url.vercel.app
 # Check for typos in domain names
 # Ensure HTTPS is used
 # Redeploy after changing environment variables
+
 ```
 
 ### 2. Build Failures
 
-**Cause**: Missing dependencies or environment variables
-**Solution**:
+* *Cause**: Missing dependencies or environment variables
+* *Solution**:
+
 ```bash
 # Run build validation
 npm run vercel:validate
@@ -240,22 +249,25 @@ ls -la dist/public/
 
 # Verify vercel.json configuration
 npm run build
+
 ```
 
 ### 3. API Endpoints Not Working
 
-**Cause**: Incorrect function configuration
-**Solution**:
+* *Cause**: Incorrect function configuration
+* *Solution**:
+
 ```bash
 # Verify vercel.json functions section
 # Check that API files are in correct directory structure
 # Ensure serverless function timeout is adequate
+
 ```
 
 ### 4. Environment Variables Not Applied
 
-**Cause**: Variables not set in Vercel dashboard
-**Solution**:
+* *Cause**: Variables not set in Vercel dashboard
+* *Solution**:
 1. Check Vercel Dashboard → Project → Settings → Environment Variables
 2. Ensure variables are set for Production, Preview, and Development
 3. Redeploy after adding variables
@@ -263,8 +275,9 @@ npm run build
 
 ### 5. Performance Issues
 
-**Cause**: Large bundle sizes or inefficient queries
-**Solution**:
+* *Cause**: Large bundle sizes or inefficient queries
+* *Solution**:
+
 ```bash
 # Analyze bundle sizes
 npm run build
@@ -273,6 +286,7 @@ find dist/public/assets -name "*.js" -exec ls -lh {} \;
 # Run Lighthouse audit
 npm install -g @lhci/cli
 lhci autorun
+
 ```
 
 ## 📊 Performance Optimization
@@ -298,6 +312,7 @@ lhci autorun
   "cleanUrls": true,
   "trailingSlash": false
 }
+
 ```
 
 ### Caching Strategy
@@ -351,6 +366,7 @@ npm run monitor:full
 
 # Deployment validation
 npm run deployment:check
+
 ```
 
 ### Alerting
@@ -384,18 +400,18 @@ Before going live, ensure:
 
 ### Regular Maintenance Tasks
 
-**Weekly:**
+* *Weekly:**
 - Review security scan results
 - Check performance metrics
 - Update dependencies (automated via Dependabot)
 
-**Monthly:**
+* *Monthly:**
 - Audit environment variables
 - Review access logs
 - Test backup/restore procedures
 - Performance optimization review
 
-**Quarterly:**
+* *Quarterly:**
 - Security audit
 - Infrastructure cost review
 - Dependency major version updates
@@ -411,16 +427,18 @@ Before going live, ensure:
 
 ### Emergency Procedures
 
-**Deployment Rollback:**
+* *Deployment Rollback:**
+
 ```bash
 # Via Vercel CLI
 vercel rollback
 
 # Via Vercel Dashboard
 # Go to Deployments → Previous deployment → Promote to Production
+
 ```
 
-**Security Incident:**
+* *Security Incident:**
 1. Immediately rotate all secrets
 2. Review access logs
 3. Update environment variables
@@ -435,6 +453,6 @@ vercel rollback
 - [Performance Optimization Guide](./docs/PERFORMANCE.md)
 - [Troubleshooting Guide](./docs/TROUBLESHOOTING.md)
 
----
+- --
 
 This integration provides enterprise-grade security, monitoring, and reliability for your GitHub-to-Vercel deployment pipeline. Follow this guide for a robust, secure deployment setup that scales with your application's needs.

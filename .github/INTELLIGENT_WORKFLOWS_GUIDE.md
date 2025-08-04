@@ -51,6 +51,7 @@ When **only** documentation files are modified:
 ✅ Runs: Documentation validation (< 2 minutes)
 ❌ Skips: Full CI/CD, Security scans, Build process, Deployment
 💡 Result: 15-25 minutes saved per PR
+
 ```
 
 ### 🚀 Application Code Changes
@@ -61,6 +62,7 @@ When application code is modified:
 ✅ Runs: Full CI/CD pipeline based on changed areas
 ✅ Includes: Build, test, security checks, deployment
 ⚡ Optimized: Only relevant workflows execute
+
 ```
 
 ### 🔒 Security-Sensitive Changes
@@ -71,6 +73,7 @@ When security-critical files are modified:
 ✅ Runs: Enhanced security scanning
 ✅ Includes: Dependency review, CodeQL, secret detection
 🛡️ Priority: Security checks always run for sensitive changes
+
 ```
 
 ## Workflow Mapping
@@ -87,49 +90,67 @@ When security-critical files are modified:
 ## File Pattern Examples
 
 ### Triggers Full CI/CD
+
 ```
+
 GALAX_App_files/src/components/UserDashboard.tsx
 GALAX_App_files/server/api/auth.ts
 package.json
 GALAX_App_files/vite.config.js
+
 ```
 
 ### Triggers Security Scans
+
 ```
+
 GALAX_App_files/server/middleware/auth.ts
 .env.production
 package-lock.json
 GALAX_App_files/server/security/encryption.ts
+
 ```
 
 ### Triggers Web3 Tests
+
 ```
+
 GALAX_App_files/src/web3/wallet-connector.ts
 GALAX_App_files/server/middleware/web3-security.ts
 mcp-config.json (if contains web3 config)
 src/crypto/post-quantum.ts
+
 ```
 
 ### Documentation-Only (Lightweight)
+
 ```
+
 README.md
 docs/deployment.md
 GALAX_App_files/docs/api.md
 screenshots/dashboard.png
+
 ```
 
 ## Manual Override Options
 
 ### Force Full Execution
 Add to commit message or PR description:
+
 ```
+
 [force-full] - Runs all workflows regardless of changes
+
 ```
 
 ### Force Deployment
 Add to commit message:
+
 ```
+
 [force-deploy] - Forces preview deployment for docs-only changes
+
 ```
 
 ### Workflow Dispatch
@@ -189,16 +210,16 @@ Access via GitHub Actions:
 
 ### Common Scenarios
 
-**Q: My docs-only PR isn't deploying a preview**
+* *Q: My docs-only PR isn't deploying a preview**
 A: This is expected! Add `[force-deploy]` to commit message if needed.
 
-**Q: Security scan didn't run for my package.json change**
+* *Q: Security scan didn't run for my package.json change**
 A: Check if the path filter correctly identifies your change type.
 
-**Q: I need all workflows to run**
+* *Q: I need all workflows to run**
 A: Use manual workflow dispatch or add `[force-full]` to your commit.
 
-**Q: Web3 tests are running for non-Web3 changes**
+* *Q: Web3 tests are running for non-Web3 changes**
 A: Check if your files contain Web3-related keywords in names or paths.
 
 ### Debug Steps
@@ -217,8 +238,8 @@ The intelligent system is configured in:
 
 Updates require maintainer approval and testing in development branches.
 
----
+- --
 
-**🎯 Goal**: Intelligent, efficient, and comprehensive CI/CD that adapts to your changes while maintaining quality and security standards.
+* *🎯 Goal**: Intelligent, efficient, and comprehensive CI/CD that adapts to your changes while maintaining quality and security standards.
 
-**📊 Impact**: Typical documentation PR now takes 2-5 minutes instead of 25-30 minutes, while maintaining full coverage for code changes.
+* *📊 Impact**: Typical documentation PR now takes 2-5 minutes instead of 25-30 minutes, while maintaining full coverage for code changes.

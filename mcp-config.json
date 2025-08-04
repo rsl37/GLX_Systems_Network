@@ -3,7 +3,12 @@
     "google-maps": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@cablate/mcp-google-map", "--port", "3000"],
+      "args": [
+        "-y",
+        "@cablate/mcp-google-map",
+        "--port",
+        "3000"
+      ],
       "tools": [
         "search_nearby",
         "get_place_details",
@@ -17,11 +22,13 @@
         "GOOGLE_MAPS_API_KEY": "COPILOT_MCP_GOOGLE_MAPS_API_KEY"
       }
     },
-
     "github-integration": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "tools": [
         "create_or_update_file",
         "create_repository",
@@ -38,11 +45,13 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "COPILOT_MCP_GITHUB_TOKEN"
       }
     },
-
     "web3-blockchain": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@strangelove-ventures/web3-mcp"],
+      "args": [
+        "-y",
+        "@strangelove-ventures/web3-mcp"
+      ],
       "tools": [
         "get_balance",
         "get_token_balance",
@@ -57,11 +66,12 @@
         "ETH_PRIVATE_KEY": "COPILOT_MCP_ETH_PRIVATE_KEY"
       }
     },
-
     "realtime-sse": {
       "type": "local",
       "command": "node",
-      "args": ["./mcp-servers/realtime-server.js"],
+      "args": [
+        "./mcp-servers/realtime-server.js"
+      ],
       "tools": [
         "send_realtime_message",
         "get_active_users",
@@ -72,11 +82,12 @@
         "JWT_SECRET": "COPILOT_MCP_JWT_SECRET"
       }
     },
-
     "civic-api-integration": {
       "type": "local",
       "command": "node",
-      "args": ["./mcp-servers/civic-server.js"],
+      "args": [
+        "./mcp-servers/civic-server.js"
+      ],
       "tools": [
         "get_civic_data",
         "search_local_services",
@@ -90,11 +101,13 @@
         "OPEN_DATA_API_KEY": "COPILOT_MCP_OPEN_DATA_KEY"
       }
     },
-
     "database-operations": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ],
       "tools": [
         "read_query",
         "write_query",
@@ -106,11 +119,12 @@
         "POSTGRES_CONNECTION_STRING": "COPILOT_MCP_DATABASE_URL"
       }
     },
-
     "jwt-auth-server": {
       "type": "local",
       "command": "node",
-      "args": ["./mcp-servers/auth-server.js"],
+      "args": [
+        "./mcp-servers/auth-server.js"
+      ],
       "tools": [
         "verify_jwt_token",
         "generate_access_token",
@@ -123,11 +137,13 @@
         "TOKEN_EXPIRY": "3600"
       }
     },
-
     "notification-system": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-email"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-email"
+      ],
       "tools": [
         "send_email",
         "send_sms",
@@ -140,11 +156,12 @@
         "SMS_API_KEY": "COPILOT_MCP_SMS_KEY"
       }
     },
-
     "social-good-apis": {
       "type": "local",
       "command": "node",
-      "args": ["./mcp-servers/social-good-server.js"],
+      "args": [
+        "./mcp-servers/social-good-server.js"
+      ],
       "tools": [
         "search_volunteer_opportunities",
         "get_charity_info",
@@ -158,11 +175,13 @@
         "CHARITY_API_KEY": "COPILOT_MCP_CHARITY_KEY"
       }
     },
-
     "analytics-monitoring": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-analytics"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-analytics"
+      ],
       "tools": [
         "track_user_event",
         "get_usage_analytics",

@@ -1,4 +1,4 @@
----
+- --
 title: "End-to-End Tests"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # End-to-End Tests
 
@@ -18,6 +18,7 @@ This directory contains Playwright end-to-end tests for the GALAX Civic Networki
 
 ```bash
 npm run test:e2e
+
 ```
 
 ## Test Structure

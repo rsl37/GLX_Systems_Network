@@ -15,7 +15,7 @@ Automated license compliance checking that runs on:
 - Weekly scheduled scans (Sundays at 3 AM UTC)
 - Manual workflow dispatch
 
-**Features:**
+* *Features:**
 - Scans all NPM dependencies across the project
 - Checks external project licenses (e.g., Resgrid)
 - Validates license compatibility with PolyForm Shield
@@ -29,13 +29,15 @@ Automated license compliance checking that runs on:
 
 Standalone script for local license compliance checking.
 
-**Usage:**
+* *Usage:**
+
 ```bash
 # From project root
 ./scripts/license-compliance-check.sh
+
 ```
 
-**Features:**
+* *Features:**
 - Comprehensive license scanning
 - Compatibility matrix checking
 - External project analysis
@@ -45,7 +47,7 @@ Standalone script for local license compliance checking.
 
 ### 3. License Compatibility Matrix
 
-**Compatible with PolyForm Shield 1.0.0:**
+* *Compatible with PolyForm Shield 1.0.0:**
 - MIT License
 - BSD-2-Clause, BSD-3-Clause
 - ISC License
@@ -55,7 +57,7 @@ Standalone script for local license compliance checking.
 - CC0-1.0
 - 0BSD
 
-**Incompatible (Prohibited):**
+* *Incompatible (Prohibited):**
 - GPL family (GPL-2.0, GPL-3.0)
 - AGPL family (AGPL-1.0, AGPL-3.0)
 - LGPL family (LGPL-2.0, LGPL-2.1, LGPL-3.0)
@@ -65,7 +67,7 @@ Standalone script for local license compliance checking.
 - European Union Public License (EUPL-1.1, EUPL-1.2)
 - Open Software License (OSL-3.0)
 
-**Review Required:**
+* *Review Required:**
 - Apache-1.1
 - BSD-4-Clause
 - Creative Commons licenses (CC-BY-4.0, CC-BY-SA-4.0)
@@ -105,17 +107,19 @@ License compliance reports are generated in the `license-compliance-reports/` di
 
 ### Common Issues
 
-**"license-checker not found"**
+* *"license-checker not found"**
+
 ```bash
 npm install -g license-checker@25.0.1
+
 ```
 
-**"npm ci failed"**
+* *"npm ci failed"**
 - Check Node.js version (>=18.0.0 required)
 - Verify package-lock.json exists
 - Clear npm cache: `npm cache clean --force`
 
-**License Violations Found**
+* *License Violations Found**
 1. Identify the violating package
 2. Find alternative with compatible license
 3. Request license exception if critical
@@ -142,9 +146,11 @@ The license compliance workflow integrates with:
 ### Pre-commit Hooks
 
 Consider adding license checking to pre-commit hooks:
+
 ```bash
 # In .git/hooks/pre-commit
 ./scripts/license-compliance-check.sh
+
 ```
 
 ## License Updates

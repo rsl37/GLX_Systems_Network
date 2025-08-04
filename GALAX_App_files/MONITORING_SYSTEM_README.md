@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Health, Location, and Status Monitoring System"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,11 +8,11 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Health, Location, and Status Monitoring System
 
-This comprehensive monitoring system addresses **Issue #93** requirements for logging and analysis of health, location, and status checks across all branches (merged and unmerged) and all commits (merged and unmerged).
+This comprehensive monitoring system addresses **Issue # 93** requirements for logging and analysis of health, location, and status checks across all branches (merged and unmerged) and all commits (merged and unmerged).
 
 ## Overview
 
@@ -33,12 +33,14 @@ Comprehensive logging system that:
 - Analyzes all branches (merged and unmerged)
 - Tracks all commits across branches
 - Performs health checks on critical systems
-- Monitors for session management errors (addressing Issue #93)
+- Monitors for session management errors (addressing Issue # 93)
 - Tracks repository location and deployment status
 
-**Usage:**
+* *Usage:**
+
 ```bash
 npm run health:log
+
 ```
 
 ### 2. Branch and Commit Analyzer (`branch-commit-analyzer.ts`)
@@ -50,9 +52,11 @@ Detailed analysis tool that:
 - Tracks merge status across the entire repository
 - Provides recommendations for issue resolution
 
-**Usage:**
+* *Usage:**
+
 ```bash
 npm run branch:analyze
+
 ```
 
 ### 3. Monitoring Dashboard (`monitoring-dashboard.ts`)
@@ -64,9 +68,11 @@ Unified dashboard that:
 - Generates recommendations based on findings
 - Tracks critical issues and error patterns
 
-**Usage:**
+* *Usage:**
+
 ```bash
 npm run dashboard
+
 ```
 
 ### 4. GitHub Actions Workflow (`health-location-status.yml`)
@@ -76,21 +82,24 @@ Automated workflow that:
 - Uploads analysis artifacts
 - Creates alerts for critical issues
 - Generates automated reports
-- Monitors for Issue #93 error patterns
+- Monitors for Issue # 93 error patterns
 
 ## Quick Start
 
 ### Run Complete Monitoring Suite
+
 ```bash
 npm run monitor:full
+
 ```
 
 This command runs:
 1. Health, location, and status logging
-2. Branch and commit analysis  
+2. Branch and commit analysis
 3. Dashboard generation
 
 ### Individual Components
+
 ```bash
 # Health and status logging only
 npm run health:log
@@ -103,6 +112,7 @@ npm run dashboard
 
 # All logging (health + branch analysis)
 npm run logs:all
+
 ```
 
 ## Output Files
@@ -122,9 +132,9 @@ The monitoring system generates:
 - `logs/dashboard/latest-dashboard.json` - Latest dashboard data
 - `logs/dashboard/dashboard.html` - Interactive HTML dashboard
 
-## Issue #93 Specific Monitoring
+## Issue # 93 Specific Monitoring
 
-This system specifically addresses the error patterns from Issue #93:
+This system specifically addresses the error patterns from Issue # 93:
 
 ### Session Management Errors
 - **401 Authentication Failures**: Monitors for authentication endpoint failures
@@ -159,15 +169,17 @@ The monitoring system includes automated GitHub Actions that:
 4. **Artifact Upload**: Saves all reports as workflow artifacts
 5. **Alert Comments**: Automatically comments on PRs with critical issues
 
-## Error Patterns from Issue #93
+## Error Patterns from Issue # 93
 
-The system specifically monitors for these error patterns identified in Issue #93:
+The system specifically monitors for these error patterns identified in Issue # 93:
 
 ```
+
 Request to sessions update failed with status 401 (request ID: ...)
 Error while adding error to session: Error: Error completing session (Request ID: ...): 401
 forceExit is shutting down the process
 Error: Process completed with exit code 1
+
 ```
 
 ### Monitoring Actions
@@ -180,7 +192,7 @@ Error: Process completed with exit code 1
 
 Based on monitoring results, the system provides specific recommendations:
 
-1. **Authentication Issues**: 
+1. **Authentication Issues**:
    - Verify JWT_SECRET and SESSION_SECRET configuration
    - Check authentication middleware implementation
    - Review recent authentication-related commits
@@ -210,6 +222,6 @@ Potential improvements to the monitoring system:
 4. **Integration**: Integration with external monitoring tools
 5. **Custom Alerts**: Configurable alert thresholds and rules
 
----
+- --
 
-**This monitoring system comprehensively addresses all requirements from Issue #93 for health, location, and status logging across all branches and commits, with specific focus on session management and authentication error patterns.**
+* *This monitoring system comprehensively addresses all requirements from Issue # 93 for health, location, and status logging across all branches and commits, with specific focus on session management and authentication error patterns.**

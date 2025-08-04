@@ -1,4 +1,4 @@
----
+- --
 title: "Privacy Controls and Badge System Implementation"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Privacy Controls and Badge System Implementation
 
@@ -21,7 +21,7 @@ This document outlines the comprehensive privacy controls and badge system imple
 #### Hidden by Default
 All sensitive user information is now hidden by default on public profiles:
 - Email addresses
-- Phone numbers  
+- Phone numbers
 - Wallet addresses
 
 #### Privacy Settings Tab
@@ -35,7 +35,7 @@ When users want to make their wallet address public, they receive a security war
    - Includes a tip button for receiving payments
    - Keeps actual wallet address private
 
-2. **Show Full Address** 
+2. **Show Full Address**
    - Displays complete wallet address on profile
    - Shows security warning about transaction history visibility
    - Requires explicit user confirmation
@@ -45,7 +45,7 @@ When users want to make their wallet address public, they receive a security war
 #### Progressive Badge Unlocking
 The badge system implements smart visibility logic based on verification status:
 
-**Always Visible:**
+* *Always Visible:**
 - Account Creation badge (earned on account creation)
 - Email Verification badge (when email is verified)
 - Phone Verification badge (when phone is verified)
@@ -54,7 +54,7 @@ The badge system implements smart visibility logic based on verification status:
 - 2FA Setup badge (when two-factor auth is enabled)
 - Master Verifier badge (when all requirements met)
 
-**Hidden Until Prerequisites Met:**
+* *Hidden Until Prerequisites Met:**
 - **Multi-Auth User** badge: Hidden until original signup method is verified, then shown when 1 additional authentication method is added
 - **Triple Verified** badge: Hidden until Multi-Auth User badge is earned, then shown when all 3 authentication methods are added
 
@@ -69,6 +69,7 @@ Special badge earned when user has verified:
 
 #### Database Schema
 New `user_privacy` table:
+
 ```sql
 CREATE TABLE user_privacy (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,6 +82,7 @@ CREATE TABLE user_privacy (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 ```
 
 #### API Endpoints

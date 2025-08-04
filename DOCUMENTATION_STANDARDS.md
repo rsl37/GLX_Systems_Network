@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Documentation Standards Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Documentation Standards Guide
 
@@ -19,7 +19,7 @@ This guide establishes comprehensive documentation standards for the GALAX proje
 All documentation files **MUST** include standardized YAML frontmatter with the following fields:
 
 ```yaml
----
+- --
 title: "Document Title"
 description: "Clear, descriptive summary of the document content"
 lastUpdated: "YYYY-MM-DD"
@@ -29,7 +29,8 @@ maintainer: "Team or Individual Responsible"
 version: "Semantic Version (e.g., 1.0.0)"
 tags: ["tag1", "tag2", "tag3"]
 relatedDocs: ["file1.md", "file2.md"]
----
+- --
+
 ```
 
 ### Required Fields
@@ -183,6 +184,7 @@ node .github/scripts/doc-metadata.js check-freshness
 
 # List all markdown files
 node .github/scripts/doc-metadata.js list
+
 ```
 
 ### Workflow Integration
@@ -266,6 +268,6 @@ The documentation standards are reviewed and updated:
 - Immediate updates for new best practices
 - Community feedback integration
 
----
+- --
 
-*This guide follows its own standards and is automatically validated and maintained by the GALAX documentation system.*
+* This guide follows its own standards and is automatically validated and maintained by the GALAX documentation system.*

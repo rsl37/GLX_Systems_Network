@@ -55,7 +55,7 @@ if [ -f "GALAX_App_files/package.json" ]; then
     else
         echo "⚠️  Dependency issues detected - run 'npm install'"
     fi
-    
+
     echo "🔨 Testing build..."
     if npm run build > /dev/null 2>&1; then
         echo "✅ Build successful"

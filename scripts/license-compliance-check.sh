@@ -104,10 +104,10 @@ log_info "Starting comprehensive license compliance check..."
 check_license_compatibility() {
     local license="$1"
     local package="$2"
-    
+
     # Normalize license string
     license=$(echo "$license" | tr '[:lower:]' '[:upper:]' | sed 's/[[:space:]]//g')
-    
+
     # Check against compatible licenses
     for compat in "${COMPATIBLE_LICENSES[@]}"; do
         if [[ "$license" == *"$(echo "$compat" | tr '[:lower:]' '[:upper:]')"* ]]; then
@@ -115,7 +115,7 @@ check_license_compatibility() {
             return 0
         fi
     done
-    
+
     # Check against incompatible licenses
     for incompat in "${INCOMPATIBLE_LICENSES[@]}"; do
         if [[ "$license" == *"$(echo "$incompat" | tr '[:lower:]' '[:upper:]')"* ]]; then
@@ -123,7 +123,7 @@ check_license_compatibility() {
             return 1
         fi
     done
-    
+
     # Check against review required licenses
     for review in "${REVIEW_REQUIRED_LICENSES[@]}"; do
         if [[ "$license" == *"$(echo "$review" | tr '[:lower:]' '[:upper:]')"* ]]; then
@@ -131,7 +131,7 @@ check_license_compatibility() {
             return 0
         fi
     done
-    
+
     echo "UNKNOWN"
     return 0
 }
@@ -140,21 +140,21 @@ check_license_compatibility() {
 scan_npm_dependencies() {
     local dir="$1"
     local name="$2"
-    
+
     log_info "Scanning NPM dependencies in $dir ($name)"
-    
+
     if [[ ! -f "$dir/package.json" ]]; then
         log_warning "No package.json found in $dir"
         return 0
     fi
-    
+
     cd "$dir"
-    
+
     echo "" >> "$MAIN_REPORT"
     echo "=== $name Dependencies ===" >> "$MAIN_REPORT"
     echo "Directory: $dir" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
-    
+
     # Check if node_modules exists
     if [[ ! -d "node_modules" ]]; then
         log_warning "No node_modules found in $dir, installing dependencies..."
@@ -165,10 +165,10 @@ scan_npm_dependencies() {
             return 1
         }
     fi
-    
+
     # Generate license report
     local temp_report="$REPORT_DIR/temp-${name,,}-licenses.json"
-    
+
     if command -v license-checker >/dev/null 2>&1; then
         license-checker --production --json --out "$temp_report" || {
             log_error "license-checker failed for $name"
@@ -176,18 +176,18 @@ scan_npm_dependencies() {
             cd "$PROJECT_ROOT"
             return 1
         }
-        
+
         # Process the license report
         if [[ -f "$temp_report" ]]; then
             local violations=0
             local warnings=0
             local total=0
-            
+
             while IFS= read -r line; do
                 if [[ "$line" == *'"'*'": {' ]]; then
                     # Extract package name
                     local pkg=$(echo "$line" | sed 's/.*"\([^"]*\)": {.*/\1/')
-                    
+
                     # Read the next few lines to get license info
                     local license_info=""
                     local counter=0
@@ -208,7 +208,7 @@ scan_npm_dependencies() {
                         fi
                         ((counter++))
                     done < <(tail -n +$(($(grep -n "$line" "$temp_report" | cut -d: -f1) + 1)) "$temp_report")
-                    
+
                     # Special handling for main application packages
                     if [[ "$pkg" == "galax-civic-platform@"* || "$pkg" == "galax-civic-networking-app@"* || "$pkg" == "galax-mcp-servers@"* ]]; then
                         echo "✅ $pkg: PolyForm-Shield-1.0.0 (Main Application)" >> "$MAIN_REPORT"
@@ -216,7 +216,7 @@ scan_npm_dependencies() {
                     elif [[ -n "$license_info" && "$license_info" != "null" ]]; then
                         local compatibility=$(check_license_compatibility "$license_info" "$pkg")
                         ((total++))
-                        
+
                         case "$compatibility" in
                             "COMPATIBLE")
                                 echo "✅ $pkg: $license_info (Compatible)" >> "$MAIN_REPORT"
@@ -241,14 +241,14 @@ scan_npm_dependencies() {
                     fi
                 fi
             done < "$temp_report"
-            
+
             echo "" >> "$MAIN_REPORT"
             echo "Summary for $name:" >> "$MAIN_REPORT"
             echo "  Total packages: $total" >> "$MAIN_REPORT"
             echo "  Violations: $violations" >> "$MAIN_REPORT"
             echo "  Warnings: $warnings" >> "$MAIN_REPORT"
             echo "  Compatible: $((total - violations - warnings))" >> "$MAIN_REPORT"
-            
+
             if [[ $violations -gt 0 ]]; then
                 log_error "$name has $violations license violations"
                 cd "$PROJECT_ROOT"
@@ -268,7 +268,7 @@ scan_npm_dependencies() {
         cd "$PROJECT_ROOT"
         return 1
     fi
-    
+
     cd "$PROJECT_ROOT"
     return 0
 }
@@ -276,19 +276,19 @@ scan_npm_dependencies() {
 # Function to check external project licenses
 check_external_licenses() {
     log_info "Checking external project licenses..."
-    
+
     echo "" >> "$MAIN_REPORT"
     echo "=== External Projects License Check ===" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
-    
+
     # Check Resgrid project
     if [[ -d "$PROJECT_ROOT/external/resgrid" ]]; then
         echo "Resgrid Project:" >> "$MAIN_REPORT"
-        
+
         if [[ -f "$PROJECT_ROOT/external/resgrid/LICENSE" ]]; then
             local resgrid_license=$(head -n 5 "$PROJECT_ROOT/external/resgrid/LICENSE" | grep -o "Apache License" || echo "Unknown")
             echo "  License: $resgrid_license" >> "$MAIN_REPORT"
-            
+
             if [[ "$resgrid_license" == "Apache License" ]]; then
                 echo "  Status: ✅ Compatible (Apache-2.0)" >> "$MAIN_REPORT"
                 log_success "Resgrid project license is compatible"
@@ -300,7 +300,7 @@ check_external_licenses() {
             echo "  Status: ❌ No LICENSE file found" >> "$MAIN_REPORT"
             log_error "Resgrid project missing LICENSE file"
         fi
-        
+
         # Check for package.json files in Resgrid
         local resgrid_packages=($(find "$PROJECT_ROOT/external/resgrid" -name "package.json" -type f))
         if [[ ${#resgrid_packages[@]} -gt 0 ]]; then
@@ -315,14 +315,14 @@ check_external_licenses() {
 # Function to validate THIRD_PARTY_LICENSES.md
 validate_license_documentation() {
     log_info "Validating license documentation..."
-    
+
     echo "" >> "$MAIN_REPORT"
     echo "=== License Documentation Validation ===" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
-    
+
     if [[ -f "$PROJECT_ROOT/THIRD_PARTY_LICENSES.md" ]]; then
         echo "✅ THIRD_PARTY_LICENSES.md exists" >> "$MAIN_REPORT"
-        
+
         # Check last modification time
         local last_modified
         if [[ "$(uname)" == "Darwin" ]]; then
@@ -331,22 +331,22 @@ validate_license_documentation() {
             last_modified=$(stat -c %Y "$PROJECT_ROOT/THIRD_PARTY_LICENSES.md")
         fi
         local days_old=$(( ($(date +%s) - last_modified) / 86400 ))
-        
+
         echo "Last updated: $days_old days ago" >> "$MAIN_REPORT"
-        
+
         if [[ $days_old -gt 90 ]]; then
             echo "⚠️  Documentation is over 90 days old - consider updating" >> "$MAIN_REPORT"
             log_warning "THIRD_PARTY_LICENSES.md is over 90 days old"
         else
             echo "✅ Documentation is up to date" >> "$MAIN_REPORT"
         fi
-        
+
         # Check for major dependencies documentation
         if [[ -f "$PROJECT_ROOT/GALAX_App_files/package.json" ]]; then
             local major_deps=("react" "express" "tailwindcss" "socket.io" "leaflet" "vite" "typescript")
             echo "" >> "$MAIN_REPORT"
             echo "Major dependency documentation check:" >> "$MAIN_REPORT"
-            
+
             for dep in "${major_deps[@]}"; do
                 if grep -q "$dep" "$PROJECT_ROOT/THIRD_PARTY_LICENSES.md"; then
                     echo "  ✅ $dep is documented" >> "$MAIN_REPORT"
@@ -366,13 +366,13 @@ validate_license_documentation() {
 # Function to check API licenses
 check_api_licenses() {
     log_info "Checking external API usage and licenses..."
-    
+
     echo "" >> "$MAIN_REPORT"
     echo "=== External API License Check ===" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
-    
+
     local api_found=false
-    
+
     # Check for Google Maps API
     if grep -r "googlemaps\|maps\.googleapis\.com" "$PROJECT_ROOT/GALAX_App_files/" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" >/dev/null 2>&1; then
         echo "📍 Google Maps API detected" >> "$MAIN_REPORT"
@@ -381,7 +381,7 @@ check_api_licenses() {
         echo "   Documentation: https://cloud.google.com/maps-platform/terms" >> "$MAIN_REPORT"
         api_found=true
     fi
-    
+
     # Check for Pusher API
     if grep -r "pusher" "$PROJECT_ROOT/GALAX_App_files/" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" >/dev/null 2>&1; then
         echo "📡 Pusher API detected" >> "$MAIN_REPORT"
@@ -390,7 +390,7 @@ check_api_licenses() {
         echo "   Documentation: https://pusher.com/legal/terms" >> "$MAIN_REPORT"
         api_found=true
     fi
-    
+
     # Check for Vercel services
     if grep -r "vercel\|@vercel" "$PROJECT_ROOT/GALAX_App_files/" --include="*.json" >/dev/null 2>&1; then
         echo "☁️ Vercel services detected" >> "$MAIN_REPORT"
@@ -399,7 +399,7 @@ check_api_licenses() {
         echo "   Documentation: https://vercel.com/legal/terms" >> "$MAIN_REPORT"
         api_found=true
     fi
-    
+
     if [[ "$api_found" == false ]]; then
         echo "No external APIs detected in source code" >> "$MAIN_REPORT"
     fi
@@ -408,7 +408,7 @@ check_api_licenses() {
 # Function to generate compliance summary
 generate_compliance_summary() {
     log_info "Generating compliance summary..."
-    
+
     echo "" >> "$MAIN_REPORT"
     echo "=== COMPLIANCE SUMMARY ===" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
@@ -416,23 +416,23 @@ generate_compliance_summary() {
     echo "Project: GALAX Civic Networking App" >> "$MAIN_REPORT"
     echo "Main License: PolyForm Shield License 1.0.0" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
-    
+
     # Count violations and warnings (actual entries, not summary lines)
     local violations=$(grep "❌.*INCOMPATIBLE\|❌.*No LICENSE file found\|❌.*License scanning failed" "$MAIN_REPORT" 2>/dev/null | wc -l | tr -d ' \n\r')
     local warnings=$(grep "⚠️.*Review Required\|❓.*Unknown\|⚠️.*over 90 days old\|⚠️.*may not be documented" "$MAIN_REPORT" 2>/dev/null | wc -l | tr -d ' \n\r')
     local successes=$(grep "✅.*Compatible\|✅.*exists\|✅.*Commercial use allowed\|✅.*is documented\|✅.*is up to date" "$MAIN_REPORT" 2>/dev/null | wc -l | tr -d ' \n\r')
-    
+
     # Default to 0 if empty
     violations=${violations:-0}
     warnings=${warnings:-0}
     successes=${successes:-0}
-    
+
     echo "Results:" >> "$MAIN_REPORT"
     echo "  ✅ Successful checks: $successes" >> "$MAIN_REPORT"
     echo "  ⚠️  Warnings (review required): $warnings" >> "$MAIN_REPORT"
     echo "  ❌ Violations (action required): $violations" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
-    
+
     if [[ $violations -gt 0 ]]; then
         echo "🚨 COMPLIANCE STATUS: FAILED" >> "$MAIN_REPORT"
         echo "Action required: Resolve license violations before proceeding" >> "$MAIN_REPORT"
@@ -454,18 +454,18 @@ generate_compliance_summary() {
 # Main execution
 main() {
     local exit_code=0
-    
+
     # Check prerequisites
     if ! command -v node >/dev/null 2>&1; then
         log_error "Node.js is not installed"
         exit 1
     fi
-    
+
     if ! command -v npm >/dev/null 2>&1; then
         log_error "npm is not installed"
         exit 1
     fi
-    
+
     # Install license-checker if not available
     if ! command -v license-checker >/dev/null 2>&1; then
         log_info "Installing license-checker..."
@@ -474,26 +474,26 @@ main() {
             exit 1
         }
     fi
-    
+
     # Run compliance checks
     scan_npm_dependencies "$PROJECT_ROOT/GALAX_App_files" "GALAX Main Application" || exit_code=1
-    
+
     if [[ -f "$PROJECT_ROOT/mcp-servers/package.json" ]]; then
         scan_npm_dependencies "$PROJECT_ROOT/mcp-servers" "MCP Servers" || exit_code=1
     fi
-    
+
     check_external_licenses || exit_code=1
     validate_license_documentation || exit_code=1
     check_api_licenses
-    
+
     generate_compliance_summary || exit_code=1
-    
+
     # Display report location
     log_info "Full compliance report saved to: $MAIN_REPORT"
-    
+
     # Copy to latest report for easy access
     cp "$MAIN_REPORT" "$REPORT_DIR/latest-license-compliance-report.txt"
-    
+
     exit $exit_code
 }
 

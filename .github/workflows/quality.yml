@@ -170,7 +170,7 @@ jobs:
           if [ -d "dist/public/assets" ]; then
             echo "JavaScript files:"
             find dist/public/assets/ -name "*.js" -exec ls -lh {} \;
-            
+
             # Check for large bundles
             LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k)
             if [ -n "$LARGE_FILES" ]; then
@@ -323,7 +323,7 @@ jobs:
             const sha = context.sha;
             const state = 'success';
             const description = 'All quality & performance checks passed';
-            
+
             await github.rest.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,

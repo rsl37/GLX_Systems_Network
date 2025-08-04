@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX App Directory Structure"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,13 +8,14 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX App Directory Structure
 
 Below is an overview diagram of the GALAX App folder structure and main files:
 
 ```
+
 GALAX_App_files/
 ├── components.json
 ├── IMPLEMENTATION_STATUS.md
@@ -119,7 +120,8 @@ GALAX_App_files/
         ├── rateLimiter.ts
         ├── security.ts
         └── validation.ts
+
 ```
 
-> **Note:**  
+> **Note:**
 > This diagram reflects the structure based on the file/folder listing provided. Additional files/subfolders may exist or be added later.

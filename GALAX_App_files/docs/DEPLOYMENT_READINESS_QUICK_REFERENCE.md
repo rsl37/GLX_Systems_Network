@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Deployment Readiness Check - Quick Reference"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Deployment Readiness Check - Quick Reference
 
@@ -20,19 +20,20 @@ npm run deployment:check
 
 # API endpoint
 curl http://localhost:3001/api/deployment/ready
+
 ```
 
 ## 📋 Validation Categories
 
 ### 1. Environment Variables
-**Required:**
+* *Required:**
 - `NODE_ENV` - Should be "production"
 - `PORT` - Application port (recommended: 3001)
 - `DATA_DIRECTORY` - Path to data storage
 - `JWT_SECRET` - Minimum 32 characters
 - `FRONTEND_URL` - HTTPS URL for production
 
-**Optional (warnings if missing):**
+* *Optional (warnings if missing):**
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
 
 ### 2. File System
@@ -61,19 +62,24 @@ curl http://localhost:3001/api/deployment/ready
 ## 🔧 Common Issues & Solutions
 
 ### JWT Secret Too Short
+
 ```bash
 # Generate secure JWT secret (64 characters)
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
 ```
 
 ### Missing Directories
+
 ```bash
 # Create required directories
 mkdir -p data/uploads data/logs
 chmod 755 data data/uploads data/logs
+
 ```
 
 ### Environment Variables
+
 ```bash
 # Create .env file with required variables
 cat > .env << 'EOF'
@@ -83,15 +89,18 @@ DATA_DIRECTORY=/opt/galax/data
 JWT_SECRET=your-64-character-secret-here
 FRONTEND_URL=https://galaxcivicnetwork.me
 EOF
+
 ```
 
 ### Database Issues
+
 ```bash
 # Check database file
 ls -la data/database.sqlite
 
 # Verify database tables
 sqlite3 data/database.sqlite "SELECT name FROM sqlite_master WHERE type='table';"
+
 ```
 
 ## 📡 API Response Format
@@ -119,21 +128,26 @@ sqlite3 data/database.sqlite "SELECT name FROM sqlite_master WHERE type='table';
     }
   }
 }
+
 ```
 
 ## 🚀 CI/CD Integration
 
 ### GitHub Actions
+
 ```yaml
 - name: Deployment Readiness Check
   run: npm run deployment:check
   working-directory: ./GALAX_App_files
+
 ```
 
 ### Docker Health Check
+
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3001/api/deployment/ready || exit 1
+
 ```
 
 ### Exit Codes

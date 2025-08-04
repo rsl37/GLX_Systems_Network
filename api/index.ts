@@ -34,21 +34,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Dynamically import the Express app
     const { createExpressApp } = await import('../GALAX_App_files/dist/server/index.js');
     const app = createExpressApp();
-    
+
     // Convert Vercel request to Express-compatible format
     const expressReq = req as any;
     const expressRes = res as any;
-    
+
     // Let Express handle the request
     app(expressReq, expressRes);
   } catch (error) {
     console.error('Serverless function error:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: { 
+    res.status(500).json({
+      success: false,
+      error: {
         message: 'Internal server error',
-        statusCode: 500 
-      } 
+        statusCode: 500
+      }
     });
   }
 }

@@ -1,4 +1,4 @@
----
+- --
 title: "GitHub Status Checks Fix - Implementation Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GitHub Status Checks Fix - Implementation Guide
 
@@ -51,7 +51,7 @@ The new `.github/workflows/comprehensive-checks.yml` provides:
 
 ## Required Manual Steps
 
-**⚠️ IMPORTANT:** You must manually update your GitHub branch protection rules to use the new workflow.
+* *⚠️ IMPORTANT:** You must manually update your GitHub branch protection rules to use the new workflow.
 
 ### Step 1: Remove Stalled Checks
 1. Go to **Repository Settings** → **Branches**
@@ -147,7 +147,7 @@ If issues occur:
 3. Re-enable requirements after successful run
 4. The old workflows remain available as backup
 
----
+- --
 
-**Status:** ✅ Ready for implementation
-**Next Action:** Manual branch protection rule update required
+* *Status:** ✅ Ready for implementation
+* *Next Action:** Manual branch protection rule update required

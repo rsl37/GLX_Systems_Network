@@ -19,7 +19,7 @@ create_env_file() {
     local example_file="$1"
     local env_file="$2"
     local description="$3"
-    
+
     if [ -f "$env_file" ]; then
         echo "⚠️  $description already exists at $env_file"
         read -p "   Do you want to overwrite it? (y/N): " -n 1 -r
@@ -29,9 +29,9 @@ create_env_file() {
             return
         fi
     fi
-    
+
     echo "📝 Creating $description..."
-    
+
     if [ "$env_file" = ".env" ]; then
         # Main backend .env with development values
         cat > "$env_file" << 'EOF'
@@ -145,7 +145,7 @@ REACT_APP_PUSHER_CLUSTER=us2
 REACT_APP_API_URL=http://localhost:3001/api
 EOF
     fi
-    
+
     echo "✅ Created $description at $env_file"
 }
 
@@ -162,7 +162,7 @@ echo "📁 Creating required directories..."
 create_directory() {
     local dir_path="$1"
     local description="$2"
-    
+
     if [ ! -d "$dir_path" ]; then
         mkdir -p "$dir_path"
         echo "✅ Created $description at $dir_path"

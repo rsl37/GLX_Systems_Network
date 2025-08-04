@@ -1,4 +1,4 @@
----
+- --
 title: "Express Read-Only Property Workaround Pattern"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Express Read-Only Property Workaround Pattern
 
@@ -23,8 +23,9 @@ Express.js marks certain request properties as read-only for security reasons. T
 ```typescript
 // ❌ These approaches DO NOT work with Express read-only properties:
 Object.assign(req.query, sanitizedQuery);     // Fails: read-only
-req.query = { ...req.query, ...newValues };   // Fails: doesn't modify req object  
+req.query = { ...req.query, ...newValues };   // Fails: doesn't modify req object
 req.query.someKey = newValue;                 // Fails: read-only
+
 ```
 
 ## The Solution
@@ -36,6 +37,7 @@ Our security middleware uses **complete object reassignment** to work around thi
 if (req.query) {
   req.query = sanitizeObject(req.query);
 }
+
 ```
 
 ## Why This Works
@@ -58,6 +60,7 @@ if (req.query) {
   // Create a completely new sanitized query object and reassign the entire property
   req.query = sanitizeObject(req.query);
 }
+
 ```
 
 ## Security Benefits
@@ -65,7 +68,7 @@ if (req.query) {
 This approach provides several security advantages:
 
 1. **XSS Prevention**: Removes `<script>` tags and other dangerous HTML
-2. **Protocol Injection Protection**: Strips `javascript:` protocols  
+2. **Protocol Injection Protection**: Strips `javascript:` protocols
 3. **Event Handler Removal**: Eliminates `onclick=` and similar handlers
 4. **Deep Sanitization**: Recursively processes nested objects and arrays
 
@@ -93,6 +96,7 @@ req.query = {
     tags: ['', 'safe-tag']        // Nested arrays sanitized
   }
 }
+
 ```
 
 ## Alternative Approaches Considered
@@ -100,7 +104,7 @@ req.query = {
 We evaluated several other approaches before settling on complete reassignment:
 
 1. **Property Descriptors**: Too complex and doesn't work with all Express versions
-2. **Proxy Objects**: Adds unnecessary complexity and potential performance overhead  
+2. **Proxy Objects**: Adds unnecessary complexity and potential performance overhead
 3. **Deep Cloning with Merge**: Still fails due to read-only restrictions
 4. **Custom Request Objects**: Would break compatibility with Express ecosystem
 
@@ -119,6 +123,7 @@ You can test this pattern manually using the provided test script:
 
 ```bash
 npx tsx /tmp/manual-test-security.ts
+
 ```
 
 This demonstrates that:
@@ -129,6 +134,6 @@ This demonstrates that:
 
 ## References
 
-- [Express.js Request Object Documentation](https://expressjs.com/en/api.html#req)
+- [Express.js Request Object Documentation](https://expressjs.com/en/api.html# req)
 - [Node.js Object Property Descriptors](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)
 - [Security Best Practices for Express](https://expressjs.com/en/advanced/best-practice-security.html)

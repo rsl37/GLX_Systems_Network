@@ -1,4 +1,4 @@
----
+- --
 title: "Vercel Domain & SSL Configuration Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Vercel Domain & SSL Configuration Guide
 
@@ -19,10 +19,13 @@ This guide explains how to properly configure a custom domain with SSL on Vercel
 ## Issue Description
 
 When accessing the custom domain `galaxcivicnetwork.me`, users encounter:
+
 ```
+
 This site can't provide a secure connection
 galaxcivicnetwork.me sent an invalid response.
 ERR_SSL_PROTOCOL_ERROR
+
 ```
 
 This error occurs when the SSL certificate is not properly configured or the domain verification is incomplete.
@@ -59,10 +62,12 @@ This error occurs when the SSL certificate is not properly configured or the dom
 ### 3. Common Issues & Solutions
 
 #### DNS Not Propagated
+
 ```bash
 # Check DNS resolution
 dig galaxcivicnetwork.me A
 # Should return Vercel's IP addresses
+
 ```
 
 #### SSL Certificate Pending
@@ -106,6 +111,7 @@ The project's `vercel.json` includes:
     }
   ]
 }
+
 ```
 
 These configurations:

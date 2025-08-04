@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX Civic Networking App - Root Scripts"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX Civic Networking App - Root Scripts
 
@@ -19,22 +19,24 @@ This directory contains utility scripts that can be run from the repository root
 ### Environment Setup Scripts
 
 #### `setup-env.sh`
-**Purpose**: Creates `.env` files from templates and sets up required directories.
+* *Purpose**: Creates `.env` files from templates and sets up required directories.
 
-**Usage**:
+* *Usage**:
+
 ```bash
 # From root directory
 ./scripts/setup-env.sh
 # OR
 npm run setup:env:root
 
-# From GALAX_App_files directory  
+# From GALAX_App_files directory
 ../scripts/setup-env.sh
 # OR (original command)
 npm run setup:env
+
 ```
 
-**What it does**:
+* *What it does**:
 - Creates `.env` files from `.env.example` templates with development defaults
 - Sets up all required application directories (data, uploads, logs, quarantine, etc.)
 - Sets proper permissions for security-sensitive directories
@@ -42,18 +44,20 @@ npm run setup:env
 - Shows clear guidance for essential service configuration (Pusher, SMTP, Twilio)
 
 #### `ensure-test-dirs.sh`
-**Purpose**: Creates test artifact directories for CI/CD workflows.
+* *Purpose**: Creates test artifact directories for CI/CD workflows.
 
-**Usage**:
+* *Usage**:
+
 ```bash
 # From root directory
 ./scripts/ensure-test-dirs.sh
 
 # From GALAX_App_files directory
 ../scripts/ensure-test-dirs.sh
+
 ```
 
-**What it does**:
+* *What it does**:
 - Creates `coverage`, `test-results`, and `playwright-report` directories
 - Adds `.gitkeep` files to track empty directories in version control
 - Prevents CI workflow failures due to missing directories
@@ -61,11 +65,13 @@ npm run setup:env
 ### Other Utility Scripts
 
 #### `check-conflicts.sh`
-**Purpose**: Checks for merge conflicts and other Git issues.
+* *Purpose**: Checks for merge conflicts and other Git issues.
 
-**Usage**:
+* *Usage**:
+
 ```bash
 ./scripts/check-conflicts.sh
+
 ```
 
 ## Script Design Philosophy

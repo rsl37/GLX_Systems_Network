@@ -1,4 +1,4 @@
----
+- --
 title: "Security Policy"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Security Policy
 
@@ -20,7 +20,7 @@ GALAX implements comprehensive, enterprise-grade security measures designed to p
 
 ### Authentication & Verification
 - **Multi-factor Authentication**: TOTP-based 2FA with QR code setup
-- **Email Verification**: Token-based email confirmation system  
+- **Email Verification**: Token-based email confirmation system
 - **Phone Verification**: SMS-based phone number verification
 - **KYC Document Verification**: Secure document upload and validation
 
@@ -55,11 +55,11 @@ Security updates are provided for actively maintained branches:
 
 ## 🚨 Reporting Security Vulnerabilities
 
-**Report security vulnerabilities confidentially via [GitHub Security Advisories](https://github.com/rsl37/GALAX_Civic_Networking_App/security/advisories/new).**
+* *Report security vulnerabilities confidentially via [GitHub Security Advisories](https://github.com/rsl37/GALAX_Civic_Networking_App/security/advisories/new).**
 
 ### Response Timeline
 - **Initial Response**: Within 24 hours
-- **Severity Assessment**: Within 3 business days  
+- **Severity Assessment**: Within 3 business days
 - **Status Updates**: Provided throughout investigation
 - **Resolution**: Priority based on severity level
 
@@ -77,7 +77,7 @@ Our security workflows provide comprehensive protection through multiple layers:
 
 #### Core Security Features (Always Available)
 - **Dependency Scanning**: npm audit vulnerability detection in dependencies
-- **Secret Scanning**: TruffleHog-based detection of exposed credentials  
+- **Secret Scanning**: TruffleHog-based detection of exposed credentials
 - **Static Analysis**: ESLint security rules and custom analysis
 - **Node.js Security Scan**: njsscan static security code scanner
 
@@ -86,7 +86,7 @@ Our security workflows provide comprehensive protection through multiple layers:
 - **Dependency Review**: Advanced dependency vulnerability analysis
 - **SARIF Upload**: Security results integration with GitHub Security tab
 
-> **Note**: Advanced security features require GitHub Advanced Security for private repositories. 
+> **Note**: Advanced security features require GitHub Advanced Security for private repositories.
 > Core security scanning continues to function regardless of Advanced Security availability.
 > See [GitHub Advanced Security documentation](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) for more information.
 
@@ -124,6 +124,6 @@ Regular security validation through:
 - **Vulnerability Assessments**: Regular internal security reviews
 - **Code Security Reviews**: All code changes undergo security review
 
----
+- --
 
-**Note**: GALAX is actively developed with security-first principles. All security measures are continuously updated to address emerging threats and maintain the highest protection standards.
+* *Note**: GALAX is actively developed with security-first principles. All security measures are continuously updated to address emerging threats and maintain the highest protection standards.

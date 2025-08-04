@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX App - Firewall Configuration Guide"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX App - Firewall Configuration Guide
 
@@ -21,19 +21,21 @@ This document provides a comprehensive list of URLs, domains, and network requir
 For immediate firewall configuration, ensure these critical domains are allowlisted:
 
 ```
+
 # Core GitHub Services
 github.com
-*.github.com
-*.githubusercontent.com
+* .github.com
+* .githubusercontent.com
 api.github.com
 
 # Package Management
 registry.npmjs.org
-*.npmjs.org
+* .npmjs.org
 
 # Development & Runtime
 localhost (for development)
 cdnjs.cloudflare.com
+
 ```
 
 ## Detailed Service Categories
@@ -153,19 +155,25 @@ cdnjs.cloudflare.com
 ## Environment-Specific Configuration
 
 ### Development Environment
+
 ```
+
 # Required for local development
 localhost:3000
 localhost:3001
-127.0.0.1:3000
-127.0.0.1:3001
+127. 0.0.1:3000
+127. 0.0.1:3001
+
 ```
 
 ### Production Environment
+
 ```
+
 # Replace with actual production domains
 your-production-domain.com
 api.your-production-domain.com
+
 ```
 
 ## Implementation Guidelines
@@ -175,7 +183,9 @@ api.your-production-domain.com
 For most corporate firewalls, add these rules:
 
 #### Outbound Rules (Allow)
+
 ```
+
 # GitHub Services
 ALLOW HTTPS github.com
 ALLOW HTTPS *.github.com
@@ -191,6 +201,7 @@ ALLOW HTTPS cdnjs.cloudflare.com
 
 # Map Services
 ALLOW HTTPS *.tile.openstreetmap.org
+
 ```
 
 ### 2. Proxy Configuration
@@ -205,6 +216,7 @@ npm config set https-proxy http://proxy.company.com:8080
 # Git proxy configuration
 git config --global http.proxy http://proxy.company.com:8080
 git config --global https.proxy http://proxy.company.com:8080
+
 ```
 
 ### 3. Environment Variables
@@ -215,6 +227,7 @@ Set these environment variables for proxy awareness:
 export HTTP_PROXY=http://proxy.company.com:8080
 export HTTPS_PROXY=http://proxy.company.com:8080
 export NO_PROXY=localhost,127.0.0.1,*.local
+
 ```
 
 ## Security Considerations
@@ -239,6 +252,7 @@ export NO_PROXY=localhost,127.0.0.1,*.local
 ### Common Issues and Solutions
 
 #### 1. Package Installation Failures
+
 ```bash
 # Check npm connectivity
 npm ping
@@ -248,15 +262,18 @@ npm install --verbose
 
 # Use alternative registry
 npm install --registry https://registry.npmjs.org/
+
 ```
 
 #### 2. GitHub API Rate Limiting
+
 ```bash
 # Check rate limit status
 curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/rate_limit
 
 # Use authenticated requests
 export GITHUB_TOKEN=your_token_here
+
 ```
 
 #### 3. Socket.IO Connection Issues
@@ -265,12 +282,14 @@ export GITHUB_TOKEN=your_token_here
 - Ensure proper CORS configuration
 
 #### 4. Map Loading Issues
+
 ```bash
 # Test OpenStreetMap connectivity
 curl -I https://tile.openstreetmap.org/0/0/0.png
 
 # Verify CDN access
 curl -I https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png
+
 ```
 
 ## Testing Connectivity
@@ -289,6 +308,7 @@ curl -I https://tile.openstreetmap.org/0/0/0.png
 
 # Test CDN services
 curl -I https://cdnjs.cloudflare.com
+
 ```
 
 ## Minimal Configuration
@@ -296,13 +316,15 @@ curl -I https://cdnjs.cloudflare.com
 For restrictive environments, this minimal set may be sufficient:
 
 ```
+
 # Absolute minimum
 github.com
-*.github.com
+* .github.com
 api.github.com
 registry.npmjs.org
-*.tile.openstreetmap.org
+* .tile.openstreetmap.org
 cdnjs.cloudflare.com
+
 ```
 
 ## Contact & Support

@@ -1,4 +1,4 @@
----
+- --
 title: "GALAX: Web-3 Civic Networking Platform - Full Project Workspace"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,15 +8,15 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # GALAX: Web-3 Civic Networking Platform - Full Project Workspace
 
 ## Overview
 
-**GALAX** is a next-generation civic engagement platform leveraging Web3 technologies, real-time mapping, anime-inspired UI, and token-based incentives. This project workspace tracks all phases, completed milestones, and upcoming deliverables.
+* *GALAX** is a next-generation civic engagement platform leveraging Web3 technologies, real-time mapping, anime-inspired UI, and token-based incentives. This project workspace tracks all phases, completed milestones, and upcoming deliverables.
 
----
+- --
 
 ## 📅 Project Phases & Milestones
 
@@ -62,7 +62,7 @@ relatedDocs: []
 - Enterprise-grade performance
 - Complete API ecosystem
 
----
+- --
 
 ## ✅ Completed Milestones (Alpha 1, 2, Final Alpha)
 
@@ -87,7 +87,7 @@ relatedDocs: []
 - Advanced role-based permissions
 - Database: token_burns, token_mining, crisis_responses, user_permissions
 
----
+- --
 
 ## 🔧 Troubleshooting & Fix Priority
 
@@ -115,7 +115,7 @@ relatedDocs: []
 3. Code splitting implementation
 4. Advanced security measures
 
----
+- --
 
 ## 🗒️ Project Board Columns
 
@@ -125,7 +125,7 @@ relatedDocs: []
 - **Review/QA**: Awaiting code review or test
 - **Done**: Completed and merged/deployed
 
----
+- --
 
 ## 🛠️ Example Issues (Phase 2)
 
@@ -141,7 +141,7 @@ relatedDocs: []
 - [ ] Fix file upload validation bugs (see troubleshooting)
 - [ ] Add rate limiting to prevent spam
 
----
+- --
 
 ## 🚀 Next Steps
 
@@ -149,15 +149,15 @@ relatedDocs: []
 - **Prepare for Final Alpha:** Begin implementation of KYC, token systems, and crisis response.
 - **Routine QA:** Focus on troubleshooting list, especially critical and high-priority items.
 
----
+- --
 
 ## 🎨 Design Reference
 
-- **Primary Colors:** Electric purple (#B593EE), blue (#92A8D1), coral (#FF6F61)
+- **Primary Colors:** Electric purple (# B593EE), blue (# 92A8D1), coral (# FF6F61)
 - **UI Effects:** Holographic backgrounds, glass-morphism, floating particles
 - **Animations:** Framer Motion, smooth transitions, hover effects
 
----
+- --
 
 ## 👥 Team Collaboration
 
@@ -165,7 +165,7 @@ relatedDocs: []
 - Use project board columns to track progress.
 - Conduct weekly reviews focused on the phase’s troubleshooting priorities.
 
----
+- --
 
 ## 📈 Metrics & Reporting
 
@@ -175,19 +175,19 @@ relatedDocs: []
   - Token mining/burning events
   - Crisis response activities
 
----
+- --
 
 ## 💬 Communication
 
 - Use integrated chat and comment threads on issues for async communication.
 - Schedule regular video stand-ups or syncs for blockers and demos.
 
----
+- --
 
 ## 🏁 Final Goal
 
 Deliver an anime-inspired, blockchain-enabled, AI-powered civic networking platform with robust security, real-time features, and gamified engagement for global users.
 
----
+- --
 
-**Let’s make GALAX the future of civic engagement!**
+* *Let’s make GALAX the future of civic engagement!**

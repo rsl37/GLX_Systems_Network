@@ -1,4 +1,4 @@
----
+- --
 title: "Example: Intelligent Workflow System Demo"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Example: Intelligent Workflow System Demo
 
@@ -28,34 +28,54 @@ This file demonstrates how the intelligent workflow system works. Making changes
 ## Other examples:
 
 ### Frontend Code Change
-```
-GALAX_App_files/src/components/UserProfile.tsx
-```
-**Result**: Full CI/CD + Performance checks + Preview deployment
 
-### Backend Code Change  
 ```
+
+GALAX_App_files/src/components/UserProfile.tsx
+
+```
+
+* *Result**: Full CI/CD + Performance checks + Preview deployment
+
+### Backend Code Change
+
+```
+
 GALAX_App_files/server/api/users.ts
+
 ```
-**Result**: Full CI/CD + Enhanced security scans + Preview deployment
+
+* *Result**: Full CI/CD + Enhanced security scans + Preview deployment
 
 ### Web3 Code Change
+
 ```
+
 GALAX_App_files/src/web3/wallet-connector.ts
+
 ```
-**Result**: Full CI/CD + Web3 tests + Security scans + Preview deployment
+
+* *Result**: Full CI/CD + Web3 tests + Security scans + Preview deployment
 
 ### Security-Sensitive Change
+
 ```
+
 .env.production, package.json, server/auth.ts
+
 ```
-**Result**: Enhanced security analysis + Full CI/CD + Preview deployment
+
+* *Result**: Enhanced security analysis + Full CI/CD + Preview deployment
 
 ### Mixed Changes
+
 ```
+
 README.md + src/components/Dashboard.tsx
+
 ```
-**Result**: Full CI/CD (not docs-only because code changed)
+
+* *Result**: Full CI/CD (not docs-only because code changed)
 
 ## Manual Overrides
 
@@ -68,7 +88,7 @@ Add to commit message to override intelligent behavior:
 ## Benefits
 
 - 📝 Documentation PRs: 80% faster
-- 🎨 Focused changes: 40-50% faster  
+- 🎨 Focused changes: 40-50% faster
 - 🔒 Security: No compromise on coverage
 - 💰 Resources: 60-70% reduction in CI minutes
 - 🚀 Experience: Faster feedback, less noise

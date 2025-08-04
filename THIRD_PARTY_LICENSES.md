@@ -1,4 +1,4 @@
----
+- --
 title: "Third-Party Licenses"
 description: ""
 lastUpdated: "2025-08-03"
@@ -8,7 +8,7 @@ maintainer: "GALAX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
----
+- --
 
 # Third-Party Licenses
 
@@ -30,12 +30,12 @@ This document provides information about third-party software components used in
 
 #### Major Components
 
-**React Ecosystem**
+* *React Ecosystem**
 - `react@18.3.1` - MIT License
-- `react-dom@18.3.1` - MIT License  
+- `react-dom@18.3.1` - MIT License
 - `react-router-dom@^7.7.1` - MIT License
 
-**UI Libraries**
+* *UI Libraries**
 - `@radix-ui/react-avatar@^1.1.10` - MIT License
 - `@radix-ui/react-checkbox@1.3.2` - MIT License
 - `@radix-ui/react-dialog@1.1.14` - MIT License
@@ -52,14 +52,14 @@ This document provides information about third-party software components used in
 - `framer-motion@^12.23.12` - MIT License
 - `lucide-react@0.535.0` - ISC License
 
-**Styling**
+* *Styling**
 - `tailwindcss@3.4.17` - MIT License
 - `tailwind-merge@3.3.1` - MIT License
 - `tailwindcss-animate@1.0.7` - MIT License
 - `class-variance-authority@0.7.1` - Apache-2.0 License
 - `clsx@2.1.1` - MIT License
 
-**Server & API**
+* *Server & API**
 - `express@5.1.0` - MIT License
 - `express-rate-limit@^8.0.1` - MIT License
 - `express-validator@^7.2.1` - MIT License
@@ -67,32 +67,32 @@ This document provides information about third-party software components used in
 - `helmet@^8.1.0` - MIT License
 - `compression@^1.8.1` - MIT License
 
-**Database**
+* *Database**
 - `kysely@^0.28.3` - MIT License
 - `better-sqlite3@^12.2.0` - BSD-2-Clause License
 - `pg@^8.16.3` - MIT License
 
-**Authentication & Security**
+* *Authentication & Security**
 - `bcryptjs@^3.0.2` - MIT License
 - `jsonwebtoken@^9.0.2` - MIT License
 - `speakeasy@^2.0.0` - MIT License
 
-**Post-Quantum Cryptography**
+* *Post-Quantum Cryptography**
 - `@noble/post-quantum@^0.4.1` - MIT License
 - `crystals-kyber@^5.1.0` - MIT License
 - `dilithium-js@^1.8.7` - MIT License
 
-**Real-time Communication**
+* *Real-time Communication**
 - `socket.io@^4.8.1` - MIT License
 - `socket.io-client@^4.8.1` - MIT License
 - `pusher@^5.2.0` - MIT License
 - `pusher-js@^8.4.0` - MIT License
 
-**Maps & Location**
+* *Maps & Location**
 - `@googlemaps/js-api-loader@^1.16.10` - Apache-2.0 License
 - `leaflet@^1.9.4` - BSD-2-Clause License
 
-**Utilities**
+* *Utilities**
 - `dotenv@^17.2.1` - BSD-2-Clause License
 - `fs-extra@^11.3.0` - MIT License
 - `multer@^2.0.2` - MIT License
@@ -100,17 +100,17 @@ This document provides information about third-party software components used in
 - `qrcode@^1.5.4` - MIT License
 - `check-disk-space@^3.4.0` - MIT License
 
-**Analytics**
+* *Analytics**
 - `@vercel/analytics@^1.5.0` - MIT License
 - `@vercel/speed-insights@^1.2.0` - MIT License
 
-**UI Components**
+* *UI Components**
 - `cmdk@1.1.1` - MIT License
 - `react-day-picker@8.10.1` - MIT License
 
 #### Development Dependencies
 
-**Testing**
+* *Testing**
 - `@playwright/test@^1.54.1` - Apache-2.0 License
 - `@testing-library/jest-dom@^6.6.3` - MIT License
 - `@testing-library/react@^16.3.0` - MIT License
@@ -121,7 +121,7 @@ This document provides information about third-party software components used in
 - `jsdom@^26.1.0` - MIT License
 - `supertest@^7.1.4` - MIT License
 
-**Build Tools**
+* *Build Tools**
 - `vite@^6.3.5` - MIT License
 - `@vitejs/plugin-react@4.7.0` - MIT License
 - `vite-plugin-compression@^0.5.1` - MIT License
@@ -129,14 +129,14 @@ This document provides information about third-party software components used in
 - `typescript@5.8.3` - Apache-2.0 License
 - `tsx@^4.20.3` - MIT License
 
-**Performance & Analysis**
+* *Performance & Analysis**
 - `autocannon@^8.0.0` - MIT License
 - `webpack-bundle-analyzer@^4.10.2` - MIT License
 - `@lhci/cli@^0.15.1` - Apache-2.0 License
 
 ### MCP Servers Dependencies
 
-**Model Context Protocol**
+* *Model Context Protocol**
 - `@modelcontextprotocol/sdk@^0.4.0` - MIT License
 - `jsonwebtoken@^9.0.2` - MIT License
 
@@ -166,7 +166,7 @@ The Resgrid external project includes numerous third-party JavaScript libraries 
 - **Ladda** - MIT License
 - **Pace** - MIT License
 
-*Note: The above list represents major libraries found in the Resgrid codebase. For complete license information of embedded libraries, refer to individual package.json files in the `external/resgrid/Web/Resgrid.Web/wwwroot/lib/` directory.*
+* Note: The above list represents major libraries found in the Resgrid codebase. For complete license information of embedded libraries, refer to individual package.json files in the `external/resgrid/Web/Resgrid.Web/wwwroot/lib/` directory.*
 
 ## Package Overrides
 
@@ -183,6 +183,7 @@ This document covers direct dependencies. Each package may include additional tr
 ```bash
 cd GALAX_App_files
 npm ls --long
+
 ```
 
 ## License Compliance
