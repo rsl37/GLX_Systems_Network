@@ -30,7 +30,7 @@ jobs:
       needs_dependencies: ${{ steps.changes.outputs.dependencies }}
       needs_config: ${{ steps.changes.outputs.config }}
       changed_files: ${{ steps.changes.outputs.all_changed_files }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,13 +53,13 @@ jobs:
               - 'GALAX_App_files/index.html'
               - '!GALAX_App_files/src/server/**'
               - '!GALAX_App_files/server/**'
-              
+
             backend:
               - 'GALAX_App_files/server/**'
               - 'GALAX_App_files/api/**'
               - 'GALAX_App_files/tsconfig.server.json'
               - 'GALAX_App_files/src/server/**'
-              
+
             web3:
               - '**/*web3*'
               - '**/*crypto*'
@@ -67,7 +67,7 @@ jobs:
               - '**/*defi*'
               - 'GALAX_App_files/server/middleware/web3-security.ts'
               - 'mcp-config.json'
-              
+
             security:
               - 'GALAX_App_files/server/**'
               - '.env*'
@@ -79,10 +79,10 @@ jobs:
               - '**/*auth*'
               - '**/*security*'
               - '**/*middleware*'
-              
+
             workflows:
               - '.github/**'
-              
+
             dependencies:
               - 'package.json'
               - 'GALAX_App_files/package.json'
@@ -90,7 +90,7 @@ jobs:
               - 'GALAX_App_files/package-lock.json'
               - 'npm-shrinkwrap.json'
               - 'GALAX_App_files/npm-shrinkwrap.json'
-              
+
             config:
               - 'tsconfig.json'
               - 'GALAX_App_files/tsconfig.json'
@@ -100,7 +100,7 @@ jobs:
               - 'vercel.json'
               - '.lighthouserc.json'
               - 'GALAX_App_files/.lighthouserc.json'
-              
+
             docs_only:
               - '**/*.md'
               - 'docs/**'
@@ -115,11 +115,11 @@ jobs:
         id: requirements
         run: |
           echo "🔍 Analyzing changed files for intelligent workflow execution..."
-          
+
           # Get all changed files
           ALL_FILES='${{ steps.changes.outputs.all_changed_files }}'
           echo "Changed files: $ALL_FILES"
-          
+
           # Check if ONLY documentation files changed
           FRONTEND_CHANGED='${{ steps.changes.outputs.frontend }}'
           BACKEND_CHANGED='${{ steps.changes.outputs.backend }}'
@@ -129,7 +129,7 @@ jobs:
           DEPS_CHANGED='${{ steps.changes.outputs.dependencies }}'
           CONFIG_CHANGED='${{ steps.changes.outputs.config }}'
           DOCS_CHANGED='${{ steps.changes.outputs.docs_only }}'
-          
+
           # Determine if this is a docs-only change
           if [[ "$DOCS_CHANGED" == "true" ]] && \
              [[ "$FRONTEND_CHANGED" == "false" ]] && \
@@ -144,7 +144,7 @@ jobs:
           else
             echo "docs_only=false" >> $GITHUB_OUTPUT
           fi
-          
+
           echo "📊 Workflow Requirements Summary:"
           echo "  Frontend: $FRONTEND_CHANGED"
           echo "  Backend: $BACKEND_CHANGED"
@@ -215,11 +215,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Validate documentation
         run: |
           echo "📝 Running lightweight validation for documentation-only changes"
-          
+
           # Basic markdown validation
           echo "Checking for broken markdown links..."
           find . -name "*.md" -not -path "./node_modules/*" -not -path "./.git/*" | while read file; do
@@ -227,7 +227,7 @@ jobs:
             # Basic syntax check - just ensure the file is readable
             head -1 "$file" > /dev/null || echo "⚠️ Warning: $file may have issues"
           done
-          
+
           echo "✅ Documentation validation complete - no heavy CI/CD needed"
 
   workflow-summary:
@@ -258,7 +258,7 @@ jobs:
           echo "  Web3 Tests: ${{ needs.trigger-web3-checks.result != 'skipped' }}"
           echo "  Docs-Only Mode: ${{ needs.docs-only-validation.result != 'skipped' }}"
           echo ""
-          
+
           if [[ "${{ needs.analyze-changes.outputs.needs_docs_only }}" == "true" ]]; then
             echo "✅ Documentation-only changes detected - running lightweight validation"
             echo "⚡ Estimated time saved: 15-25 minutes"
