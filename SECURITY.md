@@ -70,6 +70,38 @@ For urgent security matters, create a security advisory with:
 - Potential impact assessment
 - Any suggested mitigations
 
+## 🔑 PAT_TOKEN Authentication Security
+
+### Secure Personal Access Token Implementation
+GALAX implements industry-standard PAT_TOKEN authentication for enhanced GitHub Actions capabilities:
+
+#### PAT_TOKEN Security Features
+- **Fine-Grained Permissions**: Minimal required scopes (Contents:Read, Metadata:Read)
+- **Environment Protection**: Multi-tier approval workflows for sensitive operations
+- **Token Rotation**: 90-day mandatory rotation schedule with automated monitoring
+- **Fallback Mechanisms**: Graceful degradation to GITHUB_TOKEN when PAT unavailable
+- **Zero Exposure**: Comprehensive logging without credential disclosure
+- **Cross-Repository Access**: Secure private repository and submodule operations
+
+#### Security-Hardened Workflows
+- **Repository Checkout**: Secure PAT-based checkout with credential non-persistence
+- **Cross-Repository Operations**: Multi-repository access with audit trails
+- **Submodule Management**: Recursive submodule initialization with security validation
+- **Continuous Monitoring**: Automated PAT usage auditing every 6 hours
+
+#### Environment Protection Rules
+- **Production**: Security team approval + 5-minute wait timer
+- **Development**: Maintainer approval + 1-minute wait timer  
+- **Cross-Repository**: Security review + comprehensive audit logging
+- **Submodule Access**: Standard protection with functionality validation
+
+### PAT_TOKEN Management
+- **Creation**: Fine-grained tokens via GitHub Settings → Developer Settings
+- **Storage**: Repository secrets with environment-specific isolation
+- **Monitoring**: Automated accessibility testing and expiration tracking
+- **Rotation**: Quarterly mandatory updates with overlap validation
+- **Incident Response**: Immediate revocation procedures with fallback activation
+
 ## 🔍 Security Monitoring
 
 ### Automated Security Checks
@@ -80,6 +112,7 @@ Our security workflows provide comprehensive protection through multiple layers:
 - **Secret Scanning**: TruffleHog-based detection of exposed credentials  
 - **Static Analysis**: ESLint security rules and custom analysis
 - **Node.js Security Scan**: njsscan static security code scanner
+- **PAT Security Monitoring**: Continuous token usage and expiration tracking
 
 #### Advanced Security Features (GitHub Advanced Security)
 - **CodeQL Analysis**: GitHub's semantic code analysis engine
