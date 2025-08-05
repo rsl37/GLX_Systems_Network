@@ -1,18 +1,22 @@
 ---
-title: "About GALAX"
+title: "About GLX: Connect the World"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# About GALAX
+# About GLX: Connect the World
 
-**GALAX: Web3 Civic Networking Platform** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
+**GLX: Connect the World - Web3 Civic Networking Platform** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
+
+> **GLX** stands for **G**overnance **L**ink e**X**change - connecting communities through technology-enabled democracy.
+
+*Inspired by democratic ideals in Gatchaman Crowds (© Tatsunoko Production) while establishing GLX as an independent, legally protected civic technology platform. No official association, endorsement, or licensing relationship exists or is implied.*
 
 ## 🎯 Mission
 
@@ -34,13 +38,13 @@ To build a next-generation civic networking platform that empowers communities t
 
 ### Development Tools  
 - **GitHub & Copilot**: Code collaboration and AI-powered development
-- **Vercel**: Production hosting platform for the GALAX application
+- **Vercel**: Production hosting platform for the GLX application
 - **Vitest & Playwright**: Comprehensive testing framework
 - **Vite**: Fast build system and development server
 
 ## 🔒 Security & Privacy
 
-GALAX implements enterprise-grade security measures:
+GLX implements enterprise-grade security measures:
 - **Post-quantum cryptography** with NIST-standard algorithms
 - **Multi-factor authentication** (2FA/TOTP support)
 - **End-to-end verification** (email, phone, document KYC)
