@@ -1,16 +1,16 @@
 ---
-title: "GALAX Development Activity - Monthly Metrics Dashboard"
+title: "GLX Development Activity - Monthly Metrics Dashboard"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "development"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX Development Activity - Monthly Metrics Dashboard
+# GLX Development Activity - Monthly Metrics Dashboard
 
 **Report Date**: August 1, 2025  
 **Reporting Period**: January 2025 - August 2025  

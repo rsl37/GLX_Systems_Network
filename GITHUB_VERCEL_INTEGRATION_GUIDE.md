@@ -1,20 +1,20 @@
 ---
-title: "GALAX Civic Networking App - Complete Vercel Integration Guide"
+title: "GLX Civic Networking App - Complete Vercel Integration Guide"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "guide"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX Civic Networking App - Complete Vercel Integration Guide
+# GLX Civic Networking App - Complete Vercel Integration Guide
 
 ## 🎯 Overview
 
-This guide provides comprehensive instructions for setting up a secure, reliable GitHub-to-Vercel deployment pipeline for the GALAX Civic Networking App. It covers security best practices, environment configuration, monitoring, and troubleshooting.
+This guide provides comprehensive instructions for setting up a secure, reliable GitHub-to-Vercel deployment pipeline for the GLX Civic Networking App. It covers security best practices, environment configuration, monitoring, and troubleshooting.
 
 ## 🔐 Security-First GitHub-Vercel Integration
 
@@ -57,7 +57,7 @@ FRONTEND_URL=https://your-app.vercel.app
 TRUSTED_ORIGINS=https://your-app.vercel.app,https://your-custom-domain.com
 
 # Database (Recommended: PostgreSQL)
-DATABASE_URL=postgres://username:password@host:5432/galax_db
+DATABASE_URL=postgres://username:password@host:5432/glx_db
 
 # Real-time Communication (REQUIRED)
 PUSHER_APP_ID=your_pusher_app_id
@@ -290,7 +290,7 @@ lhci autorun
 {
   "regions": ["iad1"],
   "functions": {
-    "GALAX_App_files/api/**/*": {
+    "GLX_App_files/api/**/*": {
       "runtime": "@vercel/node",
       "maxDuration": 10
     }

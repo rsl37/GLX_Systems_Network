@@ -11,22 +11,22 @@ name: Security Scan
   pull_request:
     branches: [main, develop, production]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
-      - 'GALAX_App_files/package.json'
+      - 'GLX_App_files/package.json'
       - 'package-lock.json'
       - '.env*'
-      - 'GALAX_App_files/.env*'
+      - 'GLX_App_files/.env*'
       - '.github/workflows/security-streamlined.yml'
   push:
     branches: [main, develop]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
-      - 'GALAX_App_files/package.json'
+      - 'GLX_App_files/package.json'
       - 'package-lock.json'
       - '.env*'
-      - 'GALAX_App_files/.env*'
+      - 'GLX_App_files/.env*'
   schedule:
     # Run security scans daily at 2 AM UTC
     - cron: '0 2 * * *'
@@ -68,19 +68,19 @@ jobs:
           filters: |
             dependencies:
               - 'package.json'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/package.json'
               - 'package-lock.json'
               - 'npm-shrinkwrap.json'
-              - 'GALAX_App_files/npm-shrinkwrap.json'
+              - 'GLX_App_files/npm-shrinkwrap.json'
             security:
-              - 'GALAX_App_files/server/**'
+              - 'GLX_App_files/server/**'
               - '.env*'
-              - 'GALAX_App_files/.env*'
+              - 'GLX_App_files/.env*'
               - '**/*auth*'
               - '**/*security*'
               - '**/*middleware*'
             full_scan:
-              - 'GALAX_App_files/**'
+              - 'GLX_App_files/**'
               - 'package.json'
               - 'package-lock.json'
 
@@ -157,7 +157,7 @@ jobs:
           echo "   Repository settings: https://github.com/${{ github.repository }}/settings/security_analysis"
           
           # Run npm audit as alternative
-          cd GALAX_App_files
+          cd GLX_App_files
           if [ -f "package-lock.json" ]; then
             echo "Running npm audit for dependency security check..."
             npm audit --audit-level=moderate || true
@@ -211,7 +211,7 @@ jobs:
 
       - name: Install dependencies
 
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           if [ ! -d "node_modules" ]; then
             npm ci --prefer-offline --no-audit --no-fund
@@ -226,7 +226,7 @@ jobs:
 
       - name: Build application (for CodeQL)
         if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Building application for CodeQL analysis..."
           npm run build
@@ -243,7 +243,7 @@ jobs:
           echo "⚠️  CodeQL analysis is not available - using alternative static analysis"
           echo "   To enable CodeQL, enable Code Scanning in repository settings"
           
-          cd GALAX_App_files
+          cd GLX_App_files
           
           # Try to run ESLint if available
           if npm list eslint > /dev/null 2>&1; then
@@ -273,10 +273,10 @@ jobs:
 
       - name: Upload static analysis results
         uses: actions/upload-artifact@v4
-        if: always() && hashFiles('GALAX_App_files/eslint-results.json') != ''
+        if: always() && hashFiles('GLX_App_files/eslint-results.json') != ''
         with:
           name: static-analysis-results
-          path: ./GALAX_App_files/eslint-results.json
+          path: ./GLX_App_files/eslint-results.json
           retention-days: 7
 
   static-analysis:
@@ -298,10 +298,10 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: './GLX_App_files/package-lock.json'
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           if [ ! -d "node_modules" ]; then
             if [ -f "package-lock.json" ]; then
@@ -312,7 +312,7 @@ jobs:
           fi
 
       - name: Run ESLint (if available)
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           if npm list eslint > /dev/null 2>&1; then
             npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-results.json || true
@@ -323,10 +323,10 @@ jobs:
 
       - name: Upload static analysis results
         uses: actions/upload-artifact@v4
-        if: always() && hashFiles('GALAX_App_files/eslint-results.json') != ''
+        if: always() && hashFiles('GLX_App_files/eslint-results.json') != ''
         with:
           name: static-analysis-results
-          path: ./GALAX_App_files/eslint-results.json
+          path: ./GLX_App_files/eslint-results.json
           retention-days: 7
 
   dependency-scan:
@@ -349,13 +349,13 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: './GLX_App_files/package-lock.json'
 
       - name: Ensure cache directories exist
-        run: mkdir -p ./GALAX_App_files/node_modules
+        run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           if [ -f "package-lock.json" ]; then
             npm ci --prefer-offline --no-audit --no-fund
@@ -364,7 +364,7 @@ jobs:
           fi
 
       - name: Run npm audit
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Running npm audit..."
           npm audit --audit-level=moderate --json > audit-results.json || true
@@ -379,10 +379,10 @@ jobs:
 
       - name: Upload audit results
         uses: actions/upload-artifact@v4
-        if: always() && hashFiles('GALAX_App_files/audit-results.json') != ''
+        if: always() && hashFiles('GLX_App_files/audit-results.json') != ''
         with:
           name: npm-audit-results
-          path: ./GALAX_App_files/audit-results.json
+          path: ./GLX_App_files/audit-results.json
           retention-days: 7
 
   secret-scan:

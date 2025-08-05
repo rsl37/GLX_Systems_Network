@@ -6,7 +6,7 @@ name: Preview Deployment
     branches: [main]
     types: [opened, synchronize, reopened]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - 'vercel.json'
@@ -23,7 +23,7 @@ name: Preview Deployment
 
 env:
   NODE_VERSION: '20.x'
-  WORKING_DIRECTORY: './GALAX_App_files'
+  WORKING_DIRECTORY: './GLX_App_files'
 
 concurrency:
   group: preview-${{ github.event.pull_request.number }}
@@ -50,7 +50,7 @@ jobs:
         with:
           filters: |
             app_changes:
-              - 'GALAX_App_files/**'
+              - 'GLX_App_files/**'
               - 'package.json'
               - 'package-lock.json'
               - 'vercel.json'
@@ -286,9 +286,9 @@ jobs:
 
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@v4
-        if: always() && hashFiles('GALAX_App_files/.lighthouseci/**') != ''
+        if: always() && hashFiles('GLX_App_files/.lighthouseci/**') != ''
         with:
           name: lighthouse-results
           path: |
-            ./GALAX_App_files/.lighthouseci/
+            ./GLX_App_files/.lighthouseci/
           retention-days: 7

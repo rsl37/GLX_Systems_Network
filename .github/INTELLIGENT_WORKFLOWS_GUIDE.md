@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GALAX Civic Networking App now uses an **Intelligent Workflow System** that automatically determines which workflows should run based on the actual files changed in each PR. This system reduces CI/CD time by 60-80% for focused changes while maintaining comprehensive coverage for critical changes.
+The GLX Civic Networking App now uses an **Intelligent Workflow System** that automatically determines which workflows should run based on the actual files changed in each PR. This system reduces CI/CD time by 60-80% for focused changes while maintaining comprehensive coverage for critical changes.
 
 ## How It Works
 
@@ -11,13 +11,13 @@ The GALAX Civic Networking App now uses an **Intelligent Workflow System** that 
 The system analyzes changed files in each PR and categorizes them into different types:
 
 #### **Frontend Changes**
-- `GALAX_App_files/src/**` (excluding server)
-- `GALAX_App_files/client/**`
+- `GLX_App_files/src/**` (excluding server)
+- `GLX_App_files/client/**`
 - UI configuration files (tailwind, vite, components)
 
 #### **Backend Changes**
-- `GALAX_App_files/server/**`
-- `GALAX_App_files/api/**`
+- `GLX_App_files/server/**`
+- `GLX_App_files/api/**`
 - Server configuration files
 
 #### **Web3/Crypto Changes**
@@ -88,24 +88,24 @@ When security-critical files are modified:
 
 ### Triggers Full CI/CD
 ```
-GALAX_App_files/src/components/UserDashboard.tsx
-GALAX_App_files/server/api/auth.ts
+GLX_App_files/src/components/UserDashboard.tsx
+GLX_App_files/server/api/auth.ts
 package.json
-GALAX_App_files/vite.config.js
+GLX_App_files/vite.config.js
 ```
 
 ### Triggers Security Scans
 ```
-GALAX_App_files/server/middleware/auth.ts
+GLX_App_files/server/middleware/auth.ts
 .env.production
 package-lock.json
-GALAX_App_files/server/security/encryption.ts
+GLX_App_files/server/security/encryption.ts
 ```
 
 ### Triggers Web3 Tests
 ```
-GALAX_App_files/src/web3/wallet-connector.ts
-GALAX_App_files/server/middleware/web3-security.ts
+GLX_App_files/src/web3/wallet-connector.ts
+GLX_App_files/server/middleware/web3-security.ts
 mcp-config.json (if contains web3 config)
 src/crypto/post-quantum.ts
 ```
@@ -114,7 +114,7 @@ src/crypto/post-quantum.ts
 ```
 README.md
 docs/deployment.md
-GALAX_App_files/docs/api.md
+GLX_App_files/docs/api.md
 screenshots/dashboard.png
 ```
 

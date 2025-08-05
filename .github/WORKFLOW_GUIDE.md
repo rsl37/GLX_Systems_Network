@@ -1,4 +1,4 @@
-# GALAX GitHub Actions Workflow Guide 🚀
+# GLX GitHub Actions Workflow Guide 🚀
 
 ## Overview
 

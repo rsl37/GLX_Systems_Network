@@ -1,4 +1,4 @@
-# 🚀 GALAX Repository Workflow Enhancement - Implementation Guide
+# 🚀 GLX Repository Workflow Enhancement - Implementation Guide
 
 ## Overview
 

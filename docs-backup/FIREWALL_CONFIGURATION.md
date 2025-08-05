@@ -1,20 +1,20 @@
 ---
-title: "GALAX App - Firewall Configuration Guide"
+title: "GLX App - Firewall Configuration Guide"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "archive"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX App - Firewall Configuration Guide
+# GLX App - Firewall Configuration Guide
 
 ## Overview
 
-This document provides a comprehensive list of URLs, domains, and network requirements for the GALAX civic networking platform to operate correctly behind corporate firewalls and security restrictions. The application requires access to various external services for authentication, API services, development tools, and real-time functionality.
+This document provides a comprehensive list of URLs, domains, and network requirements for the GLX civic networking platform to operate correctly behind corporate firewalls and security restrictions. The application requires access to various external services for authentication, API services, development tools, and real-time functionality.
 
 ## Quick Reference - Essential Domains
 

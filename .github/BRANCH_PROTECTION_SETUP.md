@@ -294,10 +294,10 @@ For repositories with multiple components, you can create path-based rules:
 on:
   push:
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
   pull_request:
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
 ```
 
 ### Auto-merge Configuration

@@ -1,7 +1,7 @@
 {
-  "name": "galax-mcp-servers",
+  "name": "glx-mcp-servers",
   "version": "1.0.0",
-  "description": "Custom MCP servers for GALAX Civic Networking App",
+  "description": "Custom MCP servers for GLX Civic Networking App",
   "main": "index.js",
   "scripts": {
     "start:realtime": "node realtime-server.js",
@@ -19,7 +19,7 @@
     "authentication",
     "social-good"
   ],
-  "author": "GALAX Civic Networking Team",
+  "author": "GLX Civic Networking Team",
   "license": "PolyForm-Shield-1.0.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.4.0",

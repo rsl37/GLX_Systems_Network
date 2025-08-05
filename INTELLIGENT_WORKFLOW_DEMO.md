@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -29,19 +29,19 @@ This file demonstrates how the intelligent workflow system works. Making changes
 
 ### Frontend Code Change
 ```
-GALAX_App_files/src/components/UserProfile.tsx
+GLX_App_files/src/components/UserProfile.tsx
 ```
 **Result**: Full CI/CD + Performance checks + Preview deployment
 
 ### Backend Code Change  
 ```
-GALAX_App_files/server/api/users.ts
+GLX_App_files/server/api/users.ts
 ```
 **Result**: Full CI/CD + Enhanced security scans + Preview deployment
 
 ### Web3 Code Change
 ```
-GALAX_App_files/src/web3/wallet-connector.ts
+GLX_App_files/src/web3/wallet-connector.ts
 ```
 **Result**: Full CI/CD + Web3 tests + Security scans + Preview deployment
 

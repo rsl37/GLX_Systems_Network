@@ -2,7 +2,7 @@
 
 ## 🔒 Overview
 
-This document provides comprehensive guidance for implementing secure Personal Access Token (PAT_TOKEN) authentication in the GALAX Civic Networking App repository. Our implementation follows industry security best practices and GitHub's recommended security guidelines.
+This document provides comprehensive guidance for implementing secure Personal Access Token (PAT_TOKEN) authentication in the GLX Civic Networking App repository. Our implementation follows industry security best practices and GitHub's recommended security guidelines.
 
 ## 🔑 PAT_TOKEN Creation and Configuration
 
@@ -14,8 +14,8 @@ This document provides comprehensive guidance for implementing secure Personal A
 
 2. **Configure Token Settings**:
    ```yaml
-   Token Name: "GALAX-Civic-Workflow-Access"
-   Description: "Repository access for GALAX Civic Networking App workflows"
+   Token Name: "GLX-Civic-Workflow-Access"
+   Description: "Repository access for GLX Civic Networking App workflows"
    Expiration: 90 days (maximum security)
    Resource owner: [Your Organization/Username]
    ```
@@ -255,7 +255,7 @@ Our implementation includes comprehensive monitoring workflows:
 - **Token Creation Date**: [Track creation timestamp]
 - **Expiration Date**: [90-day rotation schedule]
 - **Permissions Granted**: [Minimal required scopes]
-- **Repositories**: [GALAX Civic Networking App]
+- **Repositories**: [GLX Civic Networking App]
 - **Last Rotation**: [Previous rotation date]
 - **Next Rotation**: [Scheduled rotation date]
 
@@ -303,5 +303,5 @@ Our implementation includes comprehensive monitoring workflows:
 
 **Last Updated**: 2025-08-04  
 **Version**: 1.0.0  
-**Maintainer**: GALAX Security Team  
+**Maintainer**: GLX Security Team  
 **Review Schedule**: Quarterly

@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "guide"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -121,7 +121,7 @@ The new `.github/workflows/comprehensive-checks.yml` provides:
 ## Monitoring and Troubleshooting
 
 ### Check Workflow Status
-Monitor workflows at: `https://github.com/rsl37/GALAX_Civic_Networking_App/actions`
+Monitor workflows at: `https://github.com/rsl37/GLX_Civic_Networking_App/actions`
 
 ### Common Issues
 1. **"Status check not found"** - Workflow needs to run successfully once before appearing in branch protection options

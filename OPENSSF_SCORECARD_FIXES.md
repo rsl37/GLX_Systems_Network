@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -13,7 +13,7 @@ relatedDocs: []
 # OpenSSF Scorecard Security Fixes
 
 ## Overview
-This document details the security vulnerabilities addressed to improve the OpenSSF Scorecard rating for the GALAX Civic Networking App.
+This document details the security vulnerabilities addressed to improve the OpenSSF Scorecard rating for the GLX Civic Networking App.
 
 ## Vulnerabilities Fixed
 

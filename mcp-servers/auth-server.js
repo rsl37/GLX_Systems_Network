@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
 /**
- * GALAX JWT Authentication MCP Server
- * Authentication and authorization server for the GALAX platform
+ * GLX JWT Authentication MCP Server
+ * Authentication and authorization server for the GLX platform
  */
 
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
@@ -20,7 +20,7 @@ const crypto = require('crypto');
 class AuthMCPServer {
   constructor() {
     this.server = new Server({
-      name: 'GALAX JWT Authentication MCP Server',
+      name: 'GLX JWT Authentication MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {

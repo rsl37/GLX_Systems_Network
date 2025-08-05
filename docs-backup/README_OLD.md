@@ -1,22 +1,22 @@
 ---
-title: "GALAX: Web3 Civic Networking Platform"
+title: "GLX: Web3 Civic Networking Platform"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "archive"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX: Web3 Civic Networking Platform
+# GLX: Web3 Civic Networking Platform
 
-[![CI/CD Pipeline](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/main.yml)
-[![Security Checks](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Security%20Checks/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
-[![Code Quality](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Code%20Quality/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/quality.yml)
+[![CI/CD Pipeline](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/main.yml)
+[![Security Checks](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Security%20Checks/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
+[![Code Quality](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Code%20Quality/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/quality.yml)
 
-**GALAX** is a next-generation web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance.
+**GLX** is a next-generation web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance.
 
 ---
 
@@ -29,8 +29,8 @@ relatedDocs: []
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/rsl37/GALAX_Civic_Networking_App.git
-cd GALAX_Civic_Networking_App/GALAX_App_files
+git clone https://github.com/rsl37/GLX_Civic_Networking_App.git
+cd GLX_Civic_Networking_App/GLX_App_files
 
 # Install dependencies
 npm install
@@ -59,7 +59,7 @@ npm run test:coverage
 ## 🏗️ Project Structure
 
 ```
-GALAX_App_files/
+GLX_App_files/
 ├── client/                    # React frontend application
 │   ├── src/                   # Source code
 │   │   ├── components/        # React components
@@ -93,11 +93,11 @@ GALAX_App_files/
 
 ## 📖 Documentation
 
-- [About GALAX](ABOUT_GALAX.md) - Project overview and mission
+- [About GLX](ABOUT_GLX.md) - Project overview and mission
 - [Project Structure](PROJECT_STRUCTURE.md) - Detailed directory structure
 - [Security Information](SECURITY.md) - Security policies and reporting
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
-- [Workspace Guide](GALAX_Project_Workspace.md) - Development workspace setup
+- [Workspace Guide](GLX_Project_Workspace.md) - Development workspace setup
 
 ---
 
@@ -119,9 +119,9 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 
 ## 🔗 Links
 
-- **Live Demo**: [galaxcivicnetwork.me](https://galaxcivicnetwork.me)
+- **Live Demo**: [glxcivicnetwork.me](https://glxcivicnetwork.me)
 - **Documentation**: [Project Docs](docs/)
-- **Issues**: [GitHub Issues](https://github.com/rsl37/GALAX_Civic_Networking_App/issues)
+- **Issues**: [GitHub Issues](https://github.com/rsl37/GLX_Civic_Networking_App/issues)
 
 ---
 
@@ -158,13 +158,13 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 - [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)  
   *Complete directory tree and file/folder explanations.*
 
-- [`SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md`](GALAX_App_files/docs/SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md)  
+- [`SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md`](GLX_App_files/docs/SOCIAL_IMPACT_INTEGRATION_ASSESSMENT.md)  
   *Analysis of social features, feedback systems, reputation, and gamification.*
 
-- [`TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md`](GALAX_App_files/docs/TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md)  
+- [`TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md`](GLX_App_files/docs/TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md)  
   *Technical UI/UX, real-time architecture, accessibility, and recommendations.*
 
-- [`IMPLEMENTATION_STATUS.md`](GALAX_App_files/IMPLEMENTATION_STATUS.md)  
+- [`IMPLEMENTATION_STATUS.md`](GLX_App_files/IMPLEMENTATION_STATUS.md)  
   *Progress report, missing features, and action priorities.*
 
 ---
@@ -204,7 +204,7 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 - **Web3/crypto identity integration (planned)**
 - **Accessibility and internationalization (in progress)**
 
-See [`IMPLEMENTATION_STATUS.md`](GALAX_App_files/IMPLEMENTATION_STATUS.md) for priorities and remaining tasks.
+See [`IMPLEMENTATION_STATUS.md`](GLX_App_files/IMPLEMENTATION_STATUS.md) for priorities and remaining tasks.
 
 ---
 
@@ -251,7 +251,7 @@ The PolyForm Shield license allows for broad usage while protecting against dire
 ## 🚀 Deployment & Hosting
 
 ### Production Hosting Transition
-The GALAX Civic Networking App has transitioned from its prototype hosting environment to production:
+The GLX Civic Networking App has transitioned from its prototype hosting environment to production:
 
 - **Prototype Phase**: Initially developed and tested using instance.so/build
 - **Production Phase**: Now hosted on **Vercel** for optimal performance, scalability, and reliability
@@ -265,7 +265,7 @@ This transition enables enhanced features including:
 ### Custom Domain SSL Setup
 If you're experiencing SSL errors with the custom domain, refer to our comprehensive guide:
 
-- **[Vercel Domain Setup Guide](GALAX_App_files/docs/VERCEL_DOMAIN_SETUP.md)** - Complete SSL and domain configuration for Vercel
+- **[Vercel Domain Setup Guide](GLX_App_files/docs/VERCEL_DOMAIN_SETUP.md)** - Complete SSL and domain configuration for Vercel
 
 ### Common SSL Issues
 The `ERR_SSL_PROTOCOL_ERROR` on custom domains is typically caused by:

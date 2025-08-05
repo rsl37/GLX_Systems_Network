@@ -4,18 +4,18 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'GALAX_App_files/server/auth.ts'
-      - 'GALAX_App_files/server/index.ts'
-      - 'GALAX_App_files/tests/api/auth.test.ts'
-      - 'GALAX_App_files/server/middleware/**'
+      - 'GLX_App_files/server/auth.ts'
+      - 'GLX_App_files/server/index.ts'
+      - 'GLX_App_files/tests/api/auth.test.ts'
+      - 'GLX_App_files/server/middleware/**'
       - '.github/workflows/auth-status-checks.yml'
   pull_request:
     branches: [ main ]
     paths:
-      - 'GALAX_App_files/server/auth.ts'
-      - 'GALAX_App_files/server/index.ts'
-      - 'GALAX_App_files/tests/api/auth.test.ts'
-      - 'GALAX_App_files/server/middleware/**'
+      - 'GLX_App_files/server/auth.ts'
+      - 'GLX_App_files/server/index.ts'
+      - 'GLX_App_files/tests/api/auth.test.ts'
+      - 'GLX_App_files/server/middleware/**'
       - '.github/workflows/auth-status-checks.yml'
 
 jobs:
@@ -33,33 +33,33 @@ jobs:
       with:
         node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
+        cache-dependency-path: './GLX_App_files/package-lock.json'
         
     - name: Install dependencies
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm ci
       
     - name: Create test environment
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p data/test
         export NODE_ENV=test
         
     - name: Test User Registration Endpoints
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/registration-junit.xml -t "register"
         
     - name: Test Registration Validation
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test registration validation rules - run all registration tests
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/registration-validation-junit.xml -t "should.*register"
         
     - name: Test Email Verification Flow
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test email verification after registration
@@ -71,8 +71,8 @@ jobs:
       with:
         name: account-creation-results
         path: |
-          ./GALAX_App_files/test-results/
-          ./GALAX_App_files/coverage/
+          ./GLX_App_files/test-results/
+          ./GLX_App_files/coverage/
         retention-days: 5
         if-no-files-found: ignore
 
@@ -90,33 +90,33 @@ jobs:
       with:
         node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
+        cache-dependency-path: './GLX_App_files/package-lock.json'
         
     - name: Install dependencies
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm ci
       
     - name: Create test environment
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p data/test
         export NODE_ENV=test
         
     - name: Test Login Endpoints
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/login-junit.xml -t "should.*login"
         
     - name: Test Multiple Login Methods
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test email, phone, and wallet-based login
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/multi-login-junit.xml -t "login.*credentials|invalid.*credentials"
         
     - name: Test Authentication Security
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test rate limiting, account lockout, and security features - run all login tests for now
@@ -128,8 +128,8 @@ jobs:
       with:
         name: login-validation-results
         path: |
-          ./GALAX_App_files/test-results/
-          ./GALAX_App_files/coverage/
+          ./GLX_App_files/test-results/
+          ./GLX_App_files/coverage/
         retention-days: 5
         if-no-files-found: ignore
 
@@ -147,34 +147,34 @@ jobs:
       with:
         node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
+        cache-dependency-path: './GLX_App_files/package-lock.json'
         
     - name: Install dependencies
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm ci
       
     - name: Create test environment
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p data/test
         export NODE_ENV=test
         
     - name: Test Password Reset Flow
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test logout for now - password reset tests need to be implemented
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/password-reset-junit.xml -t "logout"
         
     - name: Test Profile Management
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test profile updates and user management - run verification tests for now
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/profile-management-junit.xml -t "verify.*email"
         
     - name: Test Two-Factor Authentication
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test 2FA setup, enable, disable, and verification - run all auth tests for now
@@ -186,8 +186,8 @@ jobs:
       with:
         name: account-management-results
         path: |
-          ./GALAX_App_files/test-results/
-          ./GALAX_App_files/coverage/
+          ./GLX_App_files/test-results/
+          ./GLX_App_files/coverage/
         retention-days: 5
         if-no-files-found: ignore
 
@@ -205,28 +205,28 @@ jobs:
       with:
         node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
+        cache-dependency-path: './GLX_App_files/package-lock.json'
         
     - name: Install dependencies
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm ci
       
     - name: Test JWT Token Security
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test JWT token generation, validation, and expiration - run login tests for now
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/jwt-security-junit.xml -t "login"
         
     - name: Test Input Validation
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test input sanitization and validation
         npm run test -- --run tests/api/auth.test.ts --reporter=verbose --reporter=junit --outputFile.junit=test-results/input-validation-junit.xml -t "missing.*fields|invalid.*email"
         
     - name: Test Rate Limiting
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p test-results
         # Test rate limiting on authentication endpoints - run all tests for now
@@ -238,8 +238,8 @@ jobs:
       with:
         name: auth-security-results
         path: |
-          ./GALAX_App_files/test-results/
-          ./GALAX_App_files/coverage/
+          ./GLX_App_files/test-results/
+          ./GLX_App_files/coverage/
         retention-days: 5
         if-no-files-found: ignore
 
@@ -257,24 +257,24 @@ jobs:
       with:
         node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: './GALAX_App_files/package-lock.json'
+        cache-dependency-path: './GLX_App_files/package-lock.json'
         
     - name: Install dependencies
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm ci
       
     - name: Install Playwright
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         npm install --save-dev @playwright/test
         npx playwright install chromium
         
     - name: Build application
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm run build
       
     - name: Start test server
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         # Create minimal test environment
         mkdir -p data/test
@@ -302,7 +302,7 @@ jobs:
         done
         
     - name: Create E2E Authentication Tests
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         mkdir -p e2e/auth
         cat > e2e/auth/registration.spec.ts << 'EOF'
@@ -375,7 +375,7 @@ jobs:
         EOF
         
     - name: Run E2E Authentication Tests
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         # For CI environment, run existing test suite instead of Playwright
         echo "Running authentication tests in CI environment..."
@@ -394,8 +394,8 @@ jobs:
       with:
         name: e2e-auth-results
         path: |
-          ./GALAX_App_files/test-results/
-          ./GALAX_App_files/playwright-report/
+          ./GLX_App_files/test-results/
+          ./GLX_App_files/playwright-report/
         retention-days: 5
         if-no-files-found: ignore
 

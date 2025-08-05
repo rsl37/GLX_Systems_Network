@@ -5,14 +5,14 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/quality.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/quality.yml'
@@ -26,7 +26,7 @@ permissions:
 
 env:
   NODE_VERSION: '20'
-  WORKING_DIRECTORY: './GALAX_App_files'
+  WORKING_DIRECTORY: './GLX_App_files'
 
 jobs:
   code-coverage:
@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package.json'
+          cache-dependency-path: './GLX_App_files/package.json'
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -75,7 +75,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package.json'
+          cache-dependency-path: './GLX_App_files/package.json'
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -132,7 +132,7 @@ jobs:
         if: always()
         with:
           name: accessibility-test-results
-          path: ./GALAX_App_files/accessibility-results.json
+          path: ./GLX_App_files/accessibility-results.json
           retention-days: 7
           if-no-files-found: warn
 
@@ -149,7 +149,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package.json'
+          cache-dependency-path: './GLX_App_files/package.json'
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -207,7 +207,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package.json'
+          cache-dependency-path: './GLX_App_files/package.json'
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -268,8 +268,8 @@ jobs:
         with:
           name: e2e-test-results
           path: |
-            ./GALAX_App_files/test-results/
-            ./GALAX_App_files/playwright-report/
+            ./GLX_App_files/test-results/
+            ./GLX_App_files/playwright-report/
           retention-days: 7
           if-no-files-found: warn
 

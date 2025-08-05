@@ -17,7 +17,7 @@ class DocumentationManager {
     this.rootPath = path.resolve(__dirname, '../..');
     this.docPaths = [
       '.',
-      'GALAX_App_files/docs',
+      'GLX_App_files/docs',
       '.github',
       'docs-backup'
     ];
@@ -56,7 +56,7 @@ class DocumentationManager {
       nextReview: reviewDate,
       contentType,
       path: relativePath,
-      maintainer: 'GALAX Development Team',
+      maintainer: 'GLX Development Team',
       version: '1.0.0'
     };
   }
@@ -77,7 +77,7 @@ class DocumentationManager {
       .replace(/\bJs\b/g, 'JavaScript')
       .replace(/\bTs\b/g, 'TypeScript')
       .replace(/\bMcp\b/g, 'MCP')
-      .replace(/\bGalax\b/g, 'GALAX')
+      .replace(/\bGalax\b/g, 'GLX')
       .replace(/\bCicd\b/g, 'CI/CD')
       .replace(/\bKyc\b/g, 'KYC')
       .replace(/\bWeb3\b/g, 'Web3')

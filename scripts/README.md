@@ -1,16 +1,16 @@
 ---
-title: "GALAX Civic Networking App - Root Scripts"
+title: "GLX Civic Networking App - Root Scripts"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "overview"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX Civic Networking App - Root Scripts
+# GLX Civic Networking App - Root Scripts
 
 This directory contains utility scripts that can be run from the repository root directory.
 
@@ -28,7 +28,7 @@ This directory contains utility scripts that can be run from the repository root
 # OR
 npm run setup:env:root
 
-# From GALAX_App_files directory  
+# From GLX_App_files directory  
 ../scripts/setup-env.sh
 # OR (original command)
 npm run setup:env
@@ -49,7 +49,7 @@ npm run setup:env
 # From root directory
 ./scripts/ensure-test-dirs.sh
 
-# From GALAX_App_files directory
+# From GLX_App_files directory
 ../scripts/ensure-test-dirs.sh
 ```
 
@@ -72,7 +72,7 @@ npm run setup:env
 
 All scripts in this directory are designed to:
 
-1. **Work from multiple locations**: Can be run from either the repository root or the `GALAX_App_files` directory
+1. **Work from multiple locations**: Can be run from either the repository root or the `GLX_App_files` directory
 2. **Auto-detect context**: Automatically detect the correct working directory
 3. **Fail gracefully**: Provide clear error messages if run from wrong location
 4. **Be non-destructive**: Ask for confirmation before overwriting existing files
@@ -83,6 +83,6 @@ All scripts in this directory are designed to:
 The root `package.json` includes convenience commands:
 
 - `npm run setup:env:root` - Runs setup from root directory
-- `npm run setup:env` - Original command (runs from GALAX_App_files)
+- `npm run setup:env` - Original command (runs from GLX_App_files)
 
 This provides flexibility for different development workflows and CI/CD environments.

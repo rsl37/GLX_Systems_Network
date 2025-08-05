@@ -60,11 +60,11 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: './GLX_App_files/package-lock.json'
 
       - name: Install dependencies
         if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           if [ ! -d "node_modules" ]; then
             if [ -f "package-lock.json" ]; then
@@ -76,7 +76,7 @@ jobs:
 
       - name: Build application
         if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm run build
 
       - name: Perform CodeQL Analysis

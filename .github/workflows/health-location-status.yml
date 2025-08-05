@@ -33,15 +33,15 @@ jobs:
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
-        run: mkdir -p ./GALAX_App_files/node_modules
+        run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         timeout-minutes: 5
         run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Run health monitoring scripts
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         timeout-minutes: 3
         run: |
           echo "🔍 Running system health checks..."
@@ -75,7 +75,7 @@ jobs:
         continue-on-error: true
         with:
           name: health-monitoring-results
-          path: ./GALAX_App_files/logs/
+          path: ./GLX_App_files/logs/
           retention-days: 7
           if-no-files-found: ignore
 

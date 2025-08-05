@@ -1,24 +1,26 @@
 ---
-title: "GALAX: Web3 Civic Networking Platform"
+title: "GLX: Web3 Civic Networking Platform"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "overview"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX: Web3 Civic Networking Platform
+# GLX: Web3 Civic Networking Platform
 
-[![CI/CD Pipeline](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/main.yml)
-[![Security Checks](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Security%20Scan/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
-[![Code Quality](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Quality%20%26%20Performance/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/quality.yml)
-[![Workflow Health](https://github.com/rsl37/GALAX_Civic_Networking_App/workflows/Workflow%20Health%20Monitor/badge.svg)](https://github.com/rsl37/GALAX_Civic_Networking_App/actions/workflows/workflow-monitor.yml)
-[![Codecov](https://codecov.io/gh/rsl37/GALAX_Civic_Networking_App/branch/main/graph/badge.svg)](https://codecov.io/gh/rsl37/GALAX_Civic_Networking_App)
+[![CI/CD Pipeline](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/main.yml)
+[![Security Checks](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Security%20Scan/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
+[![Code Quality](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Quality%20%26%20Performance/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/quality.yml)
+[![Workflow Health](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Workflow%20Health%20Monitor/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/workflow-monitor.yml)
+[![Codecov](https://codecov.io/gh/rsl37/GLX_Civic_Networking_App/branch/main/graph/badge.svg)](https://codecov.io/gh/rsl37/GLX_Civic_Networking_App)
 
-**GALAX** is a next-generation Web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance. Currently in active development with production deployment capabilities.
+**GLX** is a next-generation Web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance. Currently in active development with production deployment capabilities.
+
+**GLX** is a next-generation Web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance. Currently in active development with production deployment capabilities.
 
 ---
 
@@ -31,8 +33,8 @@ relatedDocs: []
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/rsl37/GALAX_Civic_Networking_App.git
-cd GALAX_Civic_Networking_App
+git clone https://github.com/rsl37/GLX_Civic_Networking_App.git
+cd GLX_Civic_Networking_App
 
 # Option 1: Run commands from root directory (recommended)
 npm run setup              # Install dependencies
@@ -59,7 +61,7 @@ npm run dashboard          # Run monitoring dashboard
 npm run monitor:full       # Full monitoring suite
 
 # Option 2: Run commands from app directory
-cd GALAX_App_files
+cd GLX_App_files
 npm install
 
 # Development setup
@@ -98,7 +100,7 @@ npm run test:env           # Test environment configuration
 
 ## 🔒 Security
 
-GALAX implements comprehensive security measures to protect against current and emerging threats, including zero-day vulnerabilities.
+GLX implements comprehensive security measures to protect against current and emerging threats, including zero-day vulnerabilities.
 
 ### Security Features
 
@@ -147,7 +149,7 @@ npm run security:audit
 
 ### Reporting Security Issues
 
-Report security vulnerabilities through [GitHub Security Advisories](https://github.com/rsl37/GALAX_Civic_Networking_App/security/advisories/new).
+Report security vulnerabilities through [GitHub Security Advisories](https://github.com/rsl37/GLX_Civic_Networking_App/security/advisories/new).
 
 **Please do not report security vulnerabilities in public issues.**
 
@@ -156,7 +158,7 @@ Report security vulnerabilities through [GitHub Security Advisories](https://git
 ## 🏗️ Project Structure
 
 ```
-GALAX_App_files/
+GLX_App_files/
 ├── client/                    # React frontend application
 │   ├── src/                   # Source code
 │   │   ├── components/        # React components (UI, forms, etc.)
@@ -294,14 +296,14 @@ This repository uses secure PAT_TOKEN authentication for enhanced workflow capab
 ## 📖 Documentation
 
 ### Core Documentation
-- [About GALAX](ABOUT_GALAX.md) - Project overview and mission
+- [About GLX](ABOUT_GLX.md) - Project overview and mission
 - [Project Structure](PROJECT_STRUCTURE.md) - Detailed directory structure
-- [Production Mode Guide](GALAX_App_files/PRODUCTION_MODE_GUIDE.md) - Production deployment setup
+- [Production Mode Guide](GLX_App_files/PRODUCTION_MODE_GUIDE.md) - Production deployment setup
 - [Deployment Configuration](DEPLOYMENT.md) - Deployment troubleshooting
 - [Security Information](SECURITY.md) - Security policies and reporting
 - [PAT Security Guide](docs/PAT_SECURITY_GUIDE.md) - PAT_TOKEN authentication and security
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
-- [Workspace Guide](GALAX_Project_Workspace.md) - Development workspace setup
+- [Workspace Guide](GLX_Project_Workspace.md) - Development workspace setup
 - [MCP Setup Guide](MCP_SETUP_GUIDE.md) - GitHub Copilot MCP configuration
 
 ### Development History & Planning
@@ -329,10 +331,10 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 
 ## 🔗 Links
 
-- **Live Demo**: [galaxcivicnetwork.me](https://galaxcivicnetwork.me)
+- **Live Demo**: [glxcivicnetwork.me](https://glxcivicnetwork.me)
 - **Documentation**: [Project Docs](docs/)
-- **Production Guide**: [Production Setup](GALAX_App_files/PRODUCTION_MODE_GUIDE.md)
-- **Issues**: [GitHub Issues](https://github.com/rsl37/GALAX_Civic_Networking_App/issues)
+- **Production Guide**: [Production Setup](GLX_App_files/PRODUCTION_MODE_GUIDE.md)
+- **Issues**: [GitHub Issues](https://github.com/rsl37/GLX_Civic_Networking_App/issues)
 
 ---
 

@@ -1,10 +1,10 @@
 # License Compliance System
 
-This directory contains comprehensive license compliance checking tools for the GALAX Civic Networking App.
+This directory contains comprehensive license compliance checking tools for the GLX Civic Networking App.
 
 ## Overview
 
-The GALAX Civic Networking App uses the **PolyForm Shield License 1.0.0**, which is a restrictive license with noncompete provisions. This requires careful license compliance checking for all dependencies, external projects, APIs, and third-party code.
+The GLX Civic Networking App uses the **PolyForm Shield License 1.0.0**, which is a restrictive license with noncompete provisions. This requires careful license compliance checking for all dependencies, external projects, APIs, and third-party code.
 
 ## Components
 

@@ -11,10 +11,10 @@ queries:
 
 # Focus on application code, ignore test files for cleaner results
 paths:
-  - GALAX_App_files/client/src
-  - GALAX_App_files/server
-  - GALAX_App_files/scripts
-  - GALAX_App_files/src
+  - GLX_App_files/client/src
+  - GLX_App_files/server
+  - GLX_App_files/scripts
+  - GLX_App_files/src
 
 # Ignore common directories that don't need security analysis
 paths-ignore:

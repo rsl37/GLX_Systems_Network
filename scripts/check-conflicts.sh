@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# GALAX App - Merge Conflict Detection Script
+# GLX App - Merge Conflict Detection Script
 # Use this script to check for unmerged files and conflicts
 
-echo "🔍 GALAX App - Merge Conflict Detection"
+echo "🔍 GLX App - Merge Conflict Detection"
 echo "======================================="
 echo ""
 
@@ -47,8 +47,8 @@ echo ""
 
 # Build system check
 echo "🏗️  Build System Check:"
-if [ -f "GALAX_App_files/package.json" ]; then
-    cd GALAX_App_files
+if [ -f "GLX_App_files/package.json" ]; then
+    cd GLX_App_files
     echo "📦 Checking dependencies..."
     if npm list --depth=0 > /dev/null 2>&1; then
         echo "✅ Dependencies are satisfied"

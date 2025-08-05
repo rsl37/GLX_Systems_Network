@@ -39,18 +39,18 @@ jobs:
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
-        run: mkdir -p ./GALAX_App_files/node_modules
+        run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Run tests
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm test
 
       - name: Build application
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm run build
 
       - name: Determine release type
@@ -95,7 +95,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update version in package.json
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           # Update version based on release type
           npm version ${{ steps.release-type.outputs.type }} \
@@ -109,7 +109,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add GALAX_App_files/package.json
+          git add GLX_App_files/package.json
           git commit -m "chore: bump version to ${{ env.NEW_VERSION }}"
           git tag "v${{ env.NEW_VERSION }}"
           git push origin main --tags
@@ -127,8 +127,8 @@ jobs:
             ## Installation
 
             ```bash
-            git clone https://github.com/rsl37/GALAX_Civic_Networking_App.git
-            cd GALAX_Civic_Networking_App/GALAX_App_files
+            git clone https://github.com/rsl37/GLX_Civic_Networking_App.git
+            cd GLX_Civic_Networking_App/GLX_App_files
             npm install
             npm run build
             npm start
@@ -139,7 +139,7 @@ jobs:
             This release has been automatically deployed to the production
             environment.
 
-            **Live Demo:** [galaxcivicnetwork.me](https://galaxcivicnetwork.me)
+            **Live Demo:** [glxcivicnetwork.me](https://glxcivicnetwork.me)
     draft: false
     prerelease: false
 
@@ -162,19 +162,19 @@ jobs:
         cache-dependency-path: './package-lock.json'
 
     - name: Ensure cache directories exist
-      run: mkdir -p ./GALAX_App_files/node_modules
+      run: mkdir -p ./GLX_App_files/node_modules
 
     - name: Install dependencies
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm ci --prefer-offline --no-audit --no-fund
 
     - name: Build for production
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: npm run build
 
     - name: Deploy to Vercel Production
       if: env.VERCEL_TOKEN != ''
-      working-directory: ./GALAX_App_files
+      working-directory: ./GLX_App_files
       run: |
         # Install Vercel CLI
         npm install -g vercel@latest
@@ -197,9 +197,9 @@ jobs:
         sleep 30
 
         # Health check
-        if curl -f -s https://galaxcivicnetwork.me/health 2>/dev/null; then
+        if curl -f -s https://glxcivicnetwork.me/health 2>/dev/null; then
           echo "✅ Production deployment successful"
-        elif curl -f -s https://galaxcivicnetwork.me 2>/dev/null; then
+        elif curl -f -s https://glxcivicnetwork.me 2>/dev/null; then
           echo "✅ Production deployment successful (main page)"
         else
           echo "⚠️ Production deployment may have issues"
@@ -220,5 +220,5 @@ jobs:
             commit_sha: context.sha,
             body: `🚀 **Production Deployment**\n\n✅ Version ${version} \
               successfully deployed to production!\n\n**Live URL:** \
-              https://galaxcivicnetwork.me`
+              https://glxcivicnetwork.me`
           });

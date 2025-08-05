@@ -7,7 +7,7 @@ on:
       target_repo:
         description: 'Target repository for operations (owner/repo)'
         required: false
-        default: 'rsl37/GALAX_Civic_Networking_App'
+        default: 'rsl37/GLX_Civic_Networking_App'
         type: string
       target_branch:
         description: 'Target branch for checkout'

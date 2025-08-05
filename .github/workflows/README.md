@@ -222,7 +222,7 @@ Set these repository secrets for full functionality:
 
 ```bash
 # Required for deployment testing
-STAGING_URL=https://staging.galax.app
+STAGING_URL=https://staging.glx.app
 
 # Optional for enhanced reporting
 CODECOV_TOKEN=your_codecov_token
@@ -286,7 +286,7 @@ When adding new workflows:
 Add these badges to your README.md:
 
 ```markdown
-![CI](https://github.com/rsl37/GALAX_App/workflows/Continuous%20Integration/badge.svg)
-![Security](https://github.com/rsl37/GALAX_App/workflows/Security%20Checks/badge.svg)
-![Tests](https://github.com/rsl37/GALAX_App/workflows/Testing/badge.svg)
+![CI](https://github.com/rsl37/GLX_App/workflows/Continuous%20Integration/badge.svg)
+![Security](https://github.com/rsl37/GLX_App/workflows/Security%20Checks/badge.svg)
+![Tests](https://github.com/rsl37/GLX_App/workflows/Testing/badge.svg)
 ```

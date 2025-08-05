@@ -1,16 +1,16 @@
 ---
-title: "GALAX: Web-3 Civic Networking Platform  "
+title: "GLX: Web-3 Civic Networking Platform  "
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX: Web-3 Civic Networking Platform  
+# GLX: Web-3 Civic Networking Platform  
 **Whitepaper**
 
 ---
@@ -37,7 +37,7 @@ relatedDocs: []
 
 ## 1. Introduction
 
-GALAX is a next-generation, web3-enabled civic networking platform designed to empower individuals and communities to connect, collaborate, and solve real-world challenges. By combining the strengths of decentralized technologies, gamification, and democratic governance, GALAX fosters an ecosystem where trust, transparency, and social impact are core values.
+GLX is a next-generation, web3-enabled civic networking platform designed to empower individuals and communities to connect, collaborate, and solve real-world challenges. By combining the strengths of decentralized technologies, gamification, and democratic governance, GLX fosters an ecosystem where trust, transparency, and social impact are core values.
 
 ---
 
@@ -66,7 +66,7 @@ Despite the proliferation of social networks, most platforms are not designed fo
 
 ## 4. Solution Overview
 
-GALAX addresses these challenges by providing:
+GLX addresses these challenges by providing:
 - A mobile-first, real-time platform for help, collaboration, and civic projects.
 - Decentralized, user-owned identity and reputation.
 - Gamified social impact and achievement systems.
@@ -133,7 +133,7 @@ GALAX addresses these challenges by providing:
 
 ## 7. Decentralization and Web3 Integration
 
-GALAX is designed to be modular, progressively decentralized, and interoperable with web3 protocols.  
+GLX is designed to be modular, progressively decentralized, and interoperable with web3 protocols.  
 - **User Identity:**  
   Support for DID (Decentralized Identifiers), wallet sign-in (e.g., MetaMask, WalletConnect).
 
@@ -245,21 +245,21 @@ See `IMPLEMENTATION_STATUS.md` and `TECHNICAL_INTERFACE_DESIGN_ASSESSMENT.md` fo
 
 ## 15. License & Legal Framework
 
-GALAX is licensed under the **PolyForm Shield License 1.0.0**, which provides:
+GLX is licensed under the **PolyForm Shield License 1.0.0**, which provides:
 
 - **Broad Usage Rights**: Freedom to use, modify, and distribute the software
 - **Commercial Protection**: Prevents direct competition while allowing derivative works
 - **Open Development**: Encourages community contributions and transparency
 - **Legal Clarity**: Well-defined terms for both individual and organizational use
 
-This licensing approach balances open-source principles with sustainable project development, ensuring GALAX can grow as a community-driven platform while maintaining its core mission and values.
+This licensing approach balances open-source principles with sustainable project development, ensuring GLX can grow as a community-driven platform while maintaining its core mission and values.
 
 ---
 
 ## 16. Conclusion
 
-GALAX is an ambitious, open civic networking platform for the web3 era.  
-By combining real-time connectivity, decentralized identity, gamified impact, and democratic governance, GALAX aims to catalyze a new wave of social collaboration and collective action.
+GLX is an ambitious, open civic networking platform for the web3 era.  
+By combining real-time connectivity, decentralized identity, gamified impact, and democratic governance, GLX aims to catalyze a new wave of social collaboration and collective action.
 
 *Join us in building a more trusted, transparent, and impactful digital civic commons.*
 

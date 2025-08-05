@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
 /**
- * GALAX Realtime MCP Server
- * Real-time communication server using SSE for the GALAX Civic Networking App
+ * GLX Realtime MCP Server
+ * Real-time communication server using SSE for the GLX Civic Networking App
  */
 
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
@@ -20,7 +20,7 @@ const jwt = require('jsonwebtoken');
 class RealtimeMCPServer {
   constructor() {
     this.server = new Server({
-      name: 'GALAX Realtime MCP Server',
+      name: 'GLX Realtime MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
@@ -280,7 +280,7 @@ class RealtimeMCPServer {
     // Start HTTP server for SSE connections
     const PORT = process.env.MCP_REALTIME_PORT || 3003;
     this.httpServer.listen(PORT, () => {
-      console.log(`GALAX Realtime MCP Server listening on port ${PORT}`);
+      console.log(`GLX Realtime MCP Server listening on port ${PORT}`);
       console.log('SSE endpoint: /mcp-realtime/events');
       console.log('Message endpoint: /mcp-realtime/send-message');
     });

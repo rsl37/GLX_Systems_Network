@@ -44,38 +44,38 @@ jobs:
           list-files: json
           filters: |
             frontend:
-              - 'GALAX_App_files/src/**'
-              - 'GALAX_App_files/client/**'
-              - 'GALAX_App_files/components.json'
-              - 'GALAX_App_files/tailwind.config.js'
-              - 'GALAX_App_files/vite.config.js'
-              - 'GALAX_App_files/postcss.config.js'
-              - 'GALAX_App_files/index.html'
-              - '!GALAX_App_files/src/server/**'
-              - '!GALAX_App_files/server/**'
+              - 'GLX_App_files/src/**'
+              - 'GLX_App_files/client/**'
+              - 'GLX_App_files/components.json'
+              - 'GLX_App_files/tailwind.config.js'
+              - 'GLX_App_files/vite.config.js'
+              - 'GLX_App_files/postcss.config.js'
+              - 'GLX_App_files/index.html'
+              - '!GLX_App_files/src/server/**'
+              - '!GLX_App_files/server/**'
 
             backend:
-              - 'GALAX_App_files/server/**'
-              - 'GALAX_App_files/api/**'
-              - 'GALAX_App_files/tsconfig.server.json'
-              - 'GALAX_App_files/src/server/**'
+              - 'GLX_App_files/server/**'
+              - 'GLX_App_files/api/**'
+              - 'GLX_App_files/tsconfig.server.json'
+              - 'GLX_App_files/src/server/**'
 
             web3:
               - '**/*web3*'
               - '**/*crypto*'
               - '**/*blockchain*'
               - '**/*defi*'
-              - 'GALAX_App_files/server/middleware/web3-security.ts'
+              - 'GLX_App_files/server/middleware/web3-security.ts'
               - 'mcp-config.json'
 
             security:
-              - 'GALAX_App_files/server/**'
+              - 'GLX_App_files/server/**'
               - '.env*'
-              - 'GALAX_App_files/.env*'
+              - 'GLX_App_files/.env*'
               - 'package.json'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/package.json'
               - 'package-lock.json'
-              - 'GALAX_App_files/package-lock.json'
+              - 'GLX_App_files/package-lock.json'
               - '**/*auth*'
               - '**/*security*'
               - '**/*middleware*'
@@ -85,21 +85,21 @@ jobs:
 
             dependencies:
               - 'package.json'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/package.json'
               - 'package-lock.json'
-              - 'GALAX_App_files/package-lock.json'
+              - 'GLX_App_files/package-lock.json'
               - 'npm-shrinkwrap.json'
-              - 'GALAX_App_files/npm-shrinkwrap.json'
+              - 'GLX_App_files/npm-shrinkwrap.json'
 
             config:
               - 'tsconfig.json'
-              - 'GALAX_App_files/tsconfig.json'
-              - 'GALAX_App_files/tsconfig.server.json'
-              - 'GALAX_App_files/vitest.config.js'
-              - 'GALAX_App_files/playwright.config.ts'
+              - 'GLX_App_files/tsconfig.json'
+              - 'GLX_App_files/tsconfig.server.json'
+              - 'GLX_App_files/vitest.config.js'
+              - 'GLX_App_files/playwright.config.ts'
               - 'vercel.json'
               - '.lighthouserc.json'
-              - 'GALAX_App_files/.lighthouserc.json'
+              - 'GLX_App_files/.lighthouserc.json'
 
             docs_only:
               - '**/*.md'

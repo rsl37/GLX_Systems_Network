@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "deployment"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -12,7 +12,7 @@ relatedDocs: []
 
 # Deployment Configuration Guide
 
-This document provides step-by-step instructions for fixing deployment issues with the GALAX Civic Networking App.
+This document provides step-by-step instructions for fixing deployment issues with the GLX Civic Networking App.
 
 ## Issue Resolution
 
@@ -47,7 +47,7 @@ JWT_SECRET=your-64-character-secure-random-string
 ```bash
 CLIENT_ORIGIN=https://your-app-name.vercel.app
 FRONTEND_URL=https://your-app-name.vercel.app
-TRUSTED_ORIGINS=https://your-app-name.vercel.app,https://galaxcivicnetwork.me
+TRUSTED_ORIGINS=https://your-app-name.vercel.app,https://glxcivicnetwork.me
 REALTIME_PATH=/api/realtime
 ```
 
@@ -106,7 +106,7 @@ After configuring environment variables:
 
 1. **Local Test:**
    ```bash
-   cd GALAX_App_files
+   cd GLX_App_files
    npm run deployment:check
    ```
 

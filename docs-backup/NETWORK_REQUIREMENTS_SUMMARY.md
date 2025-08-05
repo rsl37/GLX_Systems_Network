@@ -1,20 +1,20 @@
 ---
-title: "GALAX App - Network Requirements Summary"
+title: "GLX App - Network Requirements Summary"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "metrics"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX App - Network Requirements Summary
+# GLX App - Network Requirements Summary
 
 ## Document Overview
 
-This directory contains comprehensive firewall and network configuration documentation to resolve connectivity issues affecting the GALAX civic networking platform. The documentation addresses all external service dependencies required for proper application operation.
+This directory contains comprehensive firewall and network configuration documentation to resolve connectivity issues affecting the GLX civic networking platform. The documentation addresses all external service dependencies required for proper application operation.
 
 ## Available Documentation
 
@@ -222,4 +222,4 @@ For questions or issues with network configuration:
 
 **Last Updated:** 2024-12-28  
 **Version:** 1.0  
-**Maintainer:** GALAX App Development Team
+**Maintainer:** GLX App Development Team

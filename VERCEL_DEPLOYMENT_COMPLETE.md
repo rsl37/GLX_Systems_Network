@@ -1,19 +1,19 @@
 ---
-title: "GALAX Civic Networking App - Vercel Deployment Guide"
+title: "GLX Civic Networking App - Vercel Deployment Guide"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "deployment"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX Civic Networking App - Vercel Deployment Guide
+# GLX Civic Networking App - Vercel Deployment Guide
 
 ## 🚀 Overview
-This guide provides step-by-step instructions for deploying the GALAX Civic Networking App to Vercel after the architectural overhaul completed in PR #172.
+This guide provides step-by-step instructions for deploying the GLX Civic Networking App to Vercel after the architectural overhaul completed in PR #172.
 
 ## ✅ What Was Changed
 The application has been completely restructured to work with Vercel's serverless architecture:
@@ -33,7 +33,7 @@ You need a PostgreSQL database. Choose one of these options:
 #### Option A: Vercel Postgres (Recommended)
 1. Go to your Vercel Dashboard
 2. Navigate to Storage → Create Database → Postgres
-3. Create a new database named `galax_db`
+3. Create a new database named `glx_db`
 4. Copy the `DATABASE_URL` connection string
 
 #### Option B: External PostgreSQL Provider
@@ -54,7 +54,7 @@ Set these in Vercel Dashboard → Project Settings → Environment Variables:
 
 ```bash
 # Database (Required)
-DATABASE_URL=postgres://username:password@host:5432/galax_db
+DATABASE_URL=postgres://username:password@host:5432/glx_db
 
 # Security (Required)
 JWT_SECRET=your-64-character-secure-random-string
@@ -91,9 +91,9 @@ NEXT_PUBLIC_GOOGLE_MAPS_ID=your-google-maps-api-key
 
 ### Step 2: Configure Build Settings
 Vercel should automatically use the settings from `vercel.json`:
-- **Build Command**: `cd GALAX_App_files && npm install && npm run build`
-- **Output Directory**: `GALAX_App_files/dist/public`
-- **Install Command**: `cd GALAX_App_files && npm install`
+- **Build Command**: `cd GLX_App_files && npm install && npm run build`
+- **Output Directory**: `GLX_App_files/dist/public`
+- **Install Command**: `cd GLX_App_files && npm install`
 
 ### Step 3: Set Environment Variables
 1. In Vercel Dashboard → Project Settings → Environment Variables

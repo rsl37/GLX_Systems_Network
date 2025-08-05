@@ -1,18 +1,18 @@
 ---
-title: "GALAX Documentation Standards Guide"
+title: "GLX Documentation Standards Guide"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "guide"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX Documentation Standards Guide
+# GLX Documentation Standards Guide
 
-This guide establishes comprehensive documentation standards for the GALAX project, ensuring all documentation follows 100% up-to-date best practices and is intelligently maintained.
+This guide establishes comprehensive documentation standards for the GLX project, ensuring all documentation follows 100% up-to-date best practices and is intelligently maintained.
 
 ## 📋 Documentation Metadata Standard
 
@@ -268,4 +268,4 @@ The documentation standards are reviewed and updated:
 
 ---
 
-*This guide follows its own standards and is automatically validated and maintained by the GALAX documentation system.*
+*This guide follows its own standards and is automatically validated and maintained by the GLX documentation system.*

@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
-        run: mkdir -p ./GALAX_App_files/node_modules
+        run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install MCP server dependencies
         if: >-

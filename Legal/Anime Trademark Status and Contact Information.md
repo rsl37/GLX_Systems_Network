@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -19,7 +19,7 @@ relatedDocs: []
 
 ## Gatchaman Crowds as an Anime Trademark
 
-Yes, **Gatchaman Crowds is protected as an anime trademark and copyright**. The series and its elements, including the GALAX app concept, are **intellectual property of Tatsunoko Production Co., Ltd.**. While my previous search didn't find a specific standalone trademark registration for just "GALAX" from the anime, the entire work including character designs, story elements, and concepts like the GALAX app are protected under **Japanese copyright law and likely registered as trademarks under the broader "Gatchaman" franchise**.
+Yes, **Gatchaman Crowds is protected as an anime trademark and copyright**. The series and its elements, including the GLX app concept, are **intellectual property of Tatsunoko Production Co., Ltd.**. While my previous search didn't find a specific standalone trademark registration for just "GLX" from the anime, the entire work including character designs, story elements, and concepts like the GLX app are protected under **Japanese copyright law and likely registered as trademarks under the broader "Gatchaman" franchise**.
 
 ## Studio Contact Information
 
@@ -41,11 +41,11 @@ Yes, **Gatchaman Crowds is protected as an anime trademark and copyright**. The 
 
 ### Director and Main Creative Force
 
-**Kenji Nakamura** - The director of Gatchaman Crowds. He is known for his innovative approach to storytelling and was the primary creative vision behind the series, including the GALAX app concept.
+**Kenji Nakamura** - The director of Gatchaman Crowds. He is known for his innovative approach to storytelling and was the primary creative vision behind the series, including the GLX app concept.
 
 ### Original Concept
 
-The series is based on the **original "Gatchaman" franchise created by Tatsunoko Production**, but the specific Gatchaman Crowds iteration and the GALAX app concept were developed under Nakamura's direction.
+The series is based on the **original "Gatchaman" franchise created by Tatsunoko Production**, but the specific Gatchaman Crowds iteration and the GLX app concept were developed under Nakamura's direction.
 
 ## How to Contact for Licensing and Permission
 
@@ -77,7 +77,7 @@ The series is based on the **original "Gatchaman" franchise created by Tatsunoko
 
 ### Legal Requirements
 
-- Any use of the GALAX concept or name in connection with Gatchaman Crowds will require **explicit permission** from Tatsunoko Production
+- Any use of the GLX concept or name in connection with Gatchaman Crowds will require **explicit permission** from Tatsunoko Production
 - **Attribution alone is not sufficient** - you need formal licensing agreements for commercial use
 - The studio may require **royalty payments** or other licensing terms
 
@@ -88,4 +88,4 @@ The series is based on the **original "Gatchaman" franchise created by Tatsunoko
 - Initial contact should be **professional and detailed**
 - Be prepared for a **lengthy approval process**
 
-Your plan to credit the original creators and seek their input shows excellent respect for intellectual property rights. However, you'll need to go through the proper licensing channels with Tatsunoko Production to use any elements from Gatchaman Crowds, including the GALAX app concept, regardless of whether you're creating something similar rather than identical.
+Your plan to credit the original creators and seek their input shows excellent respect for intellectual property rights. However, you'll need to go through the proper licensing channels with Tatsunoko Production to use any elements from Gatchaman Crowds, including the GLX app concept, regardless of whether you're creating something similar rather than identical.

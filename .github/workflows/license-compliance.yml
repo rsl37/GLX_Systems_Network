@@ -36,7 +36,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: |
             package-lock.json
-            GALAX_App_files/package.json
+            GLX_App_files/package.json
             mcp-servers/package.json
 
       - name: Install license scanning tools
@@ -52,7 +52,7 @@ jobs:
           fi
 
           # Install main app dependencies
-          cd GALAX_App_files
+          cd GLX_App_files
           if [ -f "package-lock.json" ]; then
             npm ci --prefer-offline --no-audit --no-fund
           else
@@ -148,7 +148,7 @@ jobs:
 
             ### Compatibility Guidelines
 
-            - **GALAX App License**: PolyForm Shield License 1.0.0 (restrictive)
+            - **GLX App License**: PolyForm Shield License 1.0.0 (restrictive)
             - **Compatible**: MIT, BSD, ISC, Apache-2.0 (for internal use)
             - **Incompatible**: GPL, AGPL, LGPL, EPL, MPL, CDDL family licenses
 

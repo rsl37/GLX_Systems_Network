@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -43,14 +43,14 @@ relatedDocs: []
 #### Consistent Path Patterns:
 ```yaml
 # Frontend changes
-- 'GALAX_App_files/src/**'
-- 'GALAX_App_files/client/**'
-- 'GALAX_App_files/components.json'
-- 'GALAX_App_files/tailwind.config.js'
+- 'GLX_App_files/src/**'
+- 'GLX_App_files/client/**'
+- 'GLX_App_files/components.json'
+- 'GLX_App_files/tailwind.config.js'
 
 # Backend changes  
-- 'GALAX_App_files/server/**'
-- 'GALAX_App_files/api/**'
+- 'GLX_App_files/server/**'
+- 'GLX_App_files/api/**'
 
 # Web3/Crypto changes
 - '**/*web3*'
@@ -104,7 +104,7 @@ Result: 80% time savings confirmed
 
 ### Test Scenario 2: Frontend Code PR  
 ```bash
-Changed files: GALAX_App_files/src/components/Dashboard.tsx
+Changed files: GLX_App_files/src/components/Dashboard.tsx
 Expected: Full CI/CD + Performance + Deploy
 Actual: ✅ comprehensive-checks + preview-deploy
 Skipped: ❌ web3-checks (no Web3 changes)
@@ -121,7 +121,7 @@ Result: Security-first approach confirmed
 
 ### Test Scenario 4: Web3 Code PR
 ```bash
-Changed files: GALAX_App_files/src/web3/wallet.ts
+Changed files: GLX_App_files/src/web3/wallet.ts
 Expected: All workflows including Web3 tests
 Actual: ✅ comprehensive-checks + security-streamlined + web3-checks + preview-deploy
 Result: Comprehensive coverage confirmed

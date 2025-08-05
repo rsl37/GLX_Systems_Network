@@ -9,9 +9,9 @@ name: Web3 Functionality & Integration Tests
       - '**/*crypto*'
       - '**/*blockchain*'
       - '**/*defi*'
-      - 'GALAX_App_files/server/middleware/web3-security.ts'
+      - 'GLX_App_files/server/middleware/web3-security.ts'
       - 'mcp-config.json'
-      - 'GALAX_App_files/package.json'
+      - 'GLX_App_files/package.json'
       - 'package.json'
       - '.github/workflows/web3-checks.yml'
   pull_request:
@@ -21,9 +21,9 @@ name: Web3 Functionality & Integration Tests
       - '**/*crypto*'
       - '**/*blockchain*'
       - '**/*defi*'
-      - 'GALAX_App_files/server/middleware/web3-security.ts'
+      - 'GLX_App_files/server/middleware/web3-security.ts'
       - 'mcp-config.json'
-      - 'GALAX_App_files/package.json'
+      - 'GLX_App_files/package.json'
       - 'package.json'
       - '.github/workflows/web3-checks.yml'
   schedule:
@@ -43,7 +43,7 @@ permissions:
 
 env:
   NODE_VERSION: '20'
-  WORKING_DIRECTORY: './GALAX_App_files'
+  WORKING_DIRECTORY: './GLX_App_files'
 
 jobs:
   detect-web3-changes:
@@ -71,7 +71,7 @@ jobs:
               - '**/*web3*'
               - '**/*blockchain*'
               - '**/*defi*'
-              - 'GALAX_App_files/server/middleware/web3-security.ts'
+              - 'GLX_App_files/server/middleware/web3-security.ts'
             crypto:
               - '**/*crypto*'
               - '**/*quantum*'
@@ -79,7 +79,7 @@ jobs:
               - '**/*dilithium*'
             config:
               - 'mcp-config.json'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/package.json'
               - 'package.json'
 
   web3-functionality:
@@ -491,6 +491,6 @@ jobs:
         with:
           name: web3-test-results
           path: |
-            ./GALAX_App_files/web3-test-results/
-            ./GALAX_App_files/coverage/
+            ./GLX_App_files/web3-test-results/
+            ./GLX_App_files/coverage/
           retention-days: 7

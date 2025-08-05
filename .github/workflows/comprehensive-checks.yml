@@ -5,7 +5,7 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
@@ -35,7 +35,7 @@ permissions:
 
 env:
   NODE_VERSION: '20'
-  WORKING_DIRECTORY: './GALAX_App_files'
+  WORKING_DIRECTORY: './GLX_App_files'
 
 jobs:
   detect-changes:
@@ -60,27 +60,27 @@ jobs:
         with:
           filters: |
             code:
-              - 'GALAX_App_files/src/**'
-              - 'GALAX_App_files/server/**'
-              - 'GALAX_App_files/client/**'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/src/**'
+              - 'GLX_App_files/server/**'
+              - 'GLX_App_files/client/**'
+              - 'GLX_App_files/package.json'
               - 'package.json'
             frontend:
-              - 'GALAX_App_files/src/**'
-              - 'GALAX_App_files/client/**'
-              - 'GALAX_App_files/components.json'
-              - 'GALAX_App_files/tailwind.config.js'
-              - 'GALAX_App_files/vite.config.js'
-              - '!GALAX_App_files/server/**'
+              - 'GLX_App_files/src/**'
+              - 'GLX_App_files/client/**'
+              - 'GLX_App_files/components.json'
+              - 'GLX_App_files/tailwind.config.js'
+              - 'GLX_App_files/vite.config.js'
+              - '!GLX_App_files/server/**'
             backend:
-              - 'GALAX_App_files/server/**'
-              - 'GALAX_App_files/api/**'
-              - 'GALAX_App_files/tsconfig.server.json'
+              - 'GLX_App_files/server/**'
+              - 'GLX_App_files/api/**'
+              - 'GLX_App_files/tsconfig.server.json'
             config:
-              - 'GALAX_App_files/tsconfig.json'
-              - 'GALAX_App_files/vitest.config.js'
-              - 'GALAX_App_files/playwright.config.ts'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/tsconfig.json'
+              - 'GLX_App_files/vitest.config.js'
+              - 'GLX_App_files/playwright.config.ts'
+              - 'GLX_App_files/package.json'
               - 'package.json'
               - 'vercel.json'
 
@@ -405,7 +405,7 @@ jobs:
           test -f vercel.json && echo "✓ Vercel config found" || echo "⚠️  No Vercel config"
 
           # Check if key files exist for deployment
-          test -f ./GALAX_App_files/package.json && echo "✓ Package.json found" || echo "❌ Package.json missing"
+          test -f ./GLX_App_files/package.json && echo "✓ Package.json found" || echo "❌ Package.json missing"
 
           echo "✓ Deployment readiness check completed"
 

@@ -5,14 +5,14 @@ on:
   push:
     branches: [main, develop, 'copilot/**']
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - 'vercel.json'
   pull_request:
     branches: [main]
     paths:
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - 'vercel.json'
@@ -26,7 +26,7 @@ permissions:
 
 env:
   NODE_VERSION: 20.x
-  WORKING_DIRECTORY: ./GALAX_App_files
+  WORKING_DIRECTORY: ./GLX_App_files
   CACHE_VERSION: v1
 
 jobs:

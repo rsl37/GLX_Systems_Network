@@ -1,20 +1,20 @@
 ---
-title: "Quick Firewall Configuration - GALAX App"
+title: "Quick Firewall Configuration - GLX App"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "archive"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# Quick Firewall Configuration - GALAX App
+# Quick Firewall Configuration - GLX App
 
 ## For Network Administrators
 
-This file provides a quick reference for configuring firewalls to allow the GALAX application to function properly.
+This file provides a quick reference for configuring firewalls to allow the GLX application to function properly.
 
 ## Critical Domains (Must Allow)
 
@@ -117,8 +117,8 @@ iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
 
 ```powershell
 # PowerShell commands for Windows Firewall
-New-NetFirewallRule -DisplayName "GALAX-GitHub" -Direction Outbound -RemoteAddress github.com -Protocol TCP -RemotePort 443 -Action Allow
-New-NetFirewallRule -DisplayName "GALAX-npm" -Direction Outbound -RemoteAddress registry.npmjs.org -Protocol TCP -RemotePort 443 -Action Allow
+New-NetFirewallRule -DisplayName "GLX-GitHub" -Direction Outbound -RemoteAddress github.com -Protocol TCP -RemotePort 443 -Action Allow
+New-NetFirewallRule -DisplayName "GLX-npm" -Direction Outbound -RemoteAddress registry.npmjs.org -Protocol TCP -RemotePort 443 -Action Allow
 ```
 
 ## Cisco ASA Configuration
@@ -149,7 +149,7 @@ end
 # Create firewall policy
 config firewall policy
     edit 0
-        set name "GALAX-App-Access"
+        set name "GLX-App-Access"
         set srcintf "internal"
         set dstintf "wan1"
         set srcaddr "all"
@@ -168,11 +168,11 @@ set address github.com fqdn github.com
 set address npm-registry fqdn registry.npmjs.org
 
 # Create security policy
-set rulebase security rules GALAX-App from trust to untrust
-set rulebase security rules GALAX-App source any
-set rulebase security rules GALAX-App destination [ github.com npm-registry ]
-set rulebase security rules GALAX-App service application-default
-set rulebase security rules GALAX-App action allow
+set rulebase security rules GLX-App from trust to untrust
+set rulebase security rules GLX-App source any
+set rulebase security rules GLX-App destination [ github.com npm-registry ]
+set rulebase security rules GLX-App service application-default
+set rulebase security rules GLX-App action allow
 ```
 
 ## Proxy Configuration
