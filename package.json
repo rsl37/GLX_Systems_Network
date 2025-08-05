@@ -6,8 +6,11 @@
   "type": "module",
   "license": "PolyForm-Shield-1.0.0",
   "scripts": {
+<<<<<<< HEAD
     "setup:env": "cd GALAX_App_files && scripts/setup-env.sh",
     "setup:env:root": "scripts/setup-env.sh",
+=======
+>>>>>>> origin/copilot/fix-167
     "deployment:check": "cd GALAX_App_files && test -d node_modules || npm install && npm run deployment:check",
     "deployment:test": "cd GALAX_App_files && test -d node_modules || npm install && npm run deployment:test",
     "domain:check": "cd GALAX_App_files && test -d node_modules || npm install && npm run domain:check",
@@ -22,13 +25,17 @@
     "test:e2e": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:e2e",
     "test:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:all",
     "test:env": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:env",
+<<<<<<< HEAD
     "test:services": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:services",
+=======
+>>>>>>> origin/copilot/fix-167
     "health:log": "cd GALAX_App_files && test -d node_modules || npm install && npm run health:log",
     "branch:analyze": "cd GALAX_App_files && test -d node_modules || npm install && npm run branch:analyze",
     "logs:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run logs:all",
     "dashboard": "cd GALAX_App_files && test -d node_modules || npm install && npm run dashboard",
     "monitor:full": "cd GALAX_App_files && test -d node_modules || npm install && npm run monitor:full",
     "install:app": "cd GALAX_App_files && test -d node_modules || npm install",
+<<<<<<< HEAD
     "setup": "cd GALAX_App_files && test -d node_modules || npm install",
     "docs:validate": "node .github/scripts/doc-metadata.js validate",
     "docs:update": "node .github/scripts/doc-metadata.js update",
@@ -37,6 +44,9 @@
     "docs:analyze": "node .github/scripts/smart-doc-update.js analyze",
     "docs:report": "node .github/scripts/smart-doc-update.js report",
     "docs:auto-update": "node .github/scripts/smart-doc-update.js update-metadata"
+=======
+    "setup": "cd GALAX_App_files && test -d node_modules || npm install"
+>>>>>>> origin/copilot/fix-167
   },
   "workspaces": [
     "GALAX_App_files"
