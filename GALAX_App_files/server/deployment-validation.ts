@@ -565,6 +565,26 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
+  // Validate SOCKET_PATH format if provided
+  const socketPath = process.env.SOCKET_PATH;
+  if (socketPath) {
+    if (socketPath.startsWith('/') && socketPath.length > 1) {
+      results.push({
+        check: 'SOCKET_PATH Format',
+        status: 'pass',
+        message: 'SOCKET_PATH is properly formatted',
+        details: { path: socketPath }
+      });
+    } else {
+      results.push({
+        check: 'SOCKET_PATH Format',
+        status: 'warning',
+        message: 'SOCKET_PATH should start with / and have additional path components',
+        details: { path: socketPath }
+      });
+    }
+  }
+
   // Validate TRUSTED_ORIGINS format (required for Version 3.0) with security best practices
   const trustedOrigins = process.env.TRUSTED_ORIGINS;
   if (trustedOrigins) {
@@ -572,31 +592,31 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     let validOrigins = 0;
     let invalidOrigins = 0;
     let securityWarnings: string[] = [];
-
+    
     for (const origin of origins) {
       try {
         const url = new URL(origin);
         if (url.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')) {
           validOrigins++;
-
+          
           // Security validations to reduce attack surface
           if (process.env.NODE_ENV === 'production') {
             // Warn against development origins in production
             if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.includes('.local')) {
               securityWarnings.push(`Development origin '${origin}' should not be used in production`);
             }
-
+            
             // Warn against non-HTTPS in production
             if (url.protocol !== 'https:') {
               securityWarnings.push(`Non-HTTPS origin '${origin}' creates security risk in production`);
             }
           }
-
+          
           // Warn against overly broad wildcards or IP addresses in production
           if (process.env.NODE_ENV === 'production' && /^\d+\.\d+\.\d+\.\d+/.test(url.hostname)) {
             securityWarnings.push(`IP address origin '${origin}' reduces security - use domain names when possible`);
           }
-
+          
         } else {
           invalidOrigins++;
         }
@@ -604,25 +624,25 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         invalidOrigins++;
       }
     }
-
+    
     if (invalidOrigins === 0) {
       const status = securityWarnings.length > 0 ? 'warning' : 'pass';
-      const message = securityWarnings.length > 0
+      const message = securityWarnings.length > 0 
         ? `All ${validOrigins} trusted origins are formatted correctly, but ${securityWarnings.length} security concerns detected`
         : `All ${validOrigins} trusted origins are properly formatted with secure configuration`;
-
+        
       results.push({
         check: 'TRUSTED_ORIGINS Security',
         status,
         message,
-        details: {
+        details: { 
           total_origins: origins.length,
           valid_origins: validOrigins,
           security_warnings: securityWarnings,
           purpose: 'Version 3.0: third-party integrations, mobile contexts, enterprise deployments',
           security_notes: [
             'HTTPS enforced in production',
-            'Development origins blocked in production',
+            'Development origins blocked in production', 
             'Specific domains preferred over IP addresses',
             'Each origin explicitly validated'
           ]
@@ -633,7 +653,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'TRUSTED_ORIGINS Security',
         status: 'fail',
         message: `${invalidOrigins} of ${origins.length} trusted origins have invalid format or security issues`,
-        details: {
+        details: { 
           total_origins: origins.length,
           valid_origins: validOrigins,
           invalid_origins: invalidOrigins,
@@ -728,6 +748,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
       });
     }
 
+    // Check required subdirectories using fs-extra
     // Check required subdirectories using fs-extra
     for (const subdir of PRODUCTION_REQUIREMENTS.REQUIRED_DIRECTORIES) {
       const subdirPath = path.join(dataDirectory, subdir);
