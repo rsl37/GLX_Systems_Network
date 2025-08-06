@@ -664,6 +664,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
     const existingUser = await db
       .selectFrom('users')
 <<<<<<< HEAD
+<<<<<<< HEAD
       .select(['id', 'email', 'phone', 'username', 'wallet_address'])
 =======
       .selectAll()
@@ -681,6 +682,15 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 >>>>>>> origin/copilot/fix-253
         return eb.or(conditions);
       })
+=======
+      .selectAll()
+      .where((eb) => eb.or([
+        email ? eb('email', '=', email) : eb.lit(false),
+        phone ? eb('phone', '=', phone) : eb.lit(false),
+        eb('username', '=', username),
+        walletAddress ? eb('wallet_address', '=', walletAddress) : eb.lit(false)
+      ]))
+>>>>>>> origin/copilot/fix-257
       .executeTakeFirst();
 
     let conflictField = null;

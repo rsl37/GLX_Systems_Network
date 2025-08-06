@@ -15,7 +15,11 @@ interface AISecurityConfig {
   enableModelIntegrityCheck: boolean;
   enableAuditLogging: boolean;
   allowedModelVersions: string[];
+<<<<<<< HEAD
   knownGoodHashes?: string[];
+=======
+  allowedModelHashes: string[];
+>>>>>>> origin/copilot/fix-257
   riskThreshold: number;
 }
 
@@ -486,6 +490,7 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'copilot-civic'
   ],
 <<<<<<< HEAD
+<<<<<<< HEAD
   knownGoodHashes: [
 =======
   allowedModelHashes: [
@@ -496,6 +501,12 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1'  // additional test model
   ],
   riskThreshold: 25  // Lowered from 40 to 25 to properly detect security threats
+=======
+  allowedModelHashes: [
+    // Empty array - in production these would be known good model hashes
+  ],
+  riskThreshold: 40
+>>>>>>> origin/copilot/fix-257
 };
 
 export default AIMCPSecurityMiddleware;
