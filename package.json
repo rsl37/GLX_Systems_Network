@@ -7,10 +7,15 @@
   "license": "PolyForm-Shield-1.0.0",
   "scripts": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "setup:env": "cd GALAX_App_files && scripts/setup-env.sh",
     "setup:env:root": "scripts/setup-env.sh",
 =======
 >>>>>>> origin/copilot/fix-167
+=======
+    "setup:env": "cd GALAX_App_files && scripts/setup-env.sh",
+    "setup:env:root": "scripts/setup-env.sh",
+>>>>>>> origin/copilot/fix-190
     "deployment:check": "cd GALAX_App_files && test -d node_modules || npm install && npm run deployment:check",
     "deployment:test": "cd GALAX_App_files && test -d node_modules || npm install && npm run deployment:test",
     "domain:check": "cd GALAX_App_files && test -d node_modules || npm install && npm run domain:check",

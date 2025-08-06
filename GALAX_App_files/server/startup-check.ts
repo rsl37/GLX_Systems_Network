@@ -23,7 +23,11 @@ export async function performStartupCheck() {
     // Check database connection
     console.log('🗄️ Database connection check:');
     const dbHealth = await healthCheck();
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> origin/copilot/fix-190
     if (dbHealth.primary.status === 'healthy') {
       console.log('✅ Database connection successful');
     } else {

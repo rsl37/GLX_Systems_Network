@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright © 2025 GALAX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
@@ -6,6 +7,8 @@
  */
 
 
+=======
+>>>>>>> origin/copilot/fix-190
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { TestServer } from '../setup/test-server.js';
 import supertest from 'supertest';
@@ -13,11 +16,16 @@ import supertest from 'supertest';
 // Real-time Communication Tests using Pusher (replaces Socket.IO)
 describe('Real-time Communication Tests (Pusher)', () => {
   let testServer: TestServer;
+<<<<<<< HEAD
   let request: ReturnType<typeof supertest>;
+=======
+  let request: supertest.SuperTest<supertest.Test>;
+>>>>>>> origin/copilot/fix-190
 
   beforeAll(async () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
+<<<<<<< HEAD
 
     // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
     testServer.app.get('/api/realtime/health', (req, res) => {
@@ -28,6 +36,18 @@ describe('Real-time Communication Tests (Pusher)', () => {
           status: "active",
           cluster: process.env.PUSHER_CLUSTER || 'us2'
         }
+=======
+    
+    // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
+    testServer.app.get('/api/realtime/health', (req, res) => {
+      res.json({ 
+        success: true, 
+        data: { 
+          type: "Pusher WebSocket",
+          status: "active",
+          cluster: process.env.PUSHER_CLUSTER || 'us2'
+        } 
+>>>>>>> origin/copilot/fix-190
       });
     });
 
@@ -36,13 +56,21 @@ describe('Real-time Communication Tests (Pusher)', () => {
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Authorization token required' });
       }
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-190
       const { socket_id, channel_name } = req.body;
       if (!socket_id || !channel_name) {
         return res.status(400).json({ error: 'Socket ID and channel name are required' });
       }
 
+<<<<<<< HEAD
       if (!channel_name.startsWith('private-user-notifications') &&
+=======
+      if (!channel_name.startsWith('private-user-notifications') && 
+>>>>>>> origin/copilot/fix-190
           !channel_name.startsWith('private-help-request-')) {
         return res.status(403).json({ error: 'Unauthorized channel access' });
       }

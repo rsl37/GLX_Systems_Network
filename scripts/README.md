@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "GALAX Civic Networking App - Root Scripts"
 description: ""
@@ -10,6 +11,8 @@ tags: []
 relatedDocs: []
 ---
 
+=======
+>>>>>>> origin/copilot/fix-190
 # GALAX Civic Networking App - Root Scripts
 
 This directory contains utility scripts that can be run from the repository root directory.
@@ -85,4 +88,8 @@ The root `package.json` includes convenience commands:
 - `npm run setup:env:root` - Runs setup from root directory
 - `npm run setup:env` - Original command (runs from GALAX_App_files)
 
+<<<<<<< HEAD
 This provides flexibility for different development workflows and CI/CD environments.
+=======
+This provides flexibility for different development workflows and CI/CD environments.
+>>>>>>> origin/copilot/fix-190
