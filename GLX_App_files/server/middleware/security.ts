@@ -228,11 +228,99 @@ export const validateIP = (req: Request, res: Response, next: NextFunction): voi
   next();
 };
 
+/**
+ * Get CORS allowed origins from environment variables
+ * Provides a configurable system for managing CORS origins across different environments
+ */
+function getCorsAllowedOrigins(): string[] {
+  const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
+  const isProduction = process.env.NODE_ENV === 'production';
+  const isTest = process.env.NODE_ENV === 'test';
+
+  const allowedOrigins: string[] = [];
+
+  // Primary configurable CORS origins from environment (new main configuration)
+  if (process.env.CORS_ALLOWED_ORIGINS) {
+    allowedOrigins.push(...process.env.CORS_ALLOWED_ORIGINS.split(',').map(o => o.trim()));
+  }
+
+  // Development origins (configurable via environment variable)
+  const allowDevelopment = process.env.CORS_ALLOW_DEVELOPMENT === 'true' || isDevelopment;
+  if (allowDevelopment) {
+    // Check for custom development origins first
+    if (process.env.CORS_DEVELOPMENT_ORIGINS) {
+      allowedOrigins.push(...process.env.CORS_DEVELOPMENT_ORIGINS.split(',').map(o => o.trim()));
+    } else {
+      // Default development origins as fallback only if no custom ones are specified
+      allowedOrigins.push(
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3002',
+        'http://localhost:5173',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001',
+        'http://127.0.0.1:3002',
+        'http://127.0.0.1:5173'
+      );
+    }
+  }
+
+  // Test origins (configurable via environment variable)
+  if (isTest && process.env.CORS_TEST_ORIGINS) {
+    allowedOrigins.push(...process.env.CORS_TEST_ORIGINS.split(',').map(o => o.trim()));
+  } else if (isTest && !process.env.CORS_TEST_ORIGINS) {
+    // Default test origins as fallback
+    allowedOrigins.push(
+      'https://glx-civic-networking.vercel.app',
+      'https://glx-civic-networking-abc123.vercel.app',
+      'https://glxcivicnetwork.me',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173'
+    );
+  }
+
+  // Production origins (configurable via environment variable)
+  if (isProduction && process.env.CORS_PRODUCTION_ORIGINS) {
+    allowedOrigins.push(...process.env.CORS_PRODUCTION_ORIGINS.split(',').map(o => o.trim()));
+  } else if (isProduction && !process.env.CORS_PRODUCTION_ORIGINS) {
+    // Default production origins as fallback
+    allowedOrigins.push(
+      'https://glx-civic-networking.vercel.app',
+      'https://glxcivicnetwork.me',
+      'https://www.glxcivicnetwork.me',
+      'https://staging.glxcivicnetwork.me'
+    );
+  }
+
+  // Legacy environment variables for backward compatibility
+  if (process.env.CLIENT_ORIGIN) {
+    allowedOrigins.push(process.env.CLIENT_ORIGIN);
+  }
+  if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+  }
+  if (process.env.PRODUCTION_FRONTEND_URL) {
+    allowedOrigins.push(process.env.PRODUCTION_FRONTEND_URL);
+  }
+  if (process.env.STAGING_FRONTEND_URL) {
+    allowedOrigins.push(process.env.STAGING_FRONTEND_URL);
+  }
+
+  // Additional trusted origins from environment
+  if (process.env.TRUSTED_ORIGINS) {
+    allowedOrigins.push(...process.env.TRUSTED_ORIGINS.split(',').map(o => o.trim()));
+  }
+
+  // Remove duplicates and filter out empty values
+  return [...new Set(allowedOrigins.filter(Boolean))];
+}
+
 // Advanced CORS security configuration for production
 export const corsConfig = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    const isDevelopment =
-      process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
     const isProduction = process.env.NODE_ENV === 'production';
     const isTest = process.env.NODE_ENV === 'test';
 
@@ -280,7 +368,6 @@ export const corsConfig = {
       // Production origins - Supporting both domains
       ...(isProduction
         ? [
-<<<<<<< HEAD:GLX_App_files/server/middleware/security.ts
             "https://glx-civic-networking.vercel.app",
             "https://glxcivicnetwork.me",
             "https://www.glxcivicnetwork.me",
@@ -319,23 +406,33 @@ export const corsConfig = {
       return callback(new Error('Origin required in production'));
     }
 
-    // Check against allowed origins (with pattern matching for Vercel domains)
+    // Check against allowed origins (with configurable pattern matching)
     if (origin) {
       let isAllowed = allowedOrigins.includes(origin);
 
 
       // If not in explicit list, check Vercel deployment patterns in production or test
       if (!isAllowed && (isProduction || isTest)) {
-        const vercelPatterns = [
+        // Get custom patterns from environment, or use defaults
+        const customPatterns = process.env.CORS_PATTERN_DOMAINS 
+          ? process.env.CORS_PATTERN_DOMAINS.split(',').map(domain => {
+              const escaped = domain.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              return new RegExp(`^https://${escaped}-.*\\.vercel\\.app$`);
+            })
+          : [];
+        
+        // Default Vercel patterns for backward compatibility (if no custom patterns)
+        const defaultPatterns = customPatterns.length === 0 ? [
           /^https:\/\/glx-civic-networking-.*\.vercel\.app$/,
           /^https:\/\/glx-.*\.vercel\.app$/,
           /^https:\/\/.*glx.*\.vercel\.app$/,
-        ];
+        ] : [];
 
-        isAllowed = vercelPatterns.some(pattern => pattern.test(origin));
+        const allPatterns = [...customPatterns, ...defaultPatterns];
+        isAllowed = allPatterns.some(pattern => pattern.test(origin));
 
         if (isAllowed) {
-          console.log(`✅ CORS: Allowed Vercel deployment pattern: ${origin}`);
+          console.log(`✅ CORS: Allowed deployment pattern match: ${origin}`);
         }
       }
 
@@ -345,9 +442,13 @@ export const corsConfig = {
         console.warn(`🚨 CORS blocked origin: ${origin}`, {
           allowedOrigins: allowedOrigins.length,
           configuredOrigins: {
+            CORS_ALLOWED_ORIGINS: process.env.CORS_ALLOWED_ORIGINS ? '[set]' : '[unset]',
             CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? '[set]' : '[unset]',
             FRONTEND_URL: process.env.FRONTEND_URL ? '[set]' : '[unset]',
             TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS ? '[set]' : '[unset]',
+            CORS_DEVELOPMENT_ORIGINS: process.env.CORS_DEVELOPMENT_ORIGINS ? '[set]' : '[unset]',
+            CORS_PRODUCTION_ORIGINS: process.env.CORS_PRODUCTION_ORIGINS ? '[set]' : '[unset]',
+            CORS_TEST_ORIGINS: process.env.CORS_TEST_ORIGINS ? '[set]' : '[unset]',
           },
           isProduction,
           isTest,

@@ -25,10 +25,54 @@ export interface WebSocketSecurityConfig {
   heartbeatInterval: number;
 }
 
+/**
+ * Get WebSocket CORS origins from environment variables
+ */
+function getWebSocketCorsOrigins(): string[] {
+  const allowedOrigins: string[] = [];
+
+  // Primary configurable CORS origins
+  if (process.env.CORS_ALLOWED_ORIGINS) {
+    allowedOrigins.push(...process.env.CORS_ALLOWED_ORIGINS.split(',').map(o => o.trim()));
+  }
+
+  // WebSocket-specific origins (if configured separately)
+  if (process.env.WEBSOCKET_CORS_ORIGINS) {
+    allowedOrigins.push(...process.env.WEBSOCKET_CORS_ORIGINS.split(',').map(o => o.trim()));
+  }
+
+  // Fallback to existing environment variables for backward compatibility
+  [
+    process.env.CLIENT_ORIGIN,
+    process.env.FRONTEND_URL,
+    process.env.PRODUCTION_FRONTEND_URL,
+    process.env.STAGING_FRONTEND_URL,
+  ].forEach(origin => {
+    if (origin) allowedOrigins.push(origin);
+  });
+
+  if (process.env.TRUSTED_ORIGINS) {
+    allowedOrigins.push(...process.env.TRUSTED_ORIGINS.split(',').map(o => o.trim()));
+  }
+
+  // If no origins configured, use defaults based on environment
+  if (allowedOrigins.length === 0) {
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
+    if (isDevelopment) {
+      allowedOrigins.push('http://localhost:3000', 'http://localhost:5173');
+    } else {
+      // Production fallback
+      allowedOrigins.push('https://glx-civic-networking.vercel.app', 'https://glxcivicnetwork.me');
+    }
+  }
+
+  return [...new Set(allowedOrigins.filter(Boolean))];
+}
+
 export const DEFAULT_WEBSOCKET_CONFIG: WebSocketSecurityConfig = {
   protocol: 'wss', // Always use secure WebSocket connections
   enforceSSL: true,
-  corsOrigins: ['https://localhost:3000', 'https://glx-civic-networking-app.vercel.app'],
+  corsOrigins: getWebSocketCorsOrigins(),
   maxConnections: 1000,
   heartbeatInterval: 30000,
 };

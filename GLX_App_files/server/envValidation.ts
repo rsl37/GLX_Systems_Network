@@ -54,11 +54,53 @@ const REQUIRED_ENV_VARS: RequiredEnvVar[] = [
     recommendation: 'Generate with: openssl rand -hex 32',
   },
   {
+    name: 'CORS_ALLOWED_ORIGINS',
+    required: false,
+    description: 'Primary configurable CORS origins (comma-separated)',
+    validator: value => value.split(',').every(origin => 
+      origin.trim().startsWith('https://') || 
+      origin.trim().startsWith('http://') || 
+      process.env.NODE_ENV === 'development'
+    ),
+    recommendation: 'Set to your main frontend URLs (e.g., https://app.vercel.app,https://custom.domain)',
+  },
+  {
     name: 'CLIENT_ORIGIN',
-    required: true,
-    description: 'Primary CORS origin for the frontend',
+    required: false, // Made optional since CORS_ALLOWED_ORIGINS is now primary
+    description: 'Primary CORS origin for the frontend (legacy)',
     validator: value => value.startsWith('https://') || process.env.NODE_ENV === 'development',
-    recommendation: 'Set to your Vercel app URL (e.g., https://your-app.vercel.app)',
+    recommendation: 'Use CORS_ALLOWED_ORIGINS for new deployments, or set to your Vercel app URL',
+  },
+  {
+    name: 'CORS_DEVELOPMENT_ORIGINS',
+    required: false,
+    description: 'Development-specific CORS origins (comma-separated)',
+    recommendation: 'Override default localhost origins if needed',
+  },
+  {
+    name: 'CORS_PRODUCTION_ORIGINS',
+    required: false,
+    description: 'Production-specific CORS origins (comma-separated)',
+    recommendation: 'Set production domains explicitly for better security',
+  },
+  {
+    name: 'CORS_TEST_ORIGINS',
+    required: false,
+    description: 'Test environment CORS origins (comma-separated)',
+    recommendation: 'Set test/staging domains for CI/CD',
+  },
+  {
+    name: 'CORS_PATTERN_DOMAINS',
+    required: false,
+    description: 'Domain patterns for dynamic deployment URLs (comma-separated)',
+    recommendation: 'For Vercel branches: glx-civic-networking,myapp (without vercel.app suffix)',
+  },
+  {
+    name: 'CORS_ALLOW_DEVELOPMENT',
+    required: false,
+    description: 'Enable development CORS origins in non-development environments',
+    validator: value => ['true', 'false'].includes(value),
+    recommendation: 'Set to true only if needed for specific testing scenarios',
   },
   {
     name: 'DATABASE_URL',
@@ -295,38 +337,93 @@ function validateAuthConfiguration(
 }
 
 /**
- * Validates CORS configuration
+ * Validates CORS configuration with new configurable system
  */
 function validateCorsConfiguration(
   errors: string[],
   warnings: string[],
   recommendations: string[]
 ): void {
+  const isTestOrCI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  // Primary CORS configuration check
+  const corsAllowedOrigins = process.env.CORS_ALLOWED_ORIGINS;
   const clientOrigin = process.env.CLIENT_ORIGIN;
   const frontendUrl = process.env.FRONTEND_URL;
   const trustedOrigins = process.env.TRUSTED_ORIGINS;
-  const isTestOrCI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
 
-  if (!clientOrigin && !frontendUrl && !isTestOrCI) {
-    errors.push('No CORS origin configured - API requests will fail');
-    recommendations.push('CORS: Set CLIENT_ORIGIN to your frontend URL');
-  } else if (!clientOrigin && !frontendUrl && isTestOrCI) {
-    warnings.push('No CORS origin configured for test environment');
+  // Check if any CORS configuration is present
+  const hasCorsConfiguration = corsAllowedOrigins || clientOrigin || frontendUrl || trustedOrigins;
+
+  if (!hasCorsConfiguration && !isTestOrCI) {
+    errors.push('No CORS origins configured - API requests will fail');
+    recommendations.push('CORS: Set CORS_ALLOWED_ORIGINS with your frontend URLs (preferred)');
+    recommendations.push('CORS: Or use legacy CLIENT_ORIGIN for single domain');
+  } else if (!hasCorsConfiguration && isTestOrCI) {
+    warnings.push('No CORS origins configured for test environment');
+    recommendations.push('CORS: Consider setting CORS_TEST_ORIGINS for explicit test configuration');
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  // Validate CORS_ALLOWED_ORIGINS format
+  if (corsAllowedOrigins) {
+    const origins = corsAllowedOrigins.split(',').map(o => o.trim());
+    origins.forEach(origin => {
+      if (!origin.startsWith('http://') && !origin.startsWith('https://')) {
+        errors.push(`Invalid CORS origin format: ${origin} - must start with http:// or https://`);
+      }
+      if (isProduction && origin.startsWith('http://') && !origin.includes('localhost')) {
+        warnings.push(`HTTP origin in production: ${origin} - consider using HTTPS`);
+      }
+    });
+  }
+
+  // Validate environment-specific origins
+  const envSpecificOrigins = [
+    { name: 'CORS_DEVELOPMENT_ORIGINS', value: process.env.CORS_DEVELOPMENT_ORIGINS },
+    { name: 'CORS_PRODUCTION_ORIGINS', value: process.env.CORS_PRODUCTION_ORIGINS },
+    { name: 'CORS_TEST_ORIGINS', value: process.env.CORS_TEST_ORIGINS },
+  ];
+
+  envSpecificOrigins.forEach(({ name, value }) => {
+    if (value) {
+      const origins = value.split(',').map(o => o.trim());
+      origins.forEach(origin => {
+        if (!origin.startsWith('http://') && !origin.startsWith('https://')) {
+          errors.push(`Invalid ${name} format: ${origin} - must start with http:// or https://`);
+        }
+      });
+    }
+  });
+
+  // Legacy configuration validation (for backward compatibility)
+  if (isProduction) {
     if (clientOrigin && !clientOrigin.startsWith('https://')) {
       errors.push('CLIENT_ORIGIN must use HTTPS in production');
     }
-
     if (frontendUrl && !frontendUrl.startsWith('https://')) {
       warnings.push('FRONTEND_URL should use HTTPS in production');
     }
   }
 
-  if (!trustedOrigins && !isTestOrCI) {
-    warnings.push('No additional trusted origins configured');
-    recommendations.push('TRUSTED_ORIGINS: Consider adding staging and custom domains');
+  // Provide recommendations for optimization
+  if (corsAllowedOrigins && (clientOrigin || frontendUrl)) {
+    recommendations.push('CORS: You have both new (CORS_ALLOWED_ORIGINS) and legacy (CLIENT_ORIGIN/FRONTEND_URL) configuration. Consider using only CORS_ALLOWED_ORIGINS for cleaner setup');
+  }
+
+  if (!corsAllowedOrigins && (clientOrigin || frontendUrl)) {
+    recommendations.push('CORS: Consider migrating to CORS_ALLOWED_ORIGINS for better flexibility');
+  }
+
+  // Validate pattern domains
+  if (process.env.CORS_PATTERN_DOMAINS) {
+    const patterns = process.env.CORS_PATTERN_DOMAINS.split(',').map(p => p.trim());
+    patterns.forEach(pattern => {
+      if (pattern.includes('.') || pattern.includes('/')) {
+        warnings.push(`CORS_PATTERN_DOMAINS should contain base domain names only: ${pattern}`);
+        recommendations.push('CORS_PATTERN_DOMAINS: Use base names like "myapp,staging-app" (without .vercel.app)');
+      }
+    });
   }
 }
 
