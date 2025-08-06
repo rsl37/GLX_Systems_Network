@@ -25,15 +25,6 @@
     "test:env": "npx tsx scripts/test-env.ts",
     "test:services": "npx tsx scripts/test-service-connectivity.ts",
     "deployment:check": "npx tsx scripts/deployment-check.ts",
-    "start": "tsx watch scripts/dev.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui",
-    "test:e2e": "playwright test",
-    "test:all": "npm run test && npm run test:e2e",
-    "test:env": "tsx scripts/test-env.ts",
-    "deployment:check": "tsx scripts/deployment-check.js",
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
     "production:setup": "npx tsx scripts/production-setup.js",
     "production:check": "NODE_ENV=production npx tsx scripts/deployment-check.js",
@@ -178,8 +169,6 @@
   },
   "resolutions": {
     "esbuild": "^0.25.8",
-    "undici": "^6.0.0",
-    "path-to-regexp": "^8.0.0"
     "undici": "^6.21.3",
     "path-to-regexp": "^8.2.0"
   }
