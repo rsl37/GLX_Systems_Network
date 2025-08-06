@@ -20,6 +20,7 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
 
+<<<<<<< HEAD
     console.log('👤 Profile request for user:', userId);
 
     const user = await db
@@ -383,6 +384,8 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
 
+=======
+>>>>>>> origin/copilot/fix-470
     console.log('👤 Profile request for user:', userId);
 
     const user = await db

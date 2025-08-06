@@ -63,7 +63,7 @@ router.get('/', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
     const { category, status } = req.query;
-    
+
     console.log('🗳️ Fetching proposals for user:', userId);
 
     let query = db

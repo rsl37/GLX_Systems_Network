@@ -24,10 +24,13 @@ export default defineConfig(({ mode }) => {
 <<<<<<< HEAD
   const isDevelopment = mode === 'development';
 
+<<<<<<< HEAD
 =======
   const isDevelopment = !isProduction;
   
 >>>>>>> origin/copilot/fix-257
+=======
+>>>>>>> origin/copilot/fix-470
   return {
     plugins: [
       react(),
@@ -222,10 +225,14 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: [
 <<<<<<< HEAD
+<<<<<<< HEAD
         'react',
 =======
         'react', 
 >>>>>>> origin/copilot/fix-175
+=======
+        'react',
+>>>>>>> origin/copilot/fix-470
         'react-dom',
         'react-router-dom' // Pre-bundle router since it's critical
       ],

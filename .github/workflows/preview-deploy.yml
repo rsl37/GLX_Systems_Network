@@ -30,7 +30,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+          cache-dependency-path: './package-lock.json'
+
+      - name: Ensure cache directories exist
+        run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -47,7 +50,7 @@ jobs:
         run: |
           # Install Vercel CLI
           npm install -g vercel@latest
-          
+
           # Deploy to preview
           vercel deploy \
             --token=${{ secrets.VERCEL_TOKEN }} \
@@ -55,7 +58,7 @@ jobs:
             --project-id=${{ secrets.VERCEL_PROJECT_ID }} \
             --yes \
             > deployment-url.txt
-          
+
           # Extract preview URL
           PREVIEW_URL=$(cat deployment-url.txt | tail -1)
           echo "preview-url=$PREVIEW_URL" >> $GITHUB_OUTPUT

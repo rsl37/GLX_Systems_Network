@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -9,12 +10,18 @@
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory 
 >>>>>>> origin/copilot/fix-175
+=======
+ *
+ * This software is licensed under the PolyForm Shield License 1.0.0.
+ * For the full license text, see LICENSE file in the root directory
+>>>>>>> origin/copilot/fix-470
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 import { useMemo } from 'react';
 
 // Lean civic action types for efficient reputation calculation
+<<<<<<< HEAD
 <<<<<<< HEAD
 export type CivicActionType =
   | 'help_provided'
@@ -26,6 +33,12 @@ export type CivicActionType =
   | 'help_requested'
   | 'community_organized' 
 >>>>>>> origin/copilot/fix-175
+=======
+export type CivicActionType =
+  | 'help_provided'
+  | 'help_requested'
+  | 'community_organized'
+>>>>>>> origin/copilot/fix-470
   | 'governance_participated'
   | 'crisis_response'
   | 'verification_completed';
@@ -72,10 +85,14 @@ export const useCivicReputation = () => {
         const verificationMultiplier = action.verified ? 1 : 0.5;
         const impactBonus = action.impact_score > IMPACT_THRESHOLD ? 1.2 : 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         
 >>>>>>> origin/copilot/fix-175
+=======
+
+>>>>>>> origin/copilot/fix-470
         return score + (weight * verificationMultiplier * impactBonus);
       }, 0);
     };
@@ -91,6 +108,7 @@ export const useCivicReputation = () => {
           const aDistance = Math.abs(a.location.localeCompare(userLocation));
           const bDistance = Math.abs(b.location.localeCompare(userLocation));
 <<<<<<< HEAD
+<<<<<<< HEAD
 
           if (aDistance !== bDistance) {
             return aDistance - bDistance;
@@ -103,6 +121,13 @@ export const useCivicReputation = () => {
           }
           
 >>>>>>> origin/copilot/fix-175
+=======
+
+          if (aDistance !== bDistance) {
+            return aDistance - bDistance;
+          }
+
+>>>>>>> origin/copilot/fix-470
           // Secondary sort by priority and verification
           return (b.priority || 0) - (a.priority || 0);
         })
@@ -119,10 +144,14 @@ export const useCivicReputation = () => {
 
       // Check if already has this type of achievement recently
 <<<<<<< HEAD
+<<<<<<< HEAD
       const recentAchievement = existingAchievements.find(achievement =>
 =======
       const recentAchievement = existingAchievements.find(achievement => 
 >>>>>>> origin/copilot/fix-175
+=======
+      const recentAchievement = existingAchievements.find(achievement =>
+>>>>>>> origin/copilot/fix-470
         achievement.type === action.type &&
         Date.now() - achievement.earned_at.getTime() < 24 * 60 * 60 * 1000 // 24 hours
       );
@@ -162,12 +191,17 @@ export const civicDataUtils = {
    */
   filterActiveHelpRequests: (requests: any[]) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
     return requests.filter(request =>
       request.status === 'active' &&
 =======
     return requests.filter(request => 
       request.status === 'active' && 
 >>>>>>> origin/copilot/fix-175
+=======
+    return requests.filter(request =>
+      request.status === 'active' &&
+>>>>>>> origin/copilot/fix-470
       new Date(request.created_at).getTime() > Date.now() - (7 * 24 * 60 * 60 * 1000) // Last 7 days
     );
   },

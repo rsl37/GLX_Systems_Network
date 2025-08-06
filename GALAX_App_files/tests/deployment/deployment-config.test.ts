@@ -147,6 +147,9 @@ describe('Deployment Configuration Tests', () => {
 
       // Should show that deployment readiness completed (either WARNING or PASSED)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
       const hasWarningOrPass = result.output.includes('Overall Status: ⚠️ WARNING') ||
                               result.output.includes('Overall Status: ✅ READY');
 =======

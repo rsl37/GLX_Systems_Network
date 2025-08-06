@@ -1,6 +1,9 @@
 ---
 name: Security Scan
 
+# NOTE: For comprehensive license compliance checks, see license-compliance.yml workflow
+# This workflow focuses on security vulnerabilities and basic license restrictions
+
 'on':
   pull_request:
     branches: [main, develop, production]
@@ -33,8 +36,11 @@ jobs:
           deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0,
             LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
             CDDL-1.0, CDDL-1.1
+<<<<<<< HEAD
           allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
             PolyForm-Shield-1.0.0, UNLICENSED
+=======
+>>>>>>> origin/copilot/fix-470
           comment-summary-in-pr: always
 
   security-analysis:
@@ -61,7 +67,10 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: './package-lock.json'
+
+      - name: Ensure cache directories exist
+        run: mkdir -p ./GALAX_App_files/node_modules
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files
@@ -75,7 +84,6 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript"
-          upload: true
 
   dependency-scan:
     name: Dependency Security
@@ -91,7 +99,10 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: './package-lock.json'
+
+      - name: Ensure cache directories exist
+        run: mkdir -p ./GALAX_App_files/node_modules
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files
@@ -199,6 +210,7 @@ jobs:
             ];
 
             for (const job of jobs) {
+<<<<<<< HEAD
               let state = 'pending';
               let description = `${job.name}: ${job.result}`;
               
@@ -225,6 +237,11 @@ jobs:
               
               console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
               
+=======
+              const state = job.result === 'success' ? 'success' :
+                           job.result === 'failure' ? 'failure' : 'pending';
+
+>>>>>>> origin/copilot/fix-470
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

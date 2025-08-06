@@ -52,7 +52,7 @@ router.get('/chat/:helpRequestId/messages', authenticateToken, async (req: AuthR
 router.get('/transactions', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    
+
     console.log('💰 Fetching transactions for user:', userId);
 
     const transactions = await db

@@ -127,7 +127,8 @@
     "socket.io-client": "^4.8.1",
     "speakeasy": "^2.0.0",
     "tailwind-merge": "3.3.1",
-    "tailwindcss-animate": "1.0.7"
+    "tailwindcss-animate": "1.0.7",
+    "undici": "^6.0.0"
   },
   "devDependencies": {
 <<<<<<< HEAD
@@ -169,6 +170,9 @@
     "esbuild": "^0.25.8",
     "undici": "^6.0.0",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
     "path-to-regexp": "^8.0.0",
     "@vercel/node": {
       "esbuild": "^0.25.8",
@@ -179,8 +183,11 @@
   "resolutions": {
     "esbuild": "^0.25.8",
     "undici": "^6.0.0",
+<<<<<<< HEAD
 =======
 >>>>>>> origin/copilot/fix-386
+=======
+>>>>>>> origin/copilot/fix-470
     "path-to-regexp": "^8.0.0"
   }
 }

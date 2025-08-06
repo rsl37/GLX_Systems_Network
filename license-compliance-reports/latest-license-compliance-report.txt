@@ -10,12 +10,13 @@ Main License: PolyForm Shield License 1.0.0
 Directory: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files
 
 ✅ galax-civic-platform@0.2.0: PolyForm-Shield-1.0.0 (Main Application)
+✅ undici@6.21.3: MIT (Compatible)
 
 Summary for GALAX Main Application:
-  Total packages: 1
+  Total packages: 2
   Violations: 0
   Warnings: 0
-  Compatible: 1
+  Compatible: 2
 
 === MCP Servers Dependencies ===
 Directory: /home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/mcp-servers

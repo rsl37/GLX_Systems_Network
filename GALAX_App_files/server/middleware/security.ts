@@ -330,10 +330,14 @@ export const corsConfig = {
     if (origin) {
       let isAllowed = allowedOrigins.includes(origin);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-175
+=======
+
+>>>>>>> origin/copilot/fix-470
       // If not in explicit list, check Vercel deployment patterns in production or test
       if (!isAllowed && (isProduction || isTest)) {
         const vercelPatterns = [

@@ -30,7 +30,10 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
+          cache-dependency-path: './package-lock.json'
+
+      - name: Ensure cache directories exist
+        run: mkdir -p ./GALAX_App_files/node_modules
 
       - name: Install dependencies
         working-directory: ./GALAX_App_files

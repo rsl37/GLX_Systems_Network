@@ -36,7 +36,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: |
             package-lock.json
+<<<<<<< HEAD
             GALAX_App_files/package.json
+=======
+            GALAX_App_files/package-lock.json
+>>>>>>> origin/copilot/fix-470
             mcp-servers/package.json
 
       - name: Install license scanning tools
@@ -53,11 +57,15 @@ jobs:
 
           # Install main app dependencies
           cd GALAX_App_files
+<<<<<<< HEAD
           if [ -f "package-lock.json" ]; then
             npm ci --prefer-offline --no-audit --no-fund
           else
             npm install --prefer-offline --no-audit --no-fund
           fi
+=======
+          npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/copilot/fix-470
           cd ..
 
           # Install MCP server dependencies if they exist

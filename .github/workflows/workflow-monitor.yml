@@ -8,9 +8,8 @@ name: Workflow Health Monitor
   workflow_dispatch:
   workflow_run:
     workflows:
-      - "CI/CD Pipeline"
+      - "Comprehensive CI/CD Pipeline"
       - "Security Scan"
-      - "Quality & Performance"
     types: [completed]
 
 permissions:
@@ -36,9 +35,8 @@ jobs:
         with:
           script: |
             const workflows = [
-              'CI/CD Pipeline',
-              'Security Scan',
-              'Quality & Performance'
+              'Comprehensive CI/CD Pipeline',
+              'Security Scan'
             ];
             const results = [];
 
@@ -47,12 +45,10 @@ jobs:
                 // Try to find workflow by name first, fallback to ID mapping
                 let workflowId = workflowName.toLowerCase()
                   .replace(/[^a-z0-9]/g, '-');
-                if (workflowName === 'CI/CD Pipeline') {
-                  workflowId = 'main.yml';
+                if (workflowName === 'Comprehensive CI/CD Pipeline') {
+                  workflowId = 'comprehensive-checks.yml';
                 } else if (workflowName === 'Security Scan') {
                   workflowId = 'security-streamlined.yml';
-                } else if (workflowName === 'Quality & Performance') {
-                  workflowId = 'quality.yml';
                 }
 
                 const { data: runs } = await github.rest.actions
@@ -255,10 +251,10 @@ jobs:
             });
 
             console.log(`Found ${statuses.length} existing statuses for commit ${headSha}`);
-            
+
             // Find pending statuses related to this workflow
-            const pendingStatuses = statuses.filter(status => 
-              status.state === 'pending' && 
+            const pendingStatuses = statuses.filter(status =>
+              status.state === 'pending' &&
               status.context.includes(workflowName)
             );
 
@@ -266,11 +262,11 @@ jobs:
 
             // Update pending statuses to match workflow conclusion
             for (const status of pendingStatuses) {
-              const newState = conclusion === 'success' ? 'success' : 
+              const newState = conclusion === 'success' ? 'success' :
                               conclusion === 'failure' ? 'failure' : 'error';
-              
+
               console.log(`Updating status ${status.context} from pending to ${newState}`);
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -285,10 +281,10 @@ jobs:
             // If no pending statuses found, create a general workflow status
             if (pendingStatuses.length === 0) {
               console.log(`No pending statuses found, creating new status for ${workflowName}`);
-              
-              const newState = conclusion === 'success' ? 'success' : 
+
+              const newState = conclusion === 'success' ? 'success' :
                               conclusion === 'failure' ? 'failure' : 'error';
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

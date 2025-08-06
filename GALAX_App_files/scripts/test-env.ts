@@ -27,10 +27,14 @@ const requiredVars = ["NODE_ENV", "PORT", "JWT_SECRET"];
 const essentialVars = [
   "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET", "PUSHER_CLUSTER",  // Real-time features
 <<<<<<< HEAD
+<<<<<<< HEAD
   "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
 =======
   "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features  
 >>>>>>> origin/copilot/fix-190
+=======
+  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
+>>>>>>> origin/copilot/fix-470
   "TWILIO_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"            // SMS/Phone features
 ];
 
@@ -57,6 +61,7 @@ essentialVars.forEach((varName) => {
   const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-'];
   const isPlaceholder = value && placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder));
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   let status = "❌";
   let displayValue = "NOT SET";
@@ -67,12 +72,19 @@ essentialVars.forEach((varName) => {
   let displayValue = "NOT SET";
   
 >>>>>>> origin/copilot/fix-190
+=======
+
+  let status = "❌";
+  let displayValue = "NOT SET";
+
+>>>>>>> origin/copilot/fix-470
   if (value) {
     if (isPlaceholder) {
       status = "⚠️";
       displayValue = "[PLACEHOLDER - NEEDS REAL VALUE]";
     } else {
       status = "✅";
+<<<<<<< HEAD
 <<<<<<< HEAD
       displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
         ? "[HIDDEN]"
@@ -88,6 +100,14 @@ essentialVars.forEach((varName) => {
   }
   
 >>>>>>> origin/copilot/fix-190
+=======
+      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
+        ? "[HIDDEN]"
+        : value;
+    }
+  }
+
+>>>>>>> origin/copilot/fix-470
   console.log(`   ${status} ${varName}: ${displayValue}`);
 });
 

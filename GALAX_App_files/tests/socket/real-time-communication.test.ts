@@ -26,6 +26,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
     testServer.app.get('/api/realtime/health', (req, res) => {
@@ -38,16 +39,23 @@ describe('Real-time Communication Tests (Pusher)', () => {
         }
 =======
     
+=======
+
+>>>>>>> origin/copilot/fix-470
     // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
     testServer.app.get('/api/realtime/health', (req, res) => {
-      res.json({ 
-        success: true, 
-        data: { 
+      res.json({
+        success: true,
+        data: {
           type: "Pusher WebSocket",
           status: "active",
           cluster: process.env.PUSHER_CLUSTER || 'us2'
+<<<<<<< HEAD
         } 
 >>>>>>> origin/copilot/fix-190
+=======
+        }
+>>>>>>> origin/copilot/fix-470
       });
     });
 
@@ -57,20 +65,28 @@ describe('Real-time Communication Tests (Pusher)', () => {
         return res.status(401).json({ error: 'Authorization token required' });
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-190
+=======
+
+>>>>>>> origin/copilot/fix-470
       const { socket_id, channel_name } = req.body;
       if (!socket_id || !channel_name) {
         return res.status(400).json({ error: 'Socket ID and channel name are required' });
       }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (!channel_name.startsWith('private-user-notifications') &&
 =======
       if (!channel_name.startsWith('private-user-notifications') && 
 >>>>>>> origin/copilot/fix-190
+=======
+      if (!channel_name.startsWith('private-user-notifications') &&
+>>>>>>> origin/copilot/fix-470
           !channel_name.startsWith('private-help-request-')) {
         return res.status(403).json({ error: 'Unauthorized channel access' });
       }

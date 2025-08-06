@@ -274,8 +274,12 @@ export class AIMCPSecurityMiddleware {
 
 =======
         const knownGoodHashes = this.config.knownGoodHashes || [];
+<<<<<<< HEAD
         
 >>>>>>> origin/copilot/fix-386
+=======
+
+>>>>>>> origin/copilot/fix-470
         // If we have known good hashes, check against them
         if (knownGoodHashes.length > 0) {
           isValid = knownGoodHashes.includes(hash);
@@ -288,11 +292,14 @@ export class AIMCPSecurityMiddleware {
           }
         }
 
+<<<<<<< HEAD
 =======
         const knownGoodHashes: string[] = []; // Initialize as empty array since config doesn't have allowedModelHashes
         isValid = knownGoodHashes.includes(hash);
         
 >>>>>>> origin/copilot/fix-253
+=======
+>>>>>>> origin/copilot/fix-470
         this.modelIntegrity.set(modelVersion, {
           version: modelVersion,
           hash,

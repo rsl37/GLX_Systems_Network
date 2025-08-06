@@ -185,6 +185,9 @@ export interface DeploymentReadinessReport {
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
 
   // Check critical environment variables (required for basic functionality)
   const isDevOrTest = process.env.NODE_ENV === 'test' ||
@@ -244,6 +247,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   // In test/CI/development environments, treat missing essential vars as warnings, not failures
   const isNonProduction = process.env.NODE_ENV === 'test' ||
                           process.env.NODE_ENV === 'development' ||
+<<<<<<< HEAD
                           process.env.CI === 'true';
 
   for (const envVar of ESSENTIAL_ENV_VARS) {
@@ -388,16 +392,18 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   // In test/CI/development environments, treat missing essential vars as warnings, not failures
   const isNonProduction = process.env.NODE_ENV === 'test' || 
                           process.env.NODE_ENV === 'development' || 
+=======
+>>>>>>> origin/copilot/fix-470
                           process.env.CI === 'true';
-  
+
   for (const envVar of ESSENTIAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
       const status = isNonProduction ? 'warning' : 'fail';
-      const message = isNonProduction 
+      const message = isNonProduction
         ? `Essential environment variable ${envVar} is not set - some features may be limited in ${process.env.NODE_ENV} environment`
         : `Essential environment variable ${envVar} is not set - core features will not work`;
-      
+
       results.push({
         check: `Essential Environment Variable: ${envVar}`,
         status: status,
@@ -408,14 +414,14 @@ export function validateEnvironmentVariables(): ValidationResult[] {
       // Check for placeholder values that indicate incomplete configuration
       const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-', 'REQUIRED-'];
       const isPlaceholder = placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder.toLowerCase()));
-      
+
       if (isPlaceholder) {
         // In development/test environments, treat placeholder values as warnings, not failures
         const status = isNonProduction ? 'warning' : 'fail';
-        const message = isNonProduction 
+        const message = isNonProduction
           ? `Essential environment variable ${envVar} contains placeholder value - configure with real credentials for production`
           : `Essential environment variable ${envVar} contains placeholder value - must be configured with real service credentials`;
-        
+
         results.push({
           check: `Essential Environment Variable: ${envVar}`,
           status: status,
@@ -753,31 +759,31 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     let validOrigins = 0;
     let invalidOrigins = 0;
     let securityWarnings: string[] = [];
-    
+
     for (const origin of origins) {
       try {
         const url = new URL(origin);
         if (url.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')) {
           validOrigins++;
-          
+
           // Security validations to reduce attack surface
           if (process.env.NODE_ENV === 'production') {
             // Warn against development origins in production
             if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.includes('.local')) {
               securityWarnings.push(`Development origin '${origin}' should not be used in production`);
             }
-            
+
             // Warn against non-HTTPS in production
             if (url.protocol !== 'https:') {
               securityWarnings.push(`Non-HTTPS origin '${origin}' creates security risk in production`);
             }
           }
-          
+
           // Warn against overly broad wildcards or IP addresses in production
           if (process.env.NODE_ENV === 'production' && /^\d+\.\d+\.\d+\.\d+/.test(url.hostname)) {
             securityWarnings.push(`IP address origin '${origin}' reduces security - use domain names when possible`);
           }
-          
+
         } else {
           invalidOrigins++;
         }
@@ -785,25 +791,25 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         invalidOrigins++;
       }
     }
-    
+
     if (invalidOrigins === 0) {
       const status = securityWarnings.length > 0 ? 'warning' : 'pass';
-      const message = securityWarnings.length > 0 
+      const message = securityWarnings.length > 0
         ? `All ${validOrigins} trusted origins are formatted correctly, but ${securityWarnings.length} security concerns detected`
         : `All ${validOrigins} trusted origins are properly formatted with secure configuration`;
-        
+
       results.push({
         check: 'TRUSTED_ORIGINS Security',
         status,
         message,
-        details: { 
+        details: {
           total_origins: origins.length,
           valid_origins: validOrigins,
           security_warnings: securityWarnings,
           purpose: 'Version 3.0: third-party integrations, mobile contexts, enterprise deployments',
           security_notes: [
             'HTTPS enforced in production',
-            'Development origins blocked in production', 
+            'Development origins blocked in production',
             'Specific domains preferred over IP addresses',
             'Each origin explicitly validated'
           ]
@@ -814,7 +820,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'TRUSTED_ORIGINS Security',
         status: 'fail',
         message: `${invalidOrigins} of ${origins.length} trusted origins have invalid format or security issues`,
-        details: { 
+        details: {
           total_origins: origins.length,
           valid_origins: validOrigins,
           invalid_origins: invalidOrigins,
@@ -835,10 +841,14 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   const nodeEnv = process.env.NODE_ENV;
   const isDevelopmentOrTest = nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
   
 >>>>>>> origin/copilot/fix-466
+=======
+
+>>>>>>> origin/copilot/fix-470
   if (nodeEnv !== 'production') {
     if (isDevelopmentOrTest) {
       results.push({

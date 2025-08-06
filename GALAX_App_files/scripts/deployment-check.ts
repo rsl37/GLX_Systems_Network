@@ -108,14 +108,14 @@ async function runDeploymentCheck() {
 
   try {
     const report = await performDeploymentReadinessCheck();
-    
+
     // Print summary in expected format
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
     console.log(`Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`);
     console.log(`Environment: ${report.environment}`);
     console.log(`Timestamp: ${report.timestamp}`);
-    
+
     // Exit with appropriate code based on status
     if (report.overall_status === 'not_ready') {
       process.exit(1);

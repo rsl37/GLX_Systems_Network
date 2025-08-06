@@ -254,6 +254,7 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
   try {
     // Get antimalware stats
     const malwareStats = await getQuarantineStats();
+<<<<<<< HEAD
     
     // Get post-quantum status
     const postQuantumStatus = getPostQuantumStatus();
@@ -270,9 +271,40 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 5;
     if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 5;
     
+=======
+
+    // Get post-quantum security status
+    const pqStatus = postQuantumCrypto.getStatus();
+
+    // Calculate protection score (0-160 for zero-day-protected)
+    let protectionScore = 0;
+
+    if (SECURITY_CONFIG.antimalware.enabled) protectionScore += 15;
+    if (SECURITY_CONFIG.antivirus.enabled) protectionScore += 15;
+    if (SECURITY_CONFIG.antiHacking.enabled) protectionScore += 15;
+    if (SECURITY_CONFIG.antiHacking.ddosProtection) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.botDetection) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.honeypot) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 3;
+    if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 3;
+
+    // Zero-day protection (30 points)
+    if (SECURITY_CONFIG.zeroDayProtection.enabled) protectionScore += 20;
+    if (SECURITY_CONFIG.zeroDayProtection.aiMlProtection) protectionScore += 3;
+    if (SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection) protectionScore += 3;
+    if (SECURITY_CONFIG.zeroDayProtection.networkInfraProtection) protectionScore += 2;
+    if (SECURITY_CONFIG.zeroDayProtection.behavioralAnomalyDetection) protectionScore += 2;
+
+    // Sandboxing protection (15 points)
+    if (SECURITY_CONFIG.sandboxing.enabled) protectionScore += 10;
+    if (SECURITY_CONFIG.sandboxing.fileUploadSandboxing) protectionScore += 2;
+    if (SECURITY_CONFIG.sandboxing.networkMonitoring) protectionScore += 2;
+    if (SECURITY_CONFIG.sandboxing.memoryMonitoring) protectionScore += 1;
+
+>>>>>>> origin/copilot/fix-470
     // Add post-quantum bonus protection (30 points for quantum-safe level)
     if (pqStatus.initialized) protectionScore += 30;
-    
+
     // Determine security level including zero-day-protected level
     let securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe' | 'zero-day-protected';
     if (protectionScore >= 160) {
@@ -288,11 +320,19 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     } else {
       securityLevel = 'low';
     }
+<<<<<<< HEAD
     
     // Get post-quantum security status
     const pqStatus = postQuantumSecurity.getSecurityStatus();
     
     return {
+=======
+
+    // Cap display score at 100 but track actual for quantum-safe level
+    const displayScore = Math.min(protectionScore, 100);
+
+    const status: SecuritySystemStatus = {
+>>>>>>> origin/copilot/fix-470
       antimalware: {
         enabled: SECURITY_CONFIG.antimalware.enabled,
         lastScan: new Date().toISOString(),
@@ -471,7 +511,7 @@ export const securityDashboardAdmin = {
   emergencyLockdown: async (req: Request, res: Response) => {
     try {
       const { reason } = req.body;
-      
+
       // Enable maximum security including post-quantum protection
       SECURITY_CONFIG.antimalware.enabled = true;
       SECURITY_CONFIG.antivirus.enabled = true;
@@ -483,7 +523,7 @@ export const securityDashboardAdmin = {
       SECURITY_CONFIG.antiHacking.behavioralAnalysis = true;
       SECURITY_CONFIG.postQuantum.enabled = true;
       SECURITY_CONFIG.postQuantum.quantumResistant = true;
-      
+
       logSecurityEvent({
         type: 'attack',
         severity: 'critical',
@@ -678,7 +718,7 @@ export const initializeSecuritySystems = async () => {
   console.log(`   ☁️ Cloud/Edge Security: ${SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🌐 Network Infrastructure Security: ${SECURITY_CONFIG.zeroDayProtection.networkInfraProtection ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   📦 Sandboxing System: ${SECURITY_CONFIG.sandboxing.enabled ? 'ENABLED' : 'DISABLED'}`);
-  console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`); 
+  console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`);
   console.log('🚀 GALAX App Security Systems are FULLY OPERATIONAL with ZERO-DAY PROTECTION');
 };
 

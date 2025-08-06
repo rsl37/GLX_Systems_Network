@@ -1009,7 +1009,7 @@ export async function startServer(port: number) {
         type: "system",
         severity: "info",
         ip: "system",
-        details: { 
+        details: {
           event: "Post-Quantum Security initialized",
           securityLevel: pqSecurityStatus.securityLevel,
           algorithms: pqSecurityStatus.algorithms

@@ -28,10 +28,14 @@ describe('StablecoinContract', () => {
       const contract = new StablecoinContract(DEFAULT_STABLECOIN_CONFIG, 10000, 2000);
       const supplyInfo = contract.getSupplyInfo();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(supplyInfo.totalSupply).toBe(10000);
       expect(supplyInfo.reservePool).toBe(2000);
       expect(supplyInfo.reserveRatio).toBe(0.2);
@@ -64,10 +68,14 @@ describe('StablecoinContract', () => {
       const avgPrice = contract.getAveragePrice(400000);
       const expected = (1.0 + 1.1 + 0.9 + 1.05) / 4;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(Math.abs(avgPrice - expected)).toBeLessThan(0.01);
     });
   });
@@ -91,10 +99,14 @@ describe('StablecoinContract', () => {
 
       const adjustment = contract.calculateSupplyAdjustment();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(adjustment.action).toBe('expand');
       expect(adjustment.amount).toBeGreaterThan(0);
     });
@@ -117,10 +129,14 @@ describe('StablecoinContract', () => {
 
       const adjustment = contract.calculateSupplyAdjustment();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(adjustment.action).toBe('contract');
       expect(adjustment.amount).toBeGreaterThan(0);
     });
@@ -143,10 +159,14 @@ describe('StablecoinContract', () => {
 
       const adjustment = contract.calculateSupplyAdjustment();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(adjustment.action).toBe('none');
     });
 
@@ -169,6 +189,7 @@ describe('StablecoinContract', () => {
 
       const adjustment = contract.rebalance();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       expect(adjustment).toBeTruthy();
       expect(adjustment?.action).not.toBe('none');
@@ -177,12 +198,19 @@ describe('StablecoinContract', () => {
 
 =======
       
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(adjustment).toBeTruthy();
       expect(adjustment?.action).not.toBe('none');
-      
+
       const newSupply = contract.getSupplyInfo().totalSupply;
+<<<<<<< HEAD
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       if (adjustment?.action === 'expand') {
         expect(newSupply).toBeGreaterThan(initialSupply);
       }
@@ -206,10 +234,14 @@ describe('StablecoinContract', () => {
 
       const metrics = contract.getStabilityMetrics();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(metrics.targetPrice).toBe(1.0);
       expect(metrics.deviation).toBeLessThan(0.1);
       expect(metrics.stabilityScore).toBeGreaterThan(50);
@@ -233,10 +265,14 @@ describe('StablecoinContract', () => {
 
       const metrics = contract.getStabilityMetrics();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(metrics.volatility).toBeGreaterThan(0.1);
       expect(metrics.stabilityScore).toBeLessThan(80);
     });
@@ -258,6 +294,7 @@ describe('StablecoinContract', () => {
 
       const success = contract.removeReserves(1000);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       expect(success).toBe(true);
 
@@ -266,6 +303,11 @@ describe('StablecoinContract', () => {
       expect(success).toBe(true);
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+      expect(success).toBe(true);
+
+>>>>>>> origin/copilot/fix-470
       const newReserves = contract.getSupplyInfo().reservePool;
       expect(newReserves).toBe(4000);
     });
@@ -280,10 +322,14 @@ describe('StablecoinContract', () => {
 
       const success = contract.removeReserves(100); // Would drop below minimum
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       expect(success).toBe(false);
     });
 
@@ -317,6 +363,7 @@ describe('StablecoinContract', () => {
       const contract = new StablecoinContract(DEFAULT_STABLECOIN_CONFIG, 0, 0);
       const supplyInfo = contract.getSupplyInfo();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       expect(supplyInfo.reserveRatio).toBe(0);
 
@@ -325,6 +372,11 @@ describe('StablecoinContract', () => {
       expect(supplyInfo.reserveRatio).toBe(0);
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+      expect(supplyInfo.reserveRatio).toBe(0);
+
+>>>>>>> origin/copilot/fix-470
       // Should handle gracefully without errors
       expect(() => contract.calculateSupplyAdjustment()).not.toThrow();
     });
@@ -362,6 +414,7 @@ describe('StablecoinContract', () => {
       let supplyInfo = contract.getSupplyInfo();
       expect(supplyInfo.totalSupply).toBe(11000);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       // Test burning
       const burnSuccess = contract.burn(2000);
@@ -372,14 +425,21 @@ describe('StablecoinContract', () => {
 
 =======
       
+=======
+
+>>>>>>> origin/copilot/fix-470
       // Test burning
       const burnSuccess = contract.burn(2000);
       expect(burnSuccess).toBe(true);
-      
+
       supplyInfo = contract.getSupplyInfo();
       expect(supplyInfo.totalSupply).toBe(9000);
+<<<<<<< HEAD
       
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
       // Test burning more than supply
       const excessiveBurn = contract.burn(15000);
       expect(excessiveBurn).toBe(false);

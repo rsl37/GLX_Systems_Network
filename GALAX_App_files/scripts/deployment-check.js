@@ -39,6 +39,7 @@ async function runDeploymentCheck() {
   console.log('🚀 GALAX Deployment Readiness Check');
   console.log('=====================================\n');
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   console.log('DEBUG: About to call performDeploymentReadinessCheck...');
 
@@ -49,14 +50,21 @@ async function runDeploymentCheck() {
 
 =======
   
+=======
+
+>>>>>>> origin/copilot/fix-470
   console.log('DEBUG: About to call performDeploymentReadinessCheck...');
-  
+
   try {
     const report = await performDeploymentReadinessCheck();
-    
+
     console.log('DEBUG: Got report:', report.overall_status);
+<<<<<<< HEAD
     
 >>>>>>> origin/copilot/fix-175
+=======
+
+>>>>>>> origin/copilot/fix-470
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
