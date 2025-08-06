@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "Example: Intelligent Workflow System Demo"
 description: ""
@@ -10,6 +11,8 @@ tags: []
 relatedDocs: []
 ---
 
+=======
+>>>>>>> origin/copilot/fix-501
 # Example: Intelligent Workflow System Demo
 
 This file demonstrates how the intelligent workflow system works. Making changes to this file will:
@@ -73,4 +76,8 @@ Add to commit message to override intelligent behavior:
 - 💰 Resources: 60-70% reduction in CI minutes
 - 🚀 Experience: Faster feedback, less noise
 
+<<<<<<< HEAD
 This intelligent system ensures optimal resource usage while maintaining comprehensive quality and security standards.
+=======
+This intelligent system ensures optimal resource usage while maintaining comprehensive quality and security standards.
+>>>>>>> origin/copilot/fix-501

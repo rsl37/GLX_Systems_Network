@@ -5,6 +5,9 @@ on:
   push:
     branches: [main, develop]
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     paths:
       - 'GALAX_App_files/**'
       - 'package.json'
@@ -27,10 +30,13 @@ on:
         description: 'Force run all checks regardless of file changes'
         required: false
         default: 'false'
+<<<<<<< HEAD
 =======
   pull_request:
     branches: [main]
 >>>>>>> origin/copilot/fix-470
+=======
+>>>>>>> origin/copilot/fix-501
 
 permissions:
   contents: read

@@ -16,6 +16,7 @@ name: Web3 Functionality & Integration Tests
       - 'GALAX_App_files/package.json'
       - 'package.json'
       - '.github/workflows/web3-checks.yml'
+<<<<<<< HEAD
   pull_request:
     branches: [main]
     paths:
@@ -44,12 +45,33 @@ on:
 >>>>>>> origin/copilot/fix-470
   push:
     branches: [main, develop]
+=======
+>>>>>>> origin/copilot/fix-501
   pull_request:
     branches: [main]
+    paths:
+      - '**/*web3*'
+      - '**/*crypto*'
+      - '**/*blockchain*'
+      - '**/*defi*'
+      - 'GALAX_App_files/server/middleware/web3-security.ts'
+      - 'mcp-config.json'
+      - 'GALAX_App_files/package.json'
+      - 'package.json'
+      - '.github/workflows/web3-checks.yml'
   schedule:
     # Run web3 checks daily at 3 AM UTC
     - cron: '0 3 * * *'
+<<<<<<< HEAD
 >>>>>>> origin/copilot/fix-468
+=======
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run all Web3 checks'
+        required: false
+        default: 'false'
+>>>>>>> origin/copilot/fix-501
 
 permissions:
   contents: read
@@ -62,6 +84,9 @@ env:
 
 jobs:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
   detect-web3-changes:
     name: Detect Web3 Changes
     runs-on: ubuntu-latest
@@ -98,13 +123,19 @@ jobs:
               - 'GALAX_App_files/package.json'
               - 'package.json'
 
+<<<<<<< HEAD
 =======
 >>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
   web3-functionality:
     name: Web3 Functionality Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     needs: detect-web3-changes
     if: |
       github.event_name == 'schedule' || 
@@ -112,8 +143,11 @@ jobs:
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_config_changes == 'true'
+<<<<<<< HEAD
 =======
 >>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
 
     steps:
       - name: Checkout code
@@ -483,14 +517,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     needs: [detect-web3-changes, web3-functionality]
     if: |
       github.event_name == 'schedule' || 
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true'
+<<<<<<< HEAD
 =======
     needs: web3-functionality
 >>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
 
     steps:
       - name: Checkout code
@@ -627,15 +667,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     needs: [detect-web3-changes, web3-functionality]
     if: |
       github.event_name == 'schedule' || 
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true'
+<<<<<<< HEAD
 =======
     needs: web3-functionality
 >>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
 
     steps:
       - name: Checkout code
@@ -787,12 +833,17 @@ jobs:
     name: Web3 Tests Summary
     runs-on: ubuntu-latest
 <<<<<<< HEAD
+<<<<<<< HEAD
     needs: [detect-web3-changes, web3-functionality, web3-integration, web3-security-validation]
     if: always() && needs.detect-web3-changes.result != 'skipped'
 =======
     needs: [web3-functionality, web3-integration, web3-security-validation]
     if: always()
 >>>>>>> origin/copilot/fix-468
+=======
+    needs: [detect-web3-changes, web3-functionality, web3-integration, web3-security-validation]
+    if: always() && needs.detect-web3-changes.result != 'skipped'
+>>>>>>> origin/copilot/fix-501
     timeout-minutes: 5
 
     steps:
