@@ -13,29 +13,15 @@ import App from './App';
 import './index.css';
 
 // Lazy load analytics for better initial load performance
-<<<<<<< HEAD
-<<<<<<< HEAD
 const AnalyticsWrapper = React.lazy(() =>
-=======
-const AnalyticsWrapper = React.lazy(() => 
->>>>>>> origin/copilot/fix-175
-=======
 const AnalyticsWrapper = React.lazy(() =>
->>>>>>> origin/copilot/fix-470
   import('@vercel/analytics/react').then(module => ({
     default: () => <module.Analytics />,
   }))
 );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 const SpeedInsightsWrapper = React.lazy(() =>
-=======
-const SpeedInsightsWrapper = React.lazy(() => 
->>>>>>> origin/copilot/fix-175
-=======
 const SpeedInsightsWrapper = React.lazy(() =>
->>>>>>> origin/copilot/fix-470
   import('@vercel/speed-insights/react').then(module => ({
     default: () => <module.SpeedInsights />,
   }))

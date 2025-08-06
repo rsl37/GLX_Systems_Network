@@ -63,12 +63,10 @@ export function ForgotPasswordPage() {
             <CardHeader className="text-center">
               <div className="mx-auto mb-4">
                 <CheckCircle className="h-16 w-16 text-green-500" />
-=======
           <Card className='galax-card'>
             <CardHeader className='text-center'>
               <div className='mx-auto mb-4'>
                 <CheckCircle className='h-16 w-16 text-green-500' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ForgotPasswordPage.tsx
               </div>
               <CardTitle className='text-2xl font-bold text-green-600'>Check Your Email</CardTitle>
               <CardDescription>
@@ -121,11 +119,9 @@ export function ForgotPasswordPage() {
         <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-=======
         <Card className='galax-card'>
           <CardHeader className='text-center'>
             <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ForgotPasswordPage.tsx
               Forgot Password
             </CardTitle>
             <CardDescription>
@@ -146,10 +142,8 @@ export function ForgotPasswordPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
                     className="glx-input pl-10"
-=======
                     onChange={e => setEmail(e.target.value)}
                     className='galax-input pl-10'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ForgotPasswordPage.tsx
                     required
                   />
                 </div>
@@ -163,9 +157,7 @@ export function ForgotPasswordPage() {
                 disabled={isLoading}
                 className="glx-button w-full"
               >
-=======
               <Button type='submit' disabled={isLoading} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ForgotPasswordPage.tsx
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>

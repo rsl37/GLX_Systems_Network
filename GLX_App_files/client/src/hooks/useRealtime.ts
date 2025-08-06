@@ -77,11 +77,9 @@ export function useRealtime(token: string | null) {
           'Sec-WebSocket-Protocol': 'glx-secure',
           'Sec-WebSocket-Extensions': 'permessage-deflate'
         }
-=======
           'Sec-WebSocket-Protocol': 'galax-secure',
           'Sec-WebSocket-Extensions': 'permessage-deflate',
         },
->>>>>>> origin/all-merged:GALAX_App_files/client/src/hooks/useRealtime.ts
       };
 
       if (isProduction) {
@@ -253,12 +251,10 @@ export function useRealtime(token: string | null) {
         return true;
       } else {
         console.error('❌ Failed to join room:', result.error);
-=======
   const joinRoom = useCallback(
     async (helpRequestId: number): Promise<boolean> => {
       if (!connectionId.current || !token) {
         console.error('❌ No active connection to join room');
->>>>>>> origin/all-merged:GALAX_App_files/client/src/hooks/useRealtime.ts
         return false;
       }
 
@@ -329,12 +325,10 @@ export function useRealtime(token: string | null) {
         return true;
       } else {
         console.error('❌ Failed to leave room:', result.error);
-=======
   const leaveRoom = useCallback(
     async (helpRequestId: number): Promise<boolean> => {
       if (!connectionId.current || !token) {
         console.error('❌ No active connection to leave room');
->>>>>>> origin/all-merged:GALAX_App_files/client/src/hooks/useRealtime.ts
         return false;
       }
 
@@ -405,7 +399,6 @@ export function useRealtime(token: string | null) {
       } else {
         console.error('❌ Failed to send message:', result.error);
         return { success: false, error: result.details || result.error || 'Failed to send message' };
-=======
   const sendMessage = useCallback(
     async (
       helpRequestId: number,
@@ -413,7 +406,6 @@ export function useRealtime(token: string | null) {
     ): Promise<{ success: boolean; messageId?: number; error?: string }> => {
       if (!token) {
         return { success: false, error: 'Not authenticated' };
->>>>>>> origin/all-merged:GALAX_App_files/client/src/hooks/useRealtime.ts
       }
 
       try {

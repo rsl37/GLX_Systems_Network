@@ -13,9 +13,6 @@
       "destination": "/index.html"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "headers": [
     {
       "source": "/(.*)",
@@ -46,15 +43,7 @@
         },
         {
           "key": "Content-Security-Policy",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-494
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://cdnjs.cloudflare.com https://vitals.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https: wss: ws: https://vitals.vercel-insights.com https://vercel.live; media-src 'self' blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
         },
         {
           "key": "X-DNS-Prefetch-Control",
@@ -67,12 +56,6 @@
         {
           "key": "X-Permitted-Cross-Domain-Policies",
           "value": "none"
-<<<<<<< HEAD
-=======
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://cdnjs.cloudflare.com https://vitals.vercel-insights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https: wss: ws: https://vitals.vercel-insights.com; media-src 'self' blob:; object-src 'none'; frame-src 'none';"
->>>>>>> origin/copilot/fix-151
-=======
->>>>>>> origin/copilot/fix-494
         }
       ]
     },
@@ -86,19 +69,7 @@
       ]
     },
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       "source": "/**/*.{js,css,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}",
-=======
-      "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
->>>>>>> origin/copilot/fix-151
-=======
-      "source": "/**/*.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)",
->>>>>>> origin/copilot/fix-386
-=======
-      "source": "/**/*.{js,css,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}",
->>>>>>> origin/copilot/fix-488
       "headers": [
         {
           "key": "Cache-Control",
@@ -115,13 +86,7 @@
     }
   },
   "functions": {
-<<<<<<< HEAD
     "GLX_App_files/api/**/*": {
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "GALAX_App_files/api/**/*": {
->>>>>>> origin/all-merged
       "runtime": "@vercel/node",
       "maxDuration": 10
     }
@@ -129,27 +94,7 @@
   "regions": ["iad1"],
   "cleanUrls": true,
   "trailingSlash": false,
-=======
-    "app/api/**/*": {
-      "runtime": "@vercel/node"
-=======
-    "GALAX_App_files/api/**/*": {
-      "runtime": "@vercel/node",
-      "maxDuration": 10
->>>>>>> origin/copilot/fix-494
-    }
-<<<<<<< HEAD
-  },
-<<<<<<< HEAD
->>>>>>> origin/copilot/fix-151
-=======
-  "regions": ["iad1"],
-  "cleanUrls": true,
-  "trailingSlash": false,
->>>>>>> origin/copilot/fix-494
   "env": {
     "NODE_ENV": "production"
-=======
->>>>>>> origin/copilot/fix-488
   }
 }

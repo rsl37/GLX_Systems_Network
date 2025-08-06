@@ -18,19 +18,12 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 
 class SocialGoodMCPServer {
   constructor() {
-<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX Social Good MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
-=======
-    this.server = new Server(
-      {
-        name: 'GALAX Social Good MCP Server',
-        version: '1.0.0',
->>>>>>> origin/all-merged
       },
       {
         capabilities: {

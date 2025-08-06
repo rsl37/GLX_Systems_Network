@@ -108,10 +108,8 @@ export function usePageVerification(pageType: 'login' | 'register') {
 <<<<<<< HEAD:GLX_App_files/client/src/hooks/usePageVerification.ts
         'Join GLX',
         'Create your civic network account'
-=======
-        'Join GALAX',
+        'Join GLX',
         'Create your civic network account',
->>>>>>> origin/all-merged:GALAX_App_files/client/src/hooks/usePageVerification.ts
       ];
 
       registerElements.forEach(text => {

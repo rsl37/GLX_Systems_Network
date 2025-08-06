@@ -38,11 +38,9 @@ class RealtimeManager {
       'Sec-WebSocket-Protocol': 'glx-secure',
       'Sec-WebSocket-Extensions': 'permessage-deflate'
     }
-=======
       'Sec-WebSocket-Protocol': 'galax-secure',
       'Sec-WebSocket-Extensions': 'permessage-deflate',
     },
->>>>>>> origin/all-merged:GALAX_App_files/server/realtimeManager.ts
   };
 
   constructor() {

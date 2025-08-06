@@ -349,10 +349,4 @@ const SECURITY_CONFIG = {
 
 <<<<<<< HEAD:GLX_App_files/docs/ZERO_DAY_PROTECTION_IMPLEMENTATION.md
 *The GLX app is now equipped with industry-leading zero-day vulnerability protection, ensuring security against both known and emerging threats.*
-=======
-<<<<<<< HEAD
-*The GALAX app is now equipped with industry-leading zero-day vulnerability protection, ensuring security against both known and emerging threats.*
-=======
-_The GALAX app is now equipped with industry-leading zero-day vulnerability protection, ensuring security against both known and emerging threats._
->>>>>>> origin/copilot/fix-488
->>>>>>> origin/all-merged:GALAX_App_files/docs/ZERO_DAY_PROTECTION_IMPLEMENTATION.md
+*The GLX app is now equipped with industry-leading zero-day vulnerability protection, ensuring security against both known and emerging threats.*

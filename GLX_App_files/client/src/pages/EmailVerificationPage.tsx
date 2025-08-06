@@ -179,13 +179,11 @@ export function EmailVerificationPage() {
               <div className="animate-spin mx-auto mb-4 h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full"></div>
               <h2 className="text-xl font-semibold mb-2">Verifying Your Email</h2>
               <p className="text-gray-600">Please wait while we verify your email address...</p>
-=======
           <Card className='galax-card'>
             <CardContent className='p-8 text-center'>
               <div className='animate-spin mx-auto mb-4 h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full'></div>
               <h2 className='text-xl font-semibold mb-2'>Verifying Your Email</h2>
               <p className='text-gray-600'>Please wait while we verify your email address...</p>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/EmailVerificationPage.tsx
             </CardContent>
           </Card>
         </motion.div>
@@ -208,12 +206,10 @@ export function EmailVerificationPage() {
             <CardHeader className="text-center">
               <div className="mx-auto mb-4">
                 <CheckCircle className="h-16 w-16 text-green-500" />
-=======
           <Card className='galax-card'>
             <CardHeader className='text-center'>
               <div className='mx-auto mb-4'>
                 <CheckCircle className='h-16 w-16 text-green-500' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/EmailVerificationPage.tsx
               </div>
               <CardTitle className='text-2xl font-bold text-green-600'>Email Verified!</CardTitle>
               <CardDescription>
@@ -238,9 +234,7 @@ export function EmailVerificationPage() {
                 onClick={() => navigate('/dashboard')}
                 className="glx-button w-full"
               >
-=======
               <Button onClick={() => navigate('/dashboard')} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/EmailVerificationPage.tsx
                 Go to Dashboard
               </Button>
             </CardContent>
@@ -264,12 +258,10 @@ export function EmailVerificationPage() {
           <CardHeader className="text-center">
             <div className="mx-auto mb-4">
               <Mail className="h-16 w-16 text-blue-500" />
-=======
         <Card className='galax-card'>
           <CardHeader className='text-center'>
             <div className='mx-auto mb-4'>
               <Mail className='h-16 w-16 text-blue-500' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/EmailVerificationPage.tsx
             </div>
             <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               Verify Your Email
@@ -349,11 +341,9 @@ export function EmailVerificationPage() {
               <p className="mt-1">
                 Need help? Contact support at support@glx.app
               </p>
-=======
             <div className='text-center text-xs text-gray-500'>
               <p>Didn't receive the email? Check your spam folder or try resending.</p>
               <p className='mt-1'>Need help? Contact support at support@galax.app</p>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/EmailVerificationPage.tsx
             </div>
           </CardContent>
         </Card>

@@ -136,11 +136,9 @@ export const BottomNavigation = React.memo(() => {
       className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-purple-200 glx-glass z-50"
       role="navigation"
       aria-label="Main navigation"
-=======
       className='fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-purple-200 galax-glass z-50'
       role='navigation'
       aria-label='Main navigation'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/components/BottomNavigation.tsx
     >
       <div className='flex justify-around items-center py-2 px-4'>
         {navItems.map((item, index) => {

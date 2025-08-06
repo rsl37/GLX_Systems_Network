@@ -377,12 +377,10 @@ export function CrisisPage() {
             <CardContent className="p-4 text-center">
               <Siren className="h-8 w-8 mx-auto mb-2 text-red-600" />
               <p className="text-2xl font-bold text-red-600">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4 text-center'>
               <Siren className='h-8 w-8 mx-auto mb-2 text-red-600' />
               <p className='text-2xl font-bold text-red-600'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/CrisisPage.tsx
                 {crisisAlerts.filter(a => a.severity === 'critical').length}
               </p>
               <p className='text-sm text-gray-600'>Critical Alerts</p>
@@ -394,12 +392,10 @@ export function CrisisPage() {
             <CardContent className="p-4 text-center">
               <Flame className="h-8 w-8 mx-auto mb-2 text-orange-600" />
               <p className="text-2xl font-bold text-orange-600">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4 text-center'>
               <Flame className='h-8 w-8 mx-auto mb-2 text-orange-600' />
               <p className='text-2xl font-bold text-orange-600'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/CrisisPage.tsx
                 {crisisAlerts.filter(a => a.severity === 'high').length}
               </p>
               <p className='text-sm text-gray-600'>High Priority</p>
@@ -411,12 +407,10 @@ export function CrisisPage() {
             <CardContent className="p-4 text-center">
               <CloudRain className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
               <p className="text-2xl font-bold text-yellow-600">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4 text-center'>
               <CloudRain className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
               <p className='text-2xl font-bold text-yellow-600'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/CrisisPage.tsx
                 {crisisAlerts.filter(a => a.severity === 'medium').length}
               </p>
               <p className='text-sm text-gray-600'>Medium Priority</p>
@@ -428,12 +422,10 @@ export function CrisisPage() {
             <CardContent className="p-4 text-center">
               <Radio className="h-8 w-8 mx-auto mb-2 text-green-600" />
               <p className="text-2xl font-bold text-green-600">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4 text-center'>
               <Radio className='h-8 w-8 mx-auto mb-2 text-green-600' />
               <p className='text-2xl font-bold text-green-600'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/CrisisPage.tsx
                 {crisisAlerts.filter(a => a.status === 'active').length}
               </p>
               <p className='text-sm text-gray-600'>Active Alerts</p>
@@ -466,7 +458,6 @@ export function CrisisPage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
-=======
             <Card className='galax-card'>
               <CardContent className='p-12 text-center'>
                 <Shield className='h-16 w-16 mx-auto mb-4 text-gray-400' />
@@ -486,7 +477,6 @@ export function CrisisPage() {
                   <CardHeader className='pb-3'>
                     <div className='flex items-start justify-between'>
                       <div className='flex items-center gap-2'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/CrisisPage.tsx
                         {getSeverityIcon(alert.severity)}
                         <CardTitle className='text-lg'>{alert.title}</CardTitle>
                       </div>
@@ -548,9 +538,7 @@ export function CrisisPage() {
         >
 <<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/CrisisPage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Shield className='h-5 w-5 text-blue-600' />

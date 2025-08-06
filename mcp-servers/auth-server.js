@@ -19,19 +19,12 @@ const crypto = require('crypto');
 
 class AuthMCPServer {
   constructor() {
-<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX JWT Authentication MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
-=======
-    this.server = new Server(
-      {
-        name: 'GALAX JWT Authentication MCP Server',
-        version: '1.0.0',
->>>>>>> origin/all-merged
       },
       {
         capabilities: {

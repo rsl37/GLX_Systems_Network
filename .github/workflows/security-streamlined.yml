@@ -12,7 +12,7 @@ name: Security Scan
       - 'package.json'
       - 'GLX_App_files/package.json'
       - 'package-lock.json'
-      - 'GALAX_App_files/package-lock.json'
+      - 'GLX_App_files/package-lock.json'
       - '.env*'
       - 'GLX_App_files/.env*'
       - '.github/workflows/security-streamlined.yml'
@@ -23,7 +23,7 @@ name: Security Scan
       - 'package.json'
       - 'GLX_App_files/package.json'
       - 'package-lock.json'
-      - 'GALAX_App_files/package-lock.json'
+      - 'GLX_App_files/package-lock.json'
       - '.env*'
       - 'GLX_App_files/.env*'
   schedule:
@@ -69,7 +69,7 @@ jobs:
               - 'package.json'
               - 'GLX_App_files/package.json'
               - 'package-lock.json'
-              - 'GALAX_App_files/package-lock.json'
+              - 'GLX_App_files/package-lock.json'
               - 'npm-shrinkwrap.json'
               - 'GLX_App_files/npm-shrinkwrap.json'
             security:
@@ -105,14 +105,10 @@ jobs:
           deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0,
             LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
             CDDL-1.0, CDDL-1.1
-<<<<<<< HEAD
           allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
             PolyForm-Shield-1.0.0, UNLICENSED
-=======
->>>>>>> origin/copilot/fix-470
           comment-summary-in-pr: always
 
-<<<<<<< HEAD
       - name: Alternative Dependency Check (GHAS Not Available)
         if: steps.ghas-check.outputs.ghas_available == 'false'
         run: |
@@ -130,8 +126,6 @@ jobs:
             echo "No package-lock.json found, skipping dependency check"
           fi
 
-=======
->>>>>>> origin/all-merged
   security-analysis:
     name: Security Analysis
     runs-on: ubuntu-latest
@@ -165,10 +159,9 @@ jobs:
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
-        run: mkdir -p ./GALAX_App_files/node_modules
+        run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install dependencies
-<<<<<<< HEAD
 
         working-directory: ./GLX_App_files
         run: |
@@ -189,14 +182,6 @@ jobs:
         run: |
           echo "Building application for CodeQL analysis..."
           npm run build
-=======
-        working-directory: ./GALAX_App_files
-        run: npm ci --prefer-offline --no-audit --no-fund
-
-      - name: Build for analysis
-        working-directory: ./GALAX_App_files
-        run: npm run build
->>>>>>> origin/all-merged
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
@@ -207,7 +192,6 @@ jobs:
 
       - name: Verify CodeQL Results
         run: |
-<<<<<<< HEAD
           echo "⚠️  CodeQL analysis is not available - using alternative static analysis"
           echo "   To enable CodeQL, enable Code Scanning in repository settings"
           
@@ -227,18 +211,10 @@ jobs:
               exit $ESLINT_EXIT_CODE
             fi
             fi
-=======
-          echo "CodeQL analysis completed successfully"
-          echo "Checking for SARIF results..."
-          if [ -d "sarif-results" ]; then
-            echo "✅ SARIF results generated"
-            ls -la sarif-results/
->>>>>>> origin/all-merged
           else
             echo "✅ CodeQL analysis completed without security findings"
           fi
 
-<<<<<<< HEAD
       - name: Upload static analysis results
         uses: actions/upload-artifact@v4
         if: always() && hashFiles('GLX_App_files/eslint-results.json') != ''
@@ -297,8 +273,6 @@ jobs:
           path: ./GLX_App_files/eslint-results.json
           retention-days: 7
 
-=======
->>>>>>> origin/all-merged
   dependency-scan:
     name: Dependency Security
     runs-on: ubuntu-latest
@@ -319,17 +293,12 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package-lock.json'
-=======
-          cache-dependency-path: './package-lock.json'
->>>>>>> origin/all-merged
 
       - name: Ensure cache directories exist
         run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install dependencies
-<<<<<<< HEAD
         working-directory: ./GLX_App_files
         run: |
           if [ -f "package-lock.json" ]; then
@@ -337,10 +306,6 @@ jobs:
           else
             npm install --prefer-offline --no-audit --no-fund
           fi
-=======
-        working-directory: ./GALAX_App_files
-        run: npm ci --prefer-offline --no-audit --no-fund
->>>>>>> origin/all-merged
 
       - name: Run npm audit
         working-directory: ./GLX_App_files
@@ -471,7 +436,6 @@ jobs:
             ];
 
             for (const job of jobs) {
-<<<<<<< HEAD
               let state = 'pending';
               let description = `${job.name}: ${job.result}`;
               
@@ -498,11 +462,6 @@ jobs:
               
               console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
               
-=======
-              const state = job.result === 'success' ? 'success' :
-                           job.result === 'failure' ? 'failure' : 'pending';
-
->>>>>>> origin/copilot/fix-470
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

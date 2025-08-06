@@ -1,18 +1,11 @@
 {
-<<<<<<< HEAD
   "name": "glx-civic-networking-app",
   "version": "0.2.0",
   "description": "GLX Civic Network: Connect the World - Root Project",
-=======
-  "name": "galax-civic-networking-app",
-  "version": "0.2.1",
-  "description": "GALAX Civic Networking Application - Root Project",
->>>>>>> origin/all-merged
   "private": true,
   "type": "module",
   "license": "PolyForm-Shield-1.0.0",
   "scripts": {
-<<<<<<< HEAD
     "setup:env": "cd GLX_App_files && scripts/setup-env.sh",
     "setup:env:root": "scripts/setup-env.sh",
     "deployment:check": "cd GLX_App_files && test -d node_modules || npm install && npm run deployment:check",
@@ -37,68 +30,23 @@
     "monitor:full": "cd GLX_App_files && test -d node_modules || npm install && npm run monitor:full",
     "install:app": "cd GLX_App_files && test -d node_modules || npm install",
     "setup": "cd GLX_App_files && test -d node_modules || npm install",
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "setup:env": "cd GALAX_App_files && scripts/setup-env.sh",
-    "setup:env:root": "scripts/setup-env.sh",
-=======
->>>>>>> origin/copilot/fix-167
-=======
-    "setup:env": "cd GALAX_App_files && scripts/setup-env.sh",
-    "setup:env:root": "scripts/setup-env.sh",
->>>>>>> origin/copilot/fix-190
-    "deployment:check": "cd GALAX_App_files && test -d node_modules || npm install && npm run deployment:check",
-    "deployment:test": "cd GALAX_App_files && test -d node_modules || npm install && npm run deployment:test",
-    "domain:check": "cd GALAX_App_files && test -d node_modules || npm install && npm run domain:check",
-    "build": "cd GALAX_App_files && test -d node_modules || npm install && npm run build",
-    "start": "cd GALAX_App_files && test -d node_modules || npm install && npm run start",
-    "test": "cd GALAX_App_files && test -d node_modules || npm install && npm run test",
-    "test:api": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:api",
-    "test:socket": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:socket",
-    "test:watch": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:watch",
-    "test:coverage": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:coverage",
-    "test:ui": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:ui",
-    "test:e2e": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:e2e",
-    "test:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:all",
-    "test:env": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:env",
-<<<<<<< HEAD
-    "test:services": "cd GALAX_App_files && test -d node_modules || npm install && npm run test:services",
-=======
->>>>>>> origin/copilot/fix-167
-    "health:log": "cd GALAX_App_files && test -d node_modules || npm install && npm run health:log",
-    "branch:analyze": "cd GALAX_App_files && test -d node_modules || npm install && npm run branch:analyze",
-    "logs:all": "cd GALAX_App_files && test -d node_modules || npm install && npm run logs:all",
-    "dashboard": "cd GALAX_App_files && test -d node_modules || npm install && npm run dashboard",
-    "monitor:full": "cd GALAX_App_files && test -d node_modules || npm install && npm run monitor:full",
-    "install:app": "cd GALAX_App_files && test -d node_modules || npm install",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "setup": "cd GALAX_App_files && test -d node_modules || npm install",
->>>>>>> origin/all-merged
     "docs:validate": "node .github/scripts/doc-metadata.js validate",
     "docs:update": "node .github/scripts/doc-metadata.js update",
     "docs:check-freshness": "node .github/scripts/doc-metadata.js check-freshness",
     "docs:list": "node .github/scripts/doc-metadata.js list",
     "docs:analyze": "node .github/scripts/smart-doc-update.js analyze",
     "docs:report": "node .github/scripts/smart-doc-update.js report",
-    "docs:auto-update": "node .github/scripts/smart-doc-update.js update-metadata"
-=======
-    "setup": "cd GALAX_App_files && test -d node_modules || npm install"
->>>>>>> origin/copilot/fix-167
-=======
-    "setup": "cd GALAX_App_files && test -d node_modules || npm install",
+    "docs:auto-update": "node .github/scripts/smart-doc-update.js update-metadata",
     "lint": "eslint . --ext .js,.jsx,.json",
     "lint:fix": "eslint . --ext .js,.jsx,.json --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint:app": "cd GALAX_App_files && npm run lint",
-    "lint:app:fix": "cd GALAX_App_files && npm run lint:fix",
-    "format:app": "cd GALAX_App_files && npm run format",
-    "format:app:check": "cd GALAX_App_files && npm run format:check",
+    "lint:app": "cd GLX_App_files && npm run lint",
+    "lint:app:fix": "cd GLX_App_files && npm run lint:fix",
+    "format:app": "cd GLX_App_files && npm run format",
+    "format:app:check": "cd GLX_App_files && npm run format:check",
     "quality:check": "npm run lint && npm run format:check && npm run lint:app && npm run format:app:check",
     "quality:fix": "npm run lint:fix && npm run format && npm run lint:app:fix && npm run format:app"
->>>>>>> origin/copilot/fix-488
   },
   "workspaces": [
     "GLX_App_files"

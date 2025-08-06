@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     name: njsscan code scanning
     steps:
-<<<<<<< HEAD
       - name: Checkout the code
         uses: actions/checkout@v4
       - name: nodejsscan scan
@@ -59,16 +58,3 @@ jobs:
           name: njsscan-results
           path: results.sarif
           retention-days: 7
-=======
-    - name: Checkout the code
-      uses: actions/checkout@v4
-    - name: nodejsscan scan
-      id: njsscan
-      uses: ajinabraham/njsscan-action@v9
-      with:
-        args: '. --sarif --output results.sarif || true'
-    - name: Upload njsscan report
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: results.sarif
->>>>>>> origin/copilot/fix-468

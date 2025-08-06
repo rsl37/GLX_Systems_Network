@@ -194,6 +194,4 @@ self.addEventListener('message', event => {
 
 <<<<<<< HEAD:GLX_App_files/client/public/sw.js
 console.log('🌟 GLX Civic Service Worker: Lean caching strategy active');
-=======
-console.log('🌟 GALAX Civic Service Worker: Lean caching strategy active');
->>>>>>> origin/all-merged:GALAX_App_files/client/public/sw.js
+console.log('🌟 GLX Civic Service Worker: Lean caching strategy active');

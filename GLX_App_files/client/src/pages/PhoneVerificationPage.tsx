@@ -165,12 +165,10 @@ export function PhoneVerificationPage() {
           <CardHeader className="text-center">
             <div className="mx-auto mb-4">
               <Phone className="h-16 w-16 text-blue-500" />
-=======
         <Card className='galax-card'>
           <CardHeader className='text-center'>
             <div className='mx-auto mb-4'>
               <Phone className='h-16 w-16 text-blue-500' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/PhoneVerificationPage.tsx
             </div>
             <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               {step === 'phone' ? 'Verify Your Phone' : 'Enter Verification Code'}
@@ -238,9 +236,7 @@ export function PhoneVerificationPage() {
                   disabled={!phone || isSending}
 <<<<<<< HEAD:GLX_App_files/client/src/pages/PhoneVerificationPage.tsx
                   className="glx-button w-full"
-=======
                   className='galax-button w-full'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/PhoneVerificationPage.tsx
                 >
                   {isSending ? (
                     <div className='flex items-center gap-2'>
@@ -277,9 +273,7 @@ export function PhoneVerificationPage() {
                     disabled={code.length !== 6 || isVerifying}
 <<<<<<< HEAD:GLX_App_files/client/src/pages/PhoneVerificationPage.tsx
                     className="glx-button w-full"
-=======
                     className='galax-button w-full'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/PhoneVerificationPage.tsx
                   >
                     {isVerifying ? (
                       <div className='flex items-center gap-2'>

@@ -26,7 +26,6 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
 
-<<<<<<< HEAD
     console.log('👤 Profile request for user:', userId);
 
     const user = await db
@@ -368,33 +367,7 @@ router.get('/stats', authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-<<<<<<< HEAD
 export default router;
-=======
-export default router;/*
- * Copyright (c) 2025 GLX Civic Networking App
- *
- * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory
- * or visit https://polyformproject.org/licenses/shield/1.0.0
- */
-
-import { Router } from 'express';
-import { AuthRequest, authenticateToken, hashPassword, comparePassword } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
-import { profileUpdateLimiter } from '../middleware/rateLimiter.js';
-import { validateProfileUpdate } from '../middleware/validation.js';
-import { db } from '../database.js';
-
-const router = Router();
-
-// Get user profile
-router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    const userId = validateAuthUser(req.userId);
-
-=======
->>>>>>> origin/copilot/fix-470
     console.log('👤 Profile request for user:', userId);
 
     const user = await db
@@ -755,4 +728,3 @@ router.get('/stats', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 export default router;
->>>>>>> origin/main

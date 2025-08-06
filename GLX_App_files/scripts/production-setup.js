@@ -29,11 +29,9 @@ const packageJsonPath = join(process.cwd(), 'package.json');
 if (!existsSync(packageJsonPath)) {
 <<<<<<< HEAD:GLX_App_files/scripts/production-setup.js
   console.error('❌ Error: package.json not found. Please run this script from the GLX_App_files directory.');
-=======
   console.error(
-    '❌ Error: package.json not found. Please run this script from the GALAX_App_files directory.'
+    '❌ Error: package.json not found. Please run this script from the GLX_App_files directory.'
   );
->>>>>>> origin/all-merged:GALAX_App_files/scripts/production-setup.js
   process.exit(1);
 }
 
@@ -152,6 +150,4 @@ console.log('- Monitor your application for security issues');
 
 <<<<<<< HEAD:GLX_App_files/scripts/production-setup.js
 console.log('\n🎉 GLX is ready for production deployment!');
-=======
-console.log('\n🎉 GALAX is ready for production deployment!');
->>>>>>> origin/all-merged:GALAX_App_files/scripts/production-setup.js
+console.log('\n🎉 GLX is ready for production deployment!');

@@ -20,10 +20,8 @@ This guide explains how to properly configure a custom domain with SSL on Vercel
 
 <<<<<<< HEAD:GLX_App_files/docs/VERCEL_DOMAIN_SETUP.md
 When accessing the custom domain `glxcivicnetwork.me`, users encounter:
-=======
 When accessing the custom domain `galaxcivicnetwork.me`, users encounter:
 
->>>>>>> origin/all-merged:GALAX_App_files/docs/VERCEL_DOMAIN_SETUP.md
 ```
 This site can't provide a secure connection
 glxcivicnetwork.me sent an invalid response.
@@ -174,11 +172,9 @@ After configuration, test both:
 <<<<<<< HEAD:GLX_App_files/docs/VERCEL_DOMAIN_SETUP.md
 - Direct Vercel URL: `https://glx-civic-networking-app.vercel.app`
 - Custom domain: `https://glxcivicnetwork.me`
-=======
 
-- Direct Vercel URL: `https://galax-civic-networking-app.vercel.app`
+- Direct Vercel URL: `https://glx-civic-networking-app.vercel.app`
 - Custom domain: `https://galaxcivicnetwork.me`
->>>>>>> origin/all-merged:GALAX_App_files/docs/VERCEL_DOMAIN_SETUP.md
 
 Both should work without SSL errors.
 

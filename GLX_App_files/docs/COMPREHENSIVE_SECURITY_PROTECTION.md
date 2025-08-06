@@ -12,10 +12,8 @@ relatedDocs: []
 
 <<<<<<< HEAD:GLX_App_files/docs/COMPREHENSIVE_SECURITY_PROTECTION.md
 # GLX App - Comprehensive Security Protection System
-=======
-# GALAX App - Comprehensive Security Protection System
+# GLX App - Comprehensive Security Protection System
 
->>>>>>> origin/all-merged:GALAX_App_files/docs/COMPREHENSIVE_SECURITY_PROTECTION.md
 ## Added 2025-01-13 21:59:45 UTC
 
 ## 🛡️ Overview

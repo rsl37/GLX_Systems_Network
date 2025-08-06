@@ -9,7 +9,6 @@
   },
   "scripts": {
     "build": "vite build && tsc --project tsconfig.server.json",
-<<<<<<< HEAD
     "build:production": "NODE_ENV=production npm run build",
     "start": "npx tsx watch scripts/dev.ts",
     "setup:env": "scripts/setup-env.sh",
@@ -24,22 +23,8 @@
     "test:e2e:force": "scripts/ensure-test-dirs.sh && playwright test",
     "test:all": "npm run test && npm run test:security && npm run test:e2e",
     "test:env": "npx tsx scripts/test-env.ts",
-<<<<<<< HEAD
     "test:services": "npx tsx scripts/test-service-connectivity.ts",
-=======
->>>>>>> origin/copilot/fix-175
     "deployment:check": "npx tsx scripts/deployment-check.ts",
-=======
-    "start": "tsx watch scripts/dev.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui",
-    "test:e2e": "playwright test",
-    "test:all": "npm run test && npm run test:e2e",
-    "test:env": "tsx scripts/test-env.ts",
-    "deployment:check": "tsx scripts/deployment-check.js",
->>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
     "production:setup": "npx tsx scripts/production-setup.js",
     "production:check": "NODE_ENV=production npx tsx scripts/deployment-check.js",
@@ -49,23 +34,10 @@
     "logs:all": "npm run health:log && npm run branch:analyze",
     "dashboard": "npx tsx scripts/monitoring-dashboard.ts",
     "monitor:full": "npm run logs:all && npm run dashboard",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-494
     "vercel:validate": "node scripts/validate-vercel-env.cjs",
     "vercel:health": "node scripts/vercel-health-check.cjs",
     "vercel:deploy-check": "npm run vercel:validate && npm run build && npm run vercel:health",
     "vercel:troubleshoot": "node scripts/vercel-troubleshoot.cjs"
-<<<<<<< HEAD
-=======
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
->>>>>>> origin/copilot/fix-488
-=======
->>>>>>> origin/copilot/fix-494
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
@@ -107,15 +79,8 @@
     "cors": "^2.8.5",
     "crystals-kyber": "^5.1.0",
     "dilithium-js": "^1.8.7",
-<<<<<<< HEAD
     "dotenv": "^17.2.1",
     "esbuild": "^0.25.8",
-<<<<<<< HEAD
-=======
-    "dotenv": "^16.6.1",
->>>>>>> origin/copilot/fix-175
-=======
->>>>>>> origin/copilot/fix-386
     "express": "5.1.0",
     "express-rate-limit": "^8.0.1",
     "express-validator": "^7.2.1",
@@ -145,14 +110,7 @@
     "undici": "^6.0.0"
   },
   "devDependencies": {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    "@eslint/js": "^9.32.0",
->>>>>>> origin/copilot/fix-488
     "@lhci/cli": "^0.15.1",
-=======
->>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
     "@playwright/test": "^1.54.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -192,20 +150,13 @@
     "rimraf": "^5.0.0",
     "uuid": "^10.0.0",
     "esbuild": "^0.25.8",
-<<<<<<< HEAD
     "undici": "^6.0.0",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-470
     "path-to-regexp": "^8.0.0",
     "@vercel/node": {
-=======
     "undici": "^6.21.3",
     "path-to-regexp": "^8.2.0",
     "@vercel/node": "^5.3.8",
     "@vercel/node@*": {
->>>>>>> origin/copilot/fix-488
       "esbuild": "^0.25.8",
       "undici": "^6.21.3",
       "path-to-regexp": "^8.2.0"
@@ -218,17 +169,7 @@
   },
   "resolutions": {
     "esbuild": "^0.25.8",
-<<<<<<< HEAD
-    "undici": "^6.0.0",
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-386
-=======
->>>>>>> origin/copilot/fix-470
-    "path-to-regexp": "^8.0.0"
-=======
     "undici": "^6.21.3",
     "path-to-regexp": "^8.2.0"
->>>>>>> origin/copilot/fix-488
   }
 }

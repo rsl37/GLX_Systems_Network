@@ -249,9 +249,7 @@ export function TwoFactorSetupPage() {
             disabled={isLoading}
             className="glx-button w-full"
           >
-=======
           <Button onClick={startSetup} disabled={isLoading} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
             {isLoading ? (
               <div className='flex items-center gap-2'>
                 <RefreshCw className='h-4 w-4 animate-spin' />
@@ -331,11 +329,9 @@ export function TwoFactorSetupPage() {
       >
         <div className="flex items-center gap-2">
           <Smartphone className="h-4 w-4" />
-=======
       <Button onClick={() => setStep('verify')} className='galax-button w-full'>
         <div className='flex items-center gap-2'>
           <Smartphone className='h-4 w-4' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           Continue to Verification
         </div>
       </Button>
@@ -379,11 +375,9 @@ export function TwoFactorSetupPage() {
             disabled={verificationCode.length !== 6 || isLoading}
 <<<<<<< HEAD:GLX_App_files/client/src/pages/TwoFactorSetupPage.tsx
             className={status.enabled ? 'w-full bg-red-500 hover:bg-red-600' : 'glx-button w-full'}
-=======
             className={
               status.enabled ? 'w-full bg-red-500 hover:bg-red-600' : 'galax-button w-full'
             }
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           >
             {isLoading ? (
               <div className='flex items-center gap-2'>
@@ -437,10 +431,8 @@ export function TwoFactorSetupPage() {
           onClick={() => navigate('/dashboard')}
           className="glx-button w-full"
         >
-=======
       <div className='space-y-3'>
         <Button onClick={() => navigate('/dashboard')} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           Continue to Dashboard
         </Button>
 
@@ -463,11 +455,9 @@ export function TwoFactorSetupPage() {
         <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-=======
         <Card className='galax-card'>
           <CardHeader className='text-center'>
             <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
               Two-Factor Authentication
             </CardTitle>
             <CardDescription>

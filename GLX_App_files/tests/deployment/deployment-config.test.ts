@@ -145,25 +145,16 @@ describe('Deployment Configuration Tests', () => {
       expect(result.output).not.toContain('Overall Status: ❌ NOT_READY');
 
       // Should show that deployment readiness completed (either WARNING or PASSED)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-470
       const hasWarningOrPass = result.output.includes('Overall Status: ⚠️ WARNING') ||
                               result.output.includes('Overall Status: ✅ READY');
-=======
       // Or if there's a syntax error, that should be considered a temporary issue
       const hasWarningOrPass = result.output.includes('Overall Status: ⚠️ WARNING') || 
                               result.output.includes('Overall Status: ✅ READY') ||
                               result.output.includes('Transform failed') || // Temporary syntax issue
                               result.output.includes('ERROR: Unexpected'); // Temporary syntax issue
->>>>>>> origin/copilot/fix-175
-=======
       const hasWarningOrPass =
         result.output.includes('Overall Status: ⚠️ WARNING') ||
         result.output.includes('Overall Status: ✅ READY');
->>>>>>> origin/copilot/fix-488
       expect(hasWarningOrPass).toBe(true);
     });
   });
@@ -188,29 +179,9 @@ describe('Deployment Configuration Tests', () => {
         });
       });
 
-<<<<<<< HEAD
       expect(result.code).toBe(0);
       expect(result.output).toContain('✓ built');
     }, 60000); // 60 second timeout for build test
-=======
-      console.log('Build output:', result.output);
-      console.log('Build exit code:', result.code);
-
-      // Accept either success (0) or temporary issues (like syntax errors in non-critical files)
-      // The build should either succeed or fail with a known temporary issue
-      const isAcceptableResult = result.code === 0 || 
-                                 result.output.includes('Transform failed') ||
-                                 result.output.includes('ERROR: Unexpected') ||
-                                 result.output.includes('error TS1128'); // TypeScript syntax error
-      
-      expect(isAcceptableResult).toBe(true);
-      
-      // If build succeeded, should have built message
-      if (result.code === 0) {
-        expect(result.output).toContain('✓ built');
-      }
-    });
->>>>>>> origin/copilot/fix-175
 
     it('should have created dist directory', async () => {
       const fs = await import('fs');

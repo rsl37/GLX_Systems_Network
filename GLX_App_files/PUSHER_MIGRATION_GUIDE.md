@@ -15,10 +15,8 @@ relatedDocs: []
 ## Overview
 <<<<<<< HEAD:GLX_App_files/PUSHER_MIGRATION_GUIDE.md
 This guide documents the migration from HTTP polling to Pusher for real-time communication in the GLX Civic Networking App, addressing the feedback in PR #172.
-=======
 
-This guide documents the migration from HTTP polling to Pusher for real-time communication in the GALAX Civic Networking App, addressing the feedback in PR #172.
->>>>>>> origin/all-merged:GALAX_App_files/PUSHER_MIGRATION_GUIDE.md
+This guide documents the migration from HTTP polling to Pusher for real-time communication in the GLX Civic Networking App, addressing the feedback in PR #172.
 
 ## Migration Benefits
 

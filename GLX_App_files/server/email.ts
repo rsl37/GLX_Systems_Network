@@ -122,11 +122,9 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
         process.env.SMTP_FROM || "GLX Support <noreply@glxcivicnetwork.me>",
       to: email,
       subject: "Password Reset Request - GLX",
-=======
-      from: process.env.SMTP_FROM || 'GALAX Support <noreply@galaxcivicnetwork.me>',
+      from: process.env.SMTP_FROM || 'GLX Support <noreply@galaxcivicnetwork.me>',
       to: email,
-      subject: 'Password Reset Request - GALAX',
->>>>>>> origin/all-merged:GALAX_App_files/server/email.ts
+      subject: 'Password Reset Request - GLX',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #B593EE, #92A8D1); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
@@ -286,11 +284,9 @@ export async function sendEmailVerification(
         process.env.SMTP_FROM || "GLX Support <noreply@glxcivicnetwork.me>",
       to: email,
       subject: "Verify Your Email - GLX",
-=======
-      from: process.env.SMTP_FROM || 'GALAX Support <noreply@galaxcivicnetwork.me>',
+      from: process.env.SMTP_FROM || 'GLX Support <noreply@galaxcivicnetwork.me>',
       to: email,
-      subject: 'Verify Your Email - GALAX',
->>>>>>> origin/all-merged:GALAX_App_files/server/email.ts
+      subject: 'Verify Your Email - GLX',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #B593EE, #92A8D1); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">

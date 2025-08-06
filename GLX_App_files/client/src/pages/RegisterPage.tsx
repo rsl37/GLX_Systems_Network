@@ -45,7 +45,6 @@ export function RegisterPage() {
       }
 
       // Format phone number with country code if it's a phone signup
-<<<<<<< HEAD
       let identifier = email;
       if (signupMethod === 'phone') {
         // Clean the phone number: remove all non-digit characters except leading +
@@ -73,10 +72,6 @@ export function RegisterPage() {
       }
 
       await register(identifier, password, username, signupMethod, verificationToken);
-=======
-      const identifier = signupMethod === 'email' ? email : `${countryCode}${phone.replace(/^[\+\s0]+/, '').replace(/\s/g, '')}`;
-      await register(identifier, password, username, signupMethod);
->>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
       navigate('/dashboard');
     } catch (err) {
       // Provide more helpful error messages
@@ -152,9 +147,7 @@ export function RegisterPage() {
   return (
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
     <div className="min-h-screen flex items-center justify-center p-4 glx-holographic">
-=======
     <div className='min-h-screen flex items-center justify-center p-4 galax-holographic'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -164,10 +157,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
         <Card className="glx-card animate-pulse-glow">
           <CardHeader className="text-center pb-8">
-=======
         <Card className='galax-card animate-pulse-glow'>
           <CardHeader className='text-center pb-8'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
@@ -178,21 +169,17 @@ export function RegisterPage() {
               <Zap className="h-8 w-8 text-purple-500" />
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                 Join GLX
-=======
               <Zap className='h-8 w-8 text-purple-500' />
               <CardTitle className='text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent'>
-                Join GALAX
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
+                Join GLX
               </CardTitle>
               <Sparkles className='h-8 w-8 text-coral-500' />
             </motion.div>
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
             <CardDescription className="text-lg text-gray-600">
               Connect the World
-=======
             <CardDescription className='text-lg text-gray-600'>
               Create your civic network account
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
             </CardDescription>
 
             {/* Security verification indicator */}
@@ -252,10 +239,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                   onChange={(e) => setUsername(e.target.value)}
                   className="glx-input"
-=======
                   onChange={e => setUsername(e.target.value)}
                   className='galax-input'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                   required
                 />
               </div>
@@ -279,10 +264,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                       onChange={(e) => setPhone(e.target.value)}
                       className="glx-input flex-1"
-=======
                       onChange={e => setPhone(e.target.value)}
                       className='galax-input flex-1'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                       required
                     />
                   </div>
@@ -295,10 +278,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
                     className="glx-input"
-=======
                     onChange={e => setEmail(e.target.value)}
                     className='galax-input'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                     required
                   />
                 )}
@@ -314,10 +295,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                   onChange={(e) => setPassword(e.target.value)}
                   className="glx-input"
-=======
                   onChange={e => setPassword(e.target.value)}
                   className='galax-input'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                   required
                 />
               </div>
@@ -338,13 +317,11 @@ export function RegisterPage() {
                 type="submit"
                 className="w-full glx-button"
                 disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
-=======
                 type='submit'
                 className='w-full galax-button'
                 disabled={
                   isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)
                 }
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               >
                 {isLoading ? (
                   <div className='flex items-center gap-2'>
@@ -376,10 +353,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                 onChange={(e) => setUsername(e.target.value)}
                 className="glx-input"
-=======
                 onChange={e => setUsername(e.target.value)}
                 className='galax-input'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               />
             </div>
 
@@ -387,10 +362,8 @@ export function RegisterPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
               variant="outline"
               className="w-full glx-button-accent"
-=======
               variant='outline'
               className='w-full galax-button-accent'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               onClick={handleWalletRegister}
               disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >

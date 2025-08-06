@@ -265,8 +265,6 @@ interface DatabaseStrategy {
 function getDatabaseStrategy(): DatabaseStrategy {
   const isProduction = process.env.NODE_ENV === 'production';
   const hasPostgresURL = !!DATABASE_URL;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   if (isProduction && hasPostgresURL) {
     return {
@@ -291,11 +289,6 @@ function getDatabaseStrategy(): DatabaseStrategy {
 
 const strategy = getDatabaseStrategy();
 
-=======
-  
-=======
-
->>>>>>> origin/copilot/fix-470
   if (isProduction && hasPostgresURL) {
     return {
       primary: 'postgresql',
@@ -319,7 +312,6 @@ const strategy = getDatabaseStrategy();
 
 const strategy = getDatabaseStrategy();
 
->>>>>>> origin/copilot/fix-190
 // SQLite Configuration - Best for: Local development, file-based data, lightweight operations, offline support
 const dataDir = process.env.DATA_DIRECTORY || './data';
 if (!fs.existsSync(dataDir)) {
@@ -338,15 +330,8 @@ try {
   process.exit(1); // Exit the application with a failure code
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 // PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data
-=======
-// PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data  
->>>>>>> origin/copilot/fix-190
-=======
 // PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data
->>>>>>> origin/copilot/fix-470
 let postgresPool: Pool | null = null;
 if (DATABASE_URL) {
   console.log('🗄️ PostgreSQL database initialization...');
@@ -365,11 +350,9 @@ if (DATABASE_URL) {
   console.log("🗄️ SQLite database initialization...");
   console.log("📊 Using SQLite for development/lightweight operations");
   console.log("🔗 Database file:", path.join(dataDir, 'glx.db'));
-=======
   console.log('🗄️ SQLite database initialization...');
   console.log('📊 Using SQLite for development/lightweight operations');
   console.log('🔗 Database file:', path.join(dataDir, 'galax.db'));
->>>>>>> origin/all-merged:GALAX_App_files/server/database.ts
 }
 
 // Create database instances
@@ -398,8 +381,6 @@ console.log(`🎯 Fallback Database: ${strategy.fallback.toUpperCase()}`);
 const dbSelector = {
   // Use SQLite for: Local storage, file-based operations, development, offline mode
   sqlite: sqliteKysely,
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   // Use PostgreSQL for: Production, complex queries, concurrent operations, scalable data
   postgres: postgresKysely,
@@ -407,22 +388,13 @@ const dbSelector = {
   // Primary database (auto-selected based on environment and configuration)
   primary: db,
 
-=======
-  
-=======
-
->>>>>>> origin/copilot/fix-470
   // Use PostgreSQL for: Production, complex queries, concurrent operations, scalable data
   postgres: postgresKysely,
 
   // Primary database (auto-selected based on environment and configuration)
   primary: db,
-<<<<<<< HEAD
   
->>>>>>> origin/copilot/fix-190
-=======
 
->>>>>>> origin/copilot/fix-470
   // Get optimal database for specific operations
   getOptimalDB: (operation: 'read' | 'write' | 'complex' | 'lightweight') => {
     switch (operation) {
@@ -438,27 +410,16 @@ const dbSelector = {
         return db;
     }
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   // Check if specific database is available
   isPostgresAvailable: () => !!postgresKysely,
   isSqliteAvailable: () => !!sqliteKysely,
 
-=======
-  
-  // Check if specific database is available
-  isPostgresAvailable: () => !!postgresKysely,
-  isSqliteAvailable: () => !!sqliteKysely,
-  
->>>>>>> origin/copilot/fix-190
-=======
 
   // Check if specific database is available
   isPostgresAvailable: () => !!postgresKysely,
   isSqliteAvailable: () => !!sqliteKysely,
 
->>>>>>> origin/copilot/fix-470
   // Get database info
   getStrategy: () => strategy,
 };
@@ -468,27 +429,16 @@ const dbSelector = {
  */
 async function initializeDatabase() {
   console.log(`🔧 Initializing ${strategy.primary.toUpperCase()} database schema...`);
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   try {
     // Initialize primary database
     await initializeDatabaseSchema(db, strategy.primary);
 
-=======
-  
-  try {
-    // Initialize primary database
-    await initializeDatabaseSchema(db, strategy.primary);
-    
->>>>>>> origin/copilot/fix-190
-=======
 
   try {
     // Initialize primary database
     await initializeDatabaseSchema(db, strategy.primary);
 
->>>>>>> origin/copilot/fix-470
     // If we have both databases available, sync schema to fallback
     if (strategy.primary === 'postgresql' && postgresKysely && sqliteKysely) {
       console.log('🔄 Syncing schema to SQLite fallback...');
@@ -497,27 +447,16 @@ async function initializeDatabase() {
       console.log('🔄 Syncing schema to PostgreSQL...');
       await initializeDatabaseSchema(postgresKysely, 'postgresql');
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
     console.log('✅ Hybrid database schema initialized successfully');
   } catch (error) {
     console.error('❌ Failed to initialize database schema:', error);
 
-=======
-    
-    console.log("✅ Hybrid database schema initialized successfully");
-  } catch (error) {
-    console.error("❌ Failed to initialize database schema:", error);
-    
->>>>>>> origin/copilot/fix-190
-=======
 
     console.log("✅ Hybrid database schema initialized successfully");
   } catch (error) {
     console.error("❌ Failed to initialize database schema:", error);
 
->>>>>>> origin/copilot/fix-470
     // Try fallback database if primary fails
     if (strategy.primary === 'postgresql' && postgresKysely && sqliteKysely) {
       console.log('🔄 Falling back to SQLite...');
@@ -542,15 +481,8 @@ async function initializeDatabaseSchema(
   dbType: 'sqlite' | 'postgresql'
 ) {
   const isPostgres = dbType === 'postgresql';
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> origin/copilot/fix-190
-=======
 
->>>>>>> origin/copilot/fix-470
   // Create users table
   await database.schema
     .createTable('users')
@@ -669,15 +601,8 @@ async function createAdditionalTables(
   dbType: 'sqlite' | 'postgresql'
 ) {
   const isPostgres = dbType === 'postgresql';
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> origin/copilot/fix-190
-=======
 
->>>>>>> origin/copilot/fix-470
   // Crisis alerts table
   await database.schema
     .createTable('crisis_alerts')
@@ -784,24 +709,10 @@ async function healthCheck() {
   try {
     // Check primary database
     await db.selectFrom('users').select('id').limit(1).execute();
-<<<<<<< HEAD
     const primaryStatus = { status: 'healthy', db: strategy.primary, timestamp: new Date().toISOString() };
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    const primaryStatus = {
-      status: 'healthy',
-      db: strategy.primary,
-      timestamp: new Date().toISOString(),
-    };
->>>>>>> origin/copilot/fix-488
 
-=======
     
->>>>>>> origin/copilot/fix-190
-=======
 
->>>>>>> origin/copilot/fix-470
     // Check fallback database if available
     let fallbackStatus = null;
     if (strategy.primary === 'postgresql' && sqliteKysely) {
@@ -827,55 +738,29 @@ async function healthCheck() {
         };
       }
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
     return {
-=======
-    
-    return { 
->>>>>>> origin/copilot/fix-190
-=======
 
     return {
->>>>>>> origin/copilot/fix-470
       primary: primaryStatus,
       fallback: fallbackStatus,
       strategy: strategy,
     };
   } catch (error) {
-<<<<<<< HEAD
     console.error("❌ Database health check failed:", error);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    console.error('❌ Database health check failed:', error);
->>>>>>> origin/copilot/fix-488
     return {
       primary: {
         status: 'unhealthy',
         db: strategy.primary,
         error: error instanceof Error ? error.message : 'Unknown error',
-<<<<<<< HEAD
         timestamp: new Date().toISOString()
-=======
-    return { 
-=======
-    return {
->>>>>>> origin/copilot/fix-470
       primary: {
         status: 'unhealthy',
         db: strategy.primary,
         error: error instanceof Error ? error.message : 'Unknown error',
-<<<<<<< HEAD
         timestamp: new Date().toISOString() 
->>>>>>> origin/copilot/fix-190
-=======
         timestamp: new Date().toISOString()
->>>>>>> origin/copilot/fix-470
-=======
         timestamp: new Date().toISOString(),
->>>>>>> origin/copilot/fix-488
       },
       fallback: null,
       strategy: strategy,
@@ -892,15 +777,8 @@ async function closeDatabase() {
       await postgresPool.end();
       console.log('🔌 PostgreSQL connections closed');
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> origin/copilot/fix-190
-=======
 
->>>>>>> origin/copilot/fix-470
     if (sqliteDb) {
       sqliteDb.close();
       console.log('🔌 SQLite database closed');
@@ -921,8 +799,6 @@ function getInitializationPromise() {
 }
 
 // Export the database instance and utility functions
-<<<<<<< HEAD
-<<<<<<< HEAD
 export {
   db,
   dbSelector,
@@ -930,16 +806,6 @@ export {
   sqliteDb,
   healthCheck,
   closeDatabase,
-=======
-export { 
-  db, 
-  dbSelector,
-  postgresPool,
-  sqliteDb,
-  healthCheck, 
-  closeDatabase, 
->>>>>>> origin/copilot/fix-190
-=======
 export {
   db,
   dbSelector,
@@ -947,7 +813,6 @@ export {
   sqliteDb,
   healthCheck,
   closeDatabase,
->>>>>>> origin/copilot/fix-470
   getInitializationPromise,
   initializeDatabase,
 };

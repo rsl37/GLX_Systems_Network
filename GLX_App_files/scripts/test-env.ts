@@ -25,19 +25,10 @@ console.log('🧪 Testing Environment Variables Configuration\n');
 const requiredVars = ['NODE_ENV', 'PORT', 'JWT_SECRET'];
 
 const essentialVars = [
-<<<<<<< HEAD
   "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET", "PUSHER_CLUSTER",  // Real-time features
-<<<<<<< HEAD
-<<<<<<< HEAD
   "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
-=======
-  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features  
->>>>>>> origin/copilot/fix-190
-=======
   "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
->>>>>>> origin/copilot/fix-470
   "TWILIO_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"            // SMS/Phone features
-=======
   'PUSHER_APP_ID',
   'PUSHER_KEY',
   'PUSHER_SECRET',
@@ -50,7 +41,6 @@ const essentialVars = [
   'TWILIO_SID',
   'TWILIO_AUTH_TOKEN',
   'TWILIO_PHONE_NUMBER', // SMS/Phone features
->>>>>>> origin/copilot/fix-488
 ];
 
 const recommendedVars = ['CLIENT_ORIGIN', 'DATABASE_URL', 'SOCKET_PATH'];
@@ -70,68 +60,43 @@ console.log('\n📋 Essential Environment Variables (Required for Core Features)
 essentialVars.forEach(varName => {
   const value = process.env[varName];
   const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-'];
-<<<<<<< HEAD
   const isPlaceholder = value && placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder));
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  const isPlaceholder =
-    value && placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder));
->>>>>>> origin/copilot/fix-488
 
   let status = '❌';
   let displayValue = 'NOT SET';
 
-=======
   
   let status = "❌";
   let displayValue = "NOT SET";
   
->>>>>>> origin/copilot/fix-190
-=======
 
   let status = "❌";
   let displayValue = "NOT SET";
 
->>>>>>> origin/copilot/fix-470
   if (value) {
     if (isPlaceholder) {
       status = '⚠️';
       displayValue = '[PLACEHOLDER - NEEDS REAL VALUE]';
     } else {
-<<<<<<< HEAD
       status = "✅";
-<<<<<<< HEAD
-<<<<<<< HEAD
       displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
         ? "[HIDDEN]"
         : value;
-=======
-      status = '✅';
-      displayValue =
-        varName.includes('SECRET') || varName.includes('TOKEN') || varName.includes('PASS')
-          ? '[HIDDEN]'
-          : value;
->>>>>>> origin/copilot/fix-488
     }
   }
 
-=======
       displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS") 
         ? "[HIDDEN]" 
         : value;
     }
   }
   
->>>>>>> origin/copilot/fix-190
-=======
       displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
         ? "[HIDDEN]"
         : value;
     }
   }
 
->>>>>>> origin/copilot/fix-470
   console.log(`   ${status} ${varName}: ${displayValue}`);
 });
 

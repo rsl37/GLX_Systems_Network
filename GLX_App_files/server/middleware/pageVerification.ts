@@ -257,12 +257,10 @@ export function createAuthCorsConfig() {
               "https://glxcivicnetwork.me",
               "https://www.glxcivicnetwork.me",
               "https://staging.glxcivicnetwork.me",
-=======
               'https://galax-civic-networking.vercel.app',
               'https://galaxcivicnetwork.me',
               'https://www.galaxcivicnetwork.me',
               'https://staging.galaxcivicnetwork.me',
->>>>>>> origin/all-merged:GALAX_App_files/server/middleware/pageVerification.ts
             ]
           : []),
 

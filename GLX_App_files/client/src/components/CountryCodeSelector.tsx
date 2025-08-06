@@ -78,11 +78,9 @@ export function CountryCodeSelector({
       >
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-lg flex-shrink-0" role="img" aria-label={selectedCountry.name}>
-=======
       <SelectTrigger className={cn('w-[120px] gap-2 galax-input', className)}>
         <div className='flex items-center gap-2 min-w-0'>
           <span className='text-lg flex-shrink-0' role='img' aria-label={selectedCountry.name}>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/components/CountryCodeSelector.tsx
             {selectedCountry.flag}
           </span>
           <span className='text-sm font-medium text-gray-700 truncate'>

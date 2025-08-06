@@ -19,19 +19,12 @@ const https = require('https');
 
 class CivicMCPServer {
   constructor() {
-<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX Civic Data MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
-=======
-    this.server = new Server(
-      {
-        name: 'GALAX Civic Data MCP Server',
-        version: '1.0.0',
->>>>>>> origin/all-merged
       },
       {
         capabilities: {

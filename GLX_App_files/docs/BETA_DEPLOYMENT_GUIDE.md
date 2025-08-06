@@ -64,10 +64,8 @@ This script validates:
 
 ```
 🚀 GLX Deployment Readiness Check
-=====================================
 
 📊 DEPLOYMENT READINESS SUMMARY
-==============================
 Overall Status: ✅ READY
 Environment: production
 Timestamp: 2025-07-24T23:28:04.694Z
@@ -341,11 +339,9 @@ sqlite3 /opt/glx/data/database.sqlite "SELECT name FROM sqlite_master WHERE type
 <<<<<<< HEAD:GLX_App_files/docs/BETA_DEPLOYMENT_GUIDE.md
 - Application logs: `/opt/glx/logs/`
 - PM2 logs: `pm2 logs glx-api`
-=======
 
 - Application logs: `/opt/galax/logs/`
 - PM2 logs: `pm2 logs galax-api`
->>>>>>> origin/all-merged:GALAX_App_files/docs/BETA_DEPLOYMENT_GUIDE.md
 - Nginx logs: `/var/log/nginx/`
 
 ### Key Metrics to Monitor

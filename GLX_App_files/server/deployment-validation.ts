@@ -29,20 +29,9 @@ const RECOMMENDED_ENV_VARS = [
   'DATA_DIRECTORY',
   'JWT_REFRESH_SECRET',
   'ENCRYPTION_MASTER_KEY',
-<<<<<<< HEAD
   'DATABASE_URL',     // Production database connection
-<<<<<<< HEAD
   'FRONTEND_URL',     // Legacy frontend URL support
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
-=======
-  'SOCKET_PATH',      // Custom Socket.IO path
-  'FRONTEND_URL',     // Legacy frontend URL support
-  'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
-=======
-  'DATABASE_URL', // Production database connection
-  'FRONTEND_URL', // Legacy frontend URL support
-  'TRUSTED_ORIGINS', // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
->>>>>>> origin/copilot/fix-488
 ];
 
 // Essential environment variables for core features
@@ -62,7 +51,6 @@ const ESSENTIAL_ENV_VARS = [
 ];
 
 const OPTIONAL_ENV_VARS = [
-<<<<<<< HEAD
   'SMTP_HOST',
   'SMTP_PORT', 
   'SMTP_USER',
@@ -71,7 +59,6 @@ const OPTIONAL_ENV_VARS = [
   'TWILIO_SID',
   'TWILIO_AUTH_TOKEN',
   'TWILIO_PHONE_NUMBER'
->>>>>>> origin/copilot/fix-175
 ];
 
 // Essential environment variables for core features
@@ -91,8 +78,6 @@ const ESSENTIAL_ENV_VARS = [
 ];
 
 const OPTIONAL_ENV_VARS = [
-=======
->>>>>>> origin/copilot/fix-190
   // Development and debugging only
 ];
 
@@ -222,10 +207,6 @@ export interface DeploymentReadinessReport {
  */
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-470
 
   // Check critical environment variables (required for basic functionality)
   const isDevOrTest =
@@ -289,17 +270,9 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
   // Check essential environment variables (required for core features)
   // In test/CI/development environments, treat missing essential vars as warnings, not failures
-<<<<<<< HEAD
   const isNonProduction = process.env.NODE_ENV === 'test' ||
                           process.env.NODE_ENV === 'development' ||
-<<<<<<< HEAD
                           process.env.CI === 'true';
-=======
-  const isNonProduction =
-    process.env.NODE_ENV === 'test' ||
-    process.env.NODE_ENV === 'development' ||
-    process.env.CI === 'true';
->>>>>>> origin/copilot/fix-488
 
   for (const envVar of ESSENTIAL_ENV_VARS) {
     const value = process.env[envVar];
@@ -384,27 +357,13 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: `Environment Variable: ${envVar}`,
         status: 'warning',
         message: `Recommended environment variable ${envVar} is not set. Some features may be limited.`,
-<<<<<<< HEAD
         details: { variable: envVar, recommended: true }
-=======
-  
-  // Check critical environment variables (required for basic functionality)
-  const isDevOrTest = process.env.NODE_ENV === 'test' || 
-                      process.env.NODE_ENV === 'development' || 
-                      process.env.CI === 'true';
-  
-  for (const envVar of CRITICAL_ENV_VARS) {
-    const value = process.env[envVar];
-    if (!value) {
-<<<<<<< HEAD
       results.push({
         check: `Critical Environment Variable: ${envVar}`,
         status: 'fail',
         message: `Critical environment variable ${envVar} is not set`,
         details: { variable: envVar, required: true, category: 'critical' }
->>>>>>> origin/copilot/fix-175
       });
-=======
       // CLIENT_ORIGIN can be optional in development/test environments
       if (envVar === 'CLIENT_ORIGIN' && isDevOrTest) {
         results.push({
@@ -421,7 +380,6 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           details: { variable: envVar, required: true, category: 'critical' }
         });
       }
->>>>>>> origin/copilot/fix-466
     } else {
       results.push({
         check: `Critical Environment Variable: ${envVar}`,
@@ -441,15 +399,12 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'warning',
         message: `Recommended environment variable ${envVar} is not set`,
         details: { variable: envVar, required: false, category: 'recommended' }
-=======
         details: { variable: envVar, recommended: true },
->>>>>>> origin/copilot/fix-488
       });
     } else {
       results.push({
         check: `Recommended Environment Variable: ${envVar}`,
         status: 'pass',
-<<<<<<< HEAD
         message: `Recommended environment variable ${envVar} is properly set`,
         details: { variable: envVar, length: value.length, category: 'recommended' }
       });
@@ -460,8 +415,6 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   // In test/CI/development environments, treat missing essential vars as warnings, not failures
   const isNonProduction = process.env.NODE_ENV === 'test' || 
                           process.env.NODE_ENV === 'development' || 
-=======
->>>>>>> origin/copilot/fix-470
                           process.env.CI === 'true';
 
   for (const envVar of ESSENTIAL_ENV_VARS) {
@@ -523,10 +476,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'pass',
         message: `Optional environment variable ${envVar} is properly set`,
         details: { variable: envVar, length: value.length, category: 'optional' }
-=======
         message: `Environment variable ${envVar} is properly set`,
         details: { variable: envVar, length: value.length },
->>>>>>> origin/copilot/fix-488
       });
     }
   }
@@ -937,21 +888,10 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
   // Validate NODE_ENV for production
   const nodeEnv = process.env.NODE_ENV;
-<<<<<<< HEAD
   const isDevelopmentOrTest = nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  const isDevelopmentOrTest =
-    nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
->>>>>>> origin/copilot/fix-488
 
-=======
   
->>>>>>> origin/copilot/fix-466
-=======
 
->>>>>>> origin/copilot/fix-470
   if (nodeEnv !== 'production') {
     if (isDevelopmentOrTest) {
       results.push({

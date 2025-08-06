@@ -533,8 +533,4 @@ For technical support or questions about the stablecoin system, please refer to 
 
 ---
 
-<<<<<<< HEAD
 *This documentation reflects the current algorithmic stablecoin implementation. For the most up-to-date information, please refer to the system dashboard and API responses.*
-=======
-_This documentation reflects the current algorithmic stablecoin implementation. For the most up-to-date information, please refer to the system dashboard and API responses._
->>>>>>> origin/copilot/fix-488

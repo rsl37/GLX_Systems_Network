@@ -341,7 +341,6 @@ export function HelpRequestsPage() {
         role="article"
         aria-labelledby={`request-title-${request.id}`}
         aria-describedby={`request-desc-${request.id}`}
-=======
   const HelpRequestCard = React.memo(
     ({
       request,
@@ -357,7 +356,6 @@ export function HelpRequestsPage() {
         animate={{ opacity: isVisible ? 1 : 0.7, y: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
         className={`w-full ${viewMode === 'grid' ? 'px-3' : 'px-0'}`}
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
       >
         <Card
           className='galax-card hover:shadow-lg transition-shadow h-full'
@@ -469,12 +467,10 @@ export function HelpRequestsPage() {
             {request.status === 'matched' && (
               <div className="text-center text-sm text-gray-600">
                 Helper: <span className="font-medium">{request.helper_username}</span>
-=======
             {request.latitude && request.longitude && (
               <div className='flex items-center gap-1 text-sm text-gray-500'>
                 <MapPin className='h-3 w-3' aria-hidden='true' />
                 <span>Location provided</span>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
               </div>
             )}
 
@@ -672,10 +668,8 @@ export function HelpRequestsPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
               <Button className="glx-button">
                 <Plus className="h-4 w-4 mr-2" />
-=======
               <Button className='galax-button'>
                 <Plus className='h-4 w-4 mr-2' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
                 Request Help
               </Button>
             </DialogTrigger>
@@ -749,9 +743,7 @@ export function HelpRequestsPage() {
 
 <<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
                 <Button onClick={handleCreateRequest} className="glx-button w-full">
-=======
                 <Button onClick={handleCreateRequest} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
                   Create Request
                 </Button>
               </div>
@@ -772,14 +764,12 @@ export function HelpRequestsPage() {
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">Filters:</span>
-=======
           <Card className='galax-card'>
             <CardContent className='p-4'>
               <div className='flex flex-wrap gap-4 items-center'>
                 <div className='flex items-center gap-2'>
                   <Filter className='h-4 w-4 text-gray-500' />
                   <span className='text-sm text-gray-600'>Filters:</span>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
                 </div>
 
                 <div className='flex-1'>

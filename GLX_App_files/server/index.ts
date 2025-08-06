@@ -129,13 +129,6 @@ const pusher = new Pusher({
   useTLS: true,
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/copilot/fix-250
-=======
->>>>>>> origin/copilot/fix-386
 // Initialize realtime manager
 const realtimeManager = new RealtimeManager();
 
@@ -968,40 +961,6 @@ app.post(
   securityAdminEndpoints.antiHacking.unblockIP
 );
 
-<<<<<<< HEAD
-=======
-// Zero-Day Protection Management
-app.get(
-  '/api/admin/security/zero-day/:action',
-  authenticateToken,
-  securityAdminEndpoints.zeroDayProtection
-);
-
-// Sandboxing System Management
-app.get(
-  '/api/admin/security/sandbox/:action',
-  authenticateToken,
-  securityAdminEndpoints.sandboxing
-);
-app.post(
-  '/api/admin/security/sandbox/:action',
-  authenticateToken,
-  securityAdminEndpoints.sandboxing
-);
-
-// Post-Quantum Security Management
-app.get(
-  '/api/admin/security/post-quantum/status',
-  authenticateToken,
-  securityAdminEndpoints.postQuantum.getStatus
-);
-app.post(
-  '/api/admin/security/post-quantum/test',
-  authenticateToken,
-  securityAdminEndpoints.postQuantum.testOperations
-);
-
->>>>>>> origin/copilot/fix-161
 // Post-Quantum Cryptography Management
 app.get(
   '/api/admin/security/post-quantum/status',
@@ -1073,31 +1032,19 @@ export async function startServer(port: number) {
 
     // Initialize Post-Quantum Cryptography Security Baseline
     try {
-<<<<<<< HEAD
       const pqSecurityStatus = postQuantumSecurity.initializeSecurity();
       console.log("🔐 Post-Quantum Security Baseline initialized successfully");
       console.log(`   • Security Level: ${pqSecurityStatus.securityLevel} (256-bit equivalent)`);
       console.log(`   • Algorithms: ${pqSecurityStatus.algorithms.join(', ')}`);
-=======
-      await postQuantumCrypto.initialize();
-      const pqStatus = postQuantumCrypto.getStatus();
-      console.log('🔐 Post-Quantum Security Baseline initialized successfully');
->>>>>>> origin/copilot/fix-488
 
       logSecurityEvent({
         type: 'system',
         severity: 'info',
         ip: 'system',
         details: {
-<<<<<<< HEAD
           event: "Post-Quantum Security initialized",
           securityLevel: pqSecurityStatus.securityLevel,
           algorithms: pqSecurityStatus.algorithms
-=======
-          event: 'Post-Quantum Security initialized',
-          securityLevel: pqStatus.securityLevel,
-          initialized: pqStatus.initialized,
->>>>>>> origin/copilot/fix-488
         },
         action: 'Post-quantum cryptography baseline enabled',
         status: 'allowed',

@@ -572,126 +572,19 @@ router.get('/2fa/status', authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-<<<<<<< HEAD
 export default router;
-=======
-export default router;/*
- * Copyright (c) 2025 GLX Civic Networking App
- *
- * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory
- * or visit https://polyformproject.org/licenses/shield/1.0.0
- */
-
-import { Router } from 'express';
-import { AuthRequest } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
-import {
-  hashPassword,
-  comparePassword,
-  generateToken,
-  authenticateToken,
-} from '../auth.js';
-import {
-  generatePasswordResetToken,
-  sendPasswordResetEmail,
-  validatePasswordResetToken,
-  markTokenAsUsed,
-  generateEmailVerificationToken,
-  sendEmailVerification,
-  validateEmailVerificationToken,
-  markEmailVerificationTokenAsUsed,
-  markEmailAsVerified,
-  resendEmailVerification,
-} from '../email.js';
-import {
-  generatePhoneVerificationToken,
-  validatePhoneVerificationCode,
-  markPhoneVerificationTokenAsUsed,
-  markPhoneAsVerified,
-  sendPhoneVerification,
-} from '../phone.js';
-import {
-  generate2FASecret,
-  enable2FA,
-  disable2FA,
-  verify2FACode,
-  get2FAStatus,
-} from '../twofa.js';
-import {
-  authLimiter,
-  emailLimiter,
-  phoneLimiter,
-  passwordResetLimiter,
-} from '../middleware/rateLimiter.js';
-import {
-  validateRegistration,
-  validateLogin,
-  validatePasswordReset,
-  validatePasswordResetConfirm,
-  validateEmailVerification,
-  validatePhoneVerification,
-  validatePhoneVerificationConfirm,
-} from '../middleware/validation.js';
-import {
-  accountLockoutMiddleware,
-  recordFailedAttempt,
-  recordSuccessfulAttempt,
-} from '../middleware/accountLockout.js';
-import { trackUserAction } from '../middleware/monitoring.js';
-import { db } from '../database.js';
-
-const router = Router();
-
-// Registration endpoint
-router.post('/register', authLimiter, validateRegistration, async (req, res) => {
-  try {
-    const { email, phone, password, username, walletAddress } = req.body;
-
-    console.log('📝 Registration attempt:', {
-      email: email ? `${email.substring(0, 3)}***` : null,
-      phone: phone ? `${phone.substring(0, 3)}***` : null,
-      username,
-      walletAddress: walletAddress ? `${walletAddress.substring(0, 6)}***` : null,
-      userAgent: req.get('User-Agent'),
-      origin: req.get('Origin'),
-      ip: req.ip,
-    });
-
-    // Check if user already exists - check each field separately for specific error messages
-    const existingUser = await db
-      .selectFrom('users')
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       .select(['id', 'email', 'phone', 'username', 'wallet_address'])
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      .selectAll()
->>>>>>> origin/copilot/fix-253
-=======
->>>>>>> origin/copilot/fix-386
       .where((eb) => {
-=======
       .where(eb => {
->>>>>>> origin/copilot/fix-488
         const conditions = [];
         if (email) conditions.push(eb('email', '=', email));
         if (phone) conditions.push(eb('phone', '=', phone));
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/copilot/fix-386
         conditions.push(eb('username', '=', username));
         if (walletAddress) conditions.push(eb('wallet_address', '=', walletAddress));
-=======
         if (username) conditions.push(eb('username', '=', username));
         if (walletAddress) conditions.push(eb('walletAddress', '=', walletAddress));
->>>>>>> origin/copilot/fix-253
         return eb.or(conditions);
       })
-=======
       .selectAll()
       .where((eb) => eb.or([
         email ? eb('email', '=', email) : eb.lit(false),
@@ -699,8 +592,6 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
         eb('username', '=', username),
         walletAddress ? eb('wallet_address', '=', walletAddress) : eb.lit(false)
       ]))
->>>>>>> origin/copilot/fix-257
-=======
       .selectAll()
       .where(eb => eb.or([
         eb('email', '=', email),
@@ -708,7 +599,6 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
         eb('username', '=', username),
         eb('wallet_address', '=', walletAddress)
       ]))
->>>>>>> origin/copilot/fix-271
       .executeTakeFirst();
 
     const conflictField = null;
@@ -1284,4 +1174,3 @@ router.get('/2fa/status', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 export default router;
->>>>>>> origin/main

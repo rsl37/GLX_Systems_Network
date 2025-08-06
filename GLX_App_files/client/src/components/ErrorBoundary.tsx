@@ -210,11 +210,9 @@ class ErrorBoundary extends Component<Props, State> {
                   href={`mailto:support@glxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
                   className="text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
                   aria-label="Email support"
-=======
                   href={`mailto:support@galaxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
                   className='text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1'
                   aria-label='Email support'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/components/ErrorBoundary.tsx
                 >
                   <Mail className='w-3 h-3' />
                   Email Support

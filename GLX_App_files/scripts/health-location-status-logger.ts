@@ -529,10 +529,8 @@ class HealthLocationStatusLogger {
 <<<<<<< HEAD:GLX_App_files/scripts/health-location-status-logger.ts
           repository: 'rsl37/GLX_Civic_Networking_App'
         }
-=======
-          repository: 'rsl37/GALAX_Civic_Networking_App',
+          repository: 'rsl37/GLX_Civic_Networking_App',
         },
->>>>>>> origin/all-merged:GALAX_App_files/scripts/health-location-status-logger.ts
       });
 
       // Check current branch and commit

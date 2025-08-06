@@ -19,19 +19,12 @@ const jwt = require('jsonwebtoken');
 
 class RealtimeMCPServer {
   constructor() {
-<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX Realtime MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
-=======
-    this.server = new Server(
-      {
-        name: 'GALAX Realtime MCP Server',
-        version: '1.0.0',
->>>>>>> origin/all-merged
       },
       {
         capabilities: {

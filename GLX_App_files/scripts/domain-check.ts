@@ -255,9 +255,7 @@ class DomainChecker {
       'glxcivicnetwork.me',
       'glx-civic-networking-app.vercel.app'
     ];
-=======
-    const domains = ['galaxcivicnetwork.me', 'galax-civic-networking-app.vercel.app'];
->>>>>>> origin/all-merged:GALAX_App_files/scripts/domain-check.ts
+    const domains = ['galaxcivicnetwork.me', 'glx-civic-networking-app.vercel.app'];
 
     const results: DomainCheckResult[] = [];
 

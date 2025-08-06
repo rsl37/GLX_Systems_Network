@@ -249,11 +249,9 @@ export const getApiVersionInfo = (req: Request, res: Response): void => {
         'Query parameter: ?api_version=v1'
       ]
     }
-=======
         'Accept header: application/vnd.galax.v1+json',
         'Query parameter: ?api_version=v1',
       ],
     },
->>>>>>> origin/all-merged:GALAX_App_files/server/middleware/versioning.ts
   });
 };

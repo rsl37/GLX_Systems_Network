@@ -275,9 +275,7 @@ export function ProfilePage() {
           </h1>
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ProfilePage.tsx
           <p className="text-gray-600">Manage your GLX account and community participation</p>
-=======
-          <p className='text-gray-600'>Manage your GALAX account and community participation</p>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
+          <p className='text-gray-600'>Manage your GLX account and community participation</p>
         </motion.div>
 
         {/* Profile Overview */}
@@ -292,13 +290,11 @@ export function ProfilePage() {
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <div className="relative">
                   <Avatar className="h-24 w-24">
-=======
           <Card className='galax-card'>
             <CardContent className='p-6'>
               <div className='flex flex-col md:flex-row items-center md:items-start gap-6'>
                 <div className='relative'>
                   <Avatar className='h-24 w-24'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
                     <AvatarImage src={user.avatar_url || ''} alt={user.username} />
                     <AvatarFallback className='bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-2xl'>
                       {getInitials(user.username)}
@@ -437,9 +433,7 @@ export function ProfilePage() {
                         </div>
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ProfilePage.tsx
                         <Button onClick={handleUpdateProfile} className="glx-button w-full">
-=======
                         <Button onClick={handleUpdateProfile} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
                           Save Changes
                         </Button>
                       </div>
@@ -471,11 +465,9 @@ export function ProfilePage() {
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>Action Points</p>
                   <p className='text-2xl font-bold text-purple-600'>{user.ap_balance}</p>
@@ -491,11 +483,9 @@ export function ProfilePage() {
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>CROWDS Balance</p>
                   <p className='text-2xl font-bold text-blue-600'>{user.crowds_balance}</p>
@@ -511,11 +501,9 @@ export function ProfilePage() {
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>Governance</p>
                   <p className='text-2xl font-bold text-green-600'>{user.gov_balance}</p>
@@ -537,9 +525,7 @@ export function ProfilePage() {
         >
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ProfilePage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Activity className='h-5 w-5' />
@@ -581,9 +567,7 @@ export function ProfilePage() {
 
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ProfilePage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <DollarSign className='h-5 w-5' />
@@ -632,9 +616,7 @@ export function ProfilePage() {
         >
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ProfilePage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Shield className='h-5 w-5' />
@@ -740,9 +722,7 @@ export function ProfilePage() {
         >
 <<<<<<< HEAD:GLX_App_files/client/src/pages/ProfilePage.tsx
           <UserBadges user={user} className="glx-card" />
-=======
           <UserBadges user={user} className='galax-card' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ProfilePage.tsx
         </motion.div>
       </div>
     </div>

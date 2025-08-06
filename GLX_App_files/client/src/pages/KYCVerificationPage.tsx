@@ -333,9 +333,7 @@ export function KYCVerificationPage() {
             disabled={isLoading}
 <<<<<<< HEAD:GLX_App_files/client/src/pages/KYCVerificationPage.tsx
             className="glx-button w-full"
-=======
             className='galax-button w-full'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/KYCVerificationPage.tsx
           >
             <div className='flex items-center gap-2'>
               <Upload className='h-4 w-4' />
@@ -463,9 +461,7 @@ export function KYCVerificationPage() {
           disabled={!selectedDocumentType || !documentNumber || !documentFile || isLoading}
 <<<<<<< HEAD:GLX_App_files/client/src/pages/KYCVerificationPage.tsx
           className="glx-button w-full"
-=======
           className='galax-button w-full'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/KYCVerificationPage.tsx
         >
           {isLoading ? (
             <div className='flex items-center gap-2'>
@@ -516,10 +512,8 @@ export function KYCVerificationPage() {
           onClick={() => navigate('/dashboard')}
           className="glx-button w-full"
         >
-=======
       <div className='space-y-3'>
         <Button onClick={() => navigate('/dashboard')} className='galax-button w-full'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/KYCVerificationPage.tsx
           Continue to Dashboard
         </Button>
 
@@ -549,11 +543,9 @@ export function KYCVerificationPage() {
         <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-=======
         <Card className='galax-card'>
           <CardHeader className='text-center'>
             <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/KYCVerificationPage.tsx
               KYC Verification
             </CardTitle>
             <CardDescription>Verify your identity to unlock all platform features</CardDescription>

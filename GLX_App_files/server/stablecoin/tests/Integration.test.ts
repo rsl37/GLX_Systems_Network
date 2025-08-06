@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Copyright (c) 2025 GLX Civic Networking App
  *
@@ -12,13 +11,6 @@
  * Converted from custom test runner to standard vitest format
  */
 
-=======
-/**
- * Vitest Integration Tests for Stablecoin Service
- * Converted from custom test runner to standard vitest format
- */
-
->>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { StablecoinService } from '../StablecoinService.js';
 import { DEFAULT_STABLECOIN_CONFIG } from '../StablecoinContract.js';
@@ -39,8 +31,6 @@ describe('StablecoinService Integration', () => {
       ...DEFAULT_ORACLE_CONFIG,
       updateInterval: 2000, // 2 seconds for testing
     };
-<<<<<<< HEAD
-<<<<<<< HEAD
 
     service = new StablecoinService(testConfig, testOracleConfig);
   });
@@ -110,11 +100,6 @@ describe('StablecoinService Integration', () => {
   test('should update configuration', async () => {
     await service.start();
 
-=======
-    
-=======
-
->>>>>>> origin/copilot/fix-470
     service = new StablecoinService(testConfig, testOracleConfig);
   });
 
@@ -182,12 +167,8 @@ describe('StablecoinService Integration', () => {
 
   test('should update configuration', async () => {
     await service.start();
-<<<<<<< HEAD
     
->>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
-=======
 
->>>>>>> origin/copilot/fix-470
     // Update stablecoin config
     service.updateConfig({
       toleranceBand: 0.03, // Change to 3%
@@ -198,8 +179,6 @@ describe('StablecoinService Integration', () => {
     service.updateOracleConfig({
       updateInterval: 3000, // Change to 3 seconds
     });
-<<<<<<< HEAD
-<<<<<<< HEAD
 
     // Should complete without errors
     expect(true).toBe(true);
@@ -213,11 +192,6 @@ describe('StablecoinService Integration', () => {
     expect(Array.isArray(history)).toBe(true);
     expect(history.length).toBeGreaterThanOrEqual(0);
 
-=======
-    
-=======
-
->>>>>>> origin/copilot/fix-470
     // Should complete without errors
     expect(true).toBe(true);
   });
@@ -229,12 +203,8 @@ describe('StablecoinService Integration', () => {
 
     expect(Array.isArray(history)).toBe(true);
     expect(history.length).toBeGreaterThanOrEqual(0);
-<<<<<<< HEAD
     
->>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
-=======
 
->>>>>>> origin/copilot/fix-470
     if (history.length > 0) {
       const latest = history[0];
       expect(latest.action).toBeTruthy();

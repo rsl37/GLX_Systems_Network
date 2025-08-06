@@ -285,12 +285,10 @@ export const corsConfig = {
             "https://glxcivicnetwork.me",
             "https://www.glxcivicnetwork.me",
             "https://staging.glxcivicnetwork.me",
-=======
             'https://galax-civic-networking.vercel.app',
             'https://galaxcivicnetwork.me',
             'https://www.galaxcivicnetwork.me',
             'https://staging.galaxcivicnetwork.me',
->>>>>>> origin/all-merged:GALAX_App_files/server/middleware/security.ts
           ]
         : []),
 
@@ -324,15 +322,8 @@ export const corsConfig = {
     // Check against allowed origins (with pattern matching for Vercel domains)
     if (origin) {
       let isAllowed = allowedOrigins.includes(origin);
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-      
->>>>>>> origin/copilot/fix-175
-=======
 
->>>>>>> origin/copilot/fix-470
       // If not in explicit list, check Vercel deployment patterns in production or test
       if (!isAllowed && (isProduction || isTest)) {
         const vercelPatterns = [

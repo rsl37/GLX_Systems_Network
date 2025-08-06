@@ -1,7 +1,6 @@
 ---
 name: Quality & Performance
 
-<<<<<<< HEAD
 on:
   push:
     branches: [main, develop]
@@ -18,11 +17,6 @@ on:
       - 'package-lock.json'
       - '.github/workflows/quality.yml'
   workflow_dispatch:
-=======
-'on':
-  pull_request:
-    branches: [main, develop, production]
->>>>>>> origin/all-merged
 
 permissions:
   contents: read
@@ -30,13 +24,9 @@ permissions:
   checks: write
   pull-requests: write
 
-<<<<<<< HEAD
 env:
   NODE_VERSION: '20'
   WORKING_DIRECTORY: './GLX_App_files'
-
-=======
->>>>>>> origin/all-merged
 jobs:
   code-coverage:
     name: Code Coverage
@@ -52,18 +42,14 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
-=======
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
->>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Run tests with coverage
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm run test:coverage
 
       - name: Upload coverage to Codecov
@@ -71,7 +57,7 @@ jobs:
         if: success()
         continue-on-error: true
         with:
-          directory: ./GALAX_App_files/coverage
+          directory: ./GLX_App_files/coverage
           fail_ci_if_error: false
 
   accessibility-testing:
@@ -88,28 +74,24 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
-=======
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
->>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Install accessibility testing tools
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           npm install --no-save @axe-core/cli axe-playwright
           npx playwright install chromium --with-deps
 
       - name: Build application
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm run build
 
       - name: Start application for testing
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           npm start &
           APP_PID=$!
@@ -120,7 +102,7 @@ jobs:
             2; done'
 
       - name: Run accessibility tests
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Running accessibility tests..."
 
@@ -162,22 +144,18 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
-=======
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
->>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Build application
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm run build
 
       - name: Analyze bundle size
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
           echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
@@ -196,7 +174,7 @@ jobs:
           fi
 
       - name: Performance test
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           # Start app for testing
           timeout 30s npm start &
@@ -229,18 +207,14 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
-=======
-          cache-dependency-path: './GALAX_App_files/package-lock.json'
->>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Install Playwright
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Installing Playwright browsers..."
           npx playwright install chromium --with-deps || {
@@ -252,11 +226,11 @@ jobs:
           }
 
       - name: Build application
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: npm run build
 
       - name: Setup test environment
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Setting up test environment..."
           # Copy test environment
@@ -267,7 +241,7 @@ jobs:
           echo "Test environment setup complete"
 
       - name: Start application
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Starting application for E2E tests..."
           npm start &
@@ -294,7 +268,7 @@ jobs:
           fi
 
       - name: Run E2E tests
-        working-directory: ./GALAX_App_files
+        working-directory: ./GLX_App_files
         run: |
           echo "Running E2E tests..."
 
@@ -315,7 +289,7 @@ jobs:
 
           test('Application health check', async ({ page }) => {
             await page.goto('/');
-            await expect(page).toHaveTitle(/GALAX|Mimo|Civic/i);
+            await expect(page).toHaveTitle(/GLX|Mimo|Civic/i);
             await page.waitForLoadState('networkidle');
             const body = page.locator('body');
             await expect(body).toBeVisible();

@@ -29,11 +29,9 @@ export async function generate2FASecret(
       name: `GLX (${username})`,
       issuer: 'GLX App',
       length: 32
-=======
-      name: `GALAX (${username})`,
-      issuer: 'GALAX App',
+      name: `GLX (${username})`,
+      issuer: 'GLX App',
       length: 32,
->>>>>>> origin/all-merged:GALAX_App_files/server/twofa.ts
     });
 
     if (!secret.base32) {

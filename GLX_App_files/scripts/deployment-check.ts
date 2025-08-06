@@ -16,8 +16,6 @@
  */
 
 import dotenv from 'dotenv';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -49,7 +47,7 @@ function getStatusEmoji(status: string) {
 }
 
 async function runDeploymentCheck() {
-  console.log('🔍 GALAX Civic Networking App - Deployment Check');
+  console.log('🔍 GLX Civic Networking App - Deployment Check');
   console.log('='.repeat(60));
   console.log('');
 
@@ -77,10 +75,6 @@ async function runDeploymentCheck() {
   }
 }
 
-=======
-import { performDeploymentReadinessCheck } from '../server/deployment-validation.js';
-=======
->>>>>>> origin/copilot/fix-466
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -134,6 +128,5 @@ async function runDeploymentCheck() {
   }
 }
 
->>>>>>> origin/copilot/fix-175
 // Run the check
 runDeploymentCheck();

@@ -2,23 +2,6 @@
   "glx-civic-platform@0.2.0": {
     "licenses": "UNLICENSED",
     "private": true,
-<<<<<<< HEAD
     "path": "/home/runner/work/GLX_Civic_Networking_App/GLX_Civic_Networking_App/GLX_App_files"
-=======
-    "path": "/home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files"
-  },
-  "undici@6.21.3": {
-    "licenses": "MIT",
-    "repository": "https://github.com/nodejs/undici",
-    "path": "/home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files/node_modules/undici",
-    "licenseFile": "/home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files/node_modules/undici/LICENSE"
-  }
-}
-{
-  "galax-civic-platform@0.2.0": {
-    "licenses": "UNLICENSED",
-    "private": true,
-    "path": "/home/runner/work/GALAX_Civic_Networking_App/GALAX_Civic_Networking_App/GALAX_App_files"
->>>>>>> origin/all-merged
   }
 }

@@ -173,11 +173,9 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>Action Points</p>
                   <p className='text-2xl font-bold text-purple-600'>{user?.ap_balance || 0}</p>
@@ -193,11 +191,9 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>Crowds Stablecoin</p>
                   <p className='text-2xl font-bold text-green-600'>{user?.crowds_balance || 0}</p>
@@ -216,11 +212,9 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>Governance Balance</p>
                   <p className='text-2xl font-bold text-blue-600'>{user?.gov_balance || 0}</p>
@@ -236,11 +230,9 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-=======
           <Card className='galax-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
                 <div>
                   <p className='text-sm text-gray-600'>Reputation</p>
                   <p className='text-2xl font-bold text-orange-600'>
@@ -301,7 +293,6 @@ export function DashboardPage() {
                 <TrendingUp className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
                 <p className="text-2xl font-bold">{stats.votescast}</p>
                 <p className="text-sm text-gray-600">Votes Cast</p>
-=======
             <Card className='galax-card'>
               <CardContent className='p-4 text-center'>
                 <HandHeart className='h-8 w-8 mx-auto mb-2 text-purple-600' />
@@ -339,7 +330,6 @@ export function DashboardPage() {
                 <TrendingUp className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
                 <p className='text-2xl font-bold'>{stats.votescast}</p>
                 <p className='text-sm text-gray-600'>Votes Cast</p>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
               </CardContent>
             </Card>
           </motion.div>
@@ -354,9 +344,7 @@ export function DashboardPage() {
         >
 <<<<<<< HEAD:GLX_App_files/client/src/pages/DashboardPage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <HandHeart className='h-5 w-5' />
@@ -400,9 +388,7 @@ export function DashboardPage() {
           {/* Quick Actions */}
 <<<<<<< HEAD:GLX_App_files/client/src/pages/DashboardPage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Plus className='h-5 w-5' />
@@ -426,7 +412,6 @@ export function DashboardPage() {
               </Button>
               <Button className="glx-button w-full justify-start">
                 <Users className="h-4 w-4 mr-2" />
-=======
             <CardContent className='space-y-4'>
               <Button className='galax-button w-full justify-start'>
                 <HandHeart className='h-4 w-4 mr-2' />
@@ -442,7 +427,6 @@ export function DashboardPage() {
               </Button>
               <Button className='galax-button w-full justify-start'>
                 <Users className='h-4 w-4 mr-2' />
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
                 Browse Help Requests
               </Button>
             </CardContent>
@@ -457,9 +441,7 @@ export function DashboardPage() {
         >
 <<<<<<< HEAD:GLX_App_files/client/src/pages/DashboardPage.tsx
           <Card className="glx-card">
-=======
           <Card className='galax-card'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/DashboardPage.tsx
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <TrendingUp className='h-5 w-5' />

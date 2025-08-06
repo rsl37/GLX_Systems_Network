@@ -25,7 +25,6 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 - **Features**: Enhanced caching, parallel execution, artifact management, **path-based triggers**
 - **Improvements**: ⚡ 40% faster builds, **smart execution**, comprehensive reporting
 
-<<<<<<< HEAD
 ### 2. ✅ Security Analysis System (Multi-Workflow) - NOW INTELLIGENT
 
 #### CodeQL Analysis (`codeql.yml`) - NEW DEDICATED WORKFLOW
@@ -43,18 +42,6 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 - **Features**: Post-quantum crypto validation, DeFi testing, **Web3-specific triggering**
 - **Benefits**: 🌐 Comprehensive Web3 coverage, **only runs for Web3 changes**
 
-=======
-### 2. ✅ Security Analysis (`security-streamlined.yml`) - NOW INTELLIGENT
-- **Jobs**: Dependency Review, CodeQL Analysis, npm Audit, Secret Detection
-- **Features**: License compliance, SARIF reporting, automated alerts, **security-sensitive triggering**
-- **Improvements**: 🔒 PR dependency review, **smart security scanning**, compliance checking
-
-### 3. ✅ Web3 & Crypto (`web3-checks.yml`) - NOW INTELLIGENT
-- **Jobs**: Web3 Functionality, Integration Tests, Security Validation
-- **Features**: Post-quantum crypto validation, DeFi testing, **Web3-specific triggering**
-- **Benefits**: 🌐 Comprehensive Web3 coverage, **only runs for Web3 changes**
-
->>>>>>> origin/copilot/fix-501
 ### 4. ✅ Preview Deployment (`preview-deploy.yml`) - NOW INTELLIGENT
 - **Jobs**: Deploy Preview, Lighthouse Audit, **Documentation-Only Notifications**
 - **Features**: Automatic PR previews, performance scoring, **docs-only detection**
@@ -76,26 +63,10 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 
 ## Key Improvements
 
-<<<<<<< HEAD
 ### 🎯 Reduced Complexity
 - **Before**: 23+ workflow files
 - **After**: 4 core workflows
 - **Benefit**: 80% reduction in maintenance overhead
-=======
-### 🧠 NEW: Intelligent Execution System
-- **Smart Change Detection**: Analyzes changed files to determine workflow necessity
-- **Selective Execution**: Only runs workflows relevant to actual changes
-- **Documentation Optimization**: 2-5 minutes for docs-only changes (vs. 25-30 minutes)
-- **Security-Smart**: Enhanced security scanning for security-sensitive changes
-- **Manual Overrides**: Force execution options for special cases
-
-### 🚀 Performance Improvements
-- **Intelligent Caching**: Node modules, build artifacts, dependency caching
-- **Parallel Execution**: Independent jobs run concurrently
-- **Optimized Builds**: 40% faster build times with enhanced caching
-- **Resource Management**: Appropriate timeouts and resource allocation
-- **Smart Triggers**: Path-based filtering reduces unnecessary executions
->>>>>>> origin/copilot/fix-501
 
 ### ⚡ Optimized Performance
 - **Single Node.js version** (20.x) instead of matrix builds
@@ -153,17 +124,7 @@ This repository now uses an **advanced intelligent workflow system** with **8 co
 - Performance checks
 - End-to-end testing
 
-<<<<<<< HEAD
 ## Migration Notes
-=======
-### 🔧 Developer Experience
-- **Intelligent Workflows**: Automatic optimization based on changed files
-- **Preview Deployments**: Automatic PR preview environments (smart deployment)
-- **Automated Releases**: Semantic versioning with changelog generation
-- **Health Monitoring**: Proactive workflow failure detection
-- **Real-time Feedback**: Immediate status updates and notifications
-- **Documentation-Only Mode**: Lightweight validation for docs-only changes
->>>>>>> origin/copilot/fix-501
 
 ### Removed Workflows
 All removed workflows have been backed up to `.github/workflows-backup/` and can be restored if needed:
@@ -182,19 +143,7 @@ Update required status checks to use the new workflow job names:
 - `Performance Check` (from quality.yml)
 - `E2E Tests` (from quality.yml)
 
-<<<<<<< HEAD
 ## Quick Start
-=======
-| Aspect | Coverage | Workflows | Automation Level | Intelligence |
-|--------|----------|-----------|------------------|--------------|
-| **Build & Test** | ✅ Complete | comprehensive-checks.yml | Full automation | 🧠 Smart triggers |
-| **Security** | ✅ Enhanced | security-streamlined.yml | Daily scans + PR checks | 🧠 Security-sensitive |
-| **Web3/Crypto** | ✅ Comprehensive | web3-checks.yml | PR + Daily scans | 🧠 Web3-specific |
-| **Deployment** | ✅ Full automation | preview-deploy.yml, release.yml | PR previews + production | 🧠 App-change detection |
-| **Monitoring** | ✅ Proactive | workflow-monitor.yml | Health tracking + alerts | 🧠 Pattern analysis |
-| **Maintenance** | ✅ Automated | dependabot.yml, stale.yml | Dependency updates + cleanup | 🧠 Impact-aware |
-| **Intelligence** | ✅ Advanced | workflow-dispatcher.yml | Change analysis + routing | 🧠 Full automation |
->>>>>>> origin/copilot/fix-501
 
 1. **Automatic Activation**: New workflows activate on push/PR
 2. **Test Run**: Create a test PR to verify all checks pass

@@ -116,9 +116,7 @@ export function LoginPage() {
   return (
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
     <div className="min-h-screen flex items-center justify-center p-4 glx-holographic">
-=======
     <div className='min-h-screen flex items-center justify-center p-4 galax-holographic'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -128,10 +126,8 @@ export function LoginPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
         <Card className="glx-card animate-pulse-glow">
           <CardHeader className="text-center pb-8">
-=======
         <Card className='galax-card animate-pulse-glow'>
           <CardHeader className='text-center pb-8'>
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
@@ -142,21 +138,17 @@ export function LoginPage() {
               <Zap className="h-8 w-8 text-purple-500" />
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                 GLX
-=======
               <Zap className='h-8 w-8 text-purple-500' />
               <CardTitle className='text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent'>
-                GALAX
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
+                GLX
               </CardTitle>
               <Sparkles className='h-8 w-8 text-coral-500' />
             </motion.div>
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
             <CardDescription className="text-lg text-gray-600">
               Connect the World
-=======
             <CardDescription className='text-lg text-gray-600'>
               Civic Network Platform
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
             </CardDescription>
 
             {/* Security verification indicator */}
@@ -225,10 +217,8 @@ export function LoginPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
                       onChange={(e) => setPhone(e.target.value)}
                       className="glx-input flex-1"
-=======
                       onChange={e => setPhone(e.target.value)}
                       className='galax-input flex-1'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
                       required
                     />
                   </div>
@@ -241,10 +231,8 @@ export function LoginPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
                     className="glx-input"
-=======
                     onChange={e => setEmail(e.target.value)}
                     className='galax-input'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
                     required
                   />
                 )}
@@ -260,10 +248,8 @@ export function LoginPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
                   onChange={(e) => setPassword(e.target.value)}
                   className="glx-input"
-=======
                   onChange={e => setPassword(e.target.value)}
                   className='galax-input'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
                   required
                 />
               </div>
@@ -284,13 +270,11 @@ export function LoginPage() {
                 type="submit"
                 className="w-full glx-button"
                 disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
-=======
                 type='submit'
                 className='w-full galax-button'
                 disabled={
                   isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)
                 }
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
               >
                 {isLoading ? (
                   <div className='flex items-center gap-2'>
@@ -325,10 +309,8 @@ export function LoginPage() {
 <<<<<<< HEAD:GLX_App_files/client/src/pages/LoginPage.tsx
               variant="outline"
               className="w-full glx-button-accent"
-=======
               variant='outline'
               className='w-full galax-button-accent'
->>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/LoginPage.tsx
               onClick={handleWalletLogin}
               disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >

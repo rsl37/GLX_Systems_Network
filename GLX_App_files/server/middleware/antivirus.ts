@@ -561,11 +561,9 @@ export const realTimeProtection = (req: Request, res: Response, next: NextFuncti
   res.setHeader("X-Antivirus-Protection", "enabled");
   res.setHeader("X-Virus-Definitions", globalScanStats.lastUpdate);
   res.setHeader("X-Scan-Engine", "GLX-AV-v1.0");
-=======
   res.setHeader('X-Antivirus-Protection', 'enabled');
   res.setHeader('X-Virus-Definitions', globalScanStats.lastUpdate);
-  res.setHeader('X-Scan-Engine', 'GALAX-AV-v1.0');
->>>>>>> origin/all-merged:GALAX_App_files/server/middleware/antivirus.ts
+  res.setHeader('X-Scan-Engine', 'GLX-AV-v1.0');
 
   next();
 };
@@ -731,9 +729,7 @@ export const antivirusAdmin = {
 export const initializeAntivirus = () => {
 <<<<<<< HEAD:GLX_App_files/server/middleware/antivirus.ts
   console.log("🛡️ Initializing GLX Antivirus Protection System...");
-=======
-  console.log('🛡️ Initializing GALAX Antivirus Protection System...');
->>>>>>> origin/all-merged:GALAX_App_files/server/middleware/antivirus.ts
+  console.log('🛡️ Initializing GLX Antivirus Protection System...');
   scheduleVirusUpdates();
   console.log('✅ Antivirus system initialized successfully');
 };

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 title: "Environment Setup Guide"
 description: ""
@@ -11,8 +10,6 @@ tags: []
 relatedDocs: []
 ---
 
-=======
->>>>>>> origin/copilot/fix-190
 # Environment Setup Guide
 
 This document explains how to set up the environment variables required for the GLX Civic Networking App.
@@ -150,12 +147,5 @@ For production deployment (e.g., Vercel):
 3. **Set environment variables in your deployment platform**
 4. **Use the `.env.vercel` file as a reference for Vercel deployment**
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 See `DEPLOYMENT.md` for detailed production deployment instructions.
-=======
 See `DEPLOYMENT.md` for detailed production deployment instructions.
->>>>>>> origin/copilot/fix-190
-=======
-See `DEPLOYMENT.md` for detailed production deployment instructions.
->>>>>>> origin/copilot/fix-488

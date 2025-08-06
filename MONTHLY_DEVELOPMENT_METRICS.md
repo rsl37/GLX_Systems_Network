@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 title: "GLX Development Activity - Monthly Metrics Dashboard"
 description: ""
@@ -11,13 +10,8 @@ tags: []
 relatedDocs: []
 ---
 
-<<<<<<< HEAD
 # GLX Development Activity - Monthly Metrics Dashboard
-=======
-=======
->>>>>>> origin/copilot/fix-473
-# GALAX Development Activity - Monthly Metrics Dashboard
->>>>>>> origin/all-merged
+# GLX Development Activity - Monthly Metrics Dashboard
 
 **Report Date**: August 1, 2025  
 **Reporting Period**: January 2025 - August 2025  
@@ -275,8 +269,4 @@ relatedDocs: []
 
 ---
 
-<<<<<<< HEAD
 *This metrics dashboard provides detailed monthly tracking for informed fiscal quarter planning and accurate milestone assessment. Data compiled from repository documentation, implementation logs, and development tracking systems.*
-=======
-*This metrics dashboard provides detailed monthly tracking for informed fiscal quarter planning and accurate milestone assessment. Data compiled from repository documentation, implementation logs, and development tracking systems.*
->>>>>>> origin/copilot/fix-473

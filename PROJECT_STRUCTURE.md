@@ -15,7 +15,6 @@ relatedDocs: []
 Below is an overview diagram of the GLX App folder structure and main files:
 
 ```
-<<<<<<< HEAD
 GLX_App_files/
 ├── components.json
 ├── IMPLEMENTATION_STATUS.md
@@ -26,24 +25,6 @@ GLX_App_files/
 ├── tsconfig.json
 ├── tsconfig.server.json
 ├── vite.config.js
-=======
-GALAX_App_files/
-├── .eslintrc.json              # ESLint configuration (legacy)
-├── .prettierignore            # Prettier ignore patterns
-├── .prettierrc                # Prettier configuration
-├── eslint.config.js           # Modern ESLint flat configuration
-├── components.json            # Radix UI component configuration
-├── IMPLEMENTATION_STATUS.md   # Implementation status tracking
-├── package.json              # Project dependencies and scripts
-├── package-lock.json         # Dependency lock file
-├── postcss.config.js         # PostCSS configuration
-├── tailwind.config.js        # Tailwind CSS configuration
-├── tsconfig.json             # TypeScript configuration
-├── tsconfig.server.json      # Server-specific TypeScript config
-├── vite.config.js            # Vite build configuration
-├── vitest.config.js          # Vitest testing configuration
-├── playwright.config.ts      # Playwright E2E testing configuration
->>>>>>> origin/all-merged
 ├── client/
 │   ├── index.html
 │   ├── public/
