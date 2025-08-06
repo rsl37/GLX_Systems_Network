@@ -97,6 +97,7 @@ export default defineConfig(({ mode }) => {
       target: 'es2020', // Modern target for better optimization
       rollupOptions: {
         output: {
+<<<<<<< HEAD
           manualChunks: {
             // Separate vendor chunks for better caching
             vendor: ['react', 'react-dom'],
@@ -120,10 +121,67 @@ export default defineConfig(({ mode }) => {
             animation: ['framer-motion'],
             analytics: ['@vercel/analytics', '@vercel/speed-insights'] // Vercel monitoring tools
           }
+=======
+          // More granular chunk splitting for better caching and loading
+          manualChunks: (id) => {
+            // Vendor dependencies
+            if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('node_modules/react-router-dom')) {
+              return 'vendor-router';
+            }
+            
+            // UI library chunks - split by usage frequency
+            if (id.includes('@radix-ui/react-dialog') || 
+                id.includes('@radix-ui/react-popover') ||
+                id.includes('@radix-ui/react-select')) {
+              return 'ui-overlays'; // Heavy overlay components
+            }
+            if (id.includes('@radix-ui')) {
+              return 'ui-core'; // Lighter UI components
+            }
+            
+            // Feature-specific chunks for lazy loading
+            if (id.includes('lucide-react')) {
+              return 'icons';
+            }
+            if (id.includes('framer-motion')) {
+              return 'animation';
+            }
+            if (id.includes('@vercel/analytics') || id.includes('@vercel/speed-insights')) {
+              return 'analytics';
+            }
+            
+            // Heavy/optional features that can be loaded separately
+            if (id.includes('@googlemaps/js-api-loader') || id.includes('leaflet')) {
+              return 'maps';
+            }
+            
+            // Other vendor libraries
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          },
+          
+          // Optimize chunk naming for better caching
+          chunkFileNames: (chunkInfo) => {
+            const facadeModuleId = chunkInfo.facadeModuleId ? 
+              chunkInfo.facadeModuleId.split('/').pop().replace(/\.[^/.]+$/, '') : 'chunk';
+            return `assets/[name]-[hash].js`;
+          },
+          
+          // Optimize asset naming
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          entryFileNames: 'assets/[name]-[hash].js'
+>>>>>>> origin/copilot/fix-175
         }
       },
-      chunkSizeWarningLimit: 500, // Set more appropriate warning limit
+      chunkSizeWarningLimit: 300, // Smaller chunks for better loading
       sourcemap: isProduction ? false : true, // Disable sourcemaps in production
+      
+      // Optimize CSS splitting
+      cssCodeSplit: true,
     },
     clearScreen: false,
     server: {
@@ -158,7 +216,11 @@ export default defineConfig(({ mode }) => {
     // Optimize dependencies
     optimizeDeps: {
       include: [
+<<<<<<< HEAD
         'react',
+=======
+        'react', 
+>>>>>>> origin/copilot/fix-175
         'react-dom',
         'react-router-dom' // Pre-bundle router since it's critical
       ],

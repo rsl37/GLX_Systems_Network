@@ -22,7 +22,10 @@
     "test:e2e": "scripts/ensure-test-dirs.sh && playwright test",
     "test:all": "npm run test && npm run test:security && npm run test:e2e",
     "test:env": "npx tsx scripts/test-env.ts",
+<<<<<<< HEAD
     "test:services": "npx tsx scripts/test-service-connectivity.ts",
+=======
+>>>>>>> origin/copilot/fix-175
     "deployment:check": "npx tsx scripts/deployment-check.ts",
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
     "production:setup": "npx tsx scripts/production-setup.js",
@@ -77,8 +80,12 @@
     "cors": "^2.8.5",
     "crystals-kyber": "^5.1.0",
     "dilithium-js": "^1.8.7",
+<<<<<<< HEAD
     "dotenv": "^17.2.1",
     "esbuild": "^0.25.8",
+=======
+    "dotenv": "^16.6.1",
+>>>>>>> origin/copilot/fix-175
     "express": "5.1.0",
     "express-rate-limit": "^8.0.1",
     "express-validator": "^7.2.1",

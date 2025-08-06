@@ -9,6 +9,7 @@
 import * as React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, HandHeart, AlertTriangle, Vote, User } from '@/lib/icons';
+import { Home, HandHeart, AlertTriangle, Vote, User } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 
 // Lazy load motion for better initial performance

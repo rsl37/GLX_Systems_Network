@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "GitHub Actions Status Check Fix Implementation"
 description: ""
@@ -10,6 +11,8 @@ tags: []
 relatedDocs: []
 ---
 
+=======
+>>>>>>> origin/copilot/fix-175
 # GitHub Actions Status Check Fix Implementation
 
 ## Problem
@@ -149,4 +152,8 @@ All 6 workflow files pass YAML validation:
 - ✅ `workflow-monitor.yml` (3 jobs)
 - ✅ `status-monitor.yml` (1 job)
 
+<<<<<<< HEAD
 **Total: 20 jobs across 6 workflows** providing comprehensive CI/CD status monitoring and reporting.
+=======
+**Total: 20 jobs across 6 workflows** providing comprehensive CI/CD status monitoring and reporting.
+>>>>>>> origin/copilot/fix-175

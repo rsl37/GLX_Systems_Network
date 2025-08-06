@@ -274,6 +274,19 @@ export const corsConfig = {
           ]
         : []),
 
+      // Test origins - allow test URLs
+      ...(isTest
+        ? [
+            "https://galax-civic-networking.vercel.app",
+            "https://galax-civic-networking-abc123.vercel.app",
+            "https://galaxcivicnetwork.me",
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+          ]
+        : []),
+
       // Production origins - Supporting both domains
       ...(isProduction
         ? [
@@ -316,7 +329,11 @@ export const corsConfig = {
     // Check against allowed origins (with pattern matching for Vercel domains)
     if (origin) {
       let isAllowed = allowedOrigins.includes(origin);
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-175
       // If not in explicit list, check Vercel deployment patterns in production or test
       if (!isAllowed && (isProduction || isTest)) {
         const vercelPatterns = [

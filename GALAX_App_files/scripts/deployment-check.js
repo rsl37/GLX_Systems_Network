@@ -38,6 +38,7 @@ dotenv.config({ path: join(__dirname, '../.env') });
 async function runDeploymentCheck() {
   console.log('🚀 GALAX Deployment Readiness Check');
   console.log('=====================================\n');
+<<<<<<< HEAD
 
   console.log('DEBUG: About to call performDeploymentReadinessCheck...');
 
@@ -46,6 +47,16 @@ async function runDeploymentCheck() {
 
     console.log('DEBUG: Got report:', report.overall_status);
 
+=======
+  
+  console.log('DEBUG: About to call performDeploymentReadinessCheck...');
+  
+  try {
+    const report = await performDeploymentReadinessCheck();
+    
+    console.log('DEBUG: Got report:', report.overall_status);
+    
+>>>>>>> origin/copilot/fix-175
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);

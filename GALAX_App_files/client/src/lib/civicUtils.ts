@@ -1,18 +1,31 @@
 /*
  * Copyright (c) 2025 GALAX Civic Networking App
+<<<<<<< HEAD
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
+=======
+ * 
+ * This software is licensed under the PolyForm Shield License 1.0.0.
+ * For the full license text, see LICENSE file in the root directory 
+>>>>>>> origin/copilot/fix-175
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 import { useMemo } from 'react';
 
 // Lean civic action types for efficient reputation calculation
+<<<<<<< HEAD
 export type CivicActionType =
   | 'help_provided'
   | 'help_requested'
   | 'community_organized'
+=======
+export type CivicActionType = 
+  | 'help_provided' 
+  | 'help_requested'
+  | 'community_organized' 
+>>>>>>> origin/copilot/fix-175
   | 'governance_participated'
   | 'crisis_response'
   | 'verification_completed';
@@ -58,7 +71,11 @@ export const useCivicReputation = () => {
         const weight = ACTION_WEIGHTS[action.type] || 1;
         const verificationMultiplier = action.verified ? 1 : 0.5;
         const impactBonus = action.impact_score > IMPACT_THRESHOLD ? 1.2 : 1;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> origin/copilot/fix-175
         return score + (weight * verificationMultiplier * impactBonus);
       }, 0);
     };
@@ -73,11 +90,19 @@ export const useCivicReputation = () => {
           // Simple distance-based sorting (in real app would use proper geolocation)
           const aDistance = Math.abs(a.location.localeCompare(userLocation));
           const bDistance = Math.abs(b.location.localeCompare(userLocation));
+<<<<<<< HEAD
 
           if (aDistance !== bDistance) {
             return aDistance - bDistance;
           }
 
+=======
+          
+          if (aDistance !== bDistance) {
+            return aDistance - bDistance;
+          }
+          
+>>>>>>> origin/copilot/fix-175
           // Secondary sort by priority and verification
           return (b.priority || 0) - (a.priority || 0);
         })
@@ -93,7 +118,11 @@ export const useCivicReputation = () => {
       }
 
       // Check if already has this type of achievement recently
+<<<<<<< HEAD
       const recentAchievement = existingAchievements.find(achievement =>
+=======
+      const recentAchievement = existingAchievements.find(achievement => 
+>>>>>>> origin/copilot/fix-175
         achievement.type === action.type &&
         Date.now() - achievement.earned_at.getTime() < 24 * 60 * 60 * 1000 // 24 hours
       );
@@ -132,8 +161,13 @@ export const civicDataUtils = {
    * Efficient filtering for civic data - reduce server calls
    */
   filterActiveHelpRequests: (requests: any[]) => {
+<<<<<<< HEAD
     return requests.filter(request =>
       request.status === 'active' &&
+=======
+    return requests.filter(request => 
+      request.status === 'active' && 
+>>>>>>> origin/copilot/fix-175
       new Date(request.created_at).getTime() > Date.now() - (7 * 24 * 60 * 60 * 1000) // Last 7 days
     );
   },

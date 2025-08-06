@@ -30,8 +30,25 @@ const RECOMMENDED_ENV_VARS = [
   'JWT_REFRESH_SECRET',
   'ENCRYPTION_MASTER_KEY',
   'DATABASE_URL',     // Production database connection
+<<<<<<< HEAD
   'FRONTEND_URL',     // Legacy frontend URL support
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+=======
+  'SOCKET_PATH',      // Custom Socket.IO path
+  'FRONTEND_URL',     // Legacy frontend URL support
+  'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+];
+
+const OPTIONAL_ENV_VARS = [
+  'SMTP_HOST',
+  'SMTP_PORT', 
+  'SMTP_USER',
+  'SMTP_PASS',
+  'SMTP_FROM',
+  'TWILIO_SID',
+  'TWILIO_AUTH_TOKEN',
+  'TWILIO_PHONE_NUMBER'
+>>>>>>> origin/copilot/fix-175
 ];
 
 // Essential environment variables for core features
@@ -130,7 +147,7 @@ interface ValidationResult {
   details?: any;
 }
 
-interface DeploymentReadinessReport {
+export interface DeploymentReadinessReport {
   overall_status: 'ready' | 'warning' | 'not_ready';
   timestamp: string;
   environment: string;
@@ -148,6 +165,7 @@ interface DeploymentReadinessReport {
  */
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
+<<<<<<< HEAD
 
   // Check critical environment variables (required for basic functionality)
   const isDevOrTest = process.env.NODE_ENV === 'test' ||
@@ -281,15 +299,68 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'warning',
         message: `Recommended environment variable ${envVar} is not set. Some features may be limited.`,
         details: { variable: envVar, recommended: true }
+=======
+  
+  // Check critical environment variables (required for basic functionality)
+  for (const envVar of CRITICAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Critical Environment Variable: ${envVar}`,
+        status: 'fail',
+        message: `Critical environment variable ${envVar} is not set`,
+        details: { variable: envVar, required: true, category: 'critical' }
+>>>>>>> origin/copilot/fix-175
       });
     } else {
       results.push({
-        check: `Environment Variable: ${envVar}`,
+        check: `Critical Environment Variable: ${envVar}`,
         status: 'pass',
-        message: `Environment variable ${envVar} is properly set`,
-        details: { variable: envVar, length: value.length }
+        message: `Critical environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'critical' }
       });
     }
+  }
+
+  // Check recommended environment variables (should be set for production)
+  for (const envVar of RECOMMENDED_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Recommended Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Recommended environment variable ${envVar} is not set`,
+        details: { variable: envVar, required: false, category: 'recommended' }
+      });
+    } else {
+      results.push({
+        check: `Recommended Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Recommended environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'recommended' }
+      });
+    }
+  }
+
+  // Check optional environment variables (nice to have)
+  for (const envVar of OPTIONAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Optional Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Optional environment variable ${envVar} is not set - some features may be unavailable`,
+        details: { variable: envVar, required: false, category: 'optional' }
+      });
+    } else {
+      results.push({
+        check: `Optional Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Optional environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'optional' }
+      });
+    }
+  }
   }
 
   // Validate JWT_SECRET strength
