@@ -98,8 +98,8 @@ npm run test:env           # Test environment configuration
 
 ### Code Quality & Linting
 ```bash
-# Code linting and formatting (from GALAX_App_files directory)
-cd GALAX_App_files
+# Code linting and formatting (from GLX_App_files directory)
+cd GLX_App_files
 
 # Lint code for quality issues
 npm run lint              # Check for linting issues

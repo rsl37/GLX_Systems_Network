@@ -57,7 +57,7 @@ export default [
   {
     ignores: [
       'node_modules/',
-      'GALAX_App_files/',
+      'GLX_App_files/',
       'external/',
       'dist/',
       'build/',

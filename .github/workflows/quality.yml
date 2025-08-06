@@ -289,7 +289,7 @@ jobs:
 
           test('Application health check', async ({ page }) => {
             await page.goto('/');
-            await expect(page).toHaveTitle(/GALAX|Mimo|Civic/i);
+            await expect(page).toHaveTitle(/GLX|Mimo|Civic/i);
             await page.waitForLoadState('networkidle');
             const body = page.locator('body');
             await expect(body).toBeVisible();
