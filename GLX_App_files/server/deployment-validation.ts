@@ -21,7 +21,7 @@ const checkDiskSpace = require('check-disk-space').default;
 const CRITICAL_ENV_VARS = [
   'NODE_ENV',
   'JWT_SECRET',
-  'CLIENT_ORIGIN'    // CORS configuration
+  'CLIENT_ORIGIN', // CORS configuration
 ];
 
 const RECOMMENDED_ENV_VARS = [
@@ -29,9 +29,49 @@ const RECOMMENDED_ENV_VARS = [
   'DATA_DIRECTORY',
   'JWT_REFRESH_SECRET',
   'ENCRYPTION_MASTER_KEY',
+<<<<<<< HEAD
   'DATABASE_URL',     // Production database connection
+<<<<<<< HEAD
   'FRONTEND_URL',     // Legacy frontend URL support
   'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+=======
+  'SOCKET_PATH',      // Custom Socket.IO path
+  'FRONTEND_URL',     // Legacy frontend URL support
+  'TRUSTED_ORIGINS'   // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+=======
+  'DATABASE_URL', // Production database connection
+  'FRONTEND_URL', // Legacy frontend URL support
+  'TRUSTED_ORIGINS', // Required for Version 3.0: third-party integrations, mobile contexts, enterprise deployments
+>>>>>>> origin/copilot/fix-488
+];
+
+// Essential environment variables for core features
+const ESSENTIAL_ENV_VARS = [
+  'PUSHER_APP_ID', // Real-time features - ESSENTIAL
+  'PUSHER_KEY', // Real-time features - ESSENTIAL
+  'PUSHER_SECRET', // Real-time features - ESSENTIAL
+  'PUSHER_CLUSTER', // Real-time features - ESSENTIAL
+  'SMTP_HOST', // Email verification, password reset - ESSENTIAL
+  'SMTP_PORT', // Email verification, password reset - ESSENTIAL
+  'SMTP_USER', // Email verification, password reset - ESSENTIAL
+  'SMTP_PASS', // Email verification, password reset - ESSENTIAL
+  'SMTP_FROM', // Email verification, password reset - ESSENTIAL
+  'TWILIO_SID', // Phone verification, password reset - ESSENTIAL
+  'TWILIO_AUTH_TOKEN', // Phone verification, password reset - ESSENTIAL
+  'TWILIO_PHONE_NUMBER', // Phone verification, password reset - ESSENTIAL
+];
+
+const OPTIONAL_ENV_VARS = [
+<<<<<<< HEAD
+  'SMTP_HOST',
+  'SMTP_PORT', 
+  'SMTP_USER',
+  'SMTP_PASS',
+  'SMTP_FROM',
+  'TWILIO_SID',
+  'TWILIO_AUTH_TOKEN',
+  'TWILIO_PHONE_NUMBER'
+>>>>>>> origin/copilot/fix-175
 ];
 
 // Essential environment variables for core features
@@ -51,39 +91,73 @@ const ESSENTIAL_ENV_VARS = [
 ];
 
 const OPTIONAL_ENV_VARS = [
+=======
+>>>>>>> origin/copilot/fix-190
   // Development and debugging only
 ];
 
 // Top 50 SMTP hosts used globally
 const SUPPORTED_SMTP_HOSTS = [
   // Major email providers
-  'smtp.gmail.com', 'smtp.googlemail.com',
-  'smtp-mail.outlook.com', 'smtp.live.com', 'smtp.hotmail.com',
-  'smtp.mail.yahoo.com', 'smtp.mail.yahoo.co.uk', 'smtp.mail.yahoo.fr',
-  'smtp.aol.com', 'smtp.mail.me.com', 'smtp.icloud.com',
+  'smtp.gmail.com',
+  'smtp.googlemail.com',
+  'smtp-mail.outlook.com',
+  'smtp.live.com',
+  'smtp.hotmail.com',
+  'smtp.mail.yahoo.com',
+  'smtp.mail.yahoo.co.uk',
+  'smtp.mail.yahoo.fr',
+  'smtp.aol.com',
+  'smtp.mail.me.com',
+  'smtp.icloud.com',
   // Business email providers
-  'smtp.office365.com', 'smtp.exchange.office365.com',
-  'smtp.zoho.com', 'smtp.zoho.eu', 'smtp.zoho.in',
-  'smtp.fastmail.com', 'smtp.fastmail.fm',
-  'smtp.protonmail.com', 'smtp.protonmail.ch',
-  'smtp.tutanota.com', 'smtp.tutanota.de',
+  'smtp.office365.com',
+  'smtp.exchange.office365.com',
+  'smtp.zoho.com',
+  'smtp.zoho.eu',
+  'smtp.zoho.in',
+  'smtp.fastmail.com',
+  'smtp.fastmail.fm',
+  'smtp.protonmail.com',
+  'smtp.protonmail.ch',
+  'smtp.tutanota.com',
+  'smtp.tutanota.de',
   // Regional providers
-  'smtp.yandex.com', 'smtp.yandex.ru',
-  'smtp.mail.ru', 'smtp.rambler.ru',
-  'smtp.qq.com', 'smtp.163.com', 'smtp.126.com',
-  'smtp.sina.com', 'smtp.sohu.com',
-  'smtp.naver.com', 'smtp.daum.net',
-  'smtp.web.de', 'smtp.gmx.de', 'smtp.gmx.com',
-  'smtp.freenet.de', 't-online.de',
-  'smtp.orange.fr', 'smtp.sfr.fr', 'smtp.free.fr',
-  'smtp.alice.it', 'smtp.libero.it', 'smtp.tiscali.it',
-  'smtp.terra.com.br', 'smtp.uol.com.br',
+  'smtp.yandex.com',
+  'smtp.yandex.ru',
+  'smtp.mail.ru',
+  'smtp.rambler.ru',
+  'smtp.qq.com',
+  'smtp.163.com',
+  'smtp.126.com',
+  'smtp.sina.com',
+  'smtp.sohu.com',
+  'smtp.naver.com',
+  'smtp.daum.net',
+  'smtp.web.de',
+  'smtp.gmx.de',
+  'smtp.gmx.com',
+  'smtp.freenet.de',
+  't-online.de',
+  'smtp.orange.fr',
+  'smtp.sfr.fr',
+  'smtp.free.fr',
+  'smtp.alice.it',
+  'smtp.libero.it',
+  'smtp.tiscali.it',
+  'smtp.terra.com.br',
+  'smtp.uol.com.br',
   // Enterprise and hosting providers
-  'mail.privateemail.com', 'secureserver.net',
-  'smtp.1and1.com', 'smtp.ionos.com',
-  'smtp.bluehost.com', 'smtp.hostgator.com',
-  'smtp.dreamhost.com', 'smtp.godaddy.com',
-  'smtp.namecheap.com', 'smtp.siteground.com'
+  'mail.privateemail.com',
+  'secureserver.net',
+  'smtp.1and1.com',
+  'smtp.ionos.com',
+  'smtp.bluehost.com',
+  'smtp.hostgator.com',
+  'smtp.dreamhost.com',
+  'smtp.godaddy.com',
+  'smtp.namecheap.com',
+  'smtp.siteground.com',
 ];
 
 // International country codes and their phone number patterns
@@ -120,7 +194,7 @@ const PRODUCTION_REQUIREMENTS = {
   JWT_SECRET_MIN_LENGTH: 32,
   MIN_DISK_SPACE_MB: 100,
   REQUIRED_DIRECTORIES: ['uploads', 'logs'],
-  REQUIRED_PERMISSIONS: 0o755
+  REQUIRED_PERMISSIONS: 0o755,
 };
 
 interface ValidationResult {
@@ -130,7 +204,7 @@ interface ValidationResult {
   details?: any;
 }
 
-interface DeploymentReadinessReport {
+export interface DeploymentReadinessReport {
   overall_status: 'ready' | 'warning' | 'not_ready';
   timestamp: string;
   environment: string;
@@ -148,15 +222,189 @@ interface DeploymentReadinessReport {
  */
 export function validateEnvironmentVariables(): ValidationResult[] {
   const results: ValidationResult[] = [];
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
 
   // Check critical environment variables (required for basic functionality)
-  const isDevOrTest = process.env.NODE_ENV === 'test' ||
-                      process.env.NODE_ENV === 'development' ||
-                      process.env.CI === 'true';
+  const isDevOrTest =
+    process.env.NODE_ENV === 'test' ||
+    process.env.NODE_ENV === 'development' ||
+    process.env.CI === 'true';
 
   for (const envVar of CRITICAL_ENV_VARS) {
     const value = process.env[envVar];
     if (!value) {
+      // CLIENT_ORIGIN can be optional in development/test environments
+      if (envVar === 'CLIENT_ORIGIN' && isDevOrTest) {
+        results.push({
+          check: `Critical Environment Variable: ${envVar}`,
+          status: 'warning',
+          message: `Critical environment variable ${envVar} is not set - CORS may be permissive in ${process.env.NODE_ENV} mode`,
+          details: {
+            variable: envVar,
+            required: false,
+            category: 'critical',
+            environment: process.env.NODE_ENV,
+          },
+        });
+      } else {
+        results.push({
+          check: `Critical Environment Variable: ${envVar}`,
+          status: 'fail',
+          message: `Critical environment variable ${envVar} is not set`,
+          details: { variable: envVar, required: true, category: 'critical' },
+        });
+      }
+    } else {
+      results.push({
+        check: `Critical Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Critical environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'critical' },
+      });
+    }
+  }
+
+  // Check recommended environment variables (should be set for production)
+  for (const envVar of RECOMMENDED_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Recommended Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Recommended environment variable ${envVar} is not set`,
+        details: { variable: envVar, required: false, category: 'recommended' },
+      });
+    } else {
+      results.push({
+        check: `Recommended Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Recommended environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'recommended' },
+      });
+    }
+  }
+
+  // Check essential environment variables (required for core features)
+  // In test/CI/development environments, treat missing essential vars as warnings, not failures
+<<<<<<< HEAD
+  const isNonProduction = process.env.NODE_ENV === 'test' ||
+                          process.env.NODE_ENV === 'development' ||
+<<<<<<< HEAD
+                          process.env.CI === 'true';
+=======
+  const isNonProduction =
+    process.env.NODE_ENV === 'test' ||
+    process.env.NODE_ENV === 'development' ||
+    process.env.CI === 'true';
+>>>>>>> origin/copilot/fix-488
+
+  for (const envVar of ESSENTIAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      const status = isNonProduction ? 'warning' : 'fail';
+      const message = isNonProduction
+        ? `Essential environment variable ${envVar} is not set - some features may be limited in ${process.env.NODE_ENV} environment`
+        : `Essential environment variable ${envVar} is not set - core features will not work`;
+
+      results.push({
+        check: `Essential Environment Variable: ${envVar}`,
+        status: status,
+        message: message,
+        details: {
+          variable: envVar,
+          required: !isNonProduction,
+          category: 'essential',
+          environment: process.env.NODE_ENV,
+        },
+      });
+    } else {
+      // Check for placeholder values that indicate incomplete configuration
+      const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-', 'REQUIRED-'];
+      const isPlaceholder = placeholderValues.some(placeholder =>
+        value.toLowerCase().includes(placeholder.toLowerCase())
+      );
+
+      if (isPlaceholder) {
+        // In development/test environments, treat placeholder values as warnings, not failures
+        const status = isNonProduction ? 'warning' : 'fail';
+        const message = isNonProduction
+          ? `Essential environment variable ${envVar} contains placeholder value - configure with real credentials for production`
+          : `Essential environment variable ${envVar} contains placeholder value - must be configured with real service credentials`;
+
+        results.push({
+          check: `Essential Environment Variable: ${envVar}`,
+          status: status,
+          message: message,
+          details: {
+            variable: envVar,
+            value_type: 'placeholder',
+            category: 'essential',
+            environment: process.env.NODE_ENV,
+          },
+        });
+      } else {
+        results.push({
+          check: `Essential Environment Variable: ${envVar}`,
+          status: 'pass',
+          message: `Essential environment variable ${envVar} is properly configured`,
+          details: { variable: envVar, length: value.length, category: 'essential' },
+        });
+      }
+    }
+  }
+
+  // Check optional environment variables (nice to have)
+  for (const envVar of OPTIONAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Optional Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Optional environment variable ${envVar} is not set - some features may be unavailable`,
+        details: { variable: envVar, required: false, category: 'optional' },
+      });
+    } else {
+      results.push({
+        check: `Optional Environment Variable: ${envVar}`,
+        status: 'pass',
+        message: `Optional environment variable ${envVar} is properly set`,
+        details: { variable: envVar, length: value.length, category: 'optional' },
+      });
+    }
+  }
+
+  // Check recommended environment variables (warn if missing)
+  for (const envVar of RECOMMENDED_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+      results.push({
+        check: `Environment Variable: ${envVar}`,
+        status: 'warning',
+        message: `Recommended environment variable ${envVar} is not set. Some features may be limited.`,
+<<<<<<< HEAD
+        details: { variable: envVar, recommended: true }
+=======
+  
+  // Check critical environment variables (required for basic functionality)
+  const isDevOrTest = process.env.NODE_ENV === 'test' || 
+                      process.env.NODE_ENV === 'development' || 
+                      process.env.CI === 'true';
+  
+  for (const envVar of CRITICAL_ENV_VARS) {
+    const value = process.env[envVar];
+    if (!value) {
+<<<<<<< HEAD
+      results.push({
+        check: `Critical Environment Variable: ${envVar}`,
+        status: 'fail',
+        message: `Critical environment variable ${envVar} is not set`,
+        details: { variable: envVar, required: true, category: 'critical' }
+>>>>>>> origin/copilot/fix-175
+      });
+=======
       // CLIENT_ORIGIN can be optional in development/test environments
       if (envVar === 'CLIENT_ORIGIN' && isDevOrTest) {
         results.push({
@@ -173,6 +421,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           details: { variable: envVar, required: true, category: 'critical' }
         });
       }
+>>>>>>> origin/copilot/fix-466
     } else {
       results.push({
         check: `Critical Environment Variable: ${envVar}`,
@@ -192,11 +441,15 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'warning',
         message: `Recommended environment variable ${envVar} is not set`,
         details: { variable: envVar, required: false, category: 'recommended' }
+=======
+        details: { variable: envVar, recommended: true },
+>>>>>>> origin/copilot/fix-488
       });
     } else {
       results.push({
         check: `Recommended Environment Variable: ${envVar}`,
         status: 'pass',
+<<<<<<< HEAD
         message: `Recommended environment variable ${envVar} is properly set`,
         details: { variable: envVar, length: value.length, category: 'recommended' }
       });
@@ -205,8 +458,10 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
   // Check essential environment variables (required for core features)
   // In test/CI/development environments, treat missing essential vars as warnings, not failures
-  const isNonProduction = process.env.NODE_ENV === 'test' ||
-                          process.env.NODE_ENV === 'development' ||
+  const isNonProduction = process.env.NODE_ENV === 'test' || 
+                          process.env.NODE_ENV === 'development' || 
+=======
+>>>>>>> origin/copilot/fix-470
                           process.env.CI === 'true';
 
   for (const envVar of ESSENTIAL_ENV_VARS) {
@@ -268,26 +523,10 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'pass',
         message: `Optional environment variable ${envVar} is properly set`,
         details: { variable: envVar, length: value.length, category: 'optional' }
-      });
-    }
-  }
-
-  // Check recommended environment variables (warn if missing)
-  for (const envVar of RECOMMENDED_ENV_VARS) {
-    const value = process.env[envVar];
-    if (!value) {
-      results.push({
-        check: `Environment Variable: ${envVar}`,
-        status: 'warning',
-        message: `Recommended environment variable ${envVar} is not set. Some features may be limited.`,
-        details: { variable: envVar, recommended: true }
-      });
-    } else {
-      results.push({
-        check: `Environment Variable: ${envVar}`,
-        status: 'pass',
+=======
         message: `Environment variable ${envVar} is properly set`,
-        details: { variable: envVar, length: value.length }
+        details: { variable: envVar, length: value.length },
+>>>>>>> origin/copilot/fix-488
       });
     }
   }
@@ -300,14 +539,17 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'JWT Secret Strength',
         status: 'fail',
         message: `JWT_SECRET is too short (${jwtSecret.length} chars). Minimum ${PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH} characters required for production`,
-        details: { current_length: jwtSecret.length, required_length: PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH }
+        details: {
+          current_length: jwtSecret.length,
+          required_length: PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH,
+        },
       });
     } else {
       results.push({
         check: 'JWT Secret Strength',
         status: 'pass',
         message: `JWT_SECRET meets security requirements (${jwtSecret.length} characters)`,
-        details: { length: jwtSecret.length }
+        details: { length: jwtSecret.length },
       });
     }
   }
@@ -320,14 +562,17 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'JWT Refresh Secret Strength',
         status: 'fail',
         message: `JWT_REFRESH_SECRET is too short (${jwtRefreshSecret.length} chars). Minimum ${PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH} characters required for production`,
-        details: { current_length: jwtRefreshSecret.length, required_length: PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH }
+        details: {
+          current_length: jwtRefreshSecret.length,
+          required_length: PRODUCTION_REQUIREMENTS.JWT_SECRET_MIN_LENGTH,
+        },
       });
     } else {
       results.push({
         check: 'JWT Refresh Secret Strength',
         status: 'pass',
         message: `JWT_REFRESH_SECRET meets security requirements (${jwtRefreshSecret.length} characters)`,
-        details: { length: jwtRefreshSecret.length }
+        details: { length: jwtRefreshSecret.length },
       });
     }
   }
@@ -340,14 +585,14 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'Encryption Master Key Strength',
         status: 'fail',
         message: `ENCRYPTION_MASTER_KEY is too short (${encryptionKey.length} chars). Minimum 64 characters required for production`,
-        details: { current_length: encryptionKey.length, required_length: 64 }
+        details: { current_length: encryptionKey.length, required_length: 64 },
       });
     } else {
       results.push({
         check: 'Encryption Master Key Strength',
         status: 'pass',
         message: `ENCRYPTION_MASTER_KEY meets security requirements (${encryptionKey.length} characters)`,
-        details: { length: encryptionKey.length }
+        details: { length: encryptionKey.length },
       });
     }
   }
@@ -360,7 +605,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'SMTP Host Configuration',
         status: 'pass',
         message: `SMTP_HOST is from a supported email provider: ${smtpHost}`,
-        details: { host: smtpHost, supported: true }
+        details: { host: smtpHost, supported: true },
       });
     } else {
       // Check if it's a custom domain that follows proper SMTP naming conventions
@@ -370,7 +615,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           check: 'SMTP Host Configuration',
           status: 'pass',
           message: `SMTP_HOST appears to be a valid custom SMTP server: ${smtpHost}`,
-          details: { host: smtpHost, type: 'custom', supported: false }
+          details: { host: smtpHost, type: 'custom', supported: false },
         });
       } else {
         results.push({
@@ -380,8 +625,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           details: {
             host: smtpHost,
             supported: false,
-            suggestion: 'Consider using Gmail, Outlook, or another mainstream provider'
-          }
+            suggestion: 'Consider using Gmail, Outlook, or another mainstream provider',
+          },
         });
       }
     }
@@ -396,7 +641,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'SMTP Port Configuration',
         status: 'fail',
         message: `SMTP_PORT must be a valid port number between 1 and 65535. Current value: ${smtpPort}`,
-        details: { port: smtpPort }
+        details: { port: smtpPort },
       });
     } else {
       // Check for common secure SMTP ports
@@ -412,8 +657,10 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           port: portNum,
           common: isCommonPort,
           secure: isSecurePort,
-          recommendation: isSecurePort ? 'secure port' : 'consider using port 587 or 465 for security'
-        }
+          recommendation: isSecurePort
+            ? 'secure port'
+            : 'consider using port 587 or 465 for security',
+        },
       });
     }
   }
@@ -427,7 +674,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'Twilio Phone Number Format',
         status: 'fail',
         message: `TWILIO_PHONE_NUMBER must start with + and include country code. Current: ${twilioPhone}`,
-        details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'missing_plus_prefix' }
+        details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'missing_plus_prefix' },
       });
     } else {
       // Extract country code
@@ -437,7 +684,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           check: 'Twilio Phone Number Format',
           status: 'fail',
           message: `TWILIO_PHONE_NUMBER has invalid country code format`,
-          details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'invalid_country_code' }
+          details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'invalid_country_code' },
         });
       } else {
         const countryCode = countryCodeMatch[1];
@@ -445,9 +692,11 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
         if (phonePattern) {
           // Validate against specific country pattern
-          if (phonePattern.pattern.test(twilioPhone) &&
-              twilioPhone.length >= phonePattern.min &&
-              twilioPhone.length <= phonePattern.max) {
+          if (
+            phonePattern.pattern.test(twilioPhone) &&
+            twilioPhone.length >= phonePattern.min &&
+            twilioPhone.length <= phonePattern.max
+          ) {
             results.push({
               check: 'Twilio Phone Number Format',
               status: 'pass',
@@ -456,8 +705,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
-                validated: true
-              }
+                validated: true,
+              },
             });
           } else {
             results.push({
@@ -469,8 +718,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
                 country_code: countryCode,
                 length: twilioPhone.length,
                 expected_min: phonePattern.min,
-                expected_max: phonePattern.max
-              }
+                expected_max: phonePattern.max,
+              },
             });
           }
         } else {
@@ -484,8 +733,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
-                validation_type: 'generic'
-              }
+                validation_type: 'generic',
+              },
             });
           } else {
             results.push({
@@ -496,8 +745,8 @@ export function validateEnvironmentVariables(): ValidationResult[] {
                 phone: twilioPhone.substring(0, 5) + '***',
                 country_code: countryCode,
                 length: twilioPhone.length,
-                expected_range: '8-16 characters'
-              }
+                expected_range: '8-16 characters',
+              },
             });
           }
         }
@@ -515,14 +764,14 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           check: 'DATABASE_URL Format',
           status: 'pass',
           message: 'DATABASE_URL is properly formatted for PostgreSQL',
-          details: { protocol: url.protocol, host: url.hostname, database: url.pathname }
+          details: { protocol: url.protocol, host: url.hostname, database: url.pathname },
         });
       } else {
         results.push({
           check: 'DATABASE_URL Format',
           status: 'warning',
           message: `DATABASE_URL protocol '${url.protocol}' may not be supported. Expected 'postgres:' or 'postgresql:'`,
-          details: { protocol: url.protocol }
+          details: { protocol: url.protocol },
         });
       }
     } catch (error) {
@@ -530,7 +779,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'DATABASE_URL Format',
         status: 'fail',
         message: 'DATABASE_URL is not a valid URL format',
-        details: { error: (error as Error).message }
+        details: { error: (error as Error).message },
       });
     }
   }
@@ -540,19 +789,22 @@ export function validateEnvironmentVariables(): ValidationResult[] {
   if (clientOrigin) {
     try {
       const url = new URL(clientOrigin);
-      if (url.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')) {
+      if (
+        url.protocol === 'https:' ||
+        (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')
+      ) {
         results.push({
           check: 'CLIENT_ORIGIN Format',
           status: 'pass',
           message: 'CLIENT_ORIGIN is properly formatted',
-          details: { protocol: url.protocol, host: url.hostname }
+          details: { protocol: url.protocol, host: url.hostname },
         });
       } else {
         results.push({
           check: 'CLIENT_ORIGIN Format',
           status: process.env.NODE_ENV === 'production' ? 'fail' : 'warning',
           message: 'CLIENT_ORIGIN should use HTTPS in production',
-          details: { protocol: url.protocol, environment: process.env.NODE_ENV }
+          details: { protocol: url.protocol, environment: process.env.NODE_ENV },
         });
       }
     } catch (error) {
@@ -560,7 +812,27 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: 'CLIENT_ORIGIN Format',
         status: 'fail',
         message: 'CLIENT_ORIGIN is not a valid URL format',
-        details: { error: (error as Error).message }
+        details: { error: (error as Error).message },
+      });
+    }
+  }
+
+  // Validate SOCKET_PATH format if provided
+  const socketPath = process.env.SOCKET_PATH;
+  if (socketPath) {
+    if (socketPath.startsWith('/') && socketPath.length > 1) {
+      results.push({
+        check: 'SOCKET_PATH Format',
+        status: 'pass',
+        message: 'SOCKET_PATH is properly formatted',
+        details: { path: socketPath }
+      });
+    } else {
+      results.push({
+        check: 'SOCKET_PATH Format',
+        status: 'warning',
+        message: 'SOCKET_PATH should start with / and have additional path components',
+        details: { path: socketPath }
       });
     }
   }
@@ -571,32 +843,44 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     const origins = trustedOrigins.split(',').map(origin => origin.trim());
     let validOrigins = 0;
     let invalidOrigins = 0;
-    let securityWarnings: string[] = [];
+    const securityWarnings: string[] = [];
 
     for (const origin of origins) {
       try {
         const url = new URL(origin);
-        if (url.protocol === 'https:' || (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')) {
+        if (
+          url.protocol === 'https:' ||
+          (process.env.NODE_ENV !== 'production' && url.protocol === 'http:')
+        ) {
           validOrigins++;
 
           // Security validations to reduce attack surface
           if (process.env.NODE_ENV === 'production') {
             // Warn against development origins in production
-            if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname.includes('.local')) {
-              securityWarnings.push(`Development origin '${origin}' should not be used in production`);
+            if (
+              url.hostname === 'localhost' ||
+              url.hostname === '127.0.0.1' ||
+              url.hostname.includes('.local')
+            ) {
+              securityWarnings.push(
+                `Development origin '${origin}' should not be used in production`
+              );
             }
 
             // Warn against non-HTTPS in production
             if (url.protocol !== 'https:') {
-              securityWarnings.push(`Non-HTTPS origin '${origin}' creates security risk in production`);
+              securityWarnings.push(
+                `Non-HTTPS origin '${origin}' creates security risk in production`
+              );
             }
           }
 
           // Warn against overly broad wildcards or IP addresses in production
           if (process.env.NODE_ENV === 'production' && /^\d+\.\d+\.\d+\.\d+/.test(url.hostname)) {
-            securityWarnings.push(`IP address origin '${origin}' reduces security - use domain names when possible`);
+            securityWarnings.push(
+              `IP address origin '${origin}' reduces security - use domain names when possible`
+            );
           }
-
         } else {
           invalidOrigins++;
         }
@@ -607,9 +891,10 @@ export function validateEnvironmentVariables(): ValidationResult[] {
 
     if (invalidOrigins === 0) {
       const status = securityWarnings.length > 0 ? 'warning' : 'pass';
-      const message = securityWarnings.length > 0
-        ? `All ${validOrigins} trusted origins are formatted correctly, but ${securityWarnings.length} security concerns detected`
-        : `All ${validOrigins} trusted origins are properly formatted with secure configuration`;
+      const message =
+        securityWarnings.length > 0
+          ? `All ${validOrigins} trusted origins are formatted correctly, but ${securityWarnings.length} security concerns detected`
+          : `All ${validOrigins} trusted origins are properly formatted with secure configuration`;
 
       results.push({
         check: 'TRUSTED_ORIGINS Security',
@@ -624,9 +909,9 @@ export function validateEnvironmentVariables(): ValidationResult[] {
             'HTTPS enforced in production',
             'Development origins blocked in production',
             'Specific domains preferred over IP addresses',
-            'Each origin explicitly validated'
-          ]
-        }
+            'Each origin explicitly validated',
+          ],
+        },
       });
     } else {
       results.push({
@@ -643,31 +928,44 @@ export function validateEnvironmentVariables(): ValidationResult[] {
             'HTTPS required in production',
             'No development origins in production',
             'Specific domains preferred over IP addresses',
-            'No wildcard or overly broad patterns'
-          ]
-        }
+            'No wildcard or overly broad patterns',
+          ],
+        },
       });
     }
   }
 
   // Validate NODE_ENV for production
   const nodeEnv = process.env.NODE_ENV;
+<<<<<<< HEAD
   const isDevelopmentOrTest = nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  const isDevelopmentOrTest =
+    nodeEnv === 'test' || nodeEnv === 'development' || process.env.CI === 'true';
+>>>>>>> origin/copilot/fix-488
 
+=======
+  
+>>>>>>> origin/copilot/fix-466
+=======
+
+>>>>>>> origin/copilot/fix-470
   if (nodeEnv !== 'production') {
     if (isDevelopmentOrTest) {
       results.push({
         check: 'Production Environment',
         status: 'pass',
         message: `NODE_ENV is set to '${nodeEnv}' - appropriate for ${nodeEnv} environment`,
-        details: { current: nodeEnv, environment_type: nodeEnv }
+        details: { current: nodeEnv, environment_type: nodeEnv },
       });
     } else {
       results.push({
         check: 'Production Environment',
         status: 'warning',
         message: `NODE_ENV is set to '${nodeEnv}', expected 'production' for deployment`,
-        details: { current: nodeEnv, expected: 'production' }
+        details: { current: nodeEnv, expected: 'production' },
       });
     }
   } else {
@@ -675,7 +973,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
       check: 'Production Environment',
       status: 'pass',
       message: 'NODE_ENV is properly set to production',
-      details: { environment: nodeEnv }
+      details: { environment: nodeEnv },
     });
   }
 
@@ -697,7 +995,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
         check: 'Data Directory Existence',
         status: 'fail',
         message: `Data directory does not exist: ${dataDirectory}`,
-        details: { path: dataDirectory }
+        details: { path: dataDirectory },
       });
       return results; // Can't continue without data directory
     } else {
@@ -705,29 +1003,36 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
         check: 'Data Directory Existence',
         status: 'pass',
         message: `Data directory exists: ${dataDirectory}`,
-        details: { path: dataDirectory }
+        details: { path: dataDirectory },
       });
     }
 
     // Check data directory permissions using fs-extra enhanced stats
     const dataStats = await fsExtra.stat(dataDirectory);
     const permissions = (dataStats.mode & parseInt('777', 8)).toString(8);
-    if ((dataStats.mode & PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS) !== PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS) {
+    if (
+      (dataStats.mode & PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS) !==
+      PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS
+    ) {
       results.push({
         check: 'Data Directory Permissions',
         status: 'fail',
         message: `Data directory permissions are insufficient. Current: ${permissions}, Required: ${PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS.toString(8)}`,
-        details: { current_permissions: permissions, required_permissions: PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS.toString(8) }
+        details: {
+          current_permissions: permissions,
+          required_permissions: PRODUCTION_REQUIREMENTS.REQUIRED_PERMISSIONS.toString(8),
+        },
       });
     } else {
       results.push({
         check: 'Data Directory Permissions',
         status: 'pass',
         message: `Data directory has proper permissions: ${permissions}`,
-        details: { permissions }
+        details: { permissions },
       });
     }
 
+    // Check required subdirectories using fs-extra
     // Check required subdirectories using fs-extra
     for (const subdir of PRODUCTION_REQUIREMENTS.REQUIRED_DIRECTORIES) {
       const subdirPath = path.join(dataDirectory, subdir);
@@ -738,7 +1043,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
           check: `Required Directory: ${subdir}`,
           status: 'fail',
           message: `Required subdirectory does not exist: ${subdirPath}`,
-          details: { path: subdirPath, parent: dataDirectory }
+          details: { path: subdirPath, parent: dataDirectory },
         });
       } else {
         const subdirStats = await fsExtra.stat(subdirPath);
@@ -747,7 +1052,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
           check: `Required Directory: ${subdir}`,
           status: 'pass',
           message: `Required subdirectory exists with proper permissions: ${subdirPath} (${subdirPerms})`,
-          details: { path: subdirPath, permissions: subdirPerms }
+          details: { path: subdirPath, permissions: subdirPerms },
         });
       }
     }
@@ -777,7 +1082,7 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
         used_percentage: Math.round(usedPercentage * 100) / 100,
         method: 'check-disk-space',
         platform_support: 'cross-platform',
-        accuracy: '100%'
+        accuracy: '100%',
       };
 
       if (freeSpaceMB < PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB) {
@@ -787,14 +1092,15 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
           message: `Insufficient disk space. Available: ${freeSpaceMB}MB, Required: ${PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB}MB`,
           details: {
             ...diskSpaceInfo,
-            required_mb: PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB
-          }
+            required_mb: PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB,
+          },
         });
       } else {
         const status = usedPercentage > 90 ? 'warning' : 'pass';
-        const message = usedPercentage > 90
-          ? `Disk space is available but usage is high (${usedPercentage.toFixed(1)}%). Monitor closely.`
-          : `Sufficient disk space available: ${freeSpaceMB}MB (${(100 - usedPercentage).toFixed(1)}% free)`;
+        const message =
+          usedPercentage > 90
+            ? `Disk space is available but usage is high (${usedPercentage.toFixed(1)}%). Monitor closely.`
+            : `Sufficient disk space available: ${freeSpaceMB}MB (${(100 - usedPercentage).toFixed(1)}% free)`;
 
         results.push({
           check: 'Disk Space Availability',
@@ -802,8 +1108,8 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
           message,
           details: {
             ...diskSpaceInfo,
-            required_mb: PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB
-          }
+            required_mb: PRODUCTION_REQUIREMENTS.MIN_DISK_SPACE_MB,
+          },
         });
       }
     } catch (error) {
@@ -813,17 +1119,16 @@ export async function validateFileSystem(): Promise<ValidationResult[]> {
         message: `Failed to check disk space: ${(error as Error).message}`,
         details: {
           error: (error as Error).message,
-          note: 'Cross-platform disk space check failed - this indicates a serious system issue'
-        }
+          note: 'Cross-platform disk space check failed - this indicates a serious system issue',
+        },
       });
     }
-
   } catch (error) {
     results.push({
       check: 'File System Access',
       status: 'fail',
       message: `Error accessing file system: ${(error as Error).message}`,
-      details: { error: (error as Error).message }
+      details: { error: (error as Error).message },
     });
   }
 
@@ -843,36 +1148,39 @@ export async function validateDatabase(): Promise<ValidationResult[]> {
       check: 'Database Connection',
       status: 'pass',
       message: 'Database connection is working properly',
-      details: { test_query_result_count: testQuery.length }
+      details: { test_query_result_count: testQuery.length },
     });
 
     // Check if essential tables exist
     const tables = ['users', 'help_requests', 'crisis_alerts', 'proposals'];
     for (const table of tables) {
       try {
-        await db.selectFrom(table as any).selectAll().limit(1).execute();
+        await db
+          .selectFrom(table as any)
+          .selectAll()
+          .limit(1)
+          .execute();
         results.push({
           check: `Database Table: ${table}`,
           status: 'pass',
           message: `Table '${table}' exists and is accessible`,
-          details: { table }
+          details: { table },
         });
       } catch (error) {
         results.push({
           check: `Database Table: ${table}`,
           status: 'fail',
           message: `Table '${table}' is missing or inaccessible: ${(error as Error).message}`,
-          details: { table, error: (error as Error).message }
+          details: { table, error: (error as Error).message },
         });
       }
     }
-
   } catch (error) {
     results.push({
       check: 'Database Connection',
       status: 'fail',
       message: `Database connection failed: ${(error as Error).message}`,
-      details: { error: (error as Error).message }
+      details: { error: (error as Error).message },
     });
   }
 
@@ -892,14 +1200,14 @@ export function validateProductionConfig(): ValidationResult[] {
       check: 'Production Mode',
       status: 'pass',
       message: 'Application is running in production mode',
-      details: { node_env: nodeEnv }
+      details: { node_env: nodeEnv },
     });
   } else {
     results.push({
       check: 'Production Mode',
       status: 'warning',
       message: `Application is not in production mode (current: ${nodeEnv})`,
-      details: { node_env: nodeEnv, expected: 'production' }
+      details: { node_env: nodeEnv, expected: 'production' },
     });
   }
 
@@ -910,14 +1218,14 @@ export function validateProductionConfig(): ValidationResult[] {
       check: 'HTTPS Frontend URL',
       status: 'pass',
       message: 'Frontend URL is configured with HTTPS',
-      details: { frontend_url: frontendUrl }
+      details: { frontend_url: frontendUrl },
     });
   } else if (frontendUrl) {
     results.push({
       check: 'HTTPS Frontend URL',
       status: 'warning',
       message: 'Frontend URL is not using HTTPS. This is required for production',
-      details: { frontend_url: frontendUrl }
+      details: { frontend_url: frontendUrl },
     });
   }
 
@@ -930,14 +1238,14 @@ export function validateProductionConfig(): ValidationResult[] {
         check: 'Port Configuration',
         status: 'pass',
         message: `Port is properly configured: ${port}`,
-        details: { port: portNum }
+        details: { port: portNum },
       });
     } else {
       results.push({
         check: 'Port Configuration',
         status: 'warning',
         message: `Port ${port} may not be suitable for production. Consider using a port between 1024-65535`,
-        details: { port: portNum }
+        details: { port: portNum },
       });
     }
   }
@@ -955,8 +1263,8 @@ export async function performDeploymentReadinessCheck(): Promise<DeploymentReadi
 
   // Collect all validation results
   allChecks.push(...validateEnvironmentVariables());
-  allChecks.push(...await validateFileSystem());
-  allChecks.push(...await validateDatabase());
+  allChecks.push(...(await validateFileSystem()));
+  allChecks.push(...(await validateDatabase()));
   allChecks.push(...validateProductionConfig());
 
   // Calculate summary
@@ -964,7 +1272,7 @@ export async function performDeploymentReadinessCheck(): Promise<DeploymentReadi
     passed: allChecks.filter(c => c.status === 'pass').length,
     failed: allChecks.filter(c => c.status === 'fail').length,
     warnings: allChecks.filter(c => c.status === 'warning').length,
-    total: allChecks.length
+    total: allChecks.length,
   };
 
   // Determine overall status
@@ -982,11 +1290,13 @@ export async function performDeploymentReadinessCheck(): Promise<DeploymentReadi
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     checks: allChecks,
-    summary
+    summary,
   };
 
   console.log(`✅ Deployment readiness check completed. Status: ${overall_status}`);
-  console.log(`📊 Summary: ${summary.passed} passed, ${summary.failed} failed, ${summary.warnings} warnings`);
+  console.log(
+    `📊 Summary: ${summary.passed} passed, ${summary.failed} failed, ${summary.warnings} warnings`
+  );
 
   return report;
 }
@@ -1008,7 +1318,7 @@ export const getDeploymentReadiness = async (req: Request, res: Response): Promi
 
     res.status(statusCode).json({
       success: report.overall_status !== 'not_ready',
-      data: report
+      data: report,
     });
   } catch (error) {
     console.error('❌ Deployment readiness check failed:', error);
@@ -1017,8 +1327,8 @@ export const getDeploymentReadiness = async (req: Request, res: Response): Promi
       error: {
         message: 'Deployment readiness check failed',
         details: (error as Error).message,
-        statusCode: 500
-      }
+        statusCode: 500,
+      },
     });
   }
 };

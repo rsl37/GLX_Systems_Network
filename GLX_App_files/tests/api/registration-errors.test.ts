@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { TestServer, mockDb } from '../setup/test-server.js';
 import request from 'supertest';
@@ -27,8 +26,8 @@ describe('Registration Error Messages', () => {
           success: false,
           error: {
             message: 'Username is required',
-            statusCode: 400
-          }
+            statusCode: 400,
+          },
         });
       }
 
@@ -40,8 +39,8 @@ describe('Registration Error Messages', () => {
             success: false,
             error: {
               message: 'An account with this email address already exists',
-              statusCode: 400
-            }
+              statusCode: 400,
+            },
           });
         }
       }
@@ -53,8 +52,8 @@ describe('Registration Error Messages', () => {
             success: false,
             error: {
               message: 'An account with this phone number already exists',
-              statusCode: 400
-            }
+              statusCode: 400,
+            },
           });
         }
       }
@@ -65,8 +64,8 @@ describe('Registration Error Messages', () => {
           success: false,
           error: {
             message: 'This username is already taken',
-            statusCode: 400
-          }
+            statusCode: 400,
+          },
         });
       }
 
@@ -77,8 +76,8 @@ describe('Registration Error Messages', () => {
             success: false,
             error: {
               message: 'An account with this wallet address already exists',
-              statusCode: 400
-            }
+              statusCode: 400,
+            },
           });
         }
       }
@@ -90,7 +89,7 @@ describe('Registration Error Messages', () => {
         username,
         walletAddress: walletAddress || null,
         created_at: new Date().toISOString(),
-        verified: false
+        verified: false,
       });
 
       res.status(201).json({
@@ -99,8 +98,8 @@ describe('Registration Error Messages', () => {
           token: 'mock-jwt-token',
           userId: user.id,
           emailVerificationRequired: !!email,
-          phoneVerificationRequired: !!phone
-        }
+          phoneVerificationRequired: !!phone,
+        },
       });
     });
 
@@ -123,7 +122,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'test@example.com',
           password: 'SecurePass123!',
-          username: 'testuser1'
+          username: 'testuser1',
         })
         .expect(201);
 
@@ -133,7 +132,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'test@example.com',
           password: 'SecurePass123!',
-          username: 'testuser2'
+          username: 'testuser2',
         })
         .expect(400);
 
@@ -141,8 +140,8 @@ describe('Registration Error Messages', () => {
         success: false,
         error: {
           message: 'An account with this email address already exists',
-          statusCode: 400
-        }
+          statusCode: 400,
+        },
       });
     });
 
@@ -153,7 +152,7 @@ describe('Registration Error Messages', () => {
         .send({
           phone: '+1234567890',
           password: 'SecurePass123!',
-          username: 'testuser1'
+          username: 'testuser1',
         })
         .expect(201);
 
@@ -163,7 +162,7 @@ describe('Registration Error Messages', () => {
         .send({
           phone: '+1234567890',
           password: 'SecurePass123!',
-          username: 'testuser2'
+          username: 'testuser2',
         })
         .expect(400);
 
@@ -171,8 +170,8 @@ describe('Registration Error Messages', () => {
         success: false,
         error: {
           message: 'An account with this phone number already exists',
-          statusCode: 400
-        }
+          statusCode: 400,
+        },
       });
     });
 
@@ -183,7 +182,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'test1@example.com',
           password: 'SecurePass123!',
-          username: 'testuser'
+          username: 'testuser',
         })
         .expect(201);
 
@@ -193,7 +192,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'test2@example.com',
           password: 'SecurePass123!',
-          username: 'testuser'
+          username: 'testuser',
         })
         .expect(400);
 
@@ -201,8 +200,8 @@ describe('Registration Error Messages', () => {
         success: false,
         error: {
           message: 'This username is already taken',
-          statusCode: 400
-        }
+          statusCode: 400,
+        },
       });
     });
 
@@ -212,7 +211,7 @@ describe('Registration Error Messages', () => {
         .post('/api/auth/register')
         .send({
           walletAddress: '0x1234567890abcdef',
-          username: 'testuser1'
+          username: 'testuser1',
         })
         .expect(201);
 
@@ -221,7 +220,7 @@ describe('Registration Error Messages', () => {
         .post('/api/auth/register')
         .send({
           walletAddress: '0x1234567890abcdef',
-          username: 'testuser2'
+          username: 'testuser2',
         })
         .expect(400);
 
@@ -229,8 +228,8 @@ describe('Registration Error Messages', () => {
         success: false,
         error: {
           message: 'An account with this wallet address already exists',
-          statusCode: 400
-        }
+          statusCode: 400,
+        },
       });
     });
 
@@ -240,7 +239,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'new@example.com',
           password: 'SecurePass123!',
-          username: 'newuser'
+          username: 'newuser',
         })
         .expect(201);
 
@@ -250,8 +249,8 @@ describe('Registration Error Messages', () => {
           token: expect.any(String),
           userId: expect.any(Number),
           emailVerificationRequired: true,
-          phoneVerificationRequired: false
-        }
+          phoneVerificationRequired: false,
+        },
       });
     });
 
@@ -262,7 +261,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'test@example.com',
           username: 'testuser',
-          password: 'SecurePass123!'
+          password: 'SecurePass123!',
         })
         .expect(201);
 
@@ -272,7 +271,7 @@ describe('Registration Error Messages', () => {
         .send({
           email: 'test@example.com',
           username: 'testuser',
-          password: 'SecurePass123!'
+          password: 'SecurePass123!',
         })
         .expect(400);
 

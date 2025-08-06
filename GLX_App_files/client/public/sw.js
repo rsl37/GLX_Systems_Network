@@ -13,11 +13,7 @@ const CACHE_NAME = 'glx-civic-v1';
 const CIVIC_DATA_CACHE = 'civic-data-v1';
 
 // Critical resources for offline civic functionality
-const STATIC_RESOURCES = [
-  '/',
-  '/assets/index.css',
-  '/assets/index.js'
-];
+const STATIC_RESOURCES = ['/', '/assets/index.css', '/assets/index.js'];
 
 // Civic data patterns that should be cached
 const CIVIC_DATA_PATTERNS = [
@@ -25,15 +21,16 @@ const CIVIC_DATA_PATTERNS = [
   '/api/civic-matching',
   '/api/user/profile',
   '/api/governance',
-  '/api/crisis'
+  '/api/crisis',
 ];
 
 // Install event - cache critical resources
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   console.log('🔧 Service Worker: Installing...');
 
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then(cache => {
         console.log('📦 Service Worker: Caching static resources');
         return cache.addAll(STATIC_RESOURCES);
@@ -49,18 +46,16 @@ self.addEventListener('install', (event) => {
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   console.log('🚀 Service Worker: Activating...');
 
   event.waitUntil(
-    caches.keys()
+    caches
+      .keys()
       .then(cacheNames => {
         return Promise.all(
           cacheNames
-            .filter(cacheName =>
-              cacheName !== CACHE_NAME &&
-              cacheName !== CIVIC_DATA_CACHE
-            )
+            .filter(cacheName => cacheName !== CACHE_NAME && cacheName !== CIVIC_DATA_CACHE)
             .map(cacheName => {
               console.log('🗑️ Service Worker: Deleting old cache', cacheName);
               return caches.delete(cacheName);
@@ -75,7 +70,7 @@ self.addEventListener('activate', (event) => {
 });
 
 // Fetch event - implement lean caching strategy
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
@@ -86,10 +81,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Handle static resources with cache-first strategy
-  if (request.method === 'GET' &&
-      (request.destination === 'document' ||
-       request.destination === 'script' ||
-       request.destination === 'style')) {
+  if (
+    request.method === 'GET' &&
+    (request.destination === 'document' ||
+      request.destination === 'script' ||
+      request.destination === 'style')
+  ) {
     event.respondWith(handleStaticRequest(request));
     return;
   }
@@ -129,7 +126,6 @@ async function handleCivicDataRequest(request) {
     }
 
     return networkResponse;
-
   } catch (error) {
     console.warn('⚠️ Service Worker: Civic data request failed', error);
 
@@ -137,12 +133,12 @@ async function handleCivicDataRequest(request) {
     const cache = await caches.open(CIVIC_DATA_CACHE);
     const cachedResponse = await cache.match(request);
 
-    return cachedResponse || new Response(
-      JSON.stringify({ error: 'Offline - data not available' }),
-      {
+    return (
+      cachedResponse ||
+      new Response(JSON.stringify({ error: 'Offline - data not available' }), {
         status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' },
+      })
     );
   }
 }
@@ -164,18 +160,17 @@ async function handleStaticRequest(request) {
     }
 
     return networkResponse;
-
   } catch (error) {
     console.warn('⚠️ Service Worker: Static request failed', error);
 
     // Return cached response if available
     const cache = await caches.open(CACHE_NAME);
-    return await cache.match(request) || new Response('Offline');
+    return (await cache.match(request)) || new Response('Offline');
   }
 }
 
 // Handle service worker messages
-self.addEventListener('message', (event) => {
+self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
@@ -183,10 +178,11 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CACHE_CIVIC_DATA') {
     // Allow manual caching of civic data
     const { url, data } = event.data;
-    caches.open(CIVIC_DATA_CACHE)
+    caches
+      .open(CIVIC_DATA_CACHE)
       .then(cache => {
         const response = new Response(JSON.stringify(data), {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         });
         return cache.put(url, response);
       })
@@ -196,4 +192,8 @@ self.addEventListener('message', (event) => {
   }
 });
 
+<<<<<<< HEAD:GLX_App_files/client/public/sw.js
 console.log('🌟 GLX Civic Service Worker: Lean caching strategy active');
+=======
+console.log('🌟 GALAX Civic Service Worker: Lean caching strategy active');
+>>>>>>> origin/all-merged:GALAX_App_files/client/public/sw.js

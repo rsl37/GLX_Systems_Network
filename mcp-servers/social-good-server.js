@@ -14,18 +14,30 @@
 
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
-const https = require('https');
+// const https = require('https'); // Commented out as not currently used
 
 class SocialGoodMCPServer {
   constructor() {
+<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX Social Good MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
+=======
+    this.server = new Server(
+      {
+        name: 'GALAX Social Good MCP Server',
+        version: '1.0.0',
+>>>>>>> origin/all-merged
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.volunteerApiKey = process.env.VOLUNTEER_API_KEY;
     this.charityApiKey = process.env.CHARITY_API_KEY;
@@ -42,26 +54,38 @@ class SocialGoodMCPServer {
             inputSchema: {
               type: 'object',
               properties: {
-                location: { type: 'string', description: 'Location to search (city, state, or coordinates)' },
+                location: {
+                  type: 'string',
+                  description: 'Location to search (city, state, or coordinates)',
+                },
                 cause: {
                   type: 'string',
-                  enum: ['environment', 'education', 'health', 'poverty', 'disaster', 'animals', 'seniors', 'children'],
-                  description: 'Cause area for volunteering'
+                  enum: [
+                    'environment',
+                    'education',
+                    'health',
+                    'poverty',
+                    'disaster',
+                    'animals',
+                    'seniors',
+                    'children',
+                  ],
+                  description: 'Cause area for volunteering',
                 },
                 skills: {
                   type: 'array',
                   items: { type: 'string' },
-                  description: 'Skills or interests to match'
+                  description: 'Skills or interests to match',
                 },
                 timeCommitment: {
                   type: 'string',
                   enum: ['one-time', 'weekly', 'monthly', 'ongoing'],
-                  description: 'Time commitment preference'
+                  description: 'Time commitment preference',
                 },
-                radius: { type: 'number', description: 'Search radius in miles', default: 25 }
+                radius: { type: 'number', description: 'Search radius in miles', default: 25 },
               },
-              required: ['location']
-            }
+              required: ['location'],
+            },
           },
           {
             name: 'get_charity_info',
@@ -71,9 +95,13 @@ class SocialGoodMCPServer {
               properties: {
                 charityName: { type: 'string', description: 'Name of the charity' },
                 ein: { type: 'string', description: 'Employer Identification Number (EIN)' },
-                includeFinancials: { type: 'boolean', description: 'Include financial information', default: false }
-              }
-            }
+                includeFinancials: {
+                  type: 'boolean',
+                  description: 'Include financial information',
+                  default: false,
+                },
+              },
+            },
           },
           {
             name: 'find_food_banks',
@@ -83,18 +111,22 @@ class SocialGoodMCPServer {
               properties: {
                 location: { type: 'string', description: 'Location (address or coordinates)' },
                 radius: { type: 'number', description: 'Search radius in miles', default: 15 },
-                openNow: { type: 'boolean', description: 'Only show locations open now', default: false },
+                openNow: {
+                  type: 'boolean',
+                  description: 'Only show locations open now',
+                  default: false,
+                },
                 services: {
                   type: 'array',
                   items: {
                     type: 'string',
-                    enum: ['food_pantry', 'soup_kitchen', 'food_delivery', 'nutrition_education']
+                    enum: ['food_pantry', 'soup_kitchen', 'food_delivery', 'nutrition_education'],
                   },
-                  description: 'Specific services needed'
-                }
+                  description: 'Specific services needed',
+                },
               },
-              required: ['location']
-            }
+              required: ['location'],
+            },
           },
           {
             name: 'get_disaster_relief_info',
@@ -106,16 +138,23 @@ class SocialGoodMCPServer {
                 disasterType: {
                   type: 'string',
                   enum: ['hurricane', 'earthquake', 'flood', 'wildfire', 'tornado', 'winter_storm'],
-                  description: 'Type of disaster'
+                  description: 'Type of disaster',
                 },
                 needType: {
                   type: 'string',
-                  enum: ['shelter', 'food', 'medical', 'supplies', 'transportation', 'financial_aid'],
-                  description: 'Type of assistance needed'
-                }
+                  enum: [
+                    'shelter',
+                    'food',
+                    'medical',
+                    'supplies',
+                    'transportation',
+                    'financial_aid',
+                  ],
+                  description: 'Type of assistance needed',
+                },
               },
-              required: ['location']
-            }
+              required: ['location'],
+            },
           },
           {
             name: 'search_community_resources',
@@ -126,22 +165,30 @@ class SocialGoodMCPServer {
                 location: { type: 'string', description: 'Location to search' },
                 resourceType: {
                   type: 'string',
-                  enum: ['housing', 'healthcare', 'job_training', 'childcare', 'mental_health', 'substance_abuse', 'legal_aid'],
-                  description: 'Type of resource needed'
+                  enum: [
+                    'housing',
+                    'healthcare',
+                    'job_training',
+                    'childcare',
+                    'mental_health',
+                    'substance_abuse',
+                    'legal_aid',
+                  ],
+                  description: 'Type of resource needed',
                 },
                 eligibility: {
                   type: 'object',
                   properties: {
                     income_level: { type: 'string', enum: ['low', 'moderate', 'any'] },
                     family_size: { type: 'number' },
-                    age_group: { type: 'string', enum: ['children', 'adults', 'seniors', 'any'] }
+                    age_group: { type: 'string', enum: ['children', 'adults', 'seniors', 'any'] },
                   },
-                  description: 'Eligibility criteria'
+                  description: 'Eligibility criteria',
                 },
-                radius: { type: 'number', description: 'Search radius in miles', default: 20 }
+                radius: { type: 'number', description: 'Search radius in miles', default: 20 },
               },
-              required: ['location', 'resourceType']
-            }
+              required: ['location', 'resourceType'],
+            },
           },
           {
             name: 'report_community_need',
@@ -151,27 +198,38 @@ class SocialGoodMCPServer {
               properties: {
                 needType: {
                   type: 'string',
-                  enum: ['food_insecurity', 'housing', 'healthcare', 'education', 'disaster_relief', 'elder_care', 'child_care'],
-                  description: 'Type of community need'
+                  enum: [
+                    'food_insecurity',
+                    'housing',
+                    'healthcare',
+                    'education',
+                    'disaster_relief',
+                    'elder_care',
+                    'child_care',
+                  ],
+                  description: 'Type of community need',
                 },
                 location: { type: 'string', description: 'Location where help is needed' },
                 description: { type: 'string', description: 'Detailed description of the need' },
                 urgency: {
                   type: 'string',
                   enum: ['low', 'medium', 'high', 'emergency'],
-                  description: 'Urgency level'
+                  description: 'Urgency level',
                 },
                 contactInfo: { type: 'string', description: 'Contact information for follow-up' },
-                estimatedPeopleAffected: { type: 'number', description: 'Number of people affected' }
+                estimatedPeopleAffected: {
+                  type: 'number',
+                  description: 'Number of people affected',
+                },
               },
-              required: ['needType', 'location', 'description', 'urgency']
-            }
-          }
-        ]
+              required: ['needType', 'location', 'description', 'urgency'],
+            },
+          },
+        ],
       };
     });
 
-    this.server.setRequestHandler('tools/call', async (request) => {
+    this.server.setRequestHandler('tools/call', async request => {
       const { name, arguments: args } = request.params;
 
       switch (name) {
@@ -193,7 +251,13 @@ class SocialGoodMCPServer {
     });
   }
 
-  async searchVolunteerOpportunities({ location, cause, skills = [], timeCommitment, radius = 25 }) {
+  async searchVolunteerOpportunities({
+    location,
+    cause,
+    skills = [],
+    timeCommitment,
+    radius = 25,
+  }) {
     // Mock implementation - in production, integrate with VolunteerMatch, JustServe, or similar APIs
     const mockOpportunities = [
       {
@@ -208,7 +272,7 @@ class SocialGoodMCPServer {
         time_commitment: 'weekly',
         schedule: 'Saturdays 9:00 AM - 12:00 PM',
         contact: 'volunteers@greencity.org',
-        background_check_required: false
+        background_check_required: false,
       },
       {
         id: 'vol_002',
@@ -222,7 +286,7 @@ class SocialGoodMCPServer {
         time_commitment: 'weekly',
         schedule: 'Weekdays 3:30 PM - 5:30 PM',
         contact: 'tutors@literacyfirst.org',
-        background_check_required: true
+        background_check_required: true,
       },
       {
         id: 'vol_003',
@@ -236,7 +300,7 @@ class SocialGoodMCPServer {
         time_commitment: 'monthly',
         schedule: 'First Saturday of each month, 8:00 AM - 2:00 PM',
         contact: 'volunteers@seniorcare.org',
-        background_check_required: false
+        background_check_required: false,
       },
       {
         id: 'vol_004',
@@ -250,8 +314,8 @@ class SocialGoodMCPServer {
         time_commitment: 'weekly',
         schedule: 'Flexible shifts available',
         contact: 'volunteer@citygeneral.org',
-        background_check_required: true
-      }
+        background_check_required: true,
+      },
     ];
 
     let filteredOpportunities = mockOpportunities;
@@ -267,14 +331,18 @@ class SocialGoodMCPServer {
     }
 
     if (timeCommitment) {
-      filteredOpportunities = filteredOpportunities.filter(opp => opp.time_commitment === timeCommitment);
+      filteredOpportunities = filteredOpportunities.filter(
+        opp => opp.time_commitment === timeCommitment
+      );
     }
 
     return {
-      content: [{
-        type: 'text',
-        text: `Volunteer opportunities near ${location}${cause ? ` (${cause} focus)` : ''} within ${radius} miles:\n${JSON.stringify(filteredOpportunities, null, 2)}`
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `Volunteer opportunities near ${location}${cause ? ` (${cause} focus)` : ''} within ${radius} miles:\n${JSON.stringify(filteredOpportunities, null, 2)}`,
+        },
+      ],
     };
   }
 
@@ -287,27 +355,27 @@ class SocialGoodMCPServer {
       founded: '1998',
       location: {
         headquarters: 'Springfield, IL',
-        serves: 'Illinois and surrounding states'
+        serves: 'Illinois and surrounding states',
       },
       programs: [
         'Community Organizing',
         'Disaster Relief',
         'Youth Development',
-        'Environmental Justice'
+        'Environmental Justice',
       ],
       contact: {
         phone: '(555) 123-4567',
         email: 'info@communityaction.org',
-        website: 'www.communityaction.org'
+        website: 'www.communityaction.org',
       },
       ratings: {
         charity_navigator: '4 stars',
         transparency: '92%',
-        accountability: '95%'
+        accountability: '95%',
       },
       volunteer_opportunities: 15,
       staff_size: 45,
-      board_size: 12
+      board_size: 12,
     };
 
     if (includeFinancials) {
@@ -317,15 +385,17 @@ class SocialGoodMCPServer {
         administrative_expenses_ratio: '10%',
         fundraising_expenses_ratio: '5%',
         assets: '$1,200,000',
-        liabilities: '$150,000'
+        liabilities: '$150,000',
       };
     }
 
     return {
-      content: [{
-        type: 'text',
-        text: `Charity information${charityName ? ` for ${charityName}` : ''}:\n${JSON.stringify(mockCharityData, null, 2)}`
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `Charity information${charityName ? ` for ${charityName}` : ''}:\n${JSON.stringify(mockCharityData, null, 2)}`,
+        },
+      ],
     };
   }
 
@@ -344,12 +414,12 @@ class SocialGoodMCPServer {
           thursday: '9:00 AM - 5:00 PM',
           friday: '9:00 AM - 5:00 PM',
           saturday: '9:00 AM - 2:00 PM',
-          sunday: 'Closed'
+          sunday: 'Closed',
         },
         services: ['food_pantry', 'nutrition_education'],
         eligibility: 'Income verification required',
         distance: '2.3 miles',
-        currently_open: true
+        currently_open: true,
       },
       {
         name: 'Community Kitchen',
@@ -363,12 +433,12 @@ class SocialGoodMCPServer {
           thursday: '11:00 AM - 2:00 PM',
           friday: '11:00 AM - 2:00 PM',
           saturday: 'Closed',
-          sunday: 'Closed'
+          sunday: 'Closed',
         },
         services: ['soup_kitchen'],
         eligibility: 'No requirements - all welcome',
         distance: '4.7 miles',
-        currently_open: false
+        currently_open: false,
       },
       {
         name: 'Mobile Food Pantry',
@@ -378,8 +448,8 @@ class SocialGoodMCPServer {
         services: ['food_delivery', 'food_pantry'],
         eligibility: 'Homebound individuals and families',
         next_delivery: 'Friday 10:00 AM - Elm Street Community Center',
-        distance: 'Varies by location'
-      }
+        distance: 'Varies by location',
+      },
     ];
 
     let filteredFoodBanks = mockFoodBanks;
@@ -395,14 +465,16 @@ class SocialGoodMCPServer {
     }
 
     return {
-      content: [{
-        type: 'text',
-        text: `Food banks and pantries near ${location} within ${radius} miles${openNow ? ' (open now)' : ''}:\n${JSON.stringify(filteredFoodBanks, null, 2)}`
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `Food banks and pantries near ${location} within ${radius} miles${openNow ? ' (open now)' : ''}:\n${JSON.stringify(filteredFoodBanks, null, 2)}`,
+        },
+      ],
     };
   }
 
-  async getDisasterReliefInfo({ location, disasterType, needType }) {
+  async getDisasterReliefInfo({ location, disasterType, _needType }) {
     // Mock implementation
     const mockReliefInfo = {
       location,
@@ -411,7 +483,7 @@ class SocialGoodMCPServer {
       emergency_contacts: {
         emergency_services: '911',
         red_cross: '1-800-RED-CROSS',
-        local_emergency_management: '(555) 987-6543'
+        local_emergency_management: '(555) 987-6543',
       },
       shelter_locations: [
         {
@@ -419,56 +491,58 @@ class SocialGoodMCPServer {
           address: '123 Safe Haven Dr',
           capacity: '200 people',
           amenities: ['Meals', 'Medical care', 'Pet-friendly'],
-          contact: '(555) 111-2222'
+          contact: '(555) 111-2222',
         },
         {
           name: 'High School Gymnasium',
           address: '456 School Rd',
           capacity: '150 people',
           amenities: ['Meals', 'Cots', 'Phone charging'],
-          contact: '(555) 333-4444'
-        }
+          contact: '(555) 333-4444',
+        },
       ],
       relief_services: {
         food_distribution: {
           location: 'Fairgrounds - Building A',
           schedule: 'Daily 8:00 AM - 6:00 PM',
-          requirements: 'ID and proof of address in affected area'
+          requirements: 'ID and proof of address in affected area',
         },
         medical_assistance: {
           location: 'Mobile Medical Unit - Main Street',
           schedule: '24/7',
-          services: ['First aid', 'Prescription refills', 'Mental health support']
+          services: ['First aid', 'Prescription refills', 'Mental health support'],
         },
         financial_assistance: {
           organization: 'FEMA Disaster Relief',
           application: 'disasterassistance.gov or call 1-800-621-3362',
-          types: ['Housing assistance', 'Repair grants', 'Personal property assistance']
-        }
+          types: ['Housing assistance', 'Repair grants', 'Personal property assistance'],
+        },
       },
       volunteer_needs: [
         'Shelter volunteers',
         'Food distribution',
         'Cleanup crews',
-        'Translation services'
+        'Translation services',
       ],
       donations_needed: [
         'Non-perishable food',
         'Water bottles',
         'Blankets and pillows',
-        'Personal hygiene items'
-      ]
+        'Personal hygiene items',
+      ],
     };
 
     return {
-      content: [{
-        type: 'text',
-        text: `Disaster relief information for ${location}${disasterType ? ` (${disasterType})` : ''}:\n${JSON.stringify(mockReliefInfo, null, 2)}`
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `Disaster relief information for ${location}${disasterType ? ` (${disasterType})` : ''}:\n${JSON.stringify(mockReliefInfo, null, 2)}`,
+        },
+      ],
     };
   }
 
-  async searchCommunityResources({ location, resourceType, eligibility = {}, radius = 20 }) {
+  async searchCommunityResources({ location, resourceType, _eligibility = {}, radius = 20 }) {
     // Mock implementation
     const mockResources = {
       housing: [
@@ -478,7 +552,7 @@ class SocialGoodMCPServer {
           address: '123 Housing Blvd',
           phone: '(555) 678-9012',
           eligibility: 'Income limits apply',
-          website: 'www.springfieldhousing.org'
+          website: 'www.springfieldhousing.org',
         },
         {
           name: 'Emergency Housing Services',
@@ -486,8 +560,8 @@ class SocialGoodMCPServer {
           address: '456 Support Ave',
           phone: '(555) 789-0123',
           eligibility: 'Homeless or at risk of homelessness',
-          hours: '24/7 intake'
-        }
+          hours: '24/7 intake',
+        },
       ],
       healthcare: [
         {
@@ -496,7 +570,7 @@ class SocialGoodMCPServer {
           address: '789 Wellness Way',
           phone: '(555) 890-1234',
           eligibility: 'Sliding fee scale based on income',
-          insurance_accepted: ['Medicaid', 'Medicare', 'Uninsured welcome']
+          insurance_accepted: ['Medicaid', 'Medicare', 'Uninsured welcome'],
         },
         {
           name: 'Free Clinic Network',
@@ -504,8 +578,8 @@ class SocialGoodMCPServer {
           address: '321 Care St',
           phone: '(555) 901-2345',
           eligibility: 'Uninsured individuals below 200% poverty level',
-          hours: 'Saturdays 8:00 AM - 2:00 PM'
-        }
+          hours: 'Saturdays 8:00 AM - 2:00 PM',
+        },
       ],
       job_training: [
         {
@@ -514,8 +588,8 @@ class SocialGoodMCPServer {
           address: '654 Career Lane',
           phone: '(555) 012-3456',
           programs: ['Healthcare', 'Manufacturing', 'IT', 'Customer service'],
-          eligibility: 'Open to all job seekers'
-        }
+          eligibility: 'Open to all job seekers',
+        },
       ],
       childcare: [
         {
@@ -524,22 +598,31 @@ class SocialGoodMCPServer {
           address: '987 Learning Dr',
           phone: '(555) 123-4567',
           age_range: '3-5 years old',
-          eligibility: 'Income guidelines apply'
-        }
-      ]
+          eligibility: 'Income guidelines apply',
+        },
+      ],
     };
 
     const resources = mockResources[resourceType] || [];
 
     return {
-      content: [{
-        type: 'text',
-        text: `${resourceType.replace('_', ' ')} resources near ${location} within ${radius} miles:\n${JSON.stringify(resources, null, 2)}`
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `${resourceType.replace('_', ' ')} resources near ${location} within ${radius} miles:\n${JSON.stringify(resources, null, 2)}`,
+        },
+      ],
     };
   }
 
-  async reportCommunityNeed({ needType, location, description, urgency, contactInfo, estimatedPeopleAffected }) {
+  async reportCommunityNeed({
+    needType,
+    location,
+    description,
+    urgency,
+    contactInfo,
+    estimatedPeopleAffected,
+  }) {
     // Mock implementation - in production, this would integrate with community need tracking systems
     const needId = 'NEED-' + Date.now();
     const reportData = {
@@ -552,14 +635,16 @@ class SocialGoodMCPServer {
       people_affected: estimatedPeopleAffected,
       status: 'submitted',
       submitted_at: new Date().toISOString(),
-      estimated_response_time: this.getEstimatedResponseTime(urgency)
+      estimated_response_time: this.getEstimatedResponseTime(urgency),
     };
 
     return {
-      content: [{
-        type: 'text',
-        text: `Community need reported successfully!\n\nReport ID: ${needId}\nType: ${needType}\nLocation: ${location}\nUrgency: ${urgency}\nStatus: Submitted for review\n\nEstimated response time: ${reportData.estimated_response_time}\n\nYour report has been forwarded to relevant community organizations and local authorities. You can track this need using ID: ${needId}`
-      }]
+      content: [
+        {
+          type: 'text',
+          text: `Community need reported successfully!\n\nReport ID: ${needId}\nType: ${needType}\nLocation: ${location}\nUrgency: ${urgency}\nStatus: Submitted for review\n\nEstimated response time: ${reportData.estimated_response_time}\n\nYour report has been forwarded to relevant community organizations and local authorities. You can track this need using ID: ${needId}`,
+        },
+      ],
     };
   }
 
@@ -568,7 +653,7 @@ class SocialGoodMCPServer {
       emergency: '1-2 hours',
       high: '24-48 hours',
       medium: '3-7 days',
-      low: '1-2 weeks'
+      low: '1-2 weeks',
     };
     return responseMap[urgency] || '1-2 weeks';
   }

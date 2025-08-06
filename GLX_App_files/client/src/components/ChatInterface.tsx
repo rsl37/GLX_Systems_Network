@@ -53,7 +53,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
         setMessages(prev => [...prev, message]);
       });
     }
-  }, [health?.authenticated, onMessage]);
+  }, [socket, helpRequestId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -63,18 +63,20 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/chat/${helpRequestId}/messages`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
         const data = await response.json();
-        setMessages(data.map((msg: any) => ({
-          id: msg.id,
-          message: msg.message,
-          sender: msg.sender_username,
-          avatar: msg.sender_avatar,
-          timestamp: msg.created_at
-        })));
+        setMessages(
+          data.map((msg: any) => ({
+            id: msg.id,
+            message: msg.message,
+            sender: msg.sender_username,
+            avatar: msg.sender_avatar,
+            timestamp: msg.created_at,
+          }))
+        );
       }
     } catch (error) {
       console.error('Failed to fetch messages:', error);
@@ -83,6 +85,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
     }
   };
 
+  const handleSendMessage = async (e: React.FormEvent) => {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -105,7 +108,7 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('en-US', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -116,10 +119,10 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-center">
-            <div className="animate-spin h-5 w-5 border-2 border-purple-500 border-t-transparent rounded-full"></div>
-            <span className="ml-2 text-sm text-gray-600">Loading messages...</span>
+        <CardContent className='p-4'>
+          <div className='flex items-center justify-center'>
+            <div className='animate-spin h-5 w-5 border-2 border-purple-500 border-t-transparent rounded-full'></div>
+            <span className='ml-2 text-sm text-gray-600'>Loading messages...</span>
           </div>
         </CardContent>
       </Card>
@@ -127,44 +130,44 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
   }
 
   return (
-    <Card className="mt-4">
+    <Card className='mt-4'>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between text-lg">
-          <div className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
+        <CardTitle className='flex items-center justify-between text-lg'>
+          <div className='flex items-center gap-2'>
+            <MessageCircle className='h-5 w-5' />
             Chat
           </div>
-          <div className="flex items-center gap-1 text-sm">
+          <div className='flex items-center gap-1 text-sm'>
             {health.connected ? (
-              <div className="flex items-center text-green-600">
-                <Wifi className="h-4 w-4" />
-                <span className="text-xs">Connected</span>
+              <div className='flex items-center text-green-600'>
+                <Wifi className='h-4 w-4' />
+                <span className='text-xs'>Connected</span>
               </div>
             ) : (
-              <div className="flex items-center text-red-600">
-                <WifiOff className="h-4 w-4" />
-                <span className="text-xs">Connecting...</span>
+              <div className='flex items-center text-red-600'>
+                <WifiOff className='h-4 w-4' />
+                <span className='text-xs'>Connecting...</span>
               </div>
             )}
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className='space-y-4'>
         {/* Connection Status */}
         {health.lastError && (
-          <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+          <div className='text-xs text-amber-600 bg-amber-50 p-2 rounded'>
             ⚠️ {health.lastError}
           </div>
         )}
 
         {/* Messages */}
-        <div className="h-64 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-lg">
+        <div className='h-64 overflow-y-auto space-y-3 p-3 bg-gray-50 rounded-lg'>
           {messages.length === 0 ? (
-            <div className="text-center text-gray-500 py-8">
+            <div className='text-center text-gray-500 py-8'>
               No messages yet. Start the conversation!
             </div>
           ) : (
-            messages.map((message) => (
+            messages.map(message => (
               <div
                 key={message.id}
                 className={`flex gap-2 ${
@@ -172,9 +175,9 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
                 }`}
               >
                 {message.sender !== currentUser && (
-                  <Avatar className="h-8 w-8">
+                  <Avatar className='h-8 w-8'>
                     <AvatarImage src={message.avatar || ''} />
-                    <AvatarFallback className="text-xs">
+                    <AvatarFallback className='text-xs'>
                       {getInitials(message.sender)}
                     </AvatarFallback>
                   </Avatar>
@@ -182,17 +185,13 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
 
                 <div
                   className={`max-w-xs px-3 py-2 rounded-lg ${
-                    message.sender === currentUser
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-white border'
+                    message.sender === currentUser ? 'bg-purple-500 text-white' : 'bg-white border'
                   }`}
                 >
-                  <p className="text-sm">{message.message}</p>
+                  <p className='text-sm'>{message.message}</p>
                   <p
                     className={`text-xs mt-1 ${
-                      message.sender === currentUser
-                        ? 'text-purple-100'
-                        : 'text-gray-500'
+                      message.sender === currentUser ? 'text-purple-100' : 'text-gray-500'
                     }`}
                   >
                     {formatTime(message.timestamp)}
@@ -200,9 +199,9 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
                 </div>
 
                 {message.sender === currentUser && (
-                  <Avatar className="h-8 w-8">
+                  <Avatar className='h-8 w-8'>
                     <AvatarImage src={message.avatar || ''} />
-                    <AvatarFallback className="text-xs">
+                    <AvatarFallback className='text-xs'>
                       {getInitials(message.sender)}
                     </AvatarFallback>
                   </Avatar>
@@ -214,25 +213,25 @@ export function ChatInterface({ helpRequestId, currentUser }: ChatInterfaceProps
         </div>
 
         {/* Message Input */}
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+        <form onSubmit={handleSendMessage} className='flex gap-2'>
           <Input
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1"
+            onChange={e => setNewMessage(e.target.value)}
+            placeholder='Type a message...'
+            className='flex-1'
             disabled={isSending}
           />
-          <Button type="submit" disabled={!newMessage.trim() || isSending}>
+          <Button type='submit' disabled={!newMessage.trim() || isSending}>
             {isSending ? (
-              <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+              <div className='animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full' />
             ) : (
-              <Send className="h-4 w-4" />
+              <Send className='h-4 w-4' />
             )}
           </Button>
         </form>
 
         {/* Pusher Status */}
-        <div className="text-xs text-gray-500 text-center">
+        <div className='text-xs text-gray-500 text-center'>
           Real-time via SSE • {health?.connected ? 'Connected' : 'Connecting...'}
         </div>
       </CardContent>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "GLX Civic Networking App - Complete Vercel Integration Guide"
 description: ""
@@ -10,7 +11,13 @@ tags: []
 relatedDocs: []
 ---
 
+<<<<<<< HEAD
 # GLX Civic Networking App - Complete Vercel Integration Guide
+=======
+=======
+>>>>>>> origin/copilot/fix-494
+# GALAX Civic Networking App - Complete Vercel Integration Guide
+>>>>>>> origin/all-merged
 
 ## 🎯 Overview
 
@@ -437,4 +444,8 @@ vercel rollback
 
 ---
 
+<<<<<<< HEAD
 This integration provides enterprise-grade security, monitoring, and reliability for your GitHub-to-Vercel deployment pipeline. Follow this guide for a robust, secure deployment setup that scales with your application's needs.
+=======
+This integration provides enterprise-grade security, monitoring, and reliability for your GitHub-to-Vercel deployment pipeline. Follow this guide for a robust, secure deployment setup that scales with your application's needs.
+>>>>>>> origin/copilot/fix-494

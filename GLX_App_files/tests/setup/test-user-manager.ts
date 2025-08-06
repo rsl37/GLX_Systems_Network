@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 /*
  * Test User Management for CI/CD Authentication Testing
  *
@@ -53,11 +52,13 @@ export class TestUserManager {
       password: 'TestPassword123!',
       firstName: 'Test',
       lastName: `User${uniqueId}`,
-      phone: `+1555000${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`,
+      phone: `+1555000${Math.floor(Math.random() * 10000)
+        .toString()
+        .padStart(4, '0')}`,
       walletAddress: `0x${randomBytes(20).toString('hex')}`,
       created_at: new Date().toISOString(),
       session_id: this.sessionId,
-      ...overrides
+      ...overrides,
     };
 
     this.testUsers.set(testUser.id, testUser);
@@ -97,20 +98,20 @@ export class TestUserManager {
       // Regular user
       regularUser: this.createTestUser({
         firstName: 'Regular',
-        lastName: 'User'
+        lastName: 'User',
       }),
 
       // User with verified email
       verifiedUser: this.createTestUser({
         firstName: 'Verified',
-        lastName: 'User'
+        lastName: 'User',
       }),
 
       // User with phone number
       phoneUser: this.createTestUser({
         firstName: 'Phone',
         lastName: 'User',
-        phone: '+15551234567'
+        phone: '+15551234567',
       }),
 
       // User with wallet address only
@@ -118,22 +119,22 @@ export class TestUserManager {
         firstName: 'Wallet',
         lastName: 'User',
         email: '', // No email for wallet-only user
-        walletAddress: `0x${randomBytes(20).toString('hex')}`
+        walletAddress: `0x${randomBytes(20).toString('hex')}`,
       }),
 
       // Admin user
       adminUser: this.createTestUser({
         firstName: 'Admin',
         lastName: 'User',
-        username: `admin_${randomBytes(4).toString('hex')}`
+        username: `admin_${randomBytes(4).toString('hex')}`,
       }),
 
       // User for security testing
       securityUser: this.createTestUser({
         firstName: 'Security',
         lastName: 'Test',
-        password: 'VerySecurePassword123!'
-      })
+        password: 'VerySecurePassword123!',
+      }),
     };
   }
 
@@ -152,13 +153,13 @@ export class TestUserManager {
         username: users.regularUser.username,
         password: users.regularUser.password,
         firstName: users.regularUser.firstName,
-        lastName: users.regularUser.lastName
+        lastName: users.regularUser.lastName,
       },
 
       // Valid login data
       validLogin: {
         email: users.regularUser.email,
-        password: users.regularUser.password
+        password: users.regularUser.password,
       },
 
       // Invalid login data for testing
@@ -166,25 +167,25 @@ export class TestUserManager {
         {
           email: users.regularUser.email,
           password: 'wrongpassword',
-          expectedError: 'Invalid credentials'
+          expectedError: 'Invalid credentials',
         },
         {
           email: 'nonexistent@example.com',
           password: 'anypassword',
-          expectedError: 'Invalid credentials'
+          expectedError: 'Invalid credentials',
         },
         {
           email: '',
           password: users.regularUser.password,
-          expectedError: 'Email and password are required'
-        }
+          expectedError: 'Email and password are required',
+        },
       ],
 
       // Password reset test data
       passwordReset: {
         validEmail: users.regularUser.email,
         invalidEmail: 'nonexistent@example.com',
-        newPassword: 'NewSecurePassword123!'
+        newPassword: 'NewSecurePassword123!',
       },
 
       // Security test data
@@ -196,9 +197,9 @@ export class TestUserManager {
         oversizedInputs: {
           longEmail: 'a'.repeat(300) + '@example.com',
           longUsername: 'u'.repeat(300),
-          longName: 'n'.repeat(300)
-        }
-      }
+          longName: 'n'.repeat(300),
+        },
+      },
     };
   }
 
@@ -219,7 +220,7 @@ export class TestUserManager {
       testEmailDomain: process.env.TEST_EMAIL_DOMAIN || 'example.com',
       testEmailBase: process.env.TEST_EMAIL_BASE || 'test',
       userCount: this.testUsers.size,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
   }
 
@@ -230,7 +231,7 @@ export class TestUserManager {
     const exportData = {
       sessionId: this.sessionId,
       users: this.getAllTestUsers(),
-      config: this.getTestConfig()
+      config: this.getTestConfig(),
     };
     return JSON.stringify(exportData, null, 2);
   }
@@ -270,7 +271,7 @@ export function createTestUserForSecurity(): TestUser {
   return testUserManager.createTestUser({
     password: 'VerySecureTestPassword123!',
     firstName: 'Security',
-    lastName: 'Test'
+    lastName: 'Test',
   });
 }
 
@@ -315,7 +316,7 @@ export const testConfig = {
 
   // Cleanup settings
   cleanupAfterTests: process.env.TEST_CLEANUP === 'true',
-  keepTestDataOnFailure: process.env.TEST_KEEP_DATA_ON_FAILURE === 'true'
+  keepTestDataOnFailure: process.env.TEST_KEEP_DATA_ON_FAILURE === 'true',
 };
 
 export default testUserManager;

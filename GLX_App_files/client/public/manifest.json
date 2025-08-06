@@ -2,11 +2,14 @@
   "name": "GLX - Civic Network Platform",
   "short_name": "GLX",
   "description": "Lean civic engagement platform for community help and governance",
+  "description": "Lean civic engagement platform for community help and governance",
   "start_url": "/",
   "display": "standalone",
   "scope": "/",
+  "scope": "/",
   "background_color": "#f5f5f5",
   "theme_color": "#B593EE",
+  "lang": "en-US",
   "lang": "en-US",
   "icons": [
     {

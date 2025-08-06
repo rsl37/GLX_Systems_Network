@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright (c) 2025 GLX Civic Networking App
  *
@@ -11,6 +12,13 @@
  * Converted from custom test runner to standard vitest format
  */
 
+=======
+/**
+ * Vitest Integration Tests for Stablecoin Service
+ * Converted from custom test runner to standard vitest format
+ */
+
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { StablecoinService } from '../StablecoinService.js';
 import { DEFAULT_STABLECOIN_CONFIG } from '../StablecoinContract.js';
@@ -24,13 +32,15 @@ describe('StablecoinService Integration', () => {
     const testConfig = {
       ...DEFAULT_STABLECOIN_CONFIG,
       rebalanceInterval: 5000, // 5 seconds for testing
-      toleranceBand: 0.02
+      toleranceBand: 0.02,
     };
 
     const testOracleConfig = {
       ...DEFAULT_ORACLE_CONFIG,
-      updateInterval: 2000 // 2 seconds for testing
+      updateInterval: 2000, // 2 seconds for testing
     };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
     service = new StablecoinService(testConfig, testOracleConfig);
   });
@@ -100,16 +110,96 @@ describe('StablecoinService Integration', () => {
   test('should update configuration', async () => {
     await service.start();
 
+=======
+    
+=======
+
+>>>>>>> origin/copilot/fix-470
+    service = new StablecoinService(testConfig, testOracleConfig);
+  });
+
+  afterEach(() => {
+    if (service) {
+      service.stop();
+    }
+  });
+
+  test('should start service successfully', async () => {
+    await service.start();
+
+    const status = service.getStatus();
+    expect(status.isRunning).toBe(true);
+  });
+
+  test('should retrieve metrics successfully', async () => {
+    await service.start();
+
+    const metrics = service.getMetrics();
+
+    expect(metrics.stability).toBeTruthy();
+    expect(metrics.supply).toBeTruthy();
+    expect(metrics.price).toBeTruthy();
+    expect(metrics.oracle).toBeTruthy();
+
+    expect(typeof metrics.stability.currentPrice).toBe('number');
+    expect(typeof metrics.supply.totalSupply).toBe('number');
+  });
+
+  test('should perform manual rebalance', async () => {
+    await service.start();
+
+    // Set a price that should trigger rebalancing
+    service.setPrice(1.05); // 5% above peg
+
+    // Wait a moment for price to propagate
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const adjustment = await service.performRebalance();
+
+    // Should either return an adjustment object or null (if no adjustment needed)
+    expect(adjustment === null || (adjustment && typeof adjustment.action === 'string')).toBe(true);
+  });
+
+  test('should simulate market shock', async () => {
+    await service.start();
+
+    const initialMetrics = service.getMetrics();
+    const initialPrice = initialMetrics.stability.currentPrice;
+
+    // Simulate moderate market shock
+    service.simulateMarketShock(0.1); // 10% severity
+
+    // Wait for shock to propagate
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const postShockMetrics = service.getMetrics();
+    const newPrice = postShockMetrics.stability.currentPrice;
+
+    // Price should either change or remain stable depending on shock impact
+    expect(typeof newPrice).toBe('number');
+    expect(newPrice).toBeGreaterThan(0);
+  });
+
+  test('should update configuration', async () => {
+    await service.start();
+<<<<<<< HEAD
+    
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
     // Update stablecoin config
     service.updateConfig({
       toleranceBand: 0.03, // Change to 3%
-      maxSupplyChange: 0.08 // Change to 8%
+      maxSupplyChange: 0.08, // Change to 8%
     });
 
     // Update oracle config
     service.updateOracleConfig({
-      updateInterval: 3000 // Change to 3 seconds
+      updateInterval: 3000, // Change to 3 seconds
     });
+<<<<<<< HEAD
+<<<<<<< HEAD
 
     // Should complete without errors
     expect(true).toBe(true);
@@ -123,6 +213,28 @@ describe('StablecoinService Integration', () => {
     expect(Array.isArray(history)).toBe(true);
     expect(history.length).toBeGreaterThanOrEqual(0);
 
+=======
+    
+=======
+
+>>>>>>> origin/copilot/fix-470
+    // Should complete without errors
+    expect(true).toBe(true);
+  });
+
+  test('should retrieve supply history', async () => {
+    await service.start();
+
+    const history = await service.getSupplyHistory(5);
+
+    expect(Array.isArray(history)).toBe(true);
+    expect(history.length).toBeGreaterThanOrEqual(0);
+<<<<<<< HEAD
+    
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+
+>>>>>>> origin/copilot/fix-470
     if (history.length > 0) {
       const latest = history[0];
       expect(latest.action).toBeTruthy();

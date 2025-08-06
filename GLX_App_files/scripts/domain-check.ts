@@ -8,8 +8,6 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-
-
 /**
  * Domain & SSL Configuration Checker
  * Validates domain configuration and SSL certificate status
@@ -56,7 +54,7 @@ class DomainChecker {
         domain,
         status: 'error',
         message: 'Domain check failed',
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -64,14 +62,17 @@ class DomainChecker {
   private async checkDNS(domain: string): Promise<DomainCheckResult> {
     try {
       const result = execSync(`dig +short ${domain} A`, { encoding: 'utf8' });
-      const ips = result.trim().split('\n').filter(ip => ip);
+      const ips = result
+        .trim()
+        .split('\n')
+        .filter(ip => ip);
 
       if (ips.length === 0) {
         return {
           domain,
           status: 'error',
           message: 'DNS resolution failed - no A records found',
-          details: 'Check your DNS configuration in your domain provider'
+          details: 'Check your DNS configuration in your domain provider',
         };
       }
 
@@ -84,7 +85,7 @@ class DomainChecker {
           domain,
           status: 'warning',
           message: 'DNS may not be pointing to Vercel',
-          details: `Current IPs: ${ips.join(', ')}. Expected Vercel IPs: ${vercelIPs.join(', ')}`
+          details: `Current IPs: ${ips.join(', ')}. Expected Vercel IPs: ${vercelIPs.join(', ')}`,
         };
       }
 
@@ -92,59 +93,59 @@ class DomainChecker {
         domain,
         status: 'success',
         message: 'DNS resolution successful',
-        details: `Resolved to: ${ips.join(', ')}`
+        details: `Resolved to: ${ips.join(', ')}`,
       };
     } catch (error) {
       return {
         domain,
         status: 'error',
         message: 'DNS check failed',
-        details: `dig command failed: ${error}`
+        details: `dig command failed: ${error}`,
       };
     }
   }
 
   private async checkHTTPS(domain: string): Promise<DomainCheckResult> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const options = {
         hostname: domain,
         port: 443,
         path: '/',
         method: 'HEAD',
         timeout: 10000,
-        rejectUnauthorized: false // We'll check cert separately
+        rejectUnauthorized: false, // We'll check cert separately
       };
 
-      const req = https.request(options, (res) => {
+      const req = https.request(options, res => {
         resolve({
           domain,
           status: 'success',
           message: 'HTTPS connection successful',
-          details: `Status: ${res.statusCode}`
+          details: `Status: ${res.statusCode}`,
         });
       });
 
-      req.on('error', (error) => {
+      req.on('error', error => {
         if (error.message.includes('ECONNREFUSED')) {
           resolve({
             domain,
             status: 'error',
             message: 'HTTPS connection refused',
-            details: 'Port 443 is not accessible. Check if SSL is properly configured.'
+            details: 'Port 443 is not accessible. Check if SSL is properly configured.',
           });
         } else if (error.message.includes('ENOTFOUND')) {
           resolve({
             domain,
             status: 'error',
             message: 'Domain not found',
-            details: 'DNS resolution failed or domain does not exist'
+            details: 'DNS resolution failed or domain does not exist',
           });
         } else {
           resolve({
             domain,
             status: 'error',
             message: 'HTTPS connection failed',
-            details: error.message
+            details: error.message,
           });
         }
       });
@@ -155,7 +156,7 @@ class DomainChecker {
           domain,
           status: 'error',
           message: 'HTTPS connection timeout',
-          details: 'Connection timed out after 10 seconds'
+          details: 'Connection timed out after 10 seconds',
         });
       });
 
@@ -164,12 +165,12 @@ class DomainChecker {
   }
 
   private async checkSSL(domain: string): Promise<DomainCheckResult> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const options = {
         host: domain,
         port: 443,
         servername: domain,
-        rejectUnauthorized: true
+        rejectUnauthorized: true,
       };
 
       const socket = tls.connect(options, () => {
@@ -179,28 +180,30 @@ class DomainChecker {
         if (cert && cert.subject) {
           const expiryDate = new Date(cert.valid_to);
           const now = new Date();
-          const daysUntilExpiry = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+          const daysUntilExpiry = Math.ceil(
+            (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          );
 
           if (daysUntilExpiry < 0) {
             resolve({
               domain,
               status: 'error',
               message: 'SSL certificate expired',
-              details: `Certificate expired on ${cert.valid_to}`
+              details: `Certificate expired on ${cert.valid_to}`,
             });
           } else if (daysUntilExpiry < 30) {
             resolve({
               domain,
               status: 'warning',
               message: 'SSL certificate expires soon',
-              details: `Certificate expires in ${daysUntilExpiry} days (${cert.valid_to})`
+              details: `Certificate expires in ${daysUntilExpiry} days (${cert.valid_to})`,
             });
           } else {
             resolve({
               domain,
               status: 'success',
               message: 'SSL certificate valid',
-              details: `Issued by: ${cert.issuer.CN}, Expires: ${cert.valid_to} (${daysUntilExpiry} days)`
+              details: `Issued by: ${cert.issuer.CN}, Expires: ${cert.valid_to} (${daysUntilExpiry} days)`,
             });
           }
         } else {
@@ -208,7 +211,7 @@ class DomainChecker {
             domain,
             status: 'error',
             message: 'SSL certificate information not available',
-            details: 'Could not retrieve certificate details'
+            details: 'Could not retrieve certificate details',
           });
         }
       });
@@ -219,14 +222,14 @@ class DomainChecker {
             domain,
             status: 'error',
             message: 'SSL certificate error',
-            details: error.message
+            details: error.message,
           });
         } else {
           resolve({
             domain,
             status: 'error',
             message: 'SSL connection failed',
-            details: error.message
+            details: error.message,
           });
         }
       });
@@ -247,10 +250,14 @@ class DomainChecker {
   async runCheck(): Promise<void> {
     console.log('🌐 GLX Domain & SSL Configuration Check\n');
 
+<<<<<<< HEAD:GLX_App_files/scripts/domain-check.ts
     const domains = [
       'glxcivicnetwork.me',
       'glx-civic-networking-app.vercel.app'
     ];
+=======
+    const domains = ['galaxcivicnetwork.me', 'galax-civic-networking-app.vercel.app'];
+>>>>>>> origin/all-merged:GALAX_App_files/scripts/domain-check.ts
 
     const results: DomainCheckResult[] = [];
 

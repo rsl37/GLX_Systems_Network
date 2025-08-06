@@ -64,18 +64,21 @@ The stablecoin operates through a sophisticated monetary policy engine that:
 ### Key Components
 
 #### Smart Contract Simulation
+
 - **Supply Management**: Handles token minting and burning operations
 - **Reserve Tracking**: Maintains collateral backing and reserve ratios
 - **Policy Execution**: Implements predetermined monetary policy rules
 - **Audit Trail**: Records all decisions and their reasoning
 
 #### Price Oracle System
+
 - **Multi-Source Feeds**: Aggregates price data from multiple sources
 - **Confidence Scoring**: Weighs price data based on source reliability
 - **Volatility Detection**: Monitors for unusual market conditions
 - **Health Monitoring**: Tracks oracle system status and data quality
 
 #### Stability Mechanisms
+
 - **Tolerance Bands**: Price must deviate >2% before triggering adjustments
 - **Rate Limiting**: Maximum 5% supply change per rebalance period
 - **Reserve Requirements**: Minimum 20% reserve ratio maintained
@@ -116,12 +119,14 @@ When the system performs rebalancing:
 ### Example Scenarios
 
 #### Expansion (Price Above Peg)
+
 - **Market Price**: $1.05 (5% above $1.00 peg)
 - **System Action**: Mint new tokens to increase supply
 - **Your Balance**: Token count increases proportionally
 - **Result**: Increased supply should push price back toward $1.00
 
 #### Contraction (Price Below Peg)
+
 - **Market Price**: $0.95 (5% below $1.00 peg)
 - **System Action**: Burn existing tokens to decrease supply
 - **Your Balance**: Token count decreases proportionally
@@ -140,9 +145,11 @@ Authorization: Bearer <your_jwt_token>
 ### Endpoints
 
 #### GET /api/stablecoin/status
+
 Returns overall system status and health metrics.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -173,28 +180,33 @@ Returns overall system status and health metrics.
 ```
 
 #### GET /api/stablecoin/balance
+
 Returns authenticated user's token balance information.
 
 **Response:**
+
 ```json
 {
   "success": true,
   "data": {
     "user_id": 123,
-    "crowds_balance": 150.50,
-    "locked_balance": 25.00,
+    "crowds_balance": 150.5,
+    "locked_balance": 25.0,
     "last_rebalance_participation": "2025-01-14T11:30:00Z"
   }
 }
 ```
 
 #### GET /api/stablecoin/transactions
+
 Returns user's transaction history.
 
 **Parameters:**
+
 - `limit` (optional): Number of transactions to return (default: 50, max: 100)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -212,12 +224,15 @@ Returns user's transaction history.
 ```
 
 #### GET /api/stablecoin/supply-history
+
 Returns recent supply adjustment history.
 
 **Parameters:**
+
 - `limit` (optional): Number of adjustments to return (default: 20, max: 50)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -227,7 +242,7 @@ Returns recent supply adjustment history.
       "amount": 5000,
       "reason": "Price 1.0312 above target 1.0000, expanding supply",
       "currentPrice": 1.0312,
-      "targetPrice": 1.0000,
+      "targetPrice": 1.0,
       "newSupply": 1005000,
       "timestamp": "2025-01-14T12:00:00Z"
     }
@@ -236,9 +251,11 @@ Returns recent supply adjustment history.
 ```
 
 #### GET /api/stablecoin/metrics
+
 Returns detailed stability and performance metrics.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -274,9 +291,11 @@ Returns detailed stability and performance metrics.
 ```
 
 #### POST /api/stablecoin/rebalance
+
 Triggers manual rebalancing (admin/testing only).
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -301,6 +320,7 @@ All endpoints return errors in consistent format:
 ```
 
 Common HTTP status codes:
+
 - `400`: Bad Request (invalid parameters)
 - `401`: Unauthorized (missing or invalid token)
 - `403`: Forbidden (insufficient permissions)
@@ -340,18 +360,19 @@ The system operates with configurable parameters:
 // The following interface defines the structure of the StablecoinConfig object.
 // The values provided in the comments are examples and not default values.
 interface StablecoinConfig {
-  targetPrice: 1.0;           // Example: $1.00 USD peg
-  toleranceBand: 0.02;        // Example: 2% tolerance before action
-  supplyAdjustmentRate: 0.5;  // Example: 50% of deviation adjustment
-  reserveRatio: 0.2;          // Example: 20% minimum reserves
-  maxSupplyChange: 0.05;      // Example: 5% max change per rebalance
-  rebalanceInterval: 300000;  // Example: 5 minutes between checks (in milliseconds)
+  targetPrice: 1.0; // Example: $1.00 USD peg
+  toleranceBand: 0.02; // Example: 2% tolerance before action
+  supplyAdjustmentRate: 0.5; // Example: 50% of deviation adjustment
+  reserveRatio: 0.2; // Example: 20% minimum reserves
+  maxSupplyChange: 0.05; // Example: 5% max change per rebalance
+  rebalanceInterval: 300000; // Example: 5 minutes between checks (in milliseconds)
 }
 ```
 
 ### Database Schema
 
 #### Stablecoin Transactions
+
 ```sql
 CREATE TABLE stablecoin_transactions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -367,6 +388,7 @@ CREATE TABLE stablecoin_transactions (
 ```
 
 #### Supply Adjustments
+
 ```sql
 CREATE TABLE supply_adjustments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -381,6 +403,7 @@ CREATE TABLE supply_adjustments (
 ```
 
 #### Metrics History
+
 ```sql
 CREATE TABLE stablecoin_metrics (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -402,18 +425,21 @@ CREATE TABLE stablecoin_metrics (
 The stablecoin system is designed with regulatory compliance in mind:
 
 #### Algorithmic Governance
+
 - **Predetermined Rules**: All monetary policy decisions follow pre-established algorithmic rules
 - **No Discretionary Actions**: Human intervention is limited to emergency situations
 - **Transparent Parameters**: All configuration parameters are publicly visible
 - **Audit Trail**: Complete history of all decisions and their reasoning
 
 #### Reserve Management
+
 - **Minimum Ratios**: Configurable minimum reserve requirements
 - **Regular Reporting**: Automated tracking of reserve levels
 - **Collateral Transparency**: Full visibility into backing assets
 - **Emergency Procedures**: Defined protocols for reserve management
 
 #### User Protection
+
 - **Proportional Adjustments**: Supply changes affect all users equally
 - **Advance Notice**: System parameters and changes are communicated clearly
 - **Fair Access**: No preferential treatment for any user category
@@ -438,18 +464,21 @@ The stablecoin system is designed with regulatory compliance in mind:
 ## Security Features
 
 ### Oracle Security
+
 - **Multi-source Verification**: Price data from multiple independent sources
 - **Confidence Scoring**: Weighted aggregation based on source reliability
 - **Anomaly Detection**: Automatic flagging of unusual price movements
 - **Failsafe Mechanisms**: System halts if oracle confidence drops too low
 
 ### Smart Contract Security
+
 - **Immutable Logic**: Core monetary policy rules cannot be arbitrarily changed
 - **Rate Limiting**: Built-in limits prevent excessive supply changes
 - **Reserve Protection**: Safeguards prevent reserve depletion
 - **Emergency Controls**: Admin functions for crisis situations only
 
 ### Data Integrity
+
 - **Cryptographic Hashes**: All transactions cryptographically signed
 - **Audit Logging**: Comprehensive logging of all system actions
 - **Backup Systems**: Redundant data storage and processing
@@ -460,21 +489,25 @@ The stablecoin system is designed with regulatory compliance in mind:
 ### Common Issues
 
 #### "Price data is stale" Warning
+
 - **Cause**: Oracle hasn't updated recently
 - **Solution**: Check oracle health status, ensure network connectivity
 - **Impact**: May delay rebalancing until fresh data available
 
 #### "Low price confidence" Alert
+
 - **Cause**: Oracle sources reporting conflicting data
 - **Solution**: Monitor for resolution, may require manual intervention
 - **Impact**: System may pause automatic rebalancing
 
 #### "High volatility detected" Notice
+
 - **Cause**: Rapid price changes in short time period
 - **Solution**: Normal during market stress, system will adapt
 - **Impact**: May trigger more frequent rebalancing
 
 #### Balance Changes Without Transactions
+
 - **Cause**: Automatic rebalancing adjusted supply
 - **Explanation**: Your proportional share remains the same
 - **Verification**: Check supply adjustment history
@@ -500,4 +533,8 @@ For technical support or questions about the stablecoin system, please refer to 
 
 ---
 
+<<<<<<< HEAD
 *This documentation reflects the current algorithmic stablecoin implementation. For the most up-to-date information, please refer to the system dashboard and API responses.*
+=======
+_This documentation reflects the current algorithmic stablecoin implementation. For the most up-to-date information, please refer to the system dashboard and API responses._
+>>>>>>> origin/copilot/fix-488

@@ -30,7 +30,11 @@ jobs:
       needs_dependencies: ${{ steps.changes.outputs.dependencies }}
       needs_config: ${{ steps.changes.outputs.config }}
       changed_files: ${{ steps.changes.outputs.all_changed_files }}
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-501
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,6 +48,7 @@ jobs:
           list-files: json
           filters: |
             frontend:
+<<<<<<< HEAD
               - 'GLX_App_files/src/**'
               - 'GLX_App_files/client/**'
               - 'GLX_App_files/components.json'
@@ -53,13 +58,39 @@ jobs:
               - 'GLX_App_files/index.html'
               - '!GLX_App_files/src/server/**'
               - '!GLX_App_files/server/**'
+=======
+              - 'GALAX_App_files/src/**'
+              - 'GALAX_App_files/client/**'
+              - 'GALAX_App_files/components.json'
+              - 'GALAX_App_files/tailwind.config.js'
+              - 'GALAX_App_files/vite.config.js'
+              - 'GALAX_App_files/postcss.config.js'
+              - 'GALAX_App_files/index.html'
+              - '!GALAX_App_files/src/server/**'
+              - '!GALAX_App_files/server/**'
+<<<<<<< HEAD
+>>>>>>> origin/all-merged
 
+=======
+              
+>>>>>>> origin/copilot/fix-501
             backend:
+<<<<<<< HEAD
               - 'GLX_App_files/server/**'
               - 'GLX_App_files/api/**'
               - 'GLX_App_files/tsconfig.server.json'
               - 'GLX_App_files/src/server/**'
+=======
+              - 'GALAX_App_files/server/**'
+              - 'GALAX_App_files/api/**'
+              - 'GALAX_App_files/tsconfig.server.json'
+              - 'GALAX_App_files/src/server/**'
+<<<<<<< HEAD
+>>>>>>> origin/all-merged
 
+=======
+              
+>>>>>>> origin/copilot/fix-501
             web3:
               - '**/*web3*'
               - '**/*crypto*'
@@ -67,7 +98,11 @@ jobs:
               - '**/*defi*'
               - 'GLX_App_files/server/middleware/web3-security.ts'
               - 'mcp-config.json'
+<<<<<<< HEAD
 
+=======
+              
+>>>>>>> origin/copilot/fix-501
             security:
               - 'GLX_App_files/server/**'
               - '.env*'
@@ -79,18 +114,33 @@ jobs:
               - '**/*auth*'
               - '**/*security*'
               - '**/*middleware*'
+<<<<<<< HEAD
 
             workflows:
               - '.github/**'
 
+=======
+              
+            workflows:
+              - '.github/**'
+              
+>>>>>>> origin/copilot/fix-501
             dependencies:
               - 'package.json'
               - 'GLX_App_files/package.json'
               - 'package-lock.json'
               - 'GLX_App_files/package-lock.json'
               - 'npm-shrinkwrap.json'
+<<<<<<< HEAD
               - 'GLX_App_files/npm-shrinkwrap.json'
+=======
+              - 'GALAX_App_files/npm-shrinkwrap.json'
+<<<<<<< HEAD
+>>>>>>> origin/all-merged
 
+=======
+              
+>>>>>>> origin/copilot/fix-501
             config:
               - 'tsconfig.json'
               - 'GLX_App_files/tsconfig.json'
@@ -99,8 +149,16 @@ jobs:
               - 'GLX_App_files/playwright.config.ts'
               - 'vercel.json'
               - '.lighthouserc.json'
+<<<<<<< HEAD
               - 'GLX_App_files/.lighthouserc.json'
+=======
+              - 'GALAX_App_files/.lighthouserc.json'
+<<<<<<< HEAD
+>>>>>>> origin/all-merged
 
+=======
+              
+>>>>>>> origin/copilot/fix-501
             docs_only:
               - '**/*.md'
               - 'docs/**'
@@ -115,11 +173,19 @@ jobs:
         id: requirements
         run: |
           echo "🔍 Analyzing changed files for intelligent workflow execution..."
+<<<<<<< HEAD
 
           # Get all changed files
           ALL_FILES='${{ steps.changes.outputs.all_changed_files }}'
           echo "Changed files: $ALL_FILES"
 
+=======
+          
+          # Get all changed files
+          ALL_FILES='${{ steps.changes.outputs.all_changed_files }}'
+          echo "Changed files: $ALL_FILES"
+          
+>>>>>>> origin/copilot/fix-501
           # Check if ONLY documentation files changed
           FRONTEND_CHANGED='${{ steps.changes.outputs.frontend }}'
           BACKEND_CHANGED='${{ steps.changes.outputs.backend }}'
@@ -129,7 +195,11 @@ jobs:
           DEPS_CHANGED='${{ steps.changes.outputs.dependencies }}'
           CONFIG_CHANGED='${{ steps.changes.outputs.config }}'
           DOCS_CHANGED='${{ steps.changes.outputs.docs_only }}'
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-501
           # Determine if this is a docs-only change
           if [[ "$DOCS_CHANGED" == "true" ]] && \
              [[ "$FRONTEND_CHANGED" == "false" ]] && \
@@ -144,7 +214,11 @@ jobs:
           else
             echo "docs_only=false" >> $GITHUB_OUTPUT
           fi
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-501
           echo "📊 Workflow Requirements Summary:"
           echo "  Frontend: $FRONTEND_CHANGED"
           echo "  Backend: $BACKEND_CHANGED"
@@ -215,11 +289,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+<<<<<<< HEAD
 
       - name: Validate documentation
         run: |
           echo "📝 Running lightweight validation for documentation-only changes"
 
+=======
+        
+      - name: Validate documentation
+        run: |
+          echo "📝 Running lightweight validation for documentation-only changes"
+          
+>>>>>>> origin/copilot/fix-501
           # Basic markdown validation
           echo "Checking for broken markdown links..."
           find . -name "*.md" -not -path "./node_modules/*" -not -path "./.git/*" | while read file; do
@@ -227,7 +309,11 @@ jobs:
             # Basic syntax check - just ensure the file is readable
             head -1 "$file" > /dev/null || echo "⚠️ Warning: $file may have issues"
           done
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-501
           echo "✅ Documentation validation complete - no heavy CI/CD needed"
 
   workflow-summary:
@@ -258,10 +344,18 @@ jobs:
           echo "  Web3 Tests: ${{ needs.trigger-web3-checks.result != 'skipped' }}"
           echo "  Docs-Only Mode: ${{ needs.docs-only-validation.result != 'skipped' }}"
           echo ""
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-501
           if [[ "${{ needs.analyze-changes.outputs.needs_docs_only }}" == "true" ]]; then
             echo "✅ Documentation-only changes detected - running lightweight validation"
             echo "⚡ Estimated time saved: 15-25 minutes"
           else
             echo "🏗️ Code changes detected - running appropriate comprehensive checks"
+<<<<<<< HEAD
           fi
+=======
+          fi
+>>>>>>> origin/copilot/fix-501

@@ -9,9 +9,26 @@
 // Added 2025-01-13 21:57:30 UTC - Centralized Security Management System
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import { postQuantumCrypto } from '../postQuantumCrypto.js';
+<<<<<<< HEAD
+import { postQuantumCrypto, getPostQuantumStatus } from '../postQuantumCrypto.js';
 import { antimalwareFileScanner, antimalwarePayloadScanner, getQuarantineStats, manageQuarantine } from './antimalware.js';
 import { antivirusFileScanner, realTimeProtection, antivirusAdmin, initializeAntivirus, globalScanStats } from './antivirus.js';
+=======
+import { postQuantumCrypto } from '../postQuantumCrypto.js';
+import {
+  antimalwareFileScanner,
+  antimalwarePayloadScanner,
+  getQuarantineStats,
+  manageQuarantine,
+} from './antimalware.js';
+import {
+  antivirusFileScanner,
+  realTimeProtection,
+  antivirusAdmin,
+  initializeAntivirus,
+  globalScanStats,
+} from './antivirus.js';
+>>>>>>> origin/copilot/fix-488
 import {
   ipBlockingMiddleware,
   attackDetectionMiddleware,
@@ -24,7 +41,7 @@ import {
   antiHackingAdmin,
   generateCSRFToken,
   suspiciousIPs,
-  blockedIPs
+  blockedIPs,
 } from './antihacking.js';
 import {
   zeroDayProtectionMiddleware,
@@ -34,14 +51,14 @@ import {
   zeroDayStats,
   AI_ML_THREATS,
   CLOUD_EDGE_THREATS,
-  NETWORK_INFRA_THREATS
+  NETWORK_INFRA_THREATS,
 } from './zeroDayProtection.js';
 import {
   sandboxingMiddleware,
   sandboxFileUpload,
   sandboxAdmin,
   initializeSandboxing,
-  sandboxStats
+  sandboxStats,
 } from './sandboxing.js';
 
 // Security system status
@@ -108,13 +125,13 @@ const SECURITY_CONFIG = {
     enabled: true,
     scanFiles: true,
     scanPayloads: true,
-    quarantineThreats: true
+    quarantineThreats: true,
   },
   antivirus: {
     enabled: true,
     realTimeProtection: true,
     autoUpdate: true,
-    updateInterval: 4 * 60 * 60 * 1000 // 4 hours
+    updateInterval: 4 * 60 * 60 * 1000, // 4 hours
   },
   antiHacking: {
     enabled: true,
@@ -124,7 +141,7 @@ const SECURITY_CONFIG = {
     botDetection: true,
     honeypot: true,
     csrfProtection: true,
-    behavioralAnalysis: true
+    behavioralAnalysis: true,
   },
   zeroDayProtection: {
     enabled: true,
@@ -133,7 +150,7 @@ const SECURITY_CONFIG = {
     networkInfraProtection: true,
     behavioralAnomalyDetection: true,
     threatIntelligenceEnabled: true,
-    updateInterval: 60 * 60 * 1000 // 1 hour
+    updateInterval: 60 * 60 * 1000, // 1 hour
   },
   sandboxing: {
     enabled: true,
@@ -142,24 +159,35 @@ const SECURITY_CONFIG = {
     networkMonitoring: true,
     memoryMonitoring: true,
     maxExecutionTime: 5000,
-    maxMemoryUsage: 100 * 1024 * 1024 // 100MB
+    maxMemoryUsage: 100 * 1024 * 1024, // 100MB
   },
   postQuantum: {
     enabled: true,
-    mlKemEnabled: true,     // ML-KEM (CRYSTALS-Kyber)
-    mlDsaEnabled: true,     // ML-DSA (CRYSTALS-Dilithium)
-    slhDsaEnabled: true,    // SLH-DSA (SPHINCS+)
-    hybridCrypto: true,     // Classical + Post-quantum hybrid
-    securityLevel: 5,       // 256-bit security level
-    quantumResistant: true  // Full quantum resistance
-  }
+    mlKemEnabled: true, // ML-KEM (CRYSTALS-Kyber)
+    mlDsaEnabled: true, // ML-DSA (CRYSTALS-Dilithium)
+    slhDsaEnabled: true, // SLH-DSA (SPHINCS+)
+    hybridCrypto: true, // Classical + Post-quantum hybrid
+    securityLevel: 5, // 256-bit security level
+    quantumResistant: true, // Full quantum resistance
+  },
 };
 
 // Security event logging
 interface SecurityEvent {
   id: string;
   timestamp: Date;
-  type: 'malware' | 'virus' | 'attack' | 'ddos' | 'bot' | 'honeypot' | 'csrf' | 'behavioral' | 'post-quantum' | 'system' | 'test';
+  type:
+    | 'malware'
+    | 'virus'
+    | 'attack'
+    | 'ddos'
+    | 'bot'
+    | 'honeypot'
+    | 'csrf'
+    | 'behavioral'
+    | 'post-quantum'
+    | 'system'
+    | 'test';
   severity: 'low' | 'medium' | 'high' | 'critical' | 'info';
   ip: string;
   userAgent?: string;
@@ -176,7 +204,7 @@ const logSecurityEvent = (event: Omit<SecurityEvent, 'id' | 'timestamp'>) => {
   const securityEvent: SecurityEvent = {
     id: crypto.randomUUID(),
     timestamp: new Date(),
-    ...event
+    ...event,
   };
 
   securityEvents.unshift(securityEvent);
@@ -193,7 +221,7 @@ const logSecurityEvent = (event: Omit<SecurityEvent, 'id' | 'timestamp'>) => {
       ip: event.ip,
       details: event.details,
       action: event.action,
-      timestamp: securityEvent.timestamp.toISOString()
+      timestamp: securityEvent.timestamp.toISOString(),
     });
   }
 };
@@ -234,7 +262,7 @@ export const comprehensiveSecurityMiddleware = [
   antimalwarePayloadScanner,
 
   // CSRF protection (for state-changing requests)
-  csrfProtectionMiddleware
+  csrfProtectionMiddleware,
 ];
 
 // File upload security middleware stack
@@ -246,7 +274,7 @@ export const fileUploadSecurityMiddleware = [
   antimalwareFileScanner,
 
   // Antivirus file scanning
-  antivirusFileScanner
+  antivirusFileScanner,
 ];
 
 // Get comprehensive security status
@@ -254,6 +282,24 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
   try {
     // Get antimalware stats
     const malwareStats = await getQuarantineStats();
+<<<<<<< HEAD
+    
+    // Get post-quantum status
+    const postQuantumStatus = getPostQuantumStatus();
+    
+    // Calculate protection score (0-160 for zero-day-protected)
+    let protectionScore = 0;
+    
+    if (SECURITY_CONFIG.antimalware.enabled) protectionScore += 20;
+    if (SECURITY_CONFIG.antivirus.enabled) protectionScore += 20;
+    if (SECURITY_CONFIG.antiHacking.enabled) protectionScore += 20;
+    if (SECURITY_CONFIG.antiHacking.ddosProtection) protectionScore += 5;
+    if (SECURITY_CONFIG.antiHacking.botDetection) protectionScore += 5;
+    if (SECURITY_CONFIG.antiHacking.honeypot) protectionScore += 5;
+    if (SECURITY_CONFIG.antiHacking.behavioralAnalysis) protectionScore += 5;
+    if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 5;
+    
+=======
 
     // Get post-quantum security status
     const pqStatus = postQuantumCrypto.getStatus();
@@ -283,41 +329,56 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     if (SECURITY_CONFIG.sandboxing.networkMonitoring) protectionScore += 2;
     if (SECURITY_CONFIG.sandboxing.memoryMonitoring) protectionScore += 1;
 
+>>>>>>> origin/copilot/fix-470
     // Add post-quantum bonus protection (30 points for quantum-safe level)
     if (pqStatus.initialized) protectionScore += 30;
 
     // Determine security level including zero-day-protected level
-    let securityLevel: 'low' | 'medium' | 'high' | 'maximum' | 'quantum-safe' | 'zero-day-protected';
+    let securityLevel:
+      | 'low'
+      | 'medium'
+      | 'high'
+      | 'maximum'
+      | 'quantum-safe'
+      | 'zero-day-protected';
     if (protectionScore >= 160) {
       securityLevel = 'zero-day-protected';
     } else if (protectionScore >= 130) {
       securityLevel = 'quantum-safe';
-    } else if (protectionScore >= 95) {
+    } else if (displayScore >= 95) {
       securityLevel = 'maximum';
-    } else if (protectionScore >= 80) {
+    } else if (displayScore >= 80) {
       securityLevel = 'high';
-    } else if (protectionScore >= 60) {
+    } else if (displayScore >= 60) {
       securityLevel = 'medium';
     } else {
       securityLevel = 'low';
     }
+<<<<<<< HEAD
+    
+    // Get post-quantum security status
+    const pqStatus = postQuantumSecurity.getSecurityStatus();
+    
+    return {
+=======
 
     // Cap display score at 100 but track actual for quantum-safe level
     const displayScore = Math.min(protectionScore, 100);
 
     const status: SecuritySystemStatus = {
+>>>>>>> origin/copilot/fix-470
       antimalware: {
         enabled: SECURITY_CONFIG.antimalware.enabled,
         lastScan: new Date().toISOString(),
         threatsDetected: malwareStats.recentQuarantine.length,
-        quarantinedFiles: malwareStats.totalQuarantined
+        quarantinedFiles: malwareStats.totalQuarantined,
       },
       antivirus: {
         enabled: SECURITY_CONFIG.antivirus.enabled,
         definitionsCount: 13, // Number of virus signatures
         lastUpdate: globalScanStats.lastUpdate,
         totalScans: globalScanStats.totalScans,
-        virusesDetected: globalScanStats.virusesDetected
+        virusesDetected: globalScanStats.virusesDetected,
       },
       antiHacking: {
         enabled: SECURITY_CONFIG.antiHacking.enabled,
@@ -326,18 +387,19 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
         blockedIPs: blockedIPs.size,
         ddosProtectionActive: SECURITY_CONFIG.antiHacking.ddosProtection,
         botDetectionActive: SECURITY_CONFIG.antiHacking.botDetection,
-        honeypotActive: SECURITY_CONFIG.antiHacking.honeypot
+        honeypotActive: SECURITY_CONFIG.antiHacking.honeypot,
       },
       zeroDayProtection: {
         enabled: SECURITY_CONFIG.zeroDayProtection.enabled,
-        threatPatterns: AI_ML_THREATS.length + CLOUD_EDGE_THREATS.length + NETWORK_INFRA_THREATS.length,
+        threatPatterns:
+          AI_ML_THREATS.length + CLOUD_EDGE_THREATS.length + NETWORK_INFRA_THREATS.length,
         threatsDetected: zeroDayStats.threatsDetected,
         criticalThreats: zeroDayStats.criticalThreats,
         behavioralAnomalies: zeroDayStats.threatsByCategory.behavioral_anomaly,
         lastIntelligenceUpdate: new Date().toISOString(),
         aiMlThreats: zeroDayStats.threatsByCategory.ai_ml,
         cloudEdgeThreats: zeroDayStats.threatsByCategory.cloud_edge,
-        networkInfraThreats: zeroDayStats.threatsByCategory.network_infra
+        networkInfraThreats: zeroDayStats.threatsByCategory.network_infra,
       },
       sandboxing: {
         enabled: SECURITY_CONFIG.sandboxing.enabled,
@@ -345,33 +407,81 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
         quarantinedSessions: sandboxStats.quarantinedSessions,
         violationsDetected: sandboxStats.violationsDetected,
         isolationEffectiveness: sandboxStats.isolationEffectiveness,
-        averageSessionDuration: sandboxStats.averageSessionDuration
+        averageSessionDuration: sandboxStats.averageSessionDuration,
       },
       postQuantum: {
+<<<<<<< HEAD
+        enabled: SECURITY_CONFIG.postQuantum.enabled,
+        algorithms: pqStatus.algorithms,
+        securityLevel: pqStatus.securityLevel,
+        quantumResistant: SECURITY_CONFIG.postQuantum.quantumResistant,
+        hybridCrypto: SECURITY_CONFIG.postQuantum.hybridCrypto,
+        lastTest: new Date().toISOString()
+=======
         enabled: SECURITY_CONFIG.postQuantum.enabled && pqStatus.initialized,
         algorithms: pqStatus.initialized ? ['ML-KEM', 'ML-DSA', 'SLH-DSA'] : [],
         securityLevel: pqStatus.initialized ? pqStatus.securityLevel : 0,
-        quantumResistant: pqStatus.initialized && pqStatus.complianceLevel === 'NIST Post-Quantum Standards',
+        quantumResistant:
+          pqStatus.initialized && pqStatus.complianceLevel === 'NIST Post-Quantum Standards',
         hybridCrypto: pqStatus.initialized && SECURITY_CONFIG.postQuantum.hybridCrypto,
-        lastTest: new Date().toISOString()
+        lastTest: new Date().toISOString(),
+>>>>>>> origin/copilot/fix-488
       },
       overall: {
         securityLevel,
         protectionScore: displayScore,
-        lastUpdate: new Date().toISOString()
-      }
+        lastUpdate: new Date().toISOString(),
+      },
     };
     return status;
   } catch (error) {
     console.error('Error getting security status:', error);
     return {
       antimalware: { enabled: false, lastScan: '', threatsDetected: 0, quarantinedFiles: 0 },
-      antivirus: { enabled: false, definitionsCount: 0, lastUpdate: '', totalScans: 0, virusesDetected: 0 },
-      antiHacking: { enabled: false, attackPatternsActive: 0, suspiciousIPs: 0, blockedIPs: 0, ddosProtectionActive: false, botDetectionActive: false, honeypotActive: false },
-      zeroDayProtection: { enabled: false, threatPatterns: 0, threatsDetected: 0, criticalThreats: 0, behavioralAnomalies: 0, lastIntelligenceUpdate: '', aiMlThreats: 0, cloudEdgeThreats: 0, networkInfraThreats: 0 },
-      sandboxing: { enabled: false, activeSessions: 0, quarantinedSessions: 0, violationsDetected: 0, isolationEffectiveness: 0, averageSessionDuration: 0 },
-      postQuantum: { enabled: false, algorithms: [], securityLevel: 0, quantumResistant: false, hybridCrypto: false, lastTest: '' },
-      overall: { securityLevel: 'low', protectionScore: 0, lastUpdate: new Date().toISOString() }
+      antivirus: {
+        enabled: false,
+        definitionsCount: 0,
+        lastUpdate: '',
+        totalScans: 0,
+        virusesDetected: 0,
+      },
+      antiHacking: {
+        enabled: false,
+        attackPatternsActive: 0,
+        suspiciousIPs: 0,
+        blockedIPs: 0,
+        ddosProtectionActive: false,
+        botDetectionActive: false,
+        honeypotActive: false,
+      },
+      zeroDayProtection: {
+        enabled: false,
+        threatPatterns: 0,
+        threatsDetected: 0,
+        criticalThreats: 0,
+        behavioralAnomalies: 0,
+        lastIntelligenceUpdate: '',
+        aiMlThreats: 0,
+        cloudEdgeThreats: 0,
+        networkInfraThreats: 0,
+      },
+      sandboxing: {
+        enabled: false,
+        activeSessions: 0,
+        quarantinedSessions: 0,
+        violationsDetected: 0,
+        isolationEffectiveness: 0,
+        averageSessionDuration: 0,
+      },
+      postQuantum: {
+        enabled: false,
+        algorithms: [],
+        securityLevel: 0,
+        quantumResistant: false,
+        hybridCrypto: false,
+        lastTest: '',
+      },
+      overall: { securityLevel: 'low', protectionScore: 0, lastUpdate: new Date().toISOString() },
     };
   }
 };
@@ -385,16 +495,16 @@ export const securityDashboardAdmin = {
       res.json({
         success: true,
         data: status,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to retrieve security status',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -421,18 +531,18 @@ export const securityDashboardAdmin = {
         data: {
           events,
           total: filteredEvents.length,
-          filters: { severity, type, limit }
+          filters: { severity, type, limit },
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to retrieve security events',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -464,18 +574,18 @@ export const securityDashboardAdmin = {
         success: true,
         data: {
           config: SECURITY_CONFIG,
-          updated: new Date().toISOString()
+          updated: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to update security configuration',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -503,7 +613,7 @@ export const securityDashboardAdmin = {
         ip: req.ip || 'admin',
         details: { reason: reason || 'Emergency lockdown activated' },
         action: 'Emergency lockdown enabled',
-        status: 'blocked'
+        status: 'blocked',
       });
 
       console.error('🚨 EMERGENCY SECURITY LOCKDOWN ACTIVATED:', reason);
@@ -513,18 +623,18 @@ export const securityDashboardAdmin = {
         data: {
           lockdownActive: true,
           reason: reason || 'Emergency lockdown activated',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to activate emergency lockdown',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -536,16 +646,16 @@ export const securityDashboardAdmin = {
       res.json({
         success: true,
         data: status,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to retrieve post-quantum status',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -559,12 +669,12 @@ export const securityDashboardAdmin = {
         success: true,
         data: {
           testResults: results,
-          message: results.success ?
-            'All post-quantum operations completed successfully' :
-            'Some post-quantum operations failed',
-          timestamp: new Date().toISOString()
+          message: results.success
+            ? 'All post-quantum operations completed successfully'
+            : 'Some post-quantum operations failed',
+          timestamp: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
@@ -572,9 +682,9 @@ export const securityDashboardAdmin = {
         error: {
           message: 'Failed to test post-quantum operations',
           details: error instanceof Error ? error.message : String(error),
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -598,28 +708,28 @@ export const securityDashboardAdmin = {
           attack: recentEvents.filter(e => e.type === 'attack').length,
           ddos: recentEvents.filter(e => e.type === 'ddos').length,
           bot: recentEvents.filter(e => e.type === 'bot').length,
-          honeypot: recentEvents.filter(e => e.type === 'honeypot').length
+          honeypot: recentEvents.filter(e => e.type === 'honeypot').length,
         },
         recommendations: generateSecurityRecommendations(status),
-        configurationStatus: SECURITY_CONFIG
+        configurationStatus: SECURITY_CONFIG,
       };
 
       res.json({
         success: true,
         data: report,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to generate security report',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-  }
+  },
 };
 
 // Generate security recommendations based on current status
@@ -631,7 +741,9 @@ const generateSecurityRecommendations = (status: SecuritySystemStatus): string[]
   }
 
   if (status.antiHacking.suspiciousIPs > 10) {
-    recommendations.push('High number of suspicious IPs detected - consider reviewing and blocking');
+    recommendations.push(
+      'High number of suspicious IPs detected - consider reviewing and blocking'
+    );
   }
 
   if (status.antivirus.virusesDetected > 0) {
@@ -679,6 +791,7 @@ export const initializeSecuritySystems = async () => {
   }
 
   console.log('✅ Security Systems Status:');
+<<<<<<< HEAD:GLX_App_files/server/middleware/securityManager.ts
   console.log(`   🦠 Antimalware Protection: ${SECURITY_CONFIG.antimalware.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🔍 Antivirus Protection: ${SECURITY_CONFIG.antivirus.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🛡️ Anti-Hacking Protection: ${SECURITY_CONFIG.antiHacking.enabled ? 'ENABLED' : 'DISABLED'}`);
@@ -693,8 +806,52 @@ export const initializeSecuritySystems = async () => {
   console.log(`   📦 Sandboxing System: ${SECURITY_CONFIG.sandboxing.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`);
   console.log('🚀 GLX App Security Systems are FULLY OPERATIONAL with ZERO-DAY PROTECTION');
+=======
+  console.log(
+    `   🦠 Antimalware Protection: ${SECURITY_CONFIG.antimalware.enabled ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🔍 Antivirus Protection: ${SECURITY_CONFIG.antivirus.enabled ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🛡️ Anti-Hacking Protection: ${SECURITY_CONFIG.antiHacking.enabled ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🚫 DDoS Protection: ${SECURITY_CONFIG.antiHacking.ddosProtection ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🤖 Bot Detection: ${SECURITY_CONFIG.antiHacking.botDetection ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🍯 Honeypot System: ${SECURITY_CONFIG.antiHacking.honeypot ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🧠 Behavioral Analysis: ${SECURITY_CONFIG.antiHacking.behavioralAnalysis ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🦾 Zero-Day Protection: ${SECURITY_CONFIG.zeroDayProtection.enabled ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🔬 AI/ML Security: ${SECURITY_CONFIG.zeroDayProtection.aiMlProtection ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   ☁️ Cloud/Edge Security: ${SECURITY_CONFIG.zeroDayProtection.cloudEdgeProtection ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🌐 Network Infrastructure Security: ${SECURITY_CONFIG.zeroDayProtection.networkInfraProtection ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   📦 Sandboxing System: ${SECURITY_CONFIG.sandboxing.enabled ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log(
+    `   🔐 Post-Quantum Cryptography: ${postQuantumCrypto.getStatus().initialized ? 'ENABLED' : 'DISABLED'}`
+  );
+  console.log('🚀 GALAX App Security Systems are FULLY OPERATIONAL with ZERO-DAY PROTECTION');
+>>>>>>> origin/all-merged:GALAX_App_files/server/middleware/securityManager.ts
 };
 
+<<<<<<< HEAD
+=======
 // Post-Quantum Security Admin endpoints
 export const postQuantumSecurityAdmin = {
   // Get post-quantum security status
@@ -704,16 +861,16 @@ export const postQuantumSecurityAdmin = {
       res.json({
         success: true,
         data: status,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to retrieve post-quantum security status',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   },
@@ -725,21 +882,22 @@ export const postQuantumSecurityAdmin = {
       res.json({
         success: true,
         data: testResults,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: {
           message: 'Failed to test post-quantum operations',
-          statusCode: 500
+          statusCode: 500,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-  }
+  },
 };
 
+>>>>>>> origin/copilot/fix-488
 // Export all admin endpoints
 export const securityAdminEndpoints = {
   dashboard: securityDashboardAdmin,
@@ -748,7 +906,7 @@ export const securityAdminEndpoints = {
   antiHacking: antiHackingAdmin,
   zeroDayProtection: zeroDayProtectionAdmin,
   sandboxing: sandboxAdmin,
-  postQuantum: postQuantumSecurityAdmin
+  postQuantum: postQuantumSecurityAdmin,
 };
 
 // Export security configuration for external use

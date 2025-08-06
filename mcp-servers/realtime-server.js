@@ -19,14 +19,26 @@ const jwt = require('jsonwebtoken');
 
 class RealtimeMCPServer {
   constructor() {
+<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX Realtime MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
+=======
+    this.server = new Server(
+      {
+        name: 'GALAX Realtime MCP Server',
+        version: '1.0.0',
+>>>>>>> origin/all-merged
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.httpServer = createServer();
     this.activeUsers = new Map();
@@ -73,7 +85,7 @@ class RealtimeMCPServer {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
     });
 
@@ -87,11 +99,13 @@ class RealtimeMCPServer {
     }
 
     // Send initial connection event
-    res.write(`data: ${JSON.stringify({
-      type: 'connected',
-      connectionId,
-      timestamp: Date.now()
-    })}\n\n`);
+    res.write(
+      `data: ${JSON.stringify({
+        type: 'connected',
+        connectionId,
+        timestamp: Date.now(),
+      })}\n\n`
+    );
 
     // Handle client disconnect
     req.on('close', () => {
@@ -118,12 +132,12 @@ class RealtimeMCPServer {
         // Broadcast to room
         this.broadcastToRoom(roomId, {
           type: 'new_message',
-          data: { message, userId, timestamp: Date.now() }
+          data: { message, userId, timestamp: Date.now() },
         });
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true }));
-      } catch (error) {
+      } catch {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Invalid request' }));
       }
@@ -142,18 +156,18 @@ class RealtimeMCPServer {
               properties: {
                 roomId: { type: 'string', description: 'Chat room ID' },
                 message: { type: 'string', description: 'Message content' },
-                userId: { type: 'number', description: 'User ID' }
+                userId: { type: 'number', description: 'User ID' },
               },
-              required: ['roomId', 'message', 'userId']
-            }
+              required: ['roomId', 'message', 'userId'],
+            },
           },
           {
             name: 'get_active_users',
             description: 'Get list of active users',
             inputSchema: {
               type: 'object',
-              properties: {}
-            }
+              properties: {},
+            },
           },
           {
             name: 'broadcast_message',
@@ -162,16 +176,16 @@ class RealtimeMCPServer {
               type: 'object',
               properties: {
                 message: { type: 'string', description: 'Message to broadcast' },
-                type: { type: 'string', description: 'Message type' }
+                type: { type: 'string', description: 'Message type' },
               },
-              required: ['message', 'type']
-            }
-          }
-        ]
+              required: ['message', 'type'],
+            },
+          },
+        ],
       };
     });
 
-    this.server.setRequestHandler('tools/call', async (request) => {
+    this.server.setRequestHandler('tools/call', async request => {
       const { name, arguments: args } = request.params;
 
       switch (name) {
@@ -193,16 +207,16 @@ class RealtimeMCPServer {
     try {
       this.broadcastToRoom(roomId, {
         type: 'new_message',
-        data: { message, userId, timestamp: Date.now() }
+        data: { message, userId, timestamp: Date.now() },
       });
 
       return {
         content: [
           {
             type: 'text',
-            text: `Message sent to room ${roomId}: "${message}"`
-          }
-        ]
+            text: `Message sent to room ${roomId}: "${message}"`,
+          },
+        ],
       };
     } catch (error) {
       throw new Error(`Failed to send message: ${error.message}`);
@@ -215,9 +229,9 @@ class RealtimeMCPServer {
       content: [
         {
           type: 'text',
-          text: `Active users: ${activeUsersList.length}\n${activeUsersList.join(', ')}`
-        }
-      ]
+          text: `Active users: ${activeUsersList.length}\n${activeUsersList.join(', ')}`,
+        },
+      ],
     };
   }
 
@@ -227,16 +241,16 @@ class RealtimeMCPServer {
     try {
       this.broadcastToAll({
         type: type || 'announcement',
-        data: { message, timestamp: Date.now() }
+        data: { message, timestamp: Date.now() },
       });
 
       return {
         content: [
           {
             type: 'text',
-            text: `Broadcast sent to ${this.sseConnections.size} connections`
-          }
-        ]
+            text: `Broadcast sent to ${this.sseConnections.size} connections`,
+          },
+        ],
       };
     } catch (error) {
       throw new Error(`Failed to broadcast: ${error.message}`);

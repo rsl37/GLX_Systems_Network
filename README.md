@@ -38,14 +38,29 @@ cd GLX_Civic_Networking_App
 
 # Option 1: Run commands from root directory (recommended)
 npm run setup              # Install dependencies
+<<<<<<< HEAD
+<<<<<<< HEAD
 npm run setup:env          # Set up environment variables (.env files)
 npm run test:env           # Test environment configuration
+=======
+>>>>>>> origin/copilot/fix-167
+=======
+npm run setup:env          # Set up environment variables (.env files)
+npm run test:env           # Test environment configuration
+>>>>>>> origin/copilot/fix-190
 npm run deployment:check   # Check deployment readiness
 npm run build              # Build the application
 npm start                  # Start development server
 
 # Additional commands available from root:
+<<<<<<< HEAD
+<<<<<<< HEAD
 npm run setup:env           # Set up environment variables (.env files)
+=======
+>>>>>>> origin/copilot/fix-167
+=======
+npm run setup:env           # Set up environment variables (.env files)
+>>>>>>> origin/copilot/fix-190
 npm run test               # Run all tests
 npm run test:api           # Run API tests
 npm run test:socket        # Run Socket.IO tests  
@@ -63,9 +78,15 @@ npm run monitor:full       # Full monitoring suite
 # Option 2: Run commands from app directory
 cd GLX_App_files
 npm install
+<<<<<<< HEAD
 
 # Development setup
 npm start
+=======
+npm run deployment:check   # Check deployment readiness
+npm run build              # Build the application
+npm start                  # Start development server
+>>>>>>> origin/copilot/fix-167
 
 # Production setup
 npm run production:setup
@@ -94,6 +115,23 @@ npm run test:ui            # Run tests with UI dashboard
 npm run deployment:check   # Check deployment readiness
 npm run production:check   # Validate production configuration
 npm run test:env           # Test environment configuration
+```
+
+### Code Quality & Linting
+```bash
+# Code linting and formatting (from GALAX_App_files directory)
+cd GALAX_App_files
+
+# Lint code for quality issues
+npm run lint              # Check for linting issues
+npm run lint:fix          # Auto-fix linting issues where possible
+
+# Format code consistently
+npm run format            # Format all files with Prettier
+npm run format:check      # Check if files are formatted correctly
+
+# Combined quality check
+npm run lint && npm run format:check
 ```
 
 ---

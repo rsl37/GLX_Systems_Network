@@ -105,11 +105,19 @@ export function ResetPasswordPage() {
 
   if (isValidating) {
     return (
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
         <Card className="glx-card w-full max-w-md">
           <CardContent className="p-8 text-center">
             <div className="animate-spin mx-auto mb-4 h-8 w-8 border-4 border-purple-500 border-t-transparent rounded-full"></div>
             <p className="text-gray-600">Validating reset link...</p>
+=======
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
+        <Card className='galax-card w-full max-w-md'>
+          <CardContent className='p-8 text-center'>
+            <div className='animate-spin mx-auto mb-4 h-8 w-8 border-4 border-purple-500 border-t-transparent rounded-full'></div>
+            <p className='text-gray-600'>Validating reset link...</p>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
           </CardContent>
         </Card>
       </div>
@@ -118,29 +126,34 @@ export function ResetPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className='w-full max-w-md'
         >
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
           <Card className="glx-card">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4">
                 <CheckCircle className="h-16 w-16 text-green-500" />
+=======
+          <Card className='galax-card'>
+            <CardHeader className='text-center'>
+              <div className='mx-auto mb-4'>
+                <CheckCircle className='h-16 w-16 text-green-500' />
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
               </div>
-              <CardTitle className="text-2xl font-bold text-green-600">
+              <CardTitle className='text-2xl font-bold text-green-600'>
                 Password Reset Successfully
               </CardTitle>
               <CardDescription>
                 Your password has been updated. You can now login with your new password.
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-sm text-gray-600">
-                Redirecting to login page in a few seconds...
-              </p>
+            <CardContent className='text-center'>
+              <p className='text-sm text-gray-600'>Redirecting to login page in a few seconds...</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -150,24 +163,34 @@ export function ResetPasswordPage() {
 
   if (!tokenValid) {
     return (
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
         <Card className="glx-card w-full max-w-md">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4">
               <AlertCircle className="h-16 w-16 text-red-500" />
+=======
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
+        <Card className='galax-card w-full max-w-md'>
+          <CardHeader className='text-center'>
+            <div className='mx-auto mb-4'>
+              <AlertCircle className='h-16 w-16 text-red-500' />
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
             </div>
-            <CardTitle className="text-2xl font-bold text-red-600">
-              Invalid Reset Link
-            </CardTitle>
+            <CardTitle className='text-2xl font-bold text-red-600'>Invalid Reset Link</CardTitle>
             <CardDescription>
               {error || 'This password reset link is invalid or has expired.'}
             </CardDescription>
           </CardHeader>
           <CardContent>
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
             <Button
               onClick={() => navigate('/forgot-password')}
               className="glx-button w-full"
             >
+=======
+            <Button onClick={() => navigate('/forgot-password')} className='galax-button w-full'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
               Request New Reset Link
             </Button>
           </CardContent>
@@ -177,67 +200,81 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className='w-full max-w-md'
       >
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
         <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+=======
+        <Card className='galax-card'>
+          <CardHeader className='text-center'>
+            <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
               Reset Password
             </CardTitle>
-            <CardDescription>
-              Enter your new password below
-            </CardDescription>
+            <CardDescription>Enter your new password below</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <form onSubmit={handleSubmit} className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='password'>New Password</Label>
+                <div className='relative'>
+                  <Lock className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
                   <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter new password"
+                    id='password'
+                    type='password'
+                    placeholder='Enter new password'
                     value={password}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
                     onChange={(e) => setPassword(e.target.value)}
                     className="glx-input pl-10"
+=======
+                    onChange={e => setPassword(e.target.value)}
+                    className='galax-input pl-10'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <div className='space-y-2'>
+                <Label htmlFor='confirmPassword'>Confirm New Password</Label>
+                <div className='relative'>
+                  <Lock className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
                   <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm new password"
+                    id='confirmPassword'
+                    type='password'
+                    placeholder='Confirm new password'
                     value={confirmPassword}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="glx-input pl-10"
+=======
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    className='galax-input pl-10'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
                     required
                   />
                 </div>
               </div>
 
-              {error && (
-                <div className="text-red-500 text-sm text-center">
-                  {error}
-                </div>
-              )}
+              {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
 
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ResetPasswordPage.tsx
               <Button
                 type="submit"
                 disabled={isLoading}
                 className="glx-button w-full"
               >
+=======
+              <Button type='submit' disabled={isLoading} className='galax-button w-full'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/ResetPasswordPage.tsx
                 {isLoading ? 'Updating...' : 'Update Password'}
               </Button>
             </form>

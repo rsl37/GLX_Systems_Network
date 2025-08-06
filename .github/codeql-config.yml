@@ -1,39 +1,49 @@
 ---
-name: "CodeQL Configuration (Solo Developer Optimized)"
+name: "CodeQL Configuration (Enhanced Coverage)"
 
-# Disable default queries that might be too strict for solo dev
+# Enable default queries for comprehensive analysis
 disable-default-queries: false
 
-# Include security and quality queries but allow for flexibility
+# Include comprehensive security and quality queries
 queries:
   - uses: security-and-quality
-  - uses: security-extended  # Additional security checks
+  - uses: security-extended
 
-# Focus on application code, ignore test files for cleaner results
+# Include all relevant application directories for analysis
 paths:
+<<<<<<< HEAD
   - GLX_App_files/client/src
   - GLX_App_files/server
   - GLX_App_files/scripts
   - GLX_App_files/src
+=======
+  - GALAX_App_files/client/src
+  - GALAX_App_files/server  
+  - GALAX_App_files/scripts
+  - mcp-servers
+  - api
+  - scripts
+>>>>>>> origin/all-merged
 
-# Ignore common directories that don't need security analysis
+# Exclude only essential non-code directories
 paths-ignore:
   - node_modules
   - dist
   - build
   - coverage
+  - .git
   - "**/*.test.ts"
   - "**/*.test.js"
   - "**/*.spec.ts"
   - "**/*.spec.js"
   - "**/*.d.ts"
-  - "**/*.config.js"
-  - "**/*.config.ts"
 
-# Solo developer specific configuration
+# Include JavaScript/TypeScript security packs for enhanced coverage
 packs:
+<<<<<<< HEAD
   # Include JavaScript security pack but don't make it blocking
   - "codeql/javascript-queries:AlertSuppression.ql"
+<<<<<<< HEAD
 
 # Filter out incremental analysis issues that can cause failures
 query-filters:
@@ -41,3 +51,8 @@ query-filters:
       # Exclude queries tagged with 'exclude-from-incremental' because these queries are known to cause failures or unreliable results during incremental analysis.
       # This prevents incremental analysis from breaking due to queries that are not designed to work correctly in incremental mode.
       tags: exclude-from-incremental
+=======
+>>>>>>> origin/copilot/fix-128
+=======
+  - codeql/javascript-queries
+>>>>>>> origin/copilot/fix-488

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "GitHub Status Checks Fix - Implementation Guide"
 description: ""
@@ -10,6 +11,8 @@ tags: []
 relatedDocs: []
 ---
 
+=======
+>>>>>>> origin/copilot/fix-158
 # GitHub Status Checks Fix - Implementation Guide
 
 This repository now includes a comprehensive workflow (`comprehensive-checks.yml`) that fixes the stalling status checks issue by providing a consolidated, timeout-protected CI/CD pipeline.
@@ -150,4 +153,8 @@ If issues occur:
 ---
 
 **Status:** ✅ Ready for implementation
+<<<<<<< HEAD
 **Next Action:** Manual branch protection rule update required
+=======
+**Next Action:** Manual branch protection rule update required
+>>>>>>> origin/copilot/fix-158

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
@@ -5,7 +6,12 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/copilot/fix-190
+=======
+>>>>>>> origin/copilot/fix-488
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { TestServer } from '../setup/test-server.js';
 import supertest from 'supertest';
@@ -13,12 +19,33 @@ import supertest from 'supertest';
 // Real-time Communication Tests using Pusher (replaces Socket.IO)
 describe('Real-time Communication Tests (Pusher)', () => {
   let testServer: TestServer;
+<<<<<<< HEAD
   let request: ReturnType<typeof supertest>;
+=======
+  let request: supertest.SuperTest<supertest.Test>;
+>>>>>>> origin/copilot/fix-190
 
   beforeAll(async () => {
     testServer = new TestServer();
     testServer.setupBasicMiddleware();
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+    // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
+    testServer.app.get('/api/realtime/health', (req, res) => {
+      res.json({
+        success: true,
+        data: {
+<<<<<<< HEAD
+          type: "Pusher WebSocket",
+          status: "active",
+          cluster: process.env.PUSHER_CLUSTER || 'us2'
+        }
+=======
+    
+=======
+
+>>>>>>> origin/copilot/fix-470
     // Setup mock endpoints for testing (since TestServer doesn't have the full app routes)
     testServer.app.get('/api/realtime/health', (req, res) => {
       res.json({
@@ -27,7 +54,18 @@ describe('Real-time Communication Tests (Pusher)', () => {
           type: "Pusher WebSocket",
           status: "active",
           cluster: process.env.PUSHER_CLUSTER || 'us2'
+<<<<<<< HEAD
+        } 
+>>>>>>> origin/copilot/fix-190
+=======
         }
+>>>>>>> origin/copilot/fix-470
+=======
+          type: 'Pusher WebSocket',
+          status: 'active',
+          cluster: process.env.PUSHER_CLUSTER || 'us2',
+        },
+>>>>>>> origin/copilot/fix-488
       });
     });
 
@@ -36,14 +74,37 @@ describe('Real-time Communication Tests (Pusher)', () => {
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Authorization token required' });
       }
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-190
+=======
+
+>>>>>>> origin/copilot/fix-470
       const { socket_id, channel_name } = req.body;
       if (!socket_id || !channel_name) {
         return res.status(400).json({ error: 'Socket ID and channel name are required' });
       }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       if (!channel_name.startsWith('private-user-notifications') &&
+=======
+      if (!channel_name.startsWith('private-user-notifications') && 
+>>>>>>> origin/copilot/fix-190
+=======
+      if (!channel_name.startsWith('private-user-notifications') &&
+>>>>>>> origin/copilot/fix-470
           !channel_name.startsWith('private-help-request-')) {
+=======
+      if (
+        !channel_name.startsWith('private-user-notifications') &&
+        !channel_name.startsWith('private-help-request-')
+      ) {
+>>>>>>> origin/copilot/fix-488
         return res.status(403).json({ error: 'Unauthorized channel access' });
       }
 
@@ -92,9 +153,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
   describe('Real-time Health Check', () => {
     test('should confirm Pusher is active for real-time communication', async () => {
-      const response = await request
-        .get('/api/realtime/health')
-        .expect(200);
+      const response = await request.get('/api/realtime/health').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.type).toBe('Pusher WebSocket');
@@ -109,7 +168,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .post('/api/pusher/auth')
         .send({
           socket_id: 'test-socket-123',
-          channel_name: 'private-user-notifications-1'
+          channel_name: 'private-user-notifications-1',
         })
         .expect(401); // Unauthorized without token
 
@@ -122,7 +181,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .set('Authorization', 'Bearer valid-token')
         .send({
           socket_id: 'test-socket-123',
-          channel_name: 'private-user-notifications-1'
+          channel_name: 'private-user-notifications-1',
         })
         .expect(200);
 
@@ -135,7 +194,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .set('Authorization', 'Bearer valid-token')
         .send({
           socket_id: 'test-socket-123',
-          channel_name: 'invalid-channel-name'
+          channel_name: 'invalid-channel-name',
         })
         .expect(403);
 
@@ -145,9 +204,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
   describe('HTTP Polling for Real-time Features', () => {
     test('should provide chat message polling endpoint', async () => {
-      const unauthorizedResponse = await request
-        .get('/api/chat/messages')
-        .expect(401);
+      const unauthorizedResponse = await request.get('/api/chat/messages').expect(401);
 
       expect(unauthorizedResponse.body.error).toContain('token');
 
@@ -192,7 +249,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .post('/api/chat/send')
         .send({
           helpRequestId: '1',
-          message: 'Test message'
+          message: 'Test message',
         })
         .expect(401);
 
@@ -203,7 +260,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .set('Authorization', 'Bearer valid-token')
         .send({
           helpRequestId: '1',
-          message: 'Test message'
+          message: 'Test message',
         })
         .expect(200);
 

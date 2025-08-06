@@ -110,9 +110,7 @@ describe('Production Deployment Fixes', () => {
 
   describe('Environment Debug Endpoints', () => {
     it('should provide environment debug information', async () => {
-      const response = await request(app)
-        .get('/api/debug/environment')
-        .expect(200);
+      const response = await request(app).get('/api/debug/environment').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('nodeEnv');
@@ -140,13 +138,11 @@ describe('Production Deployment Fixes', () => {
       const originalSecret = process.env.JWT_SECRET;
       delete process.env.JWT_SECRET;
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-          username: 'testuser',
-        });
+      const response = await request(app).post('/api/auth/register').send({
+        email: 'test@example.com',
+        password: 'password123',
+        username: 'testuser',
+      });
 
       // Should still work in test environment, but this validates the endpoint
       expect(response.status).toBe(200);
@@ -225,8 +221,8 @@ describe('Complete Authentication Flow (Production-like)', () => {
         success: true,
         data: {
           token: 'mock-jwt-token-for-testing',
-          userId: 12345
-        }
+          userId: 12345,
+        },
       });
     });
   });

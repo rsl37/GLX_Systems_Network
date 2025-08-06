@@ -80,7 +80,7 @@ export class StablecoinContract {
     return {
       totalSupply: this.totalSupply,
       reservePool: this.reservePool,
-      reserveRatio: this.totalSupply > 0 ? this.reservePool / this.totalSupply : 0
+      reserveRatio: this.totalSupply > 0 ? this.reservePool / this.totalSupply : 0,
     };
   }
 
@@ -117,7 +117,7 @@ export class StablecoinContract {
       return this.getCurrentPrice();
     }
 
-    const weightedSum = recentPrices.reduce((sum, p) => sum + (p.price * p.confidence), 0);
+    const weightedSum = recentPrices.reduce((sum, p) => sum + p.price * p.confidence, 0);
     const weightSum = recentPrices.reduce((sum, p) => sum + p.confidence, 0);
 
     return weightSum > 0 ? weightedSum / weightSum : this.getCurrentPrice();
@@ -140,7 +140,7 @@ export class StablecoinContract {
         targetPrice,
         currentPrice,
         newSupply: this.totalSupply,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     }
 
@@ -164,7 +164,7 @@ export class StablecoinContract {
         targetPrice,
         currentPrice,
         newSupply: this.totalSupply + expandAmount,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     } else {
       // Price below peg - contract supply
@@ -183,7 +183,7 @@ export class StablecoinContract {
         targetPrice,
         currentPrice,
         newSupply,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     }
   }
@@ -204,7 +204,8 @@ export class StablecoinContract {
     if (adjustment.action !== 'none') {
       // Check reserve requirements for contractions
       if (adjustment.action === 'contract') {
-        const newReserveRatio = adjustment.newSupply > 0 ? this.reservePool / adjustment.newSupply : 1;
+        const newReserveRatio =
+          adjustment.newSupply > 0 ? this.reservePool / adjustment.newSupply : 1;
 
         if (newReserveRatio < this.config.reserveRatio) {
           // Insufficient reserves for full contraction
@@ -289,8 +290,8 @@ export class StablecoinContract {
     }
 
     // Calculate stability score (0-100)
-    const deviationScore = Math.max(0, 1 - (deviation / this.config.toleranceBand)) * 50;
-    const volatilityScore = Math.max(0, 1 - (volatility / 0.1)) * 50; // Target volatility < 10%
+    const deviationScore = Math.max(0, 1 - deviation / this.config.toleranceBand) * 50;
+    const volatilityScore = Math.max(0, 1 - volatility / 0.1) * 50; // Target volatility < 10%
     const stabilityScore = deviationScore + volatilityScore;
 
     return {
@@ -298,7 +299,7 @@ export class StablecoinContract {
       targetPrice,
       deviation,
       volatility,
-      stabilityScore
+      stabilityScore,
     };
   }
 
@@ -331,7 +332,7 @@ export class StablecoinContract {
       lastRebalance: this.lastRebalance,
       currentPrice: this.getCurrentPrice(),
       stabilityMetrics: this.getStabilityMetrics(),
-      supplyInfo: this.getSupplyInfo()
+      supplyInfo: this.getSupplyInfo(),
     };
   }
 }
@@ -343,5 +344,5 @@ export const DEFAULT_STABLECOIN_CONFIG: StablecoinConfig = {
   supplyAdjustmentRate: 0.5, // 50% of deviation
   reserveRatio: 0.2, // 20% reserve requirement
   maxSupplyChange: 0.05, // Max 5% supply change per rebalance
-  rebalanceInterval: 300000 // 5 minutes
+  rebalanceInterval: 300000, // 5 minutes
 };

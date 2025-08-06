@@ -75,7 +75,7 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
     method: req.method,
     ip: req.ip,
     userAgent: req.get('User-Agent'),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Validation error (express-validator)
@@ -147,11 +147,11 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
       statusCode,
       ...(process.env.NODE_ENV === 'development' && {
         stack: err.stack,
-        details: err
-      })
+        details: err,
+      }),
     },
     timestamp: new Date().toISOString(),
-    path: req.url
+    path: req.url,
   });
 };
 

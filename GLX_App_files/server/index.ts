@@ -6,27 +6,27 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-import express from "express";
-import { createServer } from "http";
-import dotenv from "dotenv";
-import multer from "multer";
-import path from "path";
-import cors from "cors";
-import helmet from "helmet";
-import compression from "compression";
-import { setupStaticServing } from "./static-serve.js";
-import { db } from "./database.js";
-import { authenticateToken, AuthRequest } from "./auth.js";
-import { sendSuccess, sendError } from "./utils/responseHelpers.js";
+import express from 'express';
+import { createServer } from 'http';
+import dotenv from 'dotenv';
+import multer from 'multer';
+import path from 'path';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { setupStaticServing } from './static-serve.js';
+import { db } from './database.js';
+import { authenticateToken, AuthRequest } from './auth.js';
+import { sendSuccess, sendError } from './utils/responseHelpers.js';
 
 // Import modular routes
-import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/user.js";
-import governanceRoutes from "./routes/governance.js";
-import crisisRoutes from "./routes/crisis.js";
-import miscRoutes from "./routes/misc.js";
-import createHelpRequestRoutes from "./routes/helpRequests.js";
-import createRealtimeRoutes from "./routes/realtime.js";
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/user.js';
+import governanceRoutes from './routes/governance.js';
+import crisisRoutes from './routes/crisis.js';
+import miscRoutes from './routes/misc.js';
+import createHelpRequestRoutes from './routes/helpRequests.js';
+import createRealtimeRoutes from './routes/realtime.js';
 
 // Import KYC functions (keeping legacy for now)
 import {
@@ -37,14 +37,11 @@ import {
   isValidDocumentType,
   getDocumentTypeDisplayName,
   kycUpload,
-} from "./kyc.js";
+} from './kyc.js';
 
 // Import middleware
-import errorHandler from "./middleware/errorHandler.js";
-import {
-  apiLimiter,
-  uploadLimiter,
-} from "./middleware/rateLimiter.js";
+import errorHandler from './middleware/errorHandler.js';
+import { apiLimiter, uploadLimiter } from './middleware/rateLimiter.js';
 import {
   securityHeaders,
   sanitizeInput,
@@ -52,23 +49,23 @@ import {
   corsConfig,
   requestLogger,
   fileUploadSecurity,
-} from "./middleware/security.js";
+} from './middleware/security.js';
 import {
   validateFileUpload,
   validateRequestSize,
   validateEndpointSecurity,
   validateJsonPayload,
-} from "./middleware/validation.js";
+} from './middleware/validation.js';
 
 // Import realtime manager
-import RealtimeManager from "./realtimeManager.js";
+import RealtimeManager from './realtimeManager.js';
 
 // Import stablecoin functionality
-import stablecoinRoutes from "./stablecoin/routes.js";
-import { stablecoinService } from "./stablecoin/StablecoinService.js";
+import stablecoinRoutes from './stablecoin/routes.js';
+import { stablecoinService } from './stablecoin/StablecoinService.js';
 
 // Import Pusher for real-time functionality
-import Pusher from "pusher";
+import Pusher from 'pusher';
 
 import { logEnvironmentStatus } from './envValidation.js';
 
@@ -79,7 +76,7 @@ import {
   initializeSecuritySystems,
   securityAdminEndpoints,
   logSecurityEvent,
-} from "./middleware/securityManager.js";
+} from './middleware/securityManager.js';
 
 // Import versioning middleware
 import {
@@ -87,7 +84,7 @@ import {
   validateApiVersion,
   addVersioningHeaders,
   getApiVersionInfo,
-} from "./middleware/versioning.js";
+} from './middleware/versioning.js';
 
 // Import monitoring middleware
 import {
@@ -98,13 +95,13 @@ import {
   getErrorMetrics,
   getUserMetrics,
   getHealthMetrics,
-} from "./middleware/monitoring.js";
+} from './middleware/monitoring.js';
 
 // Import post-quantum cryptography
-import { postQuantumCrypto } from "./postQuantumCrypto.js";
+import { postQuantumCrypto } from './postQuantumCrypto.js';
 
 // Import deployment validation
-import { getDeploymentReadiness } from "./deployment-validation.js";
+import { getDeploymentReadiness } from './deployment-validation.js';
 
 // Import page verification system
 import {
@@ -112,13 +109,13 @@ import {
   requirePageVerification,
   createAuthCorsConfig,
   PAGE_VERIFICATION_CONFIG,
-} from "./middleware/pageVerification.js";
+} from './middleware/pageVerification.js';
 
 dotenv.config();
 
-console.log("🚀 Starting server initialization...");
-console.log("Environment:", process.env.NODE_ENV);
-console.log("Data directory:", process.env.DATA_DIRECTORY || "./data");
+console.log('🚀 Starting server initialization...');
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Data directory:', process.env.DATA_DIRECTORY || './data');
 
 // Validate environment variables for production deployment
 logEnvironmentStatus();
@@ -129,13 +126,28 @@ const pusher = new Pusher({
   key: process.env.PUSHER_KEY || '',
   secret: process.env.PUSHER_SECRET || '',
   cluster: process.env.PUSHER_CLUSTER || 'us2',
-  useTLS: true
+  useTLS: true,
 });
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/copilot/fix-250
+=======
+>>>>>>> origin/copilot/fix-386
 // Initialize realtime manager
 const realtimeManager = new RealtimeManager();
 
 console.log('🔌 RealtimeManager initialized');
+
+// Initialize RealtimeManager for SSE connections
+const realtimeManager = new RealtimeManager();
+console.log('⚡ RealtimeManager initialized for real-time connections');
+
+// Initialize RealtimeManager
+const realtimeManager = new RealtimeManager(pusher);
+console.log('🔗 RealtimeManager initialized');
 
 const app = express();
 const server = createServer(app);
@@ -143,18 +155,15 @@ const server = createServer(app);
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(
-      process.env.DATA_DIRECTORY || "./data",
-      "uploads",
-    );
-    console.log("📁 Upload directory:", uploadDir);
+    const uploadDir = path.join(process.env.DATA_DIRECTORY || './data', 'uploads');
+    console.log('📁 Upload directory:', uploadDir);
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname).toLowerCase();
     const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-    console.log("📄 Generated filename:", filename);
+    console.log('📄 Generated filename:', filename);
     cb(null, filename);
   },
 });
@@ -167,29 +176,27 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|mp4|mov|avi|mp3|wav|m4a/;
-    const extname = allowedTypes.test(
-      path.extname(file.originalname).toLowerCase(),
-    );
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
 
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      cb(new Error("Only images, videos, and audio files are allowed"));
+      cb(new Error('Only images, videos, and audio files are allowed'));
     }
   },
 });
 
 // Health check endpoint (no security restrictions for monitoring)
-app.get("/api/health", (req, res) => {
-  console.log("🏥 Health check requested");
+app.get('/api/health', (req, res) => {
+  console.log('🏥 Health check requested');
 
   res.json({
-    status: "ok",
+    status: 'ok',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    dataDirectory: process.env.DATA_DIRECTORY || "./data",
-    realtime: "HTTP polling enabled",
+    dataDirectory: process.env.DATA_DIRECTORY || './data',
+    realtime: 'HTTP polling enabled',
   });
 });
 
@@ -211,7 +218,7 @@ app.use(requestLogger);
 // Body parsing middleware with security
 app.use(
   express.json({
-    limit: "1mb",
+    limit: '1mb',
     strict: true,
     verify: (req: any, res, buf) => {
       if (buf && buf.length) {
@@ -220,98 +227,101 @@ app.use(
         try {
           JSON.parse(buf.toString());
         } catch (error) {
-          const err = new Error("Invalid JSON in request body");
+          const err = new Error('Invalid JSON in request body');
           (err as any).status = 400;
           throw err;
         }
       }
     },
-  }),
+  })
 );
 
 app.use(
   express.urlencoded({
     extended: false,
-    limit: "1mb",
+    limit: '1mb',
     parameterLimit: 50,
-  }),
+  })
 );
 
 // Apply comprehensive security middleware stack
 app.use(comprehensiveSecurityMiddleware);
 
 // API versioning middleware
-app.use("/api", detectApiVersion);
-app.use("/api", validateApiVersion);
-app.use("/api", addVersioningHeaders);
+app.use('/api', detectApiVersion);
+app.use('/api', validateApiVersion);
+app.use('/api', addVersioningHeaders);
 
 // Monitoring and metrics collection
-app.use("/api", collectMetrics);
+app.use('/api', collectMetrics);
 
 // Input sanitization
 app.use(sanitizeInput);
 
 // Validation security
-app.use("/api", validateJsonPayload);
-app.use("/api", validateApiVersion);
+app.use('/api', validateJsonPayload);
+app.use('/api', validateApiVersion);
 
 // Apply general rate limiting to all API routes
-app.use("/api", apiLimiter);
+app.use('/api', apiLimiter);
 
 // System endpoints
-app.get("/api/realtime/health", (req, res) => {
-  console.log("🔌 Realtime health check - Pusher active");
+app.get('/api/realtime/health', (req, res) => {
+  console.log('🔌 Realtime health check - Pusher active');
   res.json({
     success: true,
     data: {
-      type: "Pusher WebSocket",
-      status: "active",
-      cluster: process.env.PUSHER_CLUSTER || 'us2'
-    }
+      type: 'Pusher WebSocket',
+      status: 'active',
+      cluster: process.env.PUSHER_CLUSTER || 'us2',
+    },
   });
 });
 
-app.get("/api/test-db", async (req, res) => {
+app.get('/api/test-db', async (req, res) => {
   try {
-    console.log("🗄️ Testing database connection...");
-    const result = await db.selectFrom("users").selectAll().limit(1).execute();
-    console.log("✅ Database test successful, found", result.length, "users");
+    console.log('🗄️ Testing database connection...');
+    const result = await db.selectFrom('users').selectAll().limit(1).execute();
+    console.log('✅ Database test successful, found', result.length, 'users');
     res.json({
       success: true,
-      data: { status: "ok", userCount: result.length },
+      data: { status: 'ok', userCount: result.length },
     });
   } catch (error) {
-    console.error("❌ Database test failed:", error);
+    console.error('❌ Database test failed:', error);
     res.status(500).json({
       success: false,
-      error: { message: "Database connection failed", statusCode: 500 },
+      error: { message: 'Database connection failed', statusCode: 500 },
     });
   }
 });
 
-app.get("/api/version", getApiVersionInfo);
-app.get("/api/deployment/ready", getDeploymentReadiness);
+app.get('/api/version', getApiVersionInfo);
+app.get('/api/deployment/ready', getDeploymentReadiness);
 
 // Environment debug endpoint for production troubleshooting
-app.get("/api/debug/environment", (req, res) => {
+app.get('/api/debug/environment', (req, res) => {
   try {
     const envInfo = {
       nodeEnv: process.env.NODE_ENV,
       hasJwtSecret: !!process.env.JWT_SECRET,
       jwtSecretLength: process.env.JWT_SECRET?.length || 0,
       hasClientOrigin: !!process.env.CLIENT_ORIGIN,
-      clientOrigin: process.env.CLIENT_ORIGIN || "[not set]",
+      clientOrigin: process.env.CLIENT_ORIGIN || '[not set]',
       hasFrontendUrl: !!process.env.FRONTEND_URL,
-      frontendUrl: process.env.FRONTEND_URL || "[not set]",
+      frontendUrl: process.env.FRONTEND_URL || '[not set]',
       hasTrustedOrigins: !!process.env.TRUSTED_ORIGINS,
       trustedOriginsCount: process.env.TRUSTED_ORIGINS?.split(',').length || 0,
       hasDatabaseUrl: !!process.env.DATABASE_URL,
-      databaseType: process.env.DATABASE_URL?.includes('postgres') ? 'postgresql' :
-                   process.env.DATABASE_URL?.includes('sqlite') ? 'sqlite' : 'unknown',
+      databaseType: process.env.DATABASE_URL?.includes('postgres')
+        ? 'postgresql'
+        : process.env.DATABASE_URL?.includes('sqlite')
+          ? 'sqlite'
+          : 'unknown',
       hasSmtpConfig: !!(process.env.SMTP_HOST && process.env.SMTP_USER),
       timestamp: new Date().toISOString(),
       platform: 'vercel',
-      dataDirectory: process.env.DATA_DIRECTORY || "./data",
+      dataDirectory: process.env.DATA_DIRECTORY || './data',
     };
 
     console.log('🔍 Environment debug request:', {
@@ -328,13 +338,13 @@ app.get("/api/debug/environment", (req, res) => {
     console.error('❌ Environment debug error:', error);
     res.status(500).json({
       success: false,
-      error: { message: "Environment check failed", statusCode: 500 },
+      error: { message: 'Environment check failed', statusCode: 500 },
     });
   }
 });
 
 // CORS debug endpoint
-app.get("/api/debug/cors", (req, res) => {
+app.get('/api/debug/cors', (req, res) => {
   try {
     const corsInfo = {
       origin: req.get('Origin') || '[no origin header]',
@@ -353,46 +363,37 @@ app.get("/api/debug/cors", (req, res) => {
     res.json({
       success: true,
       data: {
-        message: "CORS debug information",
+        message: 'CORS debug information',
         request: corsInfo,
         environment: {
           nodeEnv: process.env.NODE_ENV,
           clientOrigin: process.env.CLIENT_ORIGIN || '[not set]',
           trustedOrigins: process.env.TRUSTED_ORIGINS || '[not set]',
-        }
+        },
       },
     });
   } catch (error) {
     console.error('❌ CORS debug error:', error);
     res.status(500).json({
       success: false,
-      error: { message: "CORS debug failed", statusCode: 500 },
+      error: { message: 'CORS debug failed', statusCode: 500 },
     });
   }
 });
 
 // Monitoring endpoints
-app.get("/api/monitoring/health", authenticateToken, getHealthMetrics);
-app.get("/api/monitoring/metrics/system", authenticateToken, getSystemMetrics);
-app.get("/api/monitoring/metrics/performance", authenticateToken, getPerformanceMetrics);
-app.get("/api/monitoring/metrics/errors", authenticateToken, getErrorMetrics);
-app.get("/api/monitoring/metrics/users", authenticateToken, getUserMetrics);
+app.get('/api/monitoring/health', authenticateToken, getHealthMetrics);
+app.get('/api/monitoring/metrics/system', authenticateToken, getSystemMetrics);
+app.get('/api/monitoring/metrics/performance', authenticateToken, getPerformanceMetrics);
+app.get('/api/monitoring/metrics/errors', authenticateToken, getErrorMetrics);
+app.get('/api/monitoring/metrics/users', authenticateToken, getUserMetrics);
 
 // Error reporting endpoint for frontend
-app.post("/api/monitoring/errors", async (req, res): Promise<void> => {
+app.post('/api/monitoring/errors', async (req, res): Promise<void> => {
   try {
-    const {
-      message,
-      stack,
-      componentStack,
-      errorId,
-      timestamp,
-      userAgent,
-      url,
-      userId,
-    } = req.body;
+    const { message, stack, componentStack, errorId, timestamp, userAgent, url, userId } = req.body;
 
-    console.error("🐛 Frontend Error Report:", {
+    console.error('🐛 Frontend Error Report:', {
       errorId,
       message,
       url,
@@ -402,22 +403,22 @@ app.post("/api/monitoring/errors", async (req, res): Promise<void> => {
 
     const error = new Error(message);
     error.stack = stack;
-    monitoringTrackError(error, req, "frontend");
+    monitoringTrackError(error, req, 'frontend');
 
     res.json({
       success: true,
       data: {
         errorId,
-        message: "Error report received",
+        message: 'Error report received',
         timestamp: new Date().toISOString(),
       },
     });
   } catch (error) {
-    console.error("❌ Error reporting endpoint failed:", error);
+    console.error('❌ Error reporting endpoint failed:', error);
     res.status(500).json({
       success: false,
       error: {
-        message: "Failed to process error report",
+        message: 'Failed to process error report',
         statusCode: 500,
       },
     });
@@ -425,18 +426,18 @@ app.post("/api/monitoring/errors", async (req, res): Promise<void> => {
 });
 
 // Stablecoin API routes
-app.use("/api/stablecoin", stablecoinRoutes);
+app.use('/api/stablecoin', stablecoinRoutes);
 
 // Mount modular routes with enhanced auth security
-app.use("/api/auth", cors(createAuthCorsConfig()), requirePageVerification, authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/proposals", governanceRoutes);
-app.use("/api/crisis-alerts", crisisRoutes);
-app.use("/api", miscRoutes);
-app.use("/api/help-requests", createHelpRequestRoutes(upload, realtimeManager));
+app.use('/api/auth', cors(createAuthCorsConfig()), requirePageVerification, authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/proposals', governanceRoutes);
+app.use('/api/crisis-alerts', crisisRoutes);
+app.use('/api', miscRoutes);
+app.use('/api/help-requests', createHelpRequestRoutes(upload, realtimeManager));
 
 // Pusher authentication endpoint
-app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) => {
+app.post('/api/pusher/auth', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { socket_id, channel_name } = req.body;
 
@@ -450,8 +451,8 @@ app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) =>
       const auth = pusher.authorizeChannel(socket_id, channel_name, {
         user_id: req.userId!.toString(),
         user_info: {
-          username: req.username
-        }
+          username: req.username,
+        },
       });
       res.json(auth);
     } else if (channel_name.startsWith('private-help-request-')) {
@@ -463,8 +464,8 @@ app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) =>
       const auth = pusher.authorizeChannel(socket_id, channel_name, {
         user_id: req.userId!.toString(),
         user_info: {
-          username: req.username
-        }
+          username: req.username,
+        },
       });
       res.json(auth);
     } else {
@@ -477,7 +478,7 @@ app.post("/api/pusher/auth", authenticateToken, async (req: AuthRequest, res) =>
 });
 
 // Chat API endpoints for HTTP polling (replacing WebSocket functionality)
-app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) => {
+app.get('/api/chat/messages', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { since } = req.query;
     let query = db
@@ -489,7 +490,7 @@ app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) =
         'messages.sender_id as userId',
         'users.username',
         'messages.created_at as timestamp',
-        'messages.help_request_id'
+        'messages.help_request_id',
       ])
       .orderBy('messages.created_at', 'desc')
       .limit(50);
@@ -509,8 +510,8 @@ app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) =
         username: msg.username,
         timestamp: msg.timestamp,
         type: 'chat',
-        roomId: `help_request_${msg.help_request_id}`
-      }))
+        roomId: `help_request_${msg.help_request_id}`,
+      })),
     });
   } catch (error) {
     console.error('Failed to fetch messages:', error);
@@ -518,7 +519,7 @@ app.get("/api/chat/messages", authenticateToken, async (req: AuthRequest, res) =
   }
 });
 
-app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
+app.post('/api/chat/send', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { content, roomId } = req.body;
 
@@ -542,7 +543,7 @@ app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
         help_request_id: helpRequestId,
         sender_id: req.userId!,
         message: content.trim(),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       })
       .returning(['id', 'created_at'])
       .executeTakeFirst();
@@ -561,13 +562,16 @@ app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
       username: user?.username || 'Unknown',
       timestamp: result?.created_at,
       type: 'chat',
-      roomId: roomId
+      roomId: roomId,
     };
 
     // Broadcast message via Pusher to all users in the help request channel
     try {
       await pusher.trigger(`private-help-request-${helpRequestId}`, 'new-message', messageData);
-      console.log('✅ Message broadcasted via Pusher to channel:', `private-help-request-${helpRequestId}`);
+      console.log(
+        '✅ Message broadcasted via Pusher to channel:',
+        `private-help-request-${helpRequestId}`
+      );
     } catch (pusherError) {
       console.error('❌ Pusher broadcast error:', pusherError);
       // Don't fail the request if Pusher fails, message is still saved
@@ -576,7 +580,7 @@ app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
     res.json({
       success: true,
       messageId: result?.id.toString(),
-      timestamp: result?.created_at
+      timestamp: result?.created_at,
     });
   } catch (error) {
     console.error('Failed to send message:', error);
@@ -584,7 +588,7 @@ app.post("/api/chat/send", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-app.get("/api/chat/:helpRequestId/messages", authenticateToken, async (req: AuthRequest, res) => {
+app.get('/api/chat/:helpRequestId/messages', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const helpRequestId = parseInt(req.params.helpRequestId);
 
@@ -600,7 +604,7 @@ app.get("/api/chat/:helpRequestId/messages", authenticateToken, async (req: Auth
         'messages.message',
         'users.username as sender_username',
         'users.avatar_url as sender_avatar',
-        'messages.created_at'
+        'messages.created_at',
       ])
       .where('messages.help_request_id', '=', helpRequestId)
       .orderBy('messages.created_at', 'asc')
@@ -613,7 +617,7 @@ app.get("/api/chat/:helpRequestId/messages", authenticateToken, async (req: Auth
   }
 });
 
-app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
+app.post('/api/chat/join', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { roomId } = req.body;
 
@@ -638,7 +642,7 @@ app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
       await pusher.trigger(`private-help-request-${helpRequestId}`, 'user-joined', {
         userId: req.userId!,
         username: user?.username || 'Unknown',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       console.log('✅ User join broadcasted via Pusher');
     } catch (pusherError) {
@@ -650,7 +654,7 @@ app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
     res.json({
       success: true,
       message: `Joined room: ${roomId}`,
-      roomId
+      roomId,
     });
   } catch (error) {
     console.error('Failed to join room:', error);
@@ -658,7 +662,7 @@ app.post("/api/chat/join", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => {
+app.post('/api/chat/leave', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { roomId } = req.body;
 
@@ -683,7 +687,7 @@ app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => 
       await pusher.trigger(`private-help-request-${helpRequestId}`, 'user-left', {
         userId: req.userId!,
         username: user?.username || 'Unknown',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       console.log('✅ User leave broadcasted via Pusher');
     } catch (pusherError) {
@@ -695,7 +699,7 @@ app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => 
     res.json({
       success: true,
       message: `Left room: ${roomId}`,
-      roomId
+      roomId,
     });
   } catch (error) {
     console.error('Failed to leave room:', error);
@@ -703,20 +707,12 @@ app.post("/api/chat/leave", authenticateToken, async (req: AuthRequest, res) => 
   }
 });
 
-app.get("/api/notifications", authenticateToken, async (req: AuthRequest, res) => {
+app.get('/api/notifications', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { since } = req.query;
     let query = db
       .selectFrom('notifications')
-      .select([
-        'id',
-        'type',
-        'title',
-        'message',
-        'data',
-        'created_at as timestamp',
-        'read_at'
-      ])
+      .select(['id', 'type', 'title', 'message', 'data', 'created_at as timestamp', 'read_at'])
       .where('user_id', '=', req.userId!)
       .orderBy('created_at', 'desc')
       .limit(20);
@@ -734,8 +730,8 @@ app.get("/api/notifications", authenticateToken, async (req: AuthRequest, res) =
         type: notif.type,
         message: `${notif.title}: ${notif.message}`,
         timestamp: notif.timestamp,
-        read: !!notif.read_at
-      }))
+        read: !!notif.read_at,
+      })),
     });
   } catch (error) {
     console.error('Failed to fetch notifications:', error);
@@ -753,7 +749,11 @@ interface NotificationData {
 // Helper function to send notifications via Pusher
 async function sendNotificationViaPusher(userId: number, notificationData: NotificationData) {
   try {
-    await pusher.trigger(`private-user-notifications-${userId}`, 'new-notification', notificationData);
+    await pusher.trigger(
+      `private-user-notifications-${userId}`,
+      'new-notification',
+      notificationData
+    );
     console.log('✅ Notification sent via Pusher to user:', userId);
   } catch (error) {
     console.error('❌ Failed to send notification via Pusher:', error);
@@ -762,37 +762,37 @@ async function sendNotificationViaPusher(userId: number, notificationData: Notif
 
 // Legacy KYC endpoints (keeping for compatibility)
 app.post(
-  "/api/kyc/upload",
+  '/api/kyc/upload',
   authenticateToken,
   uploadLimiter,
   ...fileUploadSecurityMiddleware,
   kycUpload.fields([
-    { name: "document", maxCount: 1 },
-    { name: "selfie", maxCount: 1 },
+    { name: 'document', maxCount: 1 },
+    { name: 'selfie', maxCount: 1 },
   ]),
   async (req: AuthRequest, res) => {
     try {
       if (!req.userId || typeof req.userId !== 'number') {
-        return sendError(res, "Invalid authentication token", 401);
+        return sendError(res, 'Invalid authentication token', 401);
       }
 
       const userId = req.userId;
       const { documentType, documentNumber } = req.body;
 
-      console.log("📄 KYC document upload request from user:", userId);
+      console.log('📄 KYC document upload request from user:', userId);
 
       if (!documentType || !documentNumber) {
-        return sendError(res, "Document type and number are required", 400);
+        return sendError(res, 'Document type and number are required', 400);
       }
 
       if (!isValidDocumentType(documentType)) {
-        return sendError(res, "Invalid document type", 400);
+        return sendError(res, 'Invalid document type', 400);
       }
 
       const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
       if (!files.document || files.document.length === 0) {
-        return sendError(res, "Document file is required", 400);
+        return sendError(res, 'Document file is required', 400);
       }
 
       const documentFile = files.document[0];
@@ -803,216 +803,320 @@ app.post(
         documentType,
         documentNumber,
         documentFile,
-        selfieFile,
+        selfieFile
       );
 
       if (!result.success) {
-        return sendError(res, result.error || "Document upload failed", 400);
+        return sendError(res, result.error || 'Document upload failed', 400);
       }
 
-      console.log("✅ KYC documents uploaded successfully");
+      console.log('✅ KYC documents uploaded successfully');
       sendSuccess(res, {
-        message: "Documents uploaded successfully and are under review",
+        message: 'Documents uploaded successfully and are under review',
         verificationId: result.verificationId,
       });
     } catch (error) {
-      console.error("❌ KYC upload error:", error);
-      sendError(res, "Internal server error", 500);
+      console.error('❌ KYC upload error:', error);
+      sendError(res, 'Internal server error', 500);
     }
-  },
+  }
 );
 
-app.get("/api/kyc/status", authenticateToken, async (req: AuthRequest, res) => {
+app.get('/api/kyc/status', authenticateToken, async (req: AuthRequest, res) => {
   try {
     if (!req.userId || typeof req.userId !== 'number') {
-      return sendError(res, "Invalid authentication token", 401);
+      return sendError(res, 'Invalid authentication token', 401);
     }
 
     const userId = req.userId;
     const status = await getKYCStatus(userId);
     sendSuccess(res, status);
   } catch (error) {
-    console.error("❌ KYC status error:", error);
-    sendError(res, "Internal server error", 500);
+    console.error('❌ KYC status error:', error);
+    sendError(res, 'Internal server error', 500);
   }
 });
 
-app.get("/api/kyc/document-types", (req, res) => {
+app.get('/api/kyc/document-types', (req, res) => {
   try {
     const documentTypes = [
-      { value: "passport", label: getDocumentTypeDisplayName("passport") },
-      { value: "drivers_license", label: getDocumentTypeDisplayName("drivers_license") },
-      { value: "national_id", label: getDocumentTypeDisplayName("national_id") },
-      { value: "residence_permit", label: getDocumentTypeDisplayName("residence_permit") },
+      { value: 'passport', label: getDocumentTypeDisplayName('passport') },
+      { value: 'drivers_license', label: getDocumentTypeDisplayName('drivers_license') },
+      { value: 'national_id', label: getDocumentTypeDisplayName('national_id') },
+      { value: 'residence_permit', label: getDocumentTypeDisplayName('residence_permit') },
     ];
 
     sendSuccess(res, documentTypes);
   } catch (error) {
-    console.error("❌ Document types error:", error);
-    sendError(res, "Internal server error", 500);
+    console.error('❌ Document types error:', error);
+    sendError(res, 'Internal server error', 500);
   }
 });
 
 // Admin endpoints for KYC management
-app.get("/api/admin/kyc/pending", authenticateToken, async (req: AuthRequest, res) => {
+app.get('/api/admin/kyc/pending', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const verifications = await getPendingKYCVerifications();
     sendSuccess(res, verifications);
   } catch (error) {
-    console.error("❌ Pending KYC error:", error);
-    sendError(res, "Internal server error", 500);
+    console.error('❌ Pending KYC error:', error);
+    sendError(res, 'Internal server error', 500);
   }
 });
 
-app.post("/api/admin/kyc/:verificationId/status", authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    const { verificationId } = req.params;
-    const { status, notes } = req.body;
+app.post(
+  '/api/admin/kyc/:verificationId/status',
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      const { verificationId } = req.params;
+      const { status, notes } = req.body;
 
-    if (!["approved", "rejected", "under_review"].includes(status)) {
-      return sendError(res, "Invalid status", 400);
+      if (!['approved', 'rejected', 'under_review'].includes(status)) {
+        return sendError(res, 'Invalid status', 400);
+      }
+
+      const success = await updateKYCStatus(parseInt(verificationId), status, notes);
+
+      if (!success) {
+        return sendError(res, 'Failed to update status', 400);
+      }
+
+      sendSuccess(res, { message: 'Status updated successfully' });
+    } catch (error) {
+      console.error('❌ Update KYC status error:', error);
+      sendError(res, 'Internal server error', 500);
     }
-
-    const success = await updateKYCStatus(parseInt(verificationId), status, notes);
-
-    if (!success) {
-      return sendError(res, "Failed to update status", 400);
-    }
-
-    sendSuccess(res, { message: "Status updated successfully" });
-  } catch (error) {
-    console.error("❌ Update KYC status error:", error);
-    sendError(res, "Internal server error", 500);
   }
-});
+);
 
 // Security admin endpoints
-app.get("/api/admin/security/status", authenticateToken, securityAdminEndpoints.dashboard.getStatus);
-app.get("/api/admin/security/events", authenticateToken, securityAdminEndpoints.dashboard.getEvents);
-app.post("/api/admin/security/config", authenticateToken, securityAdminEndpoints.dashboard.updateConfig);
-app.post("/api/admin/security/lockdown", authenticateToken, securityAdminEndpoints.dashboard.emergencyLockdown);
-app.get("/api/admin/security/report", authenticateToken, securityAdminEndpoints.dashboard.generateReport);
+app.get(
+  '/api/admin/security/status',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.getStatus
+);
+app.get(
+  '/api/admin/security/events',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.getEvents
+);
+app.post(
+  '/api/admin/security/config',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.updateConfig
+);
+app.post(
+  '/api/admin/security/lockdown',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.emergencyLockdown
+);
+app.get(
+  '/api/admin/security/report',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.generateReport
+);
 
 // Antimalware Management
-app.get("/api/admin/security/antimalware/quarantine", authenticateToken, securityAdminEndpoints.antimalware.list);
-app.post("/api/admin/security/antimalware/clean", authenticateToken, securityAdminEndpoints.antimalware.clean);
+app.get(
+  '/api/admin/security/antimalware/quarantine',
+  authenticateToken,
+  securityAdminEndpoints.antimalware.list
+);
+app.post(
+  '/api/admin/security/antimalware/clean',
+  authenticateToken,
+  securityAdminEndpoints.antimalware.clean
+);
 
 // Antivirus Management
-app.get("/api/admin/security/antivirus/stats", authenticateToken, securityAdminEndpoints.antivirus.getStats);
-app.post("/api/admin/security/antivirus/update", authenticateToken, securityAdminEndpoints.antivirus.updateDefinitions);
-app.get("/api/admin/security/antivirus/quarantine", authenticateToken, securityAdminEndpoints.antivirus.getQuarantine);
-app.post("/api/admin/security/antivirus/clean", authenticateToken, securityAdminEndpoints.antivirus.cleanQuarantine);
+app.get(
+  '/api/admin/security/antivirus/stats',
+  authenticateToken,
+  securityAdminEndpoints.antivirus.getStats
+);
+app.post(
+  '/api/admin/security/antivirus/update',
+  authenticateToken,
+  securityAdminEndpoints.antivirus.updateDefinitions
+);
+app.get(
+  '/api/admin/security/antivirus/quarantine',
+  authenticateToken,
+  securityAdminEndpoints.antivirus.getQuarantine
+);
+app.post(
+  '/api/admin/security/antivirus/clean',
+  authenticateToken,
+  securityAdminEndpoints.antivirus.cleanQuarantine
+);
 
 // Anti-Hacking Management
-app.get("/api/admin/security/antihacking/stats", authenticateToken, securityAdminEndpoints.antiHacking.getSecurityStats);
-app.post("/api/admin/security/antihacking/block-ip", authenticateToken, securityAdminEndpoints.antiHacking.blockIP);
-app.post("/api/admin/security/antihacking/unblock-ip", authenticateToken, securityAdminEndpoints.antiHacking.unblockIP);
+app.get(
+  '/api/admin/security/antihacking/stats',
+  authenticateToken,
+  securityAdminEndpoints.antiHacking.getSecurityStats
+);
+app.post(
+  '/api/admin/security/antihacking/block-ip',
+  authenticateToken,
+  securityAdminEndpoints.antiHacking.blockIP
+);
+app.post(
+  '/api/admin/security/antihacking/unblock-ip',
+  authenticateToken,
+  securityAdminEndpoints.antiHacking.unblockIP
+);
 
+<<<<<<< HEAD
+=======
 // Zero-Day Protection Management
-app.get("/api/admin/security/zero-day/:action", authenticateToken, securityAdminEndpoints.zeroDayProtection);
+app.get(
+  '/api/admin/security/zero-day/:action',
+  authenticateToken,
+  securityAdminEndpoints.zeroDayProtection
+);
 
 // Sandboxing System Management
-app.get("/api/admin/security/sandbox/:action", authenticateToken, securityAdminEndpoints.sandboxing);
-app.post("/api/admin/security/sandbox/:action", authenticateToken, securityAdminEndpoints.sandboxing);
+app.get(
+  '/api/admin/security/sandbox/:action',
+  authenticateToken,
+  securityAdminEndpoints.sandboxing
+);
+app.post(
+  '/api/admin/security/sandbox/:action',
+  authenticateToken,
+  securityAdminEndpoints.sandboxing
+);
 
 // Post-Quantum Security Management
-app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.postQuantum.getStatus);
-app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.postQuantum.testOperations);
+app.get(
+  '/api/admin/security/post-quantum/status',
+  authenticateToken,
+  securityAdminEndpoints.postQuantum.getStatus
+);
+app.post(
+  '/api/admin/security/post-quantum/test',
+  authenticateToken,
+  securityAdminEndpoints.postQuantum.testOperations
+);
 
+>>>>>>> origin/copilot/fix-161
 // Post-Quantum Cryptography Management
-app.get("/api/admin/security/post-quantum/status", authenticateToken, securityAdminEndpoints.dashboard.getPostQuantumStatus);
-app.post("/api/admin/security/post-quantum/test", authenticateToken, securityAdminEndpoints.dashboard.testPostQuantumOperations);
+app.get(
+  '/api/admin/security/post-quantum/status',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.getPostQuantumStatus
+);
+app.post(
+  '/api/admin/security/post-quantum/test',
+  authenticateToken,
+  securityAdminEndpoints.dashboard.testPostQuantumOperations
+);
 
 // Serve uploaded files with security headers
 app.use(
-  "/uploads",
-  express.static(path.join(process.env.DATA_DIRECTORY || "./data", "uploads"), {
+  '/uploads',
+  express.static(path.join(process.env.DATA_DIRECTORY || './data', 'uploads'), {
     setHeaders: (res, filePath) => {
-      res.setHeader("X-Content-Type-Options", "nosniff");
-      res.setHeader("Content-Disposition", "inline");
-      res.setHeader("Cache-Control", "public, max-age=31536000"); // 1 year = 31536000 seconds
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Content-Disposition', 'inline');
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year = 31536000 seconds
     },
-  }),
+  })
 );
 
 // Global error handler (must be last)
 app.use(errorHandler);
 
 // Graceful shutdown handling
-process.on("SIGTERM", async () => {
-  console.log("🔌 SIGTERM received, shutting down gracefully...");
+process.on('SIGTERM', async () => {
+  console.log('🔌 SIGTERM received, shutting down gracefully...');
   process.exit(0);
 });
 
-process.on("SIGINT", async () => {
-  console.log("🔌 SIGINT received, shutting down gracefully...");
+process.on('SIGINT', async () => {
+  console.log('🔌 SIGINT received, shutting down gracefully...');
   process.exit(0);
 });
 
 // Export a function to start the server
 export async function startServer(port: number) {
   try {
-    console.log("🚀 Starting server on port:", port);
+    console.log('🚀 Starting server on port:', port);
 
     // Initialize performance optimizations
     try {
-      const { createPerformanceIndexes } = await import("./performance.js");
+      const { createPerformanceIndexes } = await import('./performance.js');
       await createPerformanceIndexes();
-      console.log("🚀 Performance optimizations initialized");
+      console.log('🚀 Performance optimizations initialized');
     } catch (error) {
-      console.warn("⚠️ Performance optimization warning:", error.message);
+      console.warn('⚠️ Performance optimization warning:', error.message);
     }
 
     // Initialize comprehensive security systems
     try {
       await initializeSecuritySystems();
-      console.log("🛡️ Comprehensive security systems initialized successfully");
+      console.log('🛡️ Comprehensive security systems initialized successfully');
 
       logSecurityEvent({
-        type: "attack",
-        severity: "low",
-        ip: "system",
-        details: { event: "Security systems initialized" },
-        action: "System startup",
-        status: "allowed",
+        type: 'attack',
+        severity: 'low',
+        ip: 'system',
+        details: { event: 'Security systems initialized' },
+        action: 'System startup',
+        status: 'allowed',
       });
     } catch (error) {
-      console.error("❌ Security system initialization error:", error);
+      console.error('❌ Security system initialization error:', error);
     }
 
     // Initialize Post-Quantum Cryptography Security Baseline
     try {
+<<<<<<< HEAD
+      const pqSecurityStatus = postQuantumSecurity.initializeSecurity();
+      console.log("🔐 Post-Quantum Security Baseline initialized successfully");
+      console.log(`   • Security Level: ${pqSecurityStatus.securityLevel} (256-bit equivalent)`);
+      console.log(`   • Algorithms: ${pqSecurityStatus.algorithms.join(', ')}`);
+=======
       await postQuantumCrypto.initialize();
       const pqStatus = postQuantumCrypto.getStatus();
-      console.log("🔐 Post-Quantum Security Baseline initialized successfully");
+      console.log('🔐 Post-Quantum Security Baseline initialized successfully');
+>>>>>>> origin/copilot/fix-488
 
       logSecurityEvent({
-        type: "system",
-        severity: "info",
-        ip: "system",
+        type: 'system',
+        severity: 'info',
+        ip: 'system',
         details: {
+<<<<<<< HEAD
           event: "Post-Quantum Security initialized",
+          securityLevel: pqSecurityStatus.securityLevel,
+          algorithms: pqSecurityStatus.algorithms
+=======
+          event: 'Post-Quantum Security initialized',
           securityLevel: pqStatus.securityLevel,
-          initialized: pqStatus.initialized
+          initialized: pqStatus.initialized,
+>>>>>>> origin/copilot/fix-488
         },
-        action: "Post-quantum cryptography baseline enabled",
-        status: "allowed",
+        action: 'Post-quantum cryptography baseline enabled',
+        status: 'allowed',
       });
     } catch (error) {
-      console.error("❌ Post-Quantum Security initialization error:", error);
+      console.error('❌ Post-Quantum Security initialization error:', error);
     }
 
     // Initialize and start stablecoin service
     try {
-      console.log("💰 Initializing stablecoin service...");
+      console.log('💰 Initializing stablecoin service...');
       await stablecoinService.start();
-      console.log("✅ Stablecoin service started successfully");
+      console.log('✅ Stablecoin service started successfully');
     } catch (error) {
-      console.error("❌ Stablecoin service initialization error:", error);
+      console.error('❌ Stablecoin service initialization error:', error);
     }
 
-    if (process.env.NODE_ENV === "production") {
-      console.log("🌐 Setting up static file serving...");
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🌐 Setting up static file serving...');
       setupStaticServing(app);
     }
 
@@ -1033,17 +1137,19 @@ export async function startServer(port: number) {
       console.log(`   🧠 Behavioral Analysis: ENABLED`);
       console.log(`   🔐 Rate Limiting & Account Lockout: ENABLED`);
       console.log(`🚀 Performance: Database indexes and connection optimizations active`);
-      console.log(`🧹 Realtime management: Enhanced SSE connections with cleanup and memory management`);
+      console.log(
+        `🧹 Realtime management: Enhanced SSE connections with cleanup and memory management`
+      );
     });
   } catch (err) {
-    console.error("💥 Failed to start server:", err);
+    console.error('💥 Failed to start server:', err);
     process.exit(1);
   }
 }
 
 // Start the server directly if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log("🚀 Starting server directly...");
+  console.log('🚀 Starting server directly...');
   startServer(Number(process.env.PORT) || 3001);
 }
 

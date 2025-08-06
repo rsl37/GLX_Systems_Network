@@ -16,27 +16,40 @@ export const vitePort = 3000;
 // Asset inline limit - 4KB for production builds
 const ASSET_INLINE_LIMIT_BYTES = 4096;
 
+// Asset inline limit - 4KB for production builds
+const ASSET_INLINE_LIMIT_BYTES = 4096;
+
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
+<<<<<<< HEAD
   const isDevelopment = mode === 'development';
 
+<<<<<<< HEAD
+=======
+  const isDevelopment = !isProduction;
+  
+>>>>>>> origin/copilot/fix-257
+=======
+>>>>>>> origin/copilot/fix-470
   return {
     plugins: [
       react(),
       // Enable compression only for production builds
-      ...(isProduction ? [
-        compression({
-          algorithm: 'gzip',
-          threshold: 10240,
-          deleteOriginFile: false,
-        }),
-        compression({
-          algorithm: 'brotliCompress',
-          ext: '.br',
-          threshold: 10240,
-          deleteOriginFile: false,
-        })
-      ] : []),
+      ...(isProduction
+        ? [
+            compression({
+              algorithm: 'gzip',
+              threshold: 10240,
+              deleteOriginFile: false,
+            }),
+            compression({
+              algorithm: 'brotliCompress',
+              ext: '.br',
+              threshold: 10240,
+              deleteOriginFile: false,
+            }),
+          ]
+        : []),
       // Custom plugin to handle source map requests
       {
         name: 'handle-source-map-requests',
@@ -61,13 +74,10 @@ export default defineConfig(({ mode }) => {
           server.middlewares.use((req, res, next) => {
             // Add CORS headers to all responses
             res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader(
-              'Access-Control-Allow-Methods',
-              'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-            );
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
             res.setHeader(
               'Access-Control-Allow-Headers',
-              'Content-Type, Authorization, X-Requested-With',
+              'Content-Type, Authorization, X-Requested-With'
             );
 
             // Handle OPTIONS requests
@@ -94,6 +104,7 @@ export default defineConfig(({ mode }) => {
       target: 'es2020', // Modern target for better optimization
       rollupOptions: {
         output: {
+<<<<<<< HEAD
           manualChunks: {
             // Separate vendor chunks for better caching
             vendor: ['react', 'react-dom'],
@@ -110,17 +121,80 @@ export default defineConfig(({ mode }) => {
               '@radix-ui/react-slot',
               '@radix-ui/react-switch',
               '@radix-ui/react-toggle',
-              '@radix-ui/react-tooltip'
+              '@radix-ui/react-tooltip',
             ],
             icons: ['lucide-react'], // Separate icons chunk
             maps: ['@googlemaps/js-api-loader', 'leaflet'],
             animation: ['framer-motion'],
+<<<<<<< HEAD
             analytics: ['@vercel/analytics', '@vercel/speed-insights'] // Vercel monitoring tools
           }
+=======
+          // More granular chunk splitting for better caching and loading
+          manualChunks: (id) => {
+            // Vendor dependencies
+            if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('node_modules/react-router-dom')) {
+              return 'vendor-router';
+            }
+            
+            // UI library chunks - split by usage frequency
+            if (id.includes('@radix-ui/react-dialog') || 
+                id.includes('@radix-ui/react-popover') ||
+                id.includes('@radix-ui/react-select')) {
+              return 'ui-overlays'; // Heavy overlay components
+            }
+            if (id.includes('@radix-ui')) {
+              return 'ui-core'; // Lighter UI components
+            }
+            
+            // Feature-specific chunks for lazy loading
+            if (id.includes('lucide-react')) {
+              return 'icons';
+            }
+            if (id.includes('framer-motion')) {
+              return 'animation';
+            }
+            if (id.includes('@vercel/analytics') || id.includes('@vercel/speed-insights')) {
+              return 'analytics';
+            }
+            
+            // Heavy/optional features that can be loaded separately
+            if (id.includes('@googlemaps/js-api-loader') || id.includes('leaflet')) {
+              return 'maps';
+            }
+            
+            // Other vendor libraries
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          },
+          
+          // Optimize chunk naming for better caching
+          chunkFileNames: (chunkInfo) => {
+            const facadeModuleId = chunkInfo.facadeModuleId ? 
+              chunkInfo.facadeModuleId.split('/').pop().replace(/\.[^/.]+$/, '') : 'chunk';
+            return `assets/[name]-[hash].js`;
+          },
+          
+          // Optimize asset naming
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          entryFileNames: 'assets/[name]-[hash].js'
+>>>>>>> origin/copilot/fix-175
         }
+=======
+            analytics: ['@vercel/analytics', '@vercel/speed-insights'], // Vercel monitoring tools
+          },
+        },
+>>>>>>> origin/copilot/fix-488
       },
-      chunkSizeWarningLimit: 500, // Set more appropriate warning limit
+      chunkSizeWarningLimit: 300, // Smaller chunks for better loading
       sourcemap: isProduction ? false : true, // Disable sourcemaps in production
+      
+      // Optimize CSS splitting
+      cssCodeSplit: true,
     },
     clearScreen: false,
     server: {
@@ -143,6 +217,7 @@ export default defineConfig(({ mode }) => {
       devSourcemap: !isProduction,
     },
     // Optimize build with better tree-shaking and production settings
+    // Optimize build with better tree-shaking and production settings
     esbuild: {
       sourcemap: !isProduction,
       drop: isProduction ? ['console', 'debugger'] : [], // Remove console logs in production
@@ -154,15 +229,23 @@ export default defineConfig(({ mode }) => {
     // Optimize dependencies
     optimizeDeps: {
       include: [
+<<<<<<< HEAD
+<<<<<<< HEAD
         'react',
+=======
+        'react', 
+>>>>>>> origin/copilot/fix-175
+=======
+        'react',
+>>>>>>> origin/copilot/fix-470
         'react-dom',
-        'react-router-dom' // Pre-bundle router since it's critical
+        'react-router-dom', // Pre-bundle router since it's critical
       ],
       exclude: [
         '@googlemaps/js-api-loader', // Lazy load maps
         '@vercel/analytics', // Lazy load analytics
         '@vercel/speed-insights', // Lazy load speed insights
-        'framer-motion' // Load on demand for animations
+        'framer-motion', // Load on demand for animations
       ],
     },
   };

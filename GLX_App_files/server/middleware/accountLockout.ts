@@ -17,7 +17,11 @@ const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
 const ATTEMPT_WINDOW = 60 * 60 * 1000; // 1 hour window
 
-export const accountLockoutMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const accountLockoutMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { email } = req.body;
   const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
   const key = `${clientIP}-${email || 'no-email'}`;
@@ -28,22 +32,24 @@ export const accountLockoutMiddleware = async (req: Request, res: Response, next
   // Check if account is currently locked
   if (attempt && attempt.lockUntil && now < attempt.lockUntil) {
     const remainingTime = Math.ceil((attempt.lockUntil.getTime() - now.getTime()) / 1000 / 60);
-    console.log(`🔒 Account locked for IP ${clientIP}, email ${email}. Remaining: ${remainingTime} minutes`);
+    console.log(
+      `🔒 Account locked for IP ${clientIP}, email ${email}. Remaining: ${remainingTime} minutes`
+    );
 
     res.status(423).json({
       success: false,
       error: {
         message: `Account temporarily locked due to too many failed attempts. Try again in ${remainingTime} minutes.`,
         statusCode: 423,
-        lockoutRemaining: remainingTime
+        lockoutRemaining: remainingTime,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     return;
   }
 
   // Clean up old attempts outside the window
-  if (attempt && (now.getTime() - attempt.lastAttempt.getTime()) > ATTEMPT_WINDOW) {
+  if (attempt && now.getTime() - attempt.lastAttempt.getTime() > ATTEMPT_WINDOW) {
     failedAttempts.delete(key);
   }
 
@@ -73,22 +79,25 @@ export const recordSuccessfulAttempt = (key: string) => {
 };
 
 // Clean up expired lockouts periodically
-setInterval(() => {
-  const now = new Date();
-  for (const [key, attempt] of failedAttempts.entries()) {
-    if (attempt.lockUntil && now > attempt.lockUntil) {
-      // Remove lockout but keep reduced attempt count
-      attempt.lockUntil = undefined;
-      attempt.count = Math.max(0, attempt.count - 2); // Reduce count on expiry
+setInterval(
+  () => {
+    const now = new Date();
+    for (const [key, attempt] of failedAttempts.entries()) {
+      if (attempt.lockUntil && now > attempt.lockUntil) {
+        // Remove lockout but keep reduced attempt count
+        attempt.lockUntil = undefined;
+        attempt.count = Math.max(0, attempt.count - 2); // Reduce count on expiry
 
-      if (attempt.count === 0) {
-        failedAttempts.delete(key);
-      } else {
-        failedAttempts.set(key, attempt);
+        if (attempt.count === 0) {
+          failedAttempts.delete(key);
+        } else {
+          failedAttempts.set(key, attempt);
+        }
       }
     }
-  }
-}, 5 * 60 * 1000); // Check every 5 minutes
+  },
+  5 * 60 * 1000
+); // Check every 5 minutes
 
 // Extend Request type to include lockoutKey
 declare global {

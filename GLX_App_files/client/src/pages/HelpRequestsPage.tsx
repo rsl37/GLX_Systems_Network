@@ -15,8 +15,20 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import VirtualizedList, { useVirtualizedList } from '../components/VirtualizedList';
 import {
@@ -37,7 +49,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  ChevronUp,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -93,7 +106,7 @@ export function HelpRequestsPage() {
     status: '',
     search: '',
     sortBy: 'created_at',
-    sortOrder: 'desc'
+    sortOrder: 'desc',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -104,33 +117,36 @@ export function HelpRequestsPage() {
     description: '',
     category: '',
     urgency: '',
-    location: ''
+    location: '',
   });
 
   // Use virtualized list hook
   const {
     isLoading: listLoading,
     handleLoadMore,
-    scrollToTop
+    scrollToTop,
   } = useVirtualizedList(helpRequests, {
-    onItemsChange: setHelpRequests
+    onItemsChange: setHelpRequests,
   });
 
   // Debounced search
   const [searchDebounceTimer, setSearchDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
-  const debouncedSearch = useCallback((searchTerm: string) => {
-    if (searchDebounceTimer) {
-      clearTimeout(searchDebounceTimer);
-    }
+  const debouncedSearch = useCallback(
+    (searchTerm: string) => {
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
 
-    const timer = setTimeout(() => {
-      setFilter(prev => ({ ...prev, search: searchTerm }));
-      setCurrentPage(1);
-    }, 300);
+      const timer = setTimeout(() => {
+        setFilter(prev => ({ ...prev, search: searchTerm }));
+        setCurrentPage(1);
+      }, 300);
 
-    setSearchDebounceTimer(timer);
-  }, [searchDebounceTimer]);
+      setSearchDebounceTimer(timer);
+    },
+    [searchDebounceTimer]
+  );
 
   useEffect(() => {
     fetchHelpRequests();
@@ -164,9 +180,9 @@ export function HelpRequestsPage() {
 
       const response = await fetch(`/api/help-requests?${params}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'API-Version': 'v1'
-        }
+          Authorization: `Bearer ${token}`,
+          'API-Version': 'v1',
+        },
       });
 
       if (response.ok) {
@@ -205,10 +221,10 @@ export function HelpRequestsPage() {
       const response = await fetch('/api/help-requests', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newRequest)
+        body: JSON.stringify(newRequest),
       });
 
       if (response.ok) {
@@ -218,7 +234,7 @@ export function HelpRequestsPage() {
           description: '',
           category: '',
           urgency: '',
-          location: ''
+          location: '',
         });
         fetchHelpRequests();
       }
@@ -232,7 +248,7 @@ export function HelpRequestsPage() {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/help-requests/${helpRequestId}/offer-help`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
@@ -245,34 +261,52 @@ export function HelpRequestsPage() {
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case 'critical': return 'bg-red-500 text-white';
-      case 'high': return 'bg-orange-500 text-white';
-      case 'medium': return 'bg-yellow-500 text-white';
-      case 'low': return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      case 'critical':
+        return 'bg-red-500 text-white';
+      case 'high':
+        return 'bg-orange-500 text-white';
+      case 'medium':
+        return 'bg-yellow-500 text-white';
+      case 'low':
+        return 'bg-green-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'posted': return 'bg-blue-500 text-white';
-      case 'matched': return 'bg-purple-500 text-white';
-      case 'in_progress': return 'bg-yellow-500 text-white';
-      case 'completed': return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      case 'posted':
+        return 'bg-blue-500 text-white';
+      case 'matched':
+        return 'bg-purple-500 text-white';
+      case 'in_progress':
+        return 'bg-yellow-500 text-white';
+      case 'completed':
+        return 'bg-green-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'emergency': return <AlertTriangle className="h-4 w-4" />;
-      case 'transportation': return <Car className="h-4 w-4" />;
-      case 'food': return <Utensils className="h-4 w-4" />;
-      case 'housing': return <Home className="h-4 w-4" />;
-      case 'healthcare': return <Heart className="h-4 w-4" />;
-      case 'education': return <GraduationCap className="h-4 w-4" />;
-      case 'technology': return <Wrench className="h-4 w-4" />;
-      default: return <HandHeart className="h-4 w-4" />;
+      case 'emergency':
+        return <AlertTriangle className='h-4 w-4' />;
+      case 'transportation':
+        return <Car className='h-4 w-4' />;
+      case 'food':
+        return <Utensils className='h-4 w-4' />;
+      case 'housing':
+        return <Home className='h-4 w-4' />;
+      case 'healthcare':
+        return <Heart className='h-4 w-4' />;
+      case 'education':
+        return <GraduationCap className='h-4 w-4' />;
+      case 'technology':
+        return <Wrench className='h-4 w-4' />;
+      default:
+        return <HandHeart className='h-4 w-4' />;
     }
   };
 
@@ -290,6 +324,7 @@ export function HelpRequestsPage() {
   };
 
   // Memoized help request card component
+<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
   const HelpRequestCard = React.memo(({ request, index, isVisible }: {
     request: HelpRequest;
     index: number;
@@ -306,35 +341,79 @@ export function HelpRequestsPage() {
         role="article"
         aria-labelledby={`request-title-${request.id}`}
         aria-describedby={`request-desc-${request.id}`}
+=======
+  const HelpRequestCard = React.memo(
+    ({
+      request,
+      index,
+      isVisible,
+    }: {
+      request: HelpRequest;
+      index: number;
+      isVisible: boolean;
+    }) => (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isVisible ? 1 : 0.7, y: 0 }}
+        transition={{ duration: 0.3, delay: index * 0.05 }}
+        className={`w-full ${viewMode === 'grid' ? 'px-3' : 'px-0'}`}
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
       >
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div aria-hidden="true">{getCategoryIcon(request.category)}</div>
-              <CardTitle
-                id={`request-title-${request.id}`}
-                className="text-lg line-clamp-1"
-              >
-                {request.title}
-              </CardTitle>
+        <Card
+          className='galax-card hover:shadow-lg transition-shadow h-full'
+          role='article'
+          aria-labelledby={`request-title-${request.id}`}
+          aria-describedby={`request-desc-${request.id}`}
+        >
+          <CardHeader className='pb-3'>
+            <div className='flex items-start justify-between'>
+              <div className='flex items-center gap-2 min-w-0 flex-1'>
+                <div aria-hidden='true'>{getCategoryIcon(request.category)}</div>
+                <CardTitle id={`request-title-${request.id}`} className='text-lg line-clamp-1'>
+                  {request.title}
+                </CardTitle>
+              </div>
+              <div className='flex gap-1 flex-shrink-0'>
+                <Badge
+                  className={getUrgencyColor(request.urgency)}
+                  aria-label={`Urgency: ${request.urgency}`}
+                >
+                  {request.urgency}
+                </Badge>
+                <Badge
+                  className={getStatusColor(request.status)}
+                  aria-label={`Status: ${request.status}`}
+                >
+                  {request.status}
+                </Badge>
+              </div>
             </div>
-            <div className="flex gap-1 flex-shrink-0">
-              <Badge
-                className={getUrgencyColor(request.urgency)}
-                aria-label={`Urgency: ${request.urgency}`}
-              >
-                {request.urgency}
-              </Badge>
-              <Badge
-                className={getStatusColor(request.status)}
-                aria-label={`Status: ${request.status}`}
-              >
-                {request.status}
-              </Badge>
-            </div>
-          </div>
-        </CardHeader>
+          </CardHeader>
 
+          <CardContent className='space-y-4'>
+            <p id={`request-desc-${request.id}`} className='text-gray-600 text-sm line-clamp-3'>
+              {request.description}
+            </p>
+
+            <div className='flex items-center justify-between text-sm text-gray-500'>
+              <div className='flex items-center gap-1'>
+                <User className='h-3 w-3' aria-hidden='true' />
+                <span aria-label={`Requested by ${request.requester_username}`}>
+                  {request.requester_username}
+                </span>
+              </div>
+              <div className='flex items-center gap-1'>
+                <Clock className='h-3 w-3' aria-hidden='true' />
+                <time
+                  dateTime={request.created_at}
+                  title={new Date(request.created_at).toLocaleString()}
+                >
+                  {formatTimeAgo(request.created_at)}
+                </time>
+              </div>
+            </div>
+
+<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
         <CardContent className="space-y-4">
           <p
             id={`request-desc-${request.id}`}
@@ -390,22 +469,57 @@ export function HelpRequestsPage() {
             {request.status === 'matched' && (
               <div className="text-center text-sm text-gray-600">
                 Helper: <span className="font-medium">{request.helper_username}</span>
+=======
+            {request.latitude && request.longitude && (
+              <div className='flex items-center gap-1 text-sm text-gray-500'>
+                <MapPin className='h-3 w-3' aria-hidden='true' />
+                <span>Location provided</span>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
               </div>
             )}
 
-            {request.status === 'completed' && (
+            {request.media_url && (
               <div
-                className="text-center text-sm text-green-600 font-medium"
-                aria-label="Request completed"
+                className='text-sm text-gray-500'
+                aria-label={`${request.media_type} attachment available`}
               >
-                ✅ Completed
+                📎 {request.media_type} attachment
               </div>
             )}
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  ));
+
+            <div className='pt-2'>
+              {request.status === 'posted' && (
+                <Button
+                  onClick={() => handleOfferHelp(request.id)}
+                  className='galax-button w-full'
+                  disabled={request.requester_username === user?.username}
+                  aria-label={`Offer help for: ${request.title}`}
+                >
+                  <HandHeart className='h-4 w-4 mr-2' aria-hidden='true' />
+                  Offer Help
+                </Button>
+              )}
+
+              {request.status === 'matched' && (
+                <div className='text-center text-sm text-gray-600'>
+                  Helper: <span className='font-medium'>{request.helper_username}</span>
+                </div>
+              )}
+
+              {request.status === 'completed' && (
+                <div
+                  className='text-center text-sm text-green-600 font-medium'
+                  aria-label='Request completed'
+                >
+                  ✅ Completed
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    )
+  );
 
   HelpRequestCard.displayName = 'HelpRequestCard';
 
@@ -414,60 +528,62 @@ export function HelpRequestsPage() {
     if (!pagination || pagination.total_pages <= 1) return null;
 
     return (
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-        <div className="flex justify-between items-center sm:hidden">
+      <div className='flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6'>
+        <div className='flex justify-between items-center sm:hidden'>
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() => setCurrentPage(pagination.previous_page || 1)}
             disabled={!pagination.has_previous_page}
-            aria-label="Previous page"
+            aria-label='Previous page'
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className='h-4 w-4' />
           </Button>
-          <span className="text-sm text-gray-700">
+          <span className='text-sm text-gray-700'>
             Page {pagination.current_page} of {pagination.total_pages}
           </span>
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() => setCurrentPage(pagination.next_page || pagination.total_pages)}
             disabled={!pagination.has_next_page}
-            aria-label="Next page"
+            aria-label='Next page'
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className='h-4 w-4' />
           </Button>
         </div>
 
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div className='hidden sm:flex sm:flex-1 sm:items-center sm:justify-between'>
           <div>
-            <p className="text-sm text-gray-700">
-              Showing{' '}
-              <span className="font-medium">{pagination.first_item}</span> to{' '}
-              <span className="font-medium">{pagination.last_item}</span> of{' '}
-              <span className="font-medium">{pagination.total_items}</span> results
+            <p className='text-sm text-gray-700'>
+              Showing <span className='font-medium'>{pagination.first_item}</span> to{' '}
+              <span className='font-medium'>{pagination.last_item}</span> of{' '}
+              <span className='font-medium'>{pagination.total_items}</span> results
             </p>
           </div>
           <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <nav
+              className='relative z-0 inline-flex rounded-md shadow-sm -space-x-px'
+              aria-label='Pagination'
+            >
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={() => setCurrentPage(1)}
                 disabled={!pagination.has_previous_page}
-                className="rounded-l-md"
-                aria-label="First page"
+                className='rounded-l-md'
+                aria-label='First page'
               >
-                <ChevronsLeft className="h-4 w-4" />
+                <ChevronsLeft className='h-4 w-4' />
               </Button>
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={() => setCurrentPage(pagination.previous_page || 1)}
                 disabled={!pagination.has_previous_page}
-                aria-label="Previous page"
+                aria-label='Previous page'
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className='h-4 w-4' />
               </Button>
 
               {/* Page numbers */}
@@ -478,11 +594,11 @@ export function HelpRequestsPage() {
                 return (
                   <Button
                     key={pageNum}
-                    variant={pageNum === pagination.current_page ? "default" : "outline"}
-                    size="sm"
+                    variant={pageNum === pagination.current_page ? 'default' : 'outline'}
+                    size='sm'
                     onClick={() => setCurrentPage(pageNum)}
                     aria-label={`Page ${pageNum}`}
-                    aria-current={pageNum === pagination.current_page ? "page" : undefined}
+                    aria-current={pageNum === pagination.current_page ? 'page' : undefined}
                   >
                     {pageNum}
                   </Button>
@@ -490,23 +606,23 @@ export function HelpRequestsPage() {
               })}
 
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={() => setCurrentPage(pagination.next_page || pagination.total_pages)}
                 disabled={!pagination.has_next_page}
-                aria-label="Next page"
+                aria-label='Next page'
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className='h-4 w-4' />
               </Button>
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={() => setCurrentPage(pagination.total_pages)}
                 disabled={!pagination.has_next_page}
-                className="rounded-r-md"
-                aria-label="Last page"
+                className='rounded-r-md'
+                aria-label='Last page'
               >
-                <ChevronsRight className="h-4 w-4" />
+                <ChevronsRight className='h-4 w-4' />
               </Button>
             </nav>
           </div>
@@ -519,13 +635,13 @@ export function HelpRequestsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-48 bg-gray-200 rounded-lg"></div>
+      <div className='min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
+        <div className='max-w-7xl mx-auto'>
+          <div className='animate-pulse space-y-6'>
+            <div className='h-8 bg-gray-200 rounded w-1/4'></div>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className='h-48 bg-gray-200 rounded-lg'></div>
               ))}
             </div>
           </div>
@@ -535,92 +651,107 @@ export function HelpRequestsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className='min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
+      <div className='max-w-7xl mx-auto space-y-6'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+          className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'
         >
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className='text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               Help Requests
             </h1>
-            <p className="text-gray-600">Connect with your community</p>
+            <p className='text-gray-600'>Connect with your community</p>
           </div>
 
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
+<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
               <Button className="glx-button">
                 <Plus className="h-4 w-4 mr-2" />
+=======
+              <Button className='galax-button'>
+                <Plus className='h-4 w-4 mr-2' />
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
                 Request Help
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className='sm:max-w-md'>
               <DialogHeader>
                 <DialogTitle>Create Help Request</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 <div>
-                  <Label htmlFor="title">Title</Label>
+                  <Label htmlFor='title'>Title</Label>
                   <Input
-                    id="title"
+                    id='title'
                     value={newRequest.title}
-                    onChange={(e) => setNewRequest({...newRequest, title: e.target.value})}
-                    placeholder="Brief description of what you need"
+                    onChange={e => setNewRequest({ ...newRequest, title: e.target.value })}
+                    placeholder='Brief description of what you need'
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor='description'>Description</Label>
                   <Textarea
-                    id="description"
+                    id='description'
                     value={newRequest.description}
-                    onChange={(e) => setNewRequest({...newRequest, description: e.target.value})}
-                    placeholder="Detailed description of your request"
+                    onChange={e => setNewRequest({ ...newRequest, description: e.target.value })}
+                    placeholder='Detailed description of your request'
                     rows={3}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className='grid grid-cols-2 gap-4'>
                   <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Select value={newRequest.category} onValueChange={(value) => setNewRequest({...newRequest, category: value})}>
+                    <Label htmlFor='category'>Category</Label>
+                    <Select
+                      value={newRequest.category}
+                      onValueChange={value => setNewRequest({ ...newRequest, category: value })}
+                    >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue placeholder='Select category' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="emergency">Emergency</SelectItem>
-                        <SelectItem value="transportation">Transportation</SelectItem>
-                        <SelectItem value="food">Food</SelectItem>
-                        <SelectItem value="housing">Housing</SelectItem>
-                        <SelectItem value="healthcare">Healthcare</SelectItem>
-                        <SelectItem value="education">Education</SelectItem>
-                        <SelectItem value="technology">Technology</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value='emergency'>Emergency</SelectItem>
+                        <SelectItem value='transportation'>Transportation</SelectItem>
+                        <SelectItem value='food'>Food</SelectItem>
+                        <SelectItem value='housing'>Housing</SelectItem>
+                        <SelectItem value='healthcare'>Healthcare</SelectItem>
+                        <SelectItem value='education'>Education</SelectItem>
+                        <SelectItem value='technology'>Technology</SelectItem>
+                        <SelectItem value='other'>Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label htmlFor="urgency">Urgency</Label>
-                    <Select value={newRequest.urgency} onValueChange={(value) => setNewRequest({...newRequest, urgency: value})}>
+                    <Label htmlFor='urgency'>Urgency</Label>
+                    <Select
+                      value={newRequest.urgency}
+                      onValueChange={value => setNewRequest({ ...newRequest, urgency: value })}
+                    >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select urgency" />
+                        <SelectValue placeholder='Select urgency' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="critical">Critical</SelectItem>
+                        <SelectItem value='low'>Low</SelectItem>
+                        <SelectItem value='medium'>Medium</SelectItem>
+                        <SelectItem value='high'>High</SelectItem>
+                        <SelectItem value='critical'>Critical</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
+<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
                 <Button onClick={handleCreateRequest} className="glx-button w-full">
+=======
+                <Button onClick={handleCreateRequest} className='galax-button w-full'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
                   Create Request
                 </Button>
               </div>
@@ -634,67 +765,88 @@ export function HelpRequestsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
+<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">Filters:</span>
+=======
+          <Card className='galax-card'>
+            <CardContent className='p-4'>
+              <div className='flex flex-wrap gap-4 items-center'>
+                <div className='flex items-center gap-2'>
+                  <Filter className='h-4 w-4 text-gray-500' />
+                  <span className='text-sm text-gray-600'>Filters:</span>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/HelpRequestsPage.tsx
                 </div>
 
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" aria-hidden="true" />
+                <div className='flex-1'>
+                  <div className='relative'>
+                    <Search
+                      className='absolute left-3 top-3 h-4 w-4 text-gray-400'
+                      aria-hidden='true'
+                    />
                     <Input
-                      placeholder="Search help requests..."
-                      className="pl-10"
+                      placeholder='Search help requests...'
+                      className='pl-10'
                       value={filter.search}
-                      onChange={(e) => debouncedSearch(e.target.value)}
-                      aria-label="Search help requests by title, description, or username"
+                      onChange={e => debouncedSearch(e.target.value)}
+                      aria-label='Search help requests by title, description, or username'
                     />
                   </div>
                 </div>
 
-                <Select value={filter.category} onValueChange={(value) => setFilter({...filter, category: value})}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Category" />
+                <Select
+                  value={filter.category}
+                  onValueChange={value => setFilter({ ...filter, category: value })}
+                >
+                  <SelectTrigger className='w-40'>
+                    <SelectValue placeholder='Category' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
-                    <SelectItem value="emergency">Emergency</SelectItem>
-                    <SelectItem value="transportation">Transportation</SelectItem>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="housing">Housing</SelectItem>
-                    <SelectItem value="healthcare">Healthcare</SelectItem>
-                    <SelectItem value="education">Education</SelectItem>
-                    <SelectItem value="technology">Technology</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value=''>All Categories</SelectItem>
+                    <SelectItem value='emergency'>Emergency</SelectItem>
+                    <SelectItem value='transportation'>Transportation</SelectItem>
+                    <SelectItem value='food'>Food</SelectItem>
+                    <SelectItem value='housing'>Housing</SelectItem>
+                    <SelectItem value='healthcare'>Healthcare</SelectItem>
+                    <SelectItem value='education'>Education</SelectItem>
+                    <SelectItem value='technology'>Technology</SelectItem>
+                    <SelectItem value='other'>Other</SelectItem>
                   </SelectContent>
                 </Select>
 
-                <Select value={filter.urgency} onValueChange={(value) => setFilter({...filter, urgency: value})}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Urgency" />
+                <Select
+                  value={filter.urgency}
+                  onValueChange={value => setFilter({ ...filter, urgency: value })}
+                >
+                  <SelectTrigger className='w-32'>
+                    <SelectValue placeholder='Urgency' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Urgency</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
+                    <SelectItem value=''>All Urgency</SelectItem>
+                    <SelectItem value='low'>Low</SelectItem>
+                    <SelectItem value='medium'>Medium</SelectItem>
+                    <SelectItem value='high'>High</SelectItem>
+                    <SelectItem value='critical'>Critical</SelectItem>
                   </SelectContent>
                 </Select>
 
-                <Select value={filter.status} onValueChange={(value) => setFilter({...filter, status: value})}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Status" />
+                <Select
+                  value={filter.status}
+                  onValueChange={value => setFilter({ ...filter, status: value })}
+                >
+                  <SelectTrigger className='w-32'>
+                    <SelectValue placeholder='Status' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
-                    <SelectItem value="posted">Posted</SelectItem>
-                    <SelectItem value="matched">Matched</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value=''>All Status</SelectItem>
+                    <SelectItem value='posted'>Posted</SelectItem>
+                    <SelectItem value='matched'>Matched</SelectItem>
+                    <SelectItem value='in_progress'>In Progress</SelectItem>
+                    <SelectItem value='completed'>Completed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -707,72 +859,76 @@ export function HelpRequestsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white rounded-lg shadow-sm border overflow-hidden"
+          className='bg-white rounded-lg shadow-sm border overflow-hidden'
         >
           {/* View Mode Controls */}
-          <div className="border-b border-gray-200 p-4 flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700">
-                {pagination ? `${pagination.total_items} results` : `${helpRequests.length} results`}
+          <div className='border-b border-gray-200 p-4 flex justify-between items-center'>
+            <div className='flex items-center gap-4'>
+              <span className='text-sm font-medium text-gray-700'>
+                {pagination
+                  ? `${pagination.total_items} results`
+                  : `${helpRequests.length} results`}
               </span>
-              <div className="flex items-center gap-2">
-                <label htmlFor="pageSize" className="text-sm text-gray-600">Show:</label>
+              <div className='flex items-center gap-2'>
+                <label htmlFor='pageSize' className='text-sm text-gray-600'>
+                  Show:
+                </label>
                 <Select
                   value={pageSize.toString()}
-                  onValueChange={(value) => {
+                  onValueChange={value => {
                     setPageSize(parseInt(value));
                     setCurrentPage(1);
                   }}
                 >
-                  <SelectTrigger className="w-20">
+                  <SelectTrigger className='w-20'>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
+                    <SelectItem value='10'>10</SelectItem>
+                    <SelectItem value='20'>20</SelectItem>
+                    <SelectItem value='50'>50</SelectItem>
+                    <SelectItem value='100'>100</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Sort by:</label>
+            <div className='flex items-center gap-2'>
+              <label className='text-sm text-gray-600'>Sort by:</label>
               <Select
                 value={filter.sortBy}
-                onValueChange={(value) => setFilter(prev => ({ ...prev, sortBy: value }))}
+                onValueChange={value => setFilter(prev => ({ ...prev, sortBy: value }))}
               >
-                <SelectTrigger className="w-32">
+                <SelectTrigger className='w-32'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="created_at">Date</SelectItem>
-                  <SelectItem value="urgency">Urgency</SelectItem>
-                  <SelectItem value="status">Status</SelectItem>
-                  <SelectItem value="title">Title</SelectItem>
+                  <SelectItem value='created_at'>Date</SelectItem>
+                  <SelectItem value='urgency'>Urgency</SelectItem>
+                  <SelectItem value='status'>Status</SelectItem>
+                  <SelectItem value='title'>Title</SelectItem>
                 </SelectContent>
               </Select>
               <Select
                 value={filter.sortOrder}
-                onValueChange={(value) => setFilter(prev => ({ ...prev, sortOrder: value }))}
+                onValueChange={value => setFilter(prev => ({ ...prev, sortOrder: value }))}
               >
-                <SelectTrigger className="w-20">
+                <SelectTrigger className='w-20'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="desc">↓</SelectItem>
-                  <SelectItem value="asc">↑</SelectItem>
+                  <SelectItem value='desc'>↓</SelectItem>
+                  <SelectItem value='asc'>↑</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           {helpRequests.length === 0 && !isLoading ? (
-            <div className="text-center py-12">
-              <HandHeart className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">No help requests found</h3>
-              <p className="text-gray-500">Try adjusting your filters or create a new request</p>
+            <div className='text-center py-12'>
+              <HandHeart className='h-16 w-16 mx-auto mb-4 text-gray-400' />
+              <h3 className='text-lg font-semibold text-gray-600 mb-2'>No help requests found</h3>
+              <p className='text-gray-500'>Try adjusting your filters or create a new request</p>
             </div>
           ) : (
             <VirtualizedList
@@ -780,29 +936,42 @@ export function HelpRequestsPage() {
               itemHeight={viewMode === 'grid' ? 280 : 200}
               containerHeight={600}
               renderItem={(request, index, isVisible) => (
-                <HelpRequestCard
-                  request={request}
-                  index={index}
-                  isVisible={isVisible}
-                />
+                <HelpRequestCard request={request} index={index} isVisible={isVisible} />
               )}
-              keyExtractor={(request) => request.id.toString()}
+              keyExtractor={request => request.id.toString()}
               loading={isLoading}
               onEndReached={pagination?.has_next_page ? loadMoreItems : undefined}
               onEndReachedThreshold={0.8}
               emptyComponent={
-                <div className="text-center py-12">
-                  <HandHeart className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">No help requests found</h3>
-                  <p className="text-gray-500">Try adjusting your filters or create a new request</p>
+                <div className='text-center py-12'>
+                  <HandHeart className='h-16 w-16 mx-auto mb-4 text-gray-400' />
+                  <h3 className='text-lg font-semibold text-gray-600 mb-2'>
+                    No help requests found
+                  </h3>
+                  <p className='text-gray-500'>
+                    Try adjusting your filters or create a new request
+                  </p>
                 </div>
               }
-              className="px-4"
+              className='px-4'
             />
           )}
 
           {/* Pagination Controls */}
           <PaginationControls />
+
+          {/* Scroll to Top Button */}
+          {helpRequests.length > 0 && (
+            <div className='fixed bottom-6 right-6 z-50'>
+              <Button
+                onClick={scrollToTop}
+                className='h-12 w-12 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg'
+                title='Scroll to top'
+              >
+                <ChevronUp className='h-5 w-5' />
+              </Button>
+            </div>
+          )}
         </motion.div>
       </div>
     </div>

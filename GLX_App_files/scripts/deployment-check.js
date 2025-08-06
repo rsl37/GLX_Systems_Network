@@ -8,8 +8,6 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-
-
 /**
  * GLX Deployment Readiness Check Script
  *
@@ -38,6 +36,8 @@ dotenv.config({ path: join(__dirname, '../.env') });
 async function runDeploymentCheck() {
   console.log('🚀 GLX Deployment Readiness Check');
   console.log('=====================================\n');
+<<<<<<< HEAD
+<<<<<<< HEAD
 
   console.log('DEBUG: About to call performDeploymentReadinessCheck...');
 
@@ -46,10 +46,29 @@ async function runDeploymentCheck() {
 
     console.log('DEBUG: Got report:', report.overall_status);
 
+=======
+  
+=======
+
+>>>>>>> origin/copilot/fix-470
+  console.log('DEBUG: About to call performDeploymentReadinessCheck...');
+
+  try {
+    const report = await performDeploymentReadinessCheck();
+
+    console.log('DEBUG: Got report:', report.overall_status);
+<<<<<<< HEAD
+    
+>>>>>>> origin/copilot/fix-175
+=======
+
+>>>>>>> origin/copilot/fix-470
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
-    console.log(`Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`);
+    console.log(
+      `Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`
+    );
     console.log(`Environment: ${report.environment}`);
     console.log(`Timestamp: ${report.timestamp}`);
     console.log(`\nChecks Summary:`);
@@ -109,7 +128,6 @@ async function runDeploymentCheck() {
       console.log('\n✅ Deployment readiness check PASSED');
       process.exit(0);
     }
-
   } catch (error) {
     console.error('\n❌ Deployment readiness check failed to run:');
     console.error(error);
@@ -122,10 +140,14 @@ async function runDeploymentCheck() {
  */
 function getStatusEmoji(status) {
   switch (status) {
-    case 'ready': return '✅';
-    case 'warning': return '⚠️';
-    case 'not_ready': return '❌';
-    default: return '❓';
+    case 'ready':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'not_ready':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 
@@ -134,10 +156,14 @@ function getStatusEmoji(status) {
  */
 function getCheckEmoji(status) {
   switch (status) {
-    case 'pass': return '✅';
-    case 'warning': return '⚠️';
-    case 'fail': return '❌';
-    default: return '❓';
+    case 'pass':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'fail':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 

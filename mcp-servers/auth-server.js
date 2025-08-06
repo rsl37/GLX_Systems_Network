@@ -19,14 +19,26 @@ const crypto = require('crypto');
 
 class AuthMCPServer {
   constructor() {
+<<<<<<< HEAD
     this.server = new Server({
       name: 'GLX JWT Authentication MCP Server',
       version: '1.0.0',
     }, {
       capabilities: {
         tools: {},
+=======
+    this.server = new Server(
+      {
+        name: 'GALAX JWT Authentication MCP Server',
+        version: '1.0.0',
+>>>>>>> origin/all-merged
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.jwtSecret = process.env.JWT_SECRET || 'default-secret-key';
     this.tokenExpiry = process.env.TOKEN_EXPIRY || '3600'; // 1 hour default
@@ -46,10 +58,14 @@ class AuthMCPServer {
               type: 'object',
               properties: {
                 token: { type: 'string', description: 'JWT token to verify' },
-                ignoreExpiration: { type: 'boolean', description: 'Whether to ignore token expiration', default: false }
+                ignoreExpiration: {
+                  type: 'boolean',
+                  description: 'Whether to ignore token expiration',
+                  default: false,
+                },
               },
-              required: ['token']
-            }
+              required: ['token'],
+            },
           },
           {
             name: 'generate_access_token',
@@ -64,15 +80,15 @@ class AuthMCPServer {
                   type: 'array',
                   items: { type: 'string' },
                   description: 'User roles/permissions',
-                  default: ['user']
+                  default: ['user'],
                 },
                 customClaims: {
                   type: 'object',
-                  description: 'Additional custom claims to include in token'
-                }
+                  description: 'Additional custom claims to include in token',
+                },
               },
-              required: ['userId', 'username', 'email']
-            }
+              required: ['userId', 'username', 'email'],
+            },
           },
           {
             name: 'refresh_token',
@@ -81,10 +97,10 @@ class AuthMCPServer {
               type: 'object',
               properties: {
                 refreshToken: { type: 'string', description: 'Refresh token' },
-                userId: { type: 'string', description: 'User ID for validation' }
+                userId: { type: 'string', description: 'User ID for validation' },
               },
-              required: ['refreshToken', 'userId']
-            }
+              required: ['refreshToken', 'userId'],
+            },
           },
           {
             name: 'validate_user_permissions',
@@ -96,12 +112,12 @@ class AuthMCPServer {
                 requiredPermissions: {
                   type: 'array',
                   items: { type: 'string' },
-                  description: 'List of required permissions'
+                  description: 'List of required permissions',
                 },
-                resource: { type: 'string', description: 'Optional resource identifier' }
+                resource: { type: 'string', description: 'Optional resource identifier' },
               },
-              required: ['token', 'requiredPermissions']
-            }
+              required: ['token', 'requiredPermissions'],
+            },
           },
           {
             name: 'get_user_profile',
@@ -110,16 +126,20 @@ class AuthMCPServer {
               type: 'object',
               properties: {
                 token: { type: 'string', description: 'JWT token' },
-                includePermissions: { type: 'boolean', description: 'Include user permissions in response', default: true }
+                includePermissions: {
+                  type: 'boolean',
+                  description: 'Include user permissions in response',
+                  default: true,
+                },
               },
-              required: ['token']
-            }
-          }
-        ]
+              required: ['token'],
+            },
+          },
+        ],
       };
     });
 
-    this.server.setRequestHandler('tools/call', async (request) => {
+    this.server.setRequestHandler('tools/call', async request => {
       const { name, arguments: args } = request.params;
 
       switch (name) {
@@ -145,32 +165,44 @@ class AuthMCPServer {
       const decoded = jwt.verify(token, this.jwtSecret, options);
 
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            valid: true,
-            decoded,
-            tokenInfo: {
-              userId: decoded.userId,
-              username: decoded.username,
-              email: decoded.email,
-              roles: decoded.roles,
-              iat: new Date(decoded.iat * 1000).toISOString(),
-              exp: new Date(decoded.exp * 1000).toISOString()
-            }
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                valid: true,
+                decoded,
+                tokenInfo: {
+                  userId: decoded.userId,
+                  username: decoded.username,
+                  email: decoded.email,
+                  roles: decoded.roles,
+                  iat: new Date(decoded.iat * 1000).toISOString(),
+                  exp: new Date(decoded.exp * 1000).toISOString(),
+                },
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     } catch (error) {
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            valid: false,
-            error: error.message,
-            errorType: error.name
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                valid: false,
+                error: error.message,
+                errorType: error.name,
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     }
   }
@@ -184,56 +216,68 @@ class AuthMCPServer {
         roles,
         ...customClaims,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + parseInt(this.tokenExpiry)
+        exp: Math.floor(Date.now() / 1000) + parseInt(this.tokenExpiry),
       };
 
       const accessToken = jwt.sign(payload, this.jwtSecret);
 
       // Generate refresh token
       const refreshToken = crypto.randomBytes(32).toString('hex');
-      const refreshTokenExpiry = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60); // 7 days
+      const refreshTokenExpiry = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60; // 7 days
 
       // Store refresh token (in production, use database)
       this.refreshTokens.set(refreshToken, {
         userId,
-        expiry: refreshTokenExpiry
+        expiry: refreshTokenExpiry,
       });
 
       // Store user permissions (mock)
       this.userPermissions.set(userId, {
         roles,
         permissions: this.getRolePermissions(roles),
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       });
 
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            success: true,
-            accessToken,
-            refreshToken,
-            tokenType: 'Bearer',
-            expiresIn: this.tokenExpiry,
-            refreshTokenExpiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
-            user: {
-              userId,
-              username,
-              email,
-              roles
-            }
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                success: true,
+                accessToken,
+                refreshToken,
+                tokenType: 'Bearer',
+                expiresIn: this.tokenExpiry,
+                refreshTokenExpiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
+                user: {
+                  userId,
+                  username,
+                  email,
+                  roles,
+                },
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     } catch (error) {
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            success: false,
-            error: error.message
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                success: false,
+                error: error.message,
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     }
   }
@@ -268,32 +312,44 @@ class AuthMCPServer {
         email: `user_${userId}@example.com`, // In production, get from database
         roles: userPerms.roles,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + parseInt(this.tokenExpiry)
+        exp: Math.floor(Date.now() / 1000) + parseInt(this.tokenExpiry),
       };
 
       const newAccessToken = jwt.sign(payload, this.jwtSecret);
 
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            success: true,
-            accessToken: newAccessToken,
-            tokenType: 'Bearer',
-            expiresIn: this.tokenExpiry,
-            refreshToken // Keep the same refresh token
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                success: true,
+                accessToken: newAccessToken,
+                tokenType: 'Bearer',
+                expiresIn: this.tokenExpiry,
+                refreshToken, // Keep the same refresh token
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     } catch (error) {
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            success: false,
-            error: error.message
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                success: false,
+                error: error.message,
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     }
   }
@@ -305,43 +361,61 @@ class AuthMCPServer {
 
       if (!userPerms) {
         return {
-          content: [{
-            type: 'text',
-            text: JSON.stringify({
-              hasPermission: false,
-              reason: 'User permissions not found'
-            }, null, 2)
-          }]
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  hasPermission: false,
+                  reason: 'User permissions not found',
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
 
       const userPermissions = userPerms.permissions;
-      const hasAllPermissions = requiredPermissions.every(perm =>
-        userPermissions.includes(perm) || userPermissions.includes('*')
+      const hasAllPermissions = requiredPermissions.every(
+        perm => userPermissions.includes(perm) || userPermissions.includes('*')
       );
 
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            hasPermission: hasAllPermissions,
-            userPermissions,
-            requiredPermissions,
-            resource,
-            userId: decoded.userId,
-            roles: decoded.roles
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                hasPermission: hasAllPermissions,
+                userPermissions,
+                requiredPermissions,
+                resource,
+                userId: decoded.userId,
+                roles: decoded.roles,
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     } catch (error) {
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            hasPermission: false,
-            error: error.message
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                hasPermission: false,
+                error: error.message,
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     }
   }
@@ -359,8 +433,8 @@ class AuthMCPServer {
         tokenInfo: {
           issuedAt: new Date(decoded.iat * 1000).toISOString(),
           expiresAt: new Date(decoded.exp * 1000).toISOString(),
-          timeUntilExpiry: decoded.exp - Math.floor(Date.now() / 1000)
-        }
+          timeUntilExpiry: decoded.exp - Math.floor(Date.now() / 1000),
+        },
       };
 
       if (includePermissions && userPerms) {
@@ -369,20 +443,28 @@ class AuthMCPServer {
       }
 
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify(profile, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(profile, null, 2),
+          },
+        ],
       };
     } catch (error) {
       return {
-        content: [{
-          type: 'text',
-          text: JSON.stringify({
-            error: error.message,
-            errorType: error.name
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                error: error.message,
+                errorType: error.name,
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     }
   }
@@ -392,22 +474,39 @@ class AuthMCPServer {
     const rolePermissions = {
       admin: ['*'], // All permissions
       moderator: [
-        'user:read', 'user:update', 'content:moderate', 'reports:read',
-        'community:manage', 'events:manage'
+        'user:read',
+        'user:update',
+        'content:moderate',
+        'reports:read',
+        'community:manage',
+        'events:manage',
       ],
       civic_leader: [
-        'user:read', 'community:manage', 'events:manage', 'civic_issues:manage',
-        'announcements:create'
+        'user:read',
+        'community:manage',
+        'events:manage',
+        'civic_issues:manage',
+        'announcements:create',
       ],
       user: [
-        'profile:read', 'profile:update', 'community:participate', 'events:participate',
-        'civic_issues:report', 'help_requests:create', 'help_requests:respond'
+        'profile:read',
+        'profile:update',
+        'community:participate',
+        'events:participate',
+        'civic_issues:report',
+        'help_requests:create',
+        'help_requests:respond',
       ],
       verified_user: [
-        'profile:read', 'profile:update', 'community:participate', 'events:participate',
-        'civic_issues:report', 'help_requests:create', 'help_requests:respond',
-        'governance:vote'
-      ]
+        'profile:read',
+        'profile:update',
+        'community:participate',
+        'events:participate',
+        'civic_issues:report',
+        'help_requests:create',
+        'help_requests:respond',
+        'governance:vote',
+      ],
     };
 
     const permissions = new Set();

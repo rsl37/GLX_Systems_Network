@@ -15,7 +15,15 @@ interface AISecurityConfig {
   enableModelIntegrityCheck: boolean;
   enableAuditLogging: boolean;
   allowedModelVersions: string[];
+<<<<<<< HEAD
+<<<<<<< HEAD
   knownGoodHashes?: string[];
+=======
+  allowedModelHashes: string[];
+>>>>>>> origin/copilot/fix-257
+=======
+  allowedModelHashes: string[];
+>>>>>>> origin/copilot/fix-271
   riskThreshold: number;
 }
 
@@ -120,7 +128,7 @@ export class AIMCPSecurityMiddleware {
         isValid: false,
         sanitized: '',
         riskScore: 100,
-        threats: ['Invalid prompt format']
+        threats: ['Invalid prompt format'],
       };
     }
 
@@ -195,7 +203,7 @@ export class AIMCPSecurityMiddleware {
         isValid: false,
         sanitized: '',
         riskScore: 100,
-        threats: ['Invalid response format']
+        threats: ['Invalid response format'],
       };
     }
 
@@ -226,7 +234,15 @@ export class AIMCPSecurityMiddleware {
 
     // Update audit log with response information
     if (this.config.enableAuditLogging) {
-      this.logAIInteraction(originalPrompt, response, userId, ipAddress, modelVersion, riskScore, threats);
+      this.logAIInteraction(
+        originalPrompt,
+        response,
+        userId,
+        ipAddress,
+        modelVersion,
+        riskScore,
+        threats
+      );
     }
 
     const isValid = riskScore < this.config.riskThreshold;
@@ -249,7 +265,7 @@ export class AIMCPSecurityMiddleware {
     const existing = this.modelIntegrity.get(modelVersion);
 
     // If we have a cached verification that's less than 5 minutes old, use it
-    if (existing && (Date.now() - existing.verifiedAt.getTime()) < 5 * 60 * 1000) {
+    if (existing && Date.now() - existing.verifiedAt.getTime() < 5 * 60 * 1000) {
       return existing.isValid;
     }
 
@@ -260,8 +276,18 @@ export class AIMCPSecurityMiddleware {
         // Verify hash if model data is provided
         const hash = crypto.createHash('sha256').update(modelData).digest('hex');
         // Compare the computed hash against known good hashes
+<<<<<<< HEAD
+<<<<<<< HEAD
         const knownGoodHashes = this.config.knownGoodHashes || [];
 
+=======
+        const knownGoodHashes = this.config.knownGoodHashes || [];
+<<<<<<< HEAD
+        
+>>>>>>> origin/copilot/fix-386
+=======
+
+>>>>>>> origin/copilot/fix-470
         // If we have known good hashes, check against them
         if (knownGoodHashes.length > 0) {
           isValid = knownGoodHashes.includes(hash);
@@ -274,12 +300,20 @@ export class AIMCPSecurityMiddleware {
           }
         }
 
+<<<<<<< HEAD
+=======
+        const knownGoodHashes: string[] = []; // Initialize as empty array since config doesn't have allowedModelHashes
+        isValid = knownGoodHashes.includes(hash);
+        
+>>>>>>> origin/copilot/fix-253
+=======
+>>>>>>> origin/copilot/fix-470
         this.modelIntegrity.set(modelVersion, {
           version: modelVersion,
           hash,
           signature: '', // Would contain cryptographic signature
           verifiedAt: new Date(),
-          isValid
+          isValid,
         });
       } else {
         // Check if model version is in allowed list
@@ -287,7 +321,6 @@ export class AIMCPSecurityMiddleware {
       }
 
       console.log(`🔍 Model integrity check for ${modelVersion}: ${isValid ? 'PASSED' : 'FAILED'}`);
-
     } catch (error) {
       console.error(`❌ Model integrity verification failed for ${modelVersion}:`, error);
       isValid = false;
@@ -303,9 +336,9 @@ export class AIMCPSecurityMiddleware {
     // Check for unusual character patterns
     const unusualPatterns = [
       /[\u200B-\u200D\uFEFF]/g, // Zero-width characters
-      /[\u0300-\u036F]/g,       // Combining diacritical marks
-      /[\u2060-\u206F]/g,       // Word joiners and invisible characters
-      /[^\x00-\x7F]{5,}/g,      // Long sequences of non-ASCII characters
+      /[\u0300-\u036F]/g, // Combining diacritical marks
+      /[\u2060-\u206F]/g, // Word joiners and invisible characters
+      /[^\x00-\x7F]{5,}/g, // Long sequences of non-ASCII characters
     ];
 
     return unusualPatterns.some(pattern => pattern.test(text));
@@ -335,7 +368,11 @@ export class AIMCPSecurityMiddleware {
    */
   private detectHarmfulContent(text: string): boolean {
     const harmfulPatterns = [
+<<<<<<< HEAD
       /instructions\s+for\s+(making|creating)\s+(a\s+)?(bomb|explosive|weapon)/gi,
+=======
+      /instructions?\s+for\s+(making|creating)\s+(bomb|explosive|weapon)/gi,
+>>>>>>> origin/copilot/fix-254
       /how\s+to\s+(hack|break\s+into|steal)/gi,
       /personal\s+information.*?(ssn|social\s+security|credit\s+card)/gi,
       /vote\s+for.*?(specific\s+candidate|party)/gi, // Inappropriate political influence
@@ -350,9 +387,16 @@ export class AIMCPSecurityMiddleware {
    */
   private detectDataLeakage(text: string): boolean {
     const leakagePatterns = [
+<<<<<<< HEAD
       /(?:password|pwd)\s*(?:[:=]|\bis\s*[:])?\s*\w+/gi,
       /(?:api[_\s]?key|apikey)\s*(?:[:=]|\bis\s*[:])?\s*[\w-]+/gi,
       /(?:secret|token)\s*(?:[:=]|\bis\s*[:])?\s*[\w.-]+/gi,
+=======
+      /password\s*(is\s*[:]\s*|[:=]\s*)\w+/gi,
+      /api[_\s]?key\s*[:=]\s*[\w-]+/gi,
+      /secret\s*[:=]\s*[\w-]+/gi,
+      /token\s*[:=]\s*[\w.-]+/gi,
+>>>>>>> origin/copilot/fix-254
       /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, // Email addresses
       /\b\d{3}-\d{2}-\d{4}\b/g, // SSN pattern
       /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, // Credit card pattern
@@ -382,7 +426,7 @@ export class AIMCPSecurityMiddleware {
       riskScore,
       threats,
       timestamp: new Date(),
-      ipAddress
+      ipAddress,
     };
 
     this.auditLogs.push(auditEntry);
@@ -399,7 +443,7 @@ export class AIMCPSecurityMiddleware {
         userId,
         riskScore,
         threats,
-        timestamp: auditEntry.timestamp
+        timestamp: auditEntry.timestamp,
       });
     }
   }
@@ -423,10 +467,13 @@ export class AIMCPSecurityMiddleware {
    */
   getSecurityMetrics() {
     const totalInteractions = this.auditLogs.length;
-    const highRiskInteractions = this.auditLogs.filter(log => log.riskScore >= this.config.riskThreshold).length;
-    const averageRiskScore = totalInteractions > 0
-      ? this.auditLogs.reduce((sum, log) => sum + log.riskScore, 0) / totalInteractions
-      : 0;
+    const highRiskInteractions = this.auditLogs.filter(
+      log => log.riskScore >= this.config.riskThreshold
+    ).length;
+    const averageRiskScore =
+      totalInteractions > 0
+        ? this.auditLogs.reduce((sum, log) => sum + log.riskScore, 0) / totalInteractions
+        : 0;
 
     return {
       totalInteractions,
@@ -434,7 +481,7 @@ export class AIMCPSecurityMiddleware {
       riskPercentage: totalInteractions > 0 ? (highRiskInteractions / totalInteractions) * 100 : 0,
       averageRiskScore,
       verifiedModels: this.modelIntegrity.size,
-      lastUpdate: new Date().toISOString()
+      lastUpdate: new Date().toISOString(),
     };
   }
 
@@ -442,7 +489,7 @@ export class AIMCPSecurityMiddleware {
    * Clear old audit logs (for cleanup)
    */
   clearOldLogs(olderThanHours = 24) {
-    const cutoff = Date.now() - (olderThanHours * 60 * 60 * 1000);
+    const cutoff = Date.now() - olderThanHours * 60 * 60 * 1000;
     const initialCount = this.auditLogs.length;
 
     this.auditLogs = this.auditLogs.filter(log => log.timestamp.getTime() > cutoff);
@@ -461,6 +508,7 @@ export const defaultAISecurityConfig: AISecurityConfig = {
   enablePromptInjectionDetection: true,
   enableModelIntegrityCheck: true,
   enableAuditLogging: true,
+<<<<<<< HEAD
   allowedModelVersions: [
     'gpt-4',
     'gpt-3.5-turbo',
@@ -468,13 +516,38 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'civic-ai-v1',
     'copilot-civic'
   ],
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  allowedModelVersions: ['gpt-4', 'gpt-3.5-turbo', 'claude-3', 'civic-ai-v1', 'copilot-civic'],
+>>>>>>> origin/copilot/fix-488
   knownGoodHashes: [
+=======
+  allowedModelHashes: [
+>>>>>>> origin/copilot/fix-254
     // Known good model hashes for verification
     '5dbbe3869b484fc6a9e44a8d0697d458c8413332294039d65f1f3a0a862ccb3a', // mock model data hash for tests
     'd2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2', // civic-ai-v1
-    'a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1'  // additional test model
+    'a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1', // additional test model
   ],
+<<<<<<< HEAD
   riskThreshold: 25  // Lowered from 40 to 25 to properly detect security threats
+=======
+  allowedModelHashes: [
+    // Empty array - in production these would be known good model hashes
+=======
+  allowedModelHashes: [
+    // These would be real hashes in a production system
+    'placeholder-hash-1',
+    'placeholder-hash-2'
+>>>>>>> origin/copilot/fix-271
+  ],
+  riskThreshold: 40
+>>>>>>> origin/copilot/fix-257
+=======
+  riskThreshold: 25, // Lowered from 40 to 25 to properly detect security threats
+>>>>>>> origin/copilot/fix-488
 };
 
 export default AIMCPSecurityMiddleware;

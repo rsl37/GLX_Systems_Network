@@ -17,10 +17,13 @@ const TAG_LENGTH = 16; // 128 bits
 const SALT_LENGTH = 32; // 256 bits
 
 // Environment variable for master encryption key
-const MASTER_KEY = process.env.ENCRYPTION_MASTER_KEY || crypto.randomBytes(KEY_LENGTH).toString('hex');
+const MASTER_KEY =
+  process.env.ENCRYPTION_MASTER_KEY || crypto.randomBytes(KEY_LENGTH).toString('hex');
 
 if (!process.env.ENCRYPTION_MASTER_KEY) {
-  console.warn('⚠️ ENCRYPTION_MASTER_KEY not set in environment. Using random key (data will not persist across restarts)');
+  console.warn(
+    '⚠️ ENCRYPTION_MASTER_KEY not set in environment. Using random key (data will not persist across restarts)'
+  );
 }
 
 /**
@@ -55,12 +58,7 @@ export function encryptPersonalData(data: string): string {
     const tag = cipher.getAuthTag();
 
     // Combine salt + iv + tag + encrypted data
-    const combined = Buffer.concat([
-      salt,
-      iv,
-      tag,
-      Buffer.from(encrypted, 'hex')
-    ]);
+    const combined = Buffer.concat([salt, iv, tag, Buffer.from(encrypted, 'hex')]);
 
     return combined.toString('base64');
   } catch (error) {
@@ -121,17 +119,20 @@ export function encryptDocument(documentData: Buffer, documentId: string): strin
     const iv = crypto.randomBytes(IV_LENGTH);
 
     // Derive document-specific key
-    const key = crypto.pbkdf2Sync(Buffer.from(MASTER_KEY, 'hex'), salt, 100000, KEY_LENGTH, 'sha512');
+    const key = crypto.pbkdf2Sync(
+      Buffer.from(MASTER_KEY, 'hex'),
+      salt,
+      100000,
+      KEY_LENGTH,
+      'sha512'
+    );
 
     // Create cipher
     const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
     cipher.setAAD(Buffer.from(documentId, 'utf8'));
 
     // Encrypt the document
-    const encrypted = Buffer.concat([
-      cipher.update(documentData),
-      cipher.final()
-    ]);
+    const encrypted = Buffer.concat([cipher.update(documentData), cipher.final()]);
 
     // Get authentication tag
     const tag = cipher.getAuthTag();
@@ -161,7 +162,13 @@ export function decryptDocument(encryptedData: string, documentId: string): Buff
 
     // Derive the same key used for encryption
     const salt = crypto.createHash('sha256').update(documentId).digest();
-    const key = crypto.pbkdf2Sync(Buffer.from(MASTER_KEY, 'hex'), salt, 100000, KEY_LENGTH, 'sha512');
+    const key = crypto.pbkdf2Sync(
+      Buffer.from(MASTER_KEY, 'hex'),
+      salt,
+      100000,
+      KEY_LENGTH,
+      'sha512'
+    );
 
     // Create decipher
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
@@ -169,10 +176,7 @@ export function decryptDocument(encryptedData: string, documentId: string): Buff
     decipher.setAuthTag(tag);
 
     // Decrypt the document
-    const decrypted = Buffer.concat([
-      decipher.update(encrypted),
-      decipher.final()
-    ]);
+    const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
 
     return decrypted;
   } catch (error) {
@@ -206,7 +210,7 @@ export function hashSensitiveData(data: string, salt?: string): { hash: string; 
 
   return {
     hash: hash.toString('hex'),
-    salt: saltBuffer.toString('hex')
+    salt: saltBuffer.toString('hex'),
   };
 }
 

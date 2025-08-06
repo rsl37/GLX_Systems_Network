@@ -9,13 +9,21 @@ Main License: PolyForm Shield License 1.0.0
 === GLX Main Application Dependencies ===
 Directory: /home/runner/work/GLX_Civic_Networking_App/GLX_Civic_Networking_App/GLX_App_files
 
+<<<<<<< HEAD
 ✅ glx-civic-platform@0.2.0: PolyForm-Shield-1.0.0 (Main Application)
 
 Summary for GLX Main Application:
   Total packages: 1
+=======
+✅ galax-civic-platform@0.2.0: PolyForm-Shield-1.0.0 (Main Application)
+✅ undici@6.21.3: MIT (Compatible)
+
+Summary for GALAX Main Application:
+  Total packages: 2
+>>>>>>> origin/all-merged
   Violations: 0
   Warnings: 0
-  Compatible: 1
+  Compatible: 2
 
 === MCP Servers Dependencies ===
 Directory: /home/runner/work/GLX_Civic_Networking_App/GLX_Civic_Networking_App/mcp-servers

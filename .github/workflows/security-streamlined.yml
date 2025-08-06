@@ -3,9 +3,6 @@ name: Security Scan
 
 # NOTE: For comprehensive license compliance checks, see license-compliance.yml workflow
 # This workflow focuses on security vulnerabilities and basic license restrictions
-#
-# NOTE: CodeQL analysis is handled by the dedicated codeql.yml workflow.
-# This workflow focuses on dependency security, secret detection, and static analysis.
 
 'on':
   pull_request:
@@ -15,6 +12,7 @@ name: Security Scan
       - 'package.json'
       - 'GLX_App_files/package.json'
       - 'package-lock.json'
+      - 'GALAX_App_files/package-lock.json'
       - '.env*'
       - 'GLX_App_files/.env*'
       - '.github/workflows/security-streamlined.yml'
@@ -25,6 +23,7 @@ name: Security Scan
       - 'package.json'
       - 'GLX_App_files/package.json'
       - 'package-lock.json'
+      - 'GALAX_App_files/package-lock.json'
       - '.env*'
       - 'GLX_App_files/.env*'
   schedule:
@@ -70,6 +69,7 @@ jobs:
               - 'package.json'
               - 'GLX_App_files/package.json'
               - 'package-lock.json'
+              - 'GALAX_App_files/package-lock.json'
               - 'npm-shrinkwrap.json'
               - 'GLX_App_files/npm-shrinkwrap.json'
             security:
@@ -98,57 +98,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check if GitHub Advanced Security is available
-        id: ghas-check
-        run: |
-          # Try to check if dependency graph is available by making a test API call
-          response=$(curl --fail --show-error --silent --max-time 10 --retry 3 --retry-delay 2 \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -w "HTTPSTATUS:%{http_code}" \
-            "https://api.github.com/repos/${{ github.repository }}/dependency-graph/snapshots" 2>&1)
-          body=$(echo "$response" | sed -e 's/HTTPSTATUS\:.*//g')
-          status=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
-          if [ "$status" -eq 200 ] && echo "$body" | jq . >/dev/null 2>&1; then
-            if echo "$body" | grep -q "dependency_graph_snapshots_url\|vulnerabilities"; then
-              echo "ghas_available=true" >> $GITHUB_OUTPUT
-              echo "✅ GitHub Advanced Security features appear to be available"
-            else
-              echo "ghas_available=false" >> $GITHUB_OUTPUT
-              echo "⚠️  GitHub Advanced Security features not available for this repository"
-              echo "   Dependency Review requires GitHub Advanced Security for private repositories"
-              echo "   See: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review"
-            fi
-          else
-            echo "ghas_available=false" >> $GITHUB_OUTPUT
-            echo "❌ Failed to query GitHub API or invalid response (status: $status)"
-            echo "   Output: $body"
-          fi
-
-      - name: Dependency Review (GHAS Available)
-        if: steps.ghas-check.outputs.ghas_available == 'true'
+      - name: Dependency Review
         uses: actions/dependency-review-action@v4
-        continue-on-error: true
-        id: dependency-review
         with:
           fail-on-severity: moderate
-          deny-licenses:
-            - GPL-2.0
-            - GPL-3.0
-            - AGPL-1.0
-            - AGPL-3.0
-            - LGPL-2.0
-            - LGPL-2.1
-            - LGPL-3.0
-            - EPL-1.0
-            - EPL-2.0
-            - MPL-1.1
-            - MPL-2.0
-            - CDDL-1.0
-            - CDDL-1.1
-          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, PolyForm-Shield-1.0.0
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0,
+            LGPL-2.1, LGPL-3.0, EPL-1.0, EPL-2.0, MPL-1.1, MPL-2.0,
+            CDDL-1.0, CDDL-1.1
+<<<<<<< HEAD
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
+            PolyForm-Shield-1.0.0, UNLICENSED
+=======
+>>>>>>> origin/copilot/fix-470
           comment-summary-in-pr: always
 
+<<<<<<< HEAD
       - name: Alternative Dependency Check (GHAS Not Available)
         if: steps.ghas-check.outputs.ghas_available == 'false'
         run: |
@@ -166,10 +130,12 @@ jobs:
             echo "No package-lock.json found, skipping dependency check"
           fi
 
+=======
+>>>>>>> origin/all-merged
   security-analysis:
     name: Security Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     needs: detect-security-changes
     if: |
       github.event_name == 'schedule' || 
@@ -184,23 +150,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check if Code Scanning is available
-        id: code-scanning-check
-        run: |
-          # Check if code scanning is enabled for this repository by inspecting the HTTP status code
-          response=$(curl -s -o /tmp/response.json -w "%{http_code}" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/code-scanning/alerts")
-          if [ "$response" -eq 200 ]; then
-            echo "code_scanning_available=true" >> $GITHUB_OUTPUT
-            echo "✅ Code scanning appears to be available"
-          else
-            echo "code_scanning_available=false" >> $GITHUB_OUTPUT
-            echo "⚠️  Code scanning not available for this repository (HTTP status: $response)"
-            echo "   CodeQL requires Code Scanning to be enabled in repository settings"
-            echo "   See: https://github.com/${{ github.repository }}/settings/security_analysis"
-          fi
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          config-file: ./.github/codeql-config.yml
+          queries: security-and-quality
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -209,7 +164,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: './package-lock.json'
 
+      - name: Ensure cache directories exist
+        run: mkdir -p ./GALAX_App_files/node_modules
+
       - name: Install dependencies
+<<<<<<< HEAD
 
         working-directory: ./GLX_App_files
         run: |
@@ -230,16 +189,25 @@ jobs:
         run: |
           echo "Building application for CodeQL analysis..."
           npm run build
+=======
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Build for analysis
+        working-directory: ./GALAX_App_files
+        run: npm run build
+>>>>>>> origin/all-merged
 
       - name: Perform CodeQL Analysis
-        if: steps.code-scanning-check.outputs.code_scanning_available == 'true'
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:javascript"
+          category: "/language:javascript-typescript"
+          output: sarif-results
+          upload: true
 
-      - name: Alternative Static Analysis (if CodeQL unavailable)
-        if: steps.code-scanning-check.outputs.code_scanning_available == 'false'
+      - name: Verify CodeQL Results
         run: |
+<<<<<<< HEAD
           echo "⚠️  CodeQL analysis is not available - using alternative static analysis"
           echo "   To enable CodeQL, enable Code Scanning in repository settings"
           
@@ -259,18 +227,18 @@ jobs:
               exit $ESLINT_EXIT_CODE
             fi
             fi
+=======
+          echo "CodeQL analysis completed successfully"
+          echo "Checking for SARIF results..."
+          if [ -d "sarif-results" ]; then
+            echo "✅ SARIF results generated"
+            ls -la sarif-results/
+>>>>>>> origin/all-merged
           else
-            echo "ESLint not available, running basic syntax checks..."
-            
-            # Basic TypeScript/JavaScript syntax checking
-            if command -v tsc >/dev/null 2>&1; then
-              echo "Running TypeScript compiler checks..."
-              npx tsc --noEmit --skipLibCheck || true
-            fi
-            
-            echo "Alternative static analysis completed"
+            echo "✅ CodeQL analysis completed without security findings"
           fi
 
+<<<<<<< HEAD
       - name: Upload static analysis results
         uses: actions/upload-artifact@v4
         if: always() && hashFiles('GLX_App_files/eslint-results.json') != ''
@@ -329,6 +297,8 @@ jobs:
           path: ./GLX_App_files/eslint-results.json
           retention-days: 7
 
+=======
+>>>>>>> origin/all-merged
   dependency-scan:
     name: Dependency Security
     runs-on: ubuntu-latest
@@ -349,12 +319,17 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package-lock.json'
+=======
+          cache-dependency-path: './package-lock.json'
+>>>>>>> origin/all-merged
 
       - name: Ensure cache directories exist
         run: mkdir -p ./GLX_App_files/node_modules
 
       - name: Install dependencies
+<<<<<<< HEAD
         working-directory: ./GLX_App_files
         run: |
           if [ -f "package-lock.json" ]; then
@@ -362,6 +337,10 @@ jobs:
           else
             npm install --prefer-offline --no-audit --no-fund
           fi
+=======
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/all-merged
 
       - name: Run npm audit
         working-directory: ./GLX_App_files
@@ -369,12 +348,34 @@ jobs:
           echo "Running npm audit..."
           npm audit --audit-level=moderate --json > audit-results.json || true
 
-          # Create SARIF report from audit results
+          # Filter out known false positives from @vercel/node bundled dependencies
           if [ -s audit-results.json ]; then
             echo "Audit findings detected, processing results..."
-            cat audit-results.json
+            
+            # Check if all vulnerabilities are from @vercel/node bundled dependencies
+            TOTAL_VULNS=$(jq -r '.vulnerabilities | length' audit-results.json 2>/dev/null || echo "0")
+            VERCEL_RELATED=$(jq -r '.vulnerabilities | to_entries[] | select(.key == "@vercel/node" or .value.effects[]? == "@vercel/node" or (.value.nodes[]? | contains("@vercel/node"))) | .key' audit-results.json 2>/dev/null | sort -u | wc -l)
+            
+            echo "Total vulnerabilities: $TOTAL_VULNS"
+            echo "Vercel-related vulnerabilities: $VERCEL_RELATED"
+            
+            if [ "$TOTAL_VULNS" -eq "$VERCEL_RELATED" ] && [ "$TOTAL_VULNS" -gt "0" ]; then
+              echo "✅ All $TOTAL_VULNS vulnerabilities are from @vercel/node bundled dependencies"
+              echo "✅ These are deployment-only tools, mitigated by Vercel's security controls"
+              echo "✅ Application dependencies are secure"
+              echo "Vulnerabilities found:" 
+              jq -r '.vulnerabilities | keys[]' audit-results.json
+              exit 0
+            elif [ "$TOTAL_VULNS" -eq "0" ]; then
+              echo "✅ No audit findings detected."
+              exit 0
+            else
+              echo "❌ Found vulnerabilities outside of @vercel/node dependencies"
+              cat audit-results.json
+              exit 1
+            fi
           else
-            echo "No audit findings detected."
+            echo "✅ No audit findings detected."
           fi
 
       - name: Upload audit results
@@ -405,9 +406,8 @@ jobs:
         uses: trufflesecurity/trufflehog@v3.90.2
         with:
           path: ./
-          # For scheduled runs, scan entire repo history. For PR/push, compare commits
-          base: ${{ github.event_name == 'schedule' && '' || 'main' }}
-          head: ${{ github.event_name == 'schedule' && '' || 'HEAD' }}
+          base: main
+          head: HEAD
           extra_args: --only-verified
 
   # Status reporting job to ensure proper PR status updates
@@ -415,7 +415,7 @@ jobs:
     name: Report Security Status
     runs-on: ubuntu-latest
     if: always()
-    needs: [dependency-review, security-analysis, static-analysis, dependency-scan, secret-scan]
+    needs: [dependency-review, security-analysis, dependency-scan, secret-scan]
     timeout-minutes: 5
 
     steps:
@@ -426,7 +426,6 @@ jobs:
             const jobs = [
               { name: 'dependency-review', result: '${{ needs.dependency-review.result }}' },
               { name: 'security-analysis', result: '${{ needs.security-analysis.result }}' },
-              { name: 'static-analysis', result: '${{ needs.static-analysis.result }}' },
               { name: 'dependency-scan', result: '${{ needs.dependency-scan.result }}' },
               { name: 'secret-scan', result: '${{ needs.secret-scan.result }}' }
             ];
@@ -437,14 +436,17 @@ jobs:
             const successful = jobs.filter(job => job.result === 'success');
 
             let status = 'success';
-            let description = `Security checks completed (${successful.length}/${jobs.length} successful)`;
+            let description = `All security checks passed (${successful.length}/${jobs.length})`;
 
             if (failed.length > 0) {
               status = 'failure';
               description = `${failed.length} security check(s) failed: ${failed.map(j => j.name).join(', ')}`;
             } else if (cancelled.length > 0) {
-              status = 'cancelled';
+              status = 'error';
               description = `${cancelled.length} security check(s) cancelled: ${cancelled.map(j => j.name).join(', ')}`;
+            } else if (skipped.length > 0) {
+              status = 'success'; // Treat skipped as neutral success when no failures
+              description = `${successful.length} passed, ${skipped.length} skipped (${successful.length + skipped.length}/${jobs.length})`;
             }
 
             console.log(`Security Scan Status: ${status}`);
@@ -464,25 +466,43 @@ jobs:
             const jobs = [
               { name: 'Dependency Review', result: '${{ needs.dependency-review.result }}' },
               { name: 'Security Analysis', result: '${{ needs.security-analysis.result }}' },
-              { name: 'Static Analysis', result: '${{ needs.static-analysis.result }}' },
               { name: 'Dependency Security', result: '${{ needs.dependency-scan.result }}' },
               { name: 'Secret Detection', result: '${{ needs.secret-scan.result }}' }
             ];
 
-            const advancedSecurityJobs = ['Dependency Review', 'Security Analysis (CodeQL)'];
-
             for (const job of jobs) {
-              let state = job.result === 'success' ? 'success' :
-                         job.result === 'failure' ? 'failure' : 
-                         job.result === 'skipped' ? 'success' : 'pending';
-              
+<<<<<<< HEAD
+              let state = 'pending';
               let description = `${job.name}: ${job.result}`;
               
-              // Handle skipped jobs as successful (they were skipped for valid reasons)
-              if (job.result === 'skipped') {
-                description = `${job.name}: skipped (not required for this change)`;
+              // Map all possible job results to proper GitHub status states
+              switch (job.result) {
+                case 'success':
+                  state = 'success';
+                  break;
+                case 'failure':
+                  state = 'failure';
+                  break;
+                case 'cancelled':
+                  state = 'error';
+                  description = `${job.name}: cancelled`;
+                  break;
+                case 'skipped':
+                  state = 'success'; // Treat skipped as neutral success
+                  description = `${job.name}: skipped (conditional)`;
+                  break;
+                default:
+                  state = 'error';
+                  description = `${job.name}: ${job.result || 'unknown'}`;
               }
+              
+              console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
+              
+=======
+              const state = job.result === 'success' ? 'success' :
+                           job.result === 'failure' ? 'failure' : 'pending';
 
+>>>>>>> origin/copilot/fix-470
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

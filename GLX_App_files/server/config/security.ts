@@ -30,13 +30,16 @@ export const DEFAULT_WEBSOCKET_CONFIG: WebSocketSecurityConfig = {
   enforceSSL: true,
   corsOrigins: ['https://localhost:3000', 'https://glx-civic-networking-app.vercel.app'],
   maxConnections: 1000,
-  heartbeatInterval: 30000
+  heartbeatInterval: 30000,
 };
 
 /**
  * Get WebSocket connection URL with security enforcement
  */
-export function getSecureWebSocketUrl(host: string = 'localhost:3001', path: string = '/socket.io'): string {
+export function getSecureWebSocketUrl(
+  host: string = 'localhost:3001',
+  path: string = '/socket.io'
+): string {
   // Always use WSS for secure connections
   const protocol = DEFAULT_WEBSOCKET_CONFIG.protocol;
   const cleanHost = host.replace(/^https?:\/\//, '').replace(/^wss?:\/\//, '');
@@ -60,37 +63,37 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     pattern: 'your-secret-key',
     type: 'exact',
     description: 'Default placeholder secret',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'your-refresh-secret-key',
     type: 'exact',
     description: 'Default refresh token secret placeholder',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'your-super-secret-jwt-key-change-this-in-production-min-32-chars',
     type: 'exact',
     description: 'Extended default placeholder secret',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'change-this-secret',
     type: 'exact',
     description: 'Common placeholder text',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'replace-me',
     type: 'exact',
     description: 'Common placeholder text',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'secret-key',
     type: 'exact',
     description: 'Generic secret key',
-    severity: 'high'
+    severity: 'high',
   },
 
   // Common weak passwords
@@ -98,85 +101,85 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     pattern: 'password',
     type: 'exact',
     description: 'Common weak password',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'password',
     type: 'contains',
     description: 'Contains common weak password pattern',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: '123456',
     type: 'exact',
     description: 'Numeric sequence',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'qwerty',
     type: 'exact',
     description: 'Keyboard pattern',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'admin',
     type: 'exact',
     description: 'Common administrative password',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'secret',
     type: 'exact',
     description: 'Generic secret word',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'secret',
     type: 'contains',
     description: 'Contains generic secret word',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'test',
     type: 'exact',
     description: 'Test value',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'test',
     type: 'contains',
     description: 'Contains test value',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'development',
     type: 'exact',
     description: 'Development environment value',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'development',
     type: 'contains',
     description: 'Contains development environment value',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'dev',
     type: 'exact',
     description: 'Development environment abbreviation',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'your-secret-key',
     type: 'contains',
     description: 'Contains default placeholder secret pattern',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'your-refresh-secret-key',
     type: 'contains',
     description: 'Contains default refresh token secret placeholder pattern',
-    severity: 'critical'
+    severity: 'critical',
   },
 
   // Pattern-based weak secrets
@@ -184,37 +187,38 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     pattern: /^(.*)\1+$/, // Repeated patterns like "abcabc" or "123123"
     type: 'regex',
     description: 'Repeated character patterns',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: /^[a-zA-Z]+$/, // Only letters
     type: 'regex',
     description: 'Only alphabetic characters (low entropy)',
-    severity: 'medium'
+    severity: 'medium',
   },
   {
     pattern: /^\d+$/, // Only numbers
     type: 'regex',
     description: 'Only numeric characters (low entropy)',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: /^(.)\1{7,}$/, // Same character repeated 8+ times
     type: 'regex',
     description: 'Single character repeated',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: /^(012345|123456|234567|345678|456789|567890|678901|789012|890123|901234)/, // Sequential numbers
     type: 'regex',
     description: 'Sequential numeric patterns',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
-    pattern: /^(abcdef|bcdefg|cdefgh|defghi|efghij|fghijk|ghijkl|hijklm|ijklmn|jklmno|klmnop|lmnopq|mnopqr|nopqrs|opqrst|pqrstu|qrstuv|rstuvw|stuvwx|tuvwxy|uvwxyz)/, // Sequential letters
+    pattern:
+      /^(abcdef|bcdefg|cdefgh|defghi|efghij|fghijk|ghijkl|hijklm|ijklmn|jklmno|klmnop|lmnopq|mnopqr|nopqrs|opqrst|pqrstu|qrstuv|rstuvw|stuvwx|tuvwxy|uvwxyz)/, // Sequential letters
     type: 'regex',
     description: 'Sequential alphabetic patterns',
-    severity: 'critical'
+    severity: 'critical',
   },
 
   // Common dictionary words (subset for performance)
@@ -222,25 +226,25 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     pattern: 'password123',
     type: 'exact',
     description: 'Common password + numbers pattern',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'secret123',
     type: 'exact',
     description: 'Secret + numbers pattern',
-    severity: 'critical'
+    severity: 'critical',
   },
   {
     pattern: 'jwt-secret',
     type: 'exact',
     description: 'JWT-specific weak secret',
-    severity: 'high'
+    severity: 'high',
   },
   {
     pattern: 'token-secret',
     type: 'exact',
     description: 'Token-specific weak secret',
-    severity: 'high'
+    severity: 'high',
   },
 
   // Environment-specific weak patterns
@@ -248,20 +252,20 @@ export const WEAK_SECRET_PATTERNS: WeakSecretPattern[] = [
     pattern: 'localhost',
     type: 'contains',
     description: 'Contains localhost reference',
-    severity: 'medium'
+    severity: 'medium',
   },
   {
     pattern: 'example',
     type: 'contains',
     description: 'Contains example text',
-    severity: 'medium'
+    severity: 'medium',
   },
   {
     pattern: 'demo',
     type: 'contains',
     description: 'Contains demo text',
-    severity: 'medium'
-  }
+    severity: 'medium',
+  },
 ];
 
 /**
@@ -272,7 +276,7 @@ export const JWT_SECURITY_REQUIREMENTS = {
   MIN_ENTROPY_BITS: 128, // Rough estimate for strong secrets
   REQUIRED_CHARACTER_TYPES: 3, // At least 3 of: uppercase, lowercase, numbers, symbols
   MAX_REPEATED_CHARS: 3, // Maximum consecutive identical characters
-  PRODUCTION_MIN_LENGTH: 64 // Stricter requirement for production
+  PRODUCTION_MIN_LENGTH: 64, // Stricter requirement for production
 } as const;
 
 /**
@@ -336,7 +340,10 @@ export function getCharacterTypeDiversity(secret: string): number {
 /**
  * Check for excessive repeated characters
  */
-export function hasExcessiveRepeatedChars(secret: string, maxRepeated: number = JWT_SECURITY_REQUIREMENTS.MAX_REPEATED_CHARS): boolean {
+export function hasExcessiveRepeatedChars(
+  secret: string,
+  maxRepeated: number = JWT_SECURITY_REQUIREMENTS.MAX_REPEATED_CHARS
+): boolean {
   const regex = new RegExp(`(.)\\1{${maxRepeated},}`);
   return regex.test(secret);
 }
@@ -355,12 +362,17 @@ export interface JWTSecretValidationResult {
   severity: 'ok' | 'warning' | 'critical';
 }
 
-export function validateJWTSecret(secret: string, isProduction: boolean = false): JWTSecretValidationResult {
+export function validateJWTSecret(
+  secret: string,
+  isProduction: boolean = false
+): JWTSecretValidationResult {
   const weakPatterns = detectWeakSecretPatterns(secret);
   const entropy = estimateEntropy(secret);
   const characterTypes = getCharacterTypeDiversity(secret);
   const hasExcessiveRepeated = hasExcessiveRepeatedChars(secret);
-  const minLength = isProduction ? JWT_SECURITY_REQUIREMENTS.PRODUCTION_MIN_LENGTH : JWT_SECURITY_REQUIREMENTS.MIN_LENGTH;
+  const minLength = isProduction
+    ? JWT_SECURITY_REQUIREMENTS.PRODUCTION_MIN_LENGTH
+    : JWT_SECURITY_REQUIREMENTS.MIN_LENGTH;
   const lengthOk = secret.length >= minLength;
 
   const recommendations: string[] = [];
@@ -413,6 +425,6 @@ export function validateJWTSecret(secret: string, isProduction: boolean = false)
     hasExcessiveRepeated,
     lengthOk,
     recommendations,
-    severity
+    severity,
   };
 }

@@ -8,7 +8,14 @@
 
 import { Router } from 'express';
 import { AuthRequest, authenticateToken } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, validateNumericId, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
+import {
+  sendSuccess,
+  sendError,
+  validateAuthUser,
+  validateNumericId,
+  StatusCodes,
+  ErrorMessages,
+} from '../utils/responseHelpers.js';
 import { db } from '../database.js';
 
 const router = Router();
@@ -52,7 +59,7 @@ router.get('/chat/:helpRequestId/messages', authenticateToken, async (req: AuthR
 router.get('/transactions', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    
+
     console.log('💰 Fetching transactions for user:', userId);
 
     const transactions = await db
@@ -81,7 +88,11 @@ router.post('/claim', authenticateToken, async (req: AuthRequest, res) => {
     const { amount = 100 } = req.body;
 
     if (typeof amount !== 'number' || amount <= 0 || amount > 1000) {
-      return sendError(res, 'Invalid claim amount. Must be between 1 and 1000', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'Invalid claim amount. Must be between 1 and 1000',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     console.log('💎 AP claim request:', { userId, amount });
@@ -131,6 +142,7 @@ router.post('/claim', authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+<<<<<<< HEAD
 export default router;/*
  * Copyright (c) 2025 GLX Civic Networking App
  *
@@ -265,3 +277,6 @@ router.post('/claim', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 export default router;
+=======
+export default router;
+>>>>>>> origin/copilot/fix-488

@@ -24,6 +24,9 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 ### 2. **Security Analysis** - `security-streamlined.yml` 
 **Purpose**: Comprehensive security vulnerability detection  
 **Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
+### 2. **Security Analysis** - `security-streamlined.yml` 
+**Purpose**: Comprehensive security vulnerability detection  
+**Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
 **Optimizations**:
 - ✅ Consolidated multiple security tools into unified workflow
 - ✅ Added job-level timeouts (10-20 minutes)
@@ -47,6 +50,17 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 **Purpose**: Container image building and publishing  
 **Jobs**: 1 (Build and publish Docker images)  
 **Optimizations**:
+- ✅ Consolidated performance and quality checks
+- ✅ Added application startup timeouts (30 seconds)
+- ✅ Enhanced memory usage monitoring and coverage reporting
+
+**Triggers**: Push to main/develop, Pull Requests  
+**Status Check**: ✅ Code Coverage, ✅ Performance Check, ✅ E2E Tests
+
+### 4. **Docker Deployment** - `docker-publish.yml`
+**Purpose**: Container image building and publishing  
+**Jobs**: 1 (Build and publish Docker images)  
+**Optimizations**:
 - ✅ Streamlined container deployment process
 - ✅ Proper caching and multi-stage builds
 
@@ -57,7 +71,7 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 
 ### Health Monitoring - `health-location-status.yml`
 **Purpose**: System health and status monitoring  
-**Triggers**: Push to main, Pull Requests, Daily schedule  
+**Triggers**: Push to main/develop, Pull Requests, Daily schedule  
 
 ### Repository Maintenance
 - **`label.yml`** - Automated issue labeling

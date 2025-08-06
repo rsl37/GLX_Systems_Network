@@ -4,6 +4,10 @@ name: Comprehensive CI/CD Pipeline
 on:
   push:
     branches: [main, develop]
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     paths:
       - 'GLX_App_files/**'
       - 'package.json'
@@ -26,6 +30,13 @@ on:
         description: 'Force run all checks regardless of file changes'
         required: false
         default: 'false'
+<<<<<<< HEAD
+=======
+  pull_request:
+    branches: [main]
+>>>>>>> origin/copilot/fix-470
+=======
+>>>>>>> origin/copilot/fix-501
 
 permissions:
   contents: read
@@ -97,12 +108,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+=======
+          cache-dependency-path: './package-lock.json'
+>>>>>>> origin/copilot/fix-470
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
+<<<<<<< HEAD
         run: npm install --prefer-offline --no-audit --no-fund
+=======
+        run: npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/copilot/fix-470
 
       - name: TypeScript Check
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -143,12 +162,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+=======
+          cache-dependency-path: './package-lock.json'
+>>>>>>> origin/copilot/fix-470
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
+<<<<<<< HEAD
         run: npm install --prefer-offline --no-audit --no-fund
+=======
+        run: npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/copilot/fix-470
 
       - name: Security Audit
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -199,14 +226,28 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+<<<<<<< HEAD
+<<<<<<< HEAD
           cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
+=======
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+>>>>>>> origin/copilot/fix-468
+=======
+          cache-dependency-path: './package-lock.json'
+      - name: Ensure cache directories exist
+        run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
+>>>>>>> origin/copilot/fix-470
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           for i in {1..3}; do
+<<<<<<< HEAD
             if npm install --prefer-offline --no-audit --no-fund; then
+=======
+            if npm ci --prefer-offline --no-audit --no-fund; then
+>>>>>>> origin/copilot/fix-468
               echo "Dependencies installed successfully"
               break
             else
@@ -214,7 +255,15 @@ jobs:
               sleep 5
             fi
           done
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
       - name: Build application
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -227,7 +276,15 @@ jobs:
               sleep 5
             fi
           done
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
       - name: Run tests
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -240,7 +297,15 @@ jobs:
               sleep 5
             fi
           done
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
       - name: Upload coverage (Node 20 only)
         if: matrix.node-version == 20
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -266,12 +331,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+=======
+          cache-dependency-path: './package-lock.json'
+>>>>>>> origin/copilot/fix-470
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
+<<<<<<< HEAD
         run: npm install --prefer-offline --no-audit --no-fund
+=======
+        run: npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/copilot/fix-470
 
       - name: Build application
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -320,12 +393,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+=======
+          cache-dependency-path: './package-lock.json'
+>>>>>>> origin/copilot/fix-470
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
+<<<<<<< HEAD
         run: npm install --prefer-offline --no-audit --no-fund
+=======
+        run: npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/copilot/fix-470
 
       - name: Check environment setup
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -376,12 +457,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
+=======
+          cache-dependency-path: './package-lock.json'
+>>>>>>> origin/copilot/fix-470
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
+<<<<<<< HEAD
         run: npm install --prefer-offline --no-audit --no-fund
+=======
+        run: npm ci --prefer-offline --no-audit --no-fund
+>>>>>>> origin/copilot/fix-470
 
       - name: Build for production
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -431,7 +520,15 @@ jobs:
 
           # Wait for app to start
           sleep 15
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Basic health check (default port 3000)
           if curl -f -s http://localhost:3000 >/dev/null 2>&1; then
             echo "✓ Application started successfully"

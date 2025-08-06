@@ -1,6 +1,7 @@
 ---
 name: Quality & Performance
 
+<<<<<<< HEAD
 on:
   push:
     branches: [main, develop]
@@ -17,22 +18,31 @@ on:
       - 'package-lock.json'
       - '.github/workflows/quality.yml'
   workflow_dispatch:
+=======
+'on':
+  pull_request:
+    branches: [main, develop, production]
+>>>>>>> origin/all-merged
 
 permissions:
   contents: read
-  security-events: write
-  actions: read
+  statuses: write
+  checks: write
   pull-requests: write
 
+<<<<<<< HEAD
 env:
   NODE_VERSION: '20'
   WORKING_DIRECTORY: './GLX_App_files'
 
+=======
+>>>>>>> origin/all-merged
 jobs:
   code-coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,32 +50,35 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20.x'
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
+=======
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
+>>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          # Clean install to avoid dependency issues
-          rm -rf node_modules package-lock.json
-          npm install --no-audit --no-fund
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Run tests with coverage
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          npm run test:coverage
+        working-directory: ./GALAX_App_files
+        run: npm run test:coverage
 
       - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
         if: success()
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          echo "Coverage results generated successfully"
+        continue-on-error: true
+        with:
+          directory: ./GALAX_App_files/coverage
+          fail_ci_if_error: false
 
   accessibility-testing:
     name: Accessibility Testing
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,55 +86,55 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20.x'
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
+=======
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
+>>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          # Clean install to avoid dependency issues
-          rm -rf node_modules package-lock.json
-          npm install --no-audit --no-fund
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Install accessibility testing tools
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          npm install --save-dev @axe-core/playwright axe-core
+          npm install --no-save @axe-core/cli axe-playwright
+          npx playwright install chromium --with-deps
 
       - name: Build application
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          npm run build
+        working-directory: ./GALAX_App_files
+        run: npm run build
 
       - name: Start application for testing
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          # Start application in background if start script exists
-          if npm run --if-present start >/dev/null 2>&1; then
-            (npm run start & echo $! > app_pid.txt) &
-            sleep 10
-            APP_PID=$(cat app_pid.txt 2>/dev/null || echo "")
-            echo "APP_PID=$APP_PID" >> $GITHUB_ENV
-          else
-            echo "No start script found, skipping application startup"
-          fi
+          npm start &
+          APP_PID=$!
+          echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+
+          # Wait for app to start
+          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep \
+            2; done'
 
       - name: Run accessibility tests
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          # Basic accessibility check - can be expanded with actual a11y tests
-          echo "Running accessibility checks..."
-          if [ -f "e2e/accessibility.test.ts" ]; then
-            npx playwright test e2e/accessibility.test.ts || echo "Accessibility tests completed with warnings"
-          else
-            echo "No accessibility tests found - creating minimal test report"
-            mkdir -p accessibility-results
-            echo '{"passed": true, "message": "No accessibility tests configured"}' > accessibility-results.json
+          echo "Running accessibility tests..."
+
+          # Test main pages for accessibility
+          npx axe http://localhost:3000 --reporter json --output-file accessibility-results.json || true
+
+          # Display results
+          if [ -f accessibility-results.json ]; then
+            echo "Accessibility test results:"
+            cat accessibility-results.json | head -50
           fi
 
       - name: Stop application
-        if: env.APP_PID != ''
+        if: always()
         run: |
           if [ ! -z "$APP_PID" ]; then
             kill $APP_PID || true
@@ -134,12 +147,12 @@ jobs:
           name: accessibility-test-results
           path: ./GLX_App_files/accessibility-results.json
           retention-days: 7
-          if-no-files-found: warn
 
   performance-check:
     name: Performance Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -147,57 +160,66 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20.x'
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
+=======
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
+>>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          # Clean install to avoid dependency issues
-          rm -rf node_modules package-lock.json
-          npm install --no-audit --no-fund
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Build application
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          npm run build
+        working-directory: ./GALAX_App_files
+        run: npm run build
 
       - name: Analyze bundle size
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          echo "## Bundle Size Analysis"
+          echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+
           if [ -d "dist/public/assets" ]; then
-            echo "JavaScript files:"
-            find dist/public/assets/ -name "*.js" -exec ls -lh {} \;
-            
-            # Check for large bundles
+            find dist/public/assets/ -name "*.js" -exec ls -lh {} \; | \
+              awk '{print "| " $9 " | " $5 " |"}' >> $GITHUB_STEP_SUMMARY
+
+            # Check for oversized bundles
             LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k)
             if [ -n "$LARGE_FILES" ]; then
-              echo "⚠️  Warning: Large bundle files detected (>500KB):"
-              echo "$LARGE_FILES"
-            else
-              echo "✓ All bundle sizes are within acceptable limits"
+              echo "⚠️ Large bundle files detected (>500KB)" \
+            >> $GITHUB_STEP_SUMMARY
             fi
-          else
-            echo "No build assets found"
           fi
 
       - name: Performance test
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          echo "Running basic performance checks..."
-          if [ -f ".lighthouserc.json" ]; then
-            echo "Lighthouse config found - running performance tests"
-            timeout 300s npx @lhci/cli@0.12.0 autorun || echo "Lighthouse CI completed with warnings"
+          # Start app for testing
+          timeout 30s npm start &
+          APP_PID=$!
+
+          # Wait for startup
+          sleep 10
+
+          # Basic performance check
+          if curl -w "Response time: %{time_total}s\n" -f http://localhost:3000 2>/dev/null; then
+            echo "✓ Application responds within reasonable time"
           else
-            echo "✓ No Lighthouse config found - skipping performance tests"
+            echo "⚠️ Application may have performance issues"
           fi
 
-  end-to-end-tests:
+          # Cleanup
+          kill $APP_PID 2>/dev/null || true
+
+  e2e-tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -205,58 +227,123 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20.x'
           cache: 'npm'
+<<<<<<< HEAD
           cache-dependency-path: './GLX_App_files/package.json'
+=======
+          cache-dependency-path: './GALAX_App_files/package-lock.json'
+>>>>>>> origin/all-merged
 
       - name: Install dependencies
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          # Clean install to avoid dependency issues
-          rm -rf node_modules package-lock.json
-          npm install --no-audit --no-fund
+        working-directory: ./GALAX_App_files
+        run: npm ci --prefer-offline --no-audit --no-fund
 
       - name: Install Playwright
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          npx playwright install chromium
+          echo "Installing Playwright browsers..."
+          npx playwright install chromium --with-deps || {
+            echo "Failed to install Chromium browser, trying alternative approach..."
+            npx playwright install --with-deps || {
+              echo "Browser installation failed, will attempt to run tests without browser binaries"
+              exit 0
+            }
+          }
 
       - name: Build application
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          npm run build
+        working-directory: ./GALAX_App_files
+        run: npm run build
 
       - name: Setup test environment
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          if [ -f ".env.test" ]; then
-            cp .env.test .env
-          fi
+          echo "Setting up test environment..."
+          # Copy test environment
+          cp .env.test .env
+          # Ensure data directory exists
+          mkdir -p data
+          # Create a simple test database
+          echo "Test environment setup complete"
 
       - name: Start application
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          if npm run --if-present start >/dev/null 2>&1; then
-            (npm run start & echo $! > app_pid.txt) &
-            sleep 15
-            APP_PID=$(cat app_pid.txt 2>/dev/null || echo "")
-            echo "APP_PID=$APP_PID" >> $GITHUB_ENV
-          else
-            echo "No start script found, skipping application startup"
+          echo "Starting application for E2E tests..."
+          npm start &
+          APP_PID=$!
+          echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+
+          echo "Waiting for application to start..."
+          # Wait for app to start with better error handling
+          for i in {1..30}; do
+            if curl -f -s http://localhost:3000 >/dev/null 2>&1; then
+              echo "✓ Application started successfully on port 3000"
+              break
+            fi
+            echo "Waiting for application... ($i/30)"
+            sleep 2
+          done
+
+          # Final check
+          if ! curl -f -s http://localhost:3000 >/dev/null 2>&1; then
+            echo "❌ Application failed to start properly"
+            echo "Checking application logs..."
+            jobs
+            exit 1
           fi
 
       - name: Run E2E tests
-        working-directory: ${{ env.WORKING_DIRECTORY }}
+        working-directory: ./GALAX_App_files
         run: |
-          if [ -f "playwright.config.ts" ] && [ -d "e2e" ]; then
-            echo "Running E2E tests..."
-            npx playwright test || echo "E2E tests completed with warnings"
+          echo "Running E2E tests..."
+
+          # Check if browsers are properly installed
+          if npx playwright --version >/dev/null 2>&1; then
+            echo "✓ Playwright is available"
           else
-            echo "No E2E tests configured - skipping"
+            echo "❌ Playwright is not available"
+            exit 1
           fi
 
+          # Check if test files exist
+          if [ ! -d "e2e" ] || [ -z "$(ls -A e2e 2>/dev/null)" ]; then
+            echo "⚠️  No E2E tests found in e2e directory, creating basic test..."
+            mkdir -p e2e
+            cat > e2e/basic-health.spec.ts << 'EOF'
+          import { test, expect } from '@playwright/test';
+
+          test('Application health check', async ({ page }) => {
+            await page.goto('/');
+            await expect(page).toHaveTitle(/GALAX|Mimo|Civic/i);
+            await page.waitForLoadState('networkidle');
+            const body = page.locator('body');
+            await expect(body).toBeVisible();
+          });
+          EOF
+          fi
+
+          # Run the tests with better error handling
+          if [ -f "playwright.config.ts" ] || [ -f "playwright.config.js" ]; then
+            echo "Using existing Playwright configuration..."
+            npm run test:e2e || {
+              echo "E2E tests failed, checking for common issues..."
+              echo "Browser status:"
+              npx playwright install --dry-run chromium || true
+              exit 1
+            }
+          else
+            echo "No Playwright config found, running with basic setup..."
+            npx playwright test --config=playwright.config.ts || {
+              echo "E2E tests failed with basic setup"
+              exit 1
+            }
+          fi
+
+          echo "✓ E2E tests completed successfully"
+
       - name: Stop application
-        if: env.APP_PID != ''
+        if: always()
         run: |
           if [ ! -z "$APP_PID" ]; then
             kill $APP_PID || true
@@ -271,13 +358,15 @@ jobs:
             ./GLX_App_files/test-results/
             ./GLX_App_files/playwright-report/
           retention-days: 7
-          if-no-files-found: warn
 
-  report-quality-performance-status:
+  # Status reporting job to ensure proper PR status updates
+  report-quality-status:
     name: Report Quality & Performance Status
     runs-on: ubuntu-latest
-    needs: [code-coverage, accessibility-testing, performance-check, end-to-end-tests]
     if: always()
+    needs: [code-coverage, accessibility-testing, performance-check, e2e-tests]
+    timeout-minutes: 5
+
     steps:
       - name: Report overall quality status
         uses: actions/github-script@v7
@@ -287,7 +376,7 @@ jobs:
               { name: 'code-coverage', result: '${{ needs.code-coverage.result }}' },
               { name: 'accessibility-testing', result: '${{ needs.accessibility-testing.result }}' },
               { name: 'performance-check', result: '${{ needs.performance-check.result }}' },
-              { name: 'e2e-tests', result: '${{ needs.end-to-end-tests.result }}' }
+              { name: 'e2e-tests', result: '${{ needs.e2e-tests.result }}' }
             ];
 
             const failed = jobs.filter(job => job.result === 'failure');
@@ -302,8 +391,11 @@ jobs:
               status = 'failure';
               description = `${failed.length} quality check(s) failed: ${failed.map(j => j.name).join(', ')}`;
             } else if (cancelled.length > 0) {
-              status = 'cancelled';
+              status = 'error';
               description = `${cancelled.length} quality check(s) cancelled: ${cancelled.map(j => j.name).join(', ')}`;
+            } else if (skipped.length > 0) {
+              status = 'success'; // Treat skipped as neutral success when no failures
+              description = `${successful.length} passed, ${skipped.length} skipped (${successful.length + skipped.length}/${jobs.length})`;
             }
 
             console.log(`Quality & Performance Status: ${status}`);
@@ -316,19 +408,51 @@ jobs:
             }
 
       - name: Update commit status for quality checks
-        if: success()
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
-            const sha = context.sha;
-            const state = 'success';
-            const description = 'All quality & performance checks passed';
-            
-            await github.rest.repos.createCommitStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: sha,
-              state: state,
-              description: description,
-              context: 'Quality & Performance'
-            });
+            const jobs = [
+              { name: 'Code Coverage', result: '${{ needs.code-coverage.result }}' },
+              { name: 'Accessibility Testing', result: '${{ needs.accessibility-testing.result }}' },
+              { name: 'Performance Check', result: '${{ needs.performance-check.result }}' },
+              { name: 'End-to-End Tests', result: '${{ needs.e2e-tests.result }}' }
+            ];
+
+            for (const job of jobs) {
+              let state = 'pending';
+              let description = `${job.name}: ${job.result}`;
+              
+              // Map all possible job results to proper GitHub status states
+              switch (job.result) {
+                case 'success':
+                  state = 'success';
+                  break;
+                case 'failure':
+                  state = 'failure';
+                  break;
+                case 'cancelled':
+                  state = 'error';
+                  description = `${job.name}: cancelled`;
+                  break;
+                case 'skipped':
+                  state = 'success'; // Treat skipped as neutral success
+                  description = `${job.name}: skipped (conditional)`;
+                  break;
+                default:
+                  state = 'error';
+                  description = `${job.name}: ${job.result || 'unknown'}`;
+              }
+              
+              console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
+              
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.payload.pull_request.head.sha,
+                state: state,
+                context: `Quality & Performance / ${job.name}`,
+                description: description,
+                target_url: `${context.payload.pull_request.html_url}/checks`
+              });
+            }

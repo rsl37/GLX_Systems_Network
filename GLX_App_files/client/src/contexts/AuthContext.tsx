@@ -34,10 +34,24 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (emailOrPhone: string, password: string, verificationToken?: string | null) => Promise<void>;
+  login: (
+    emailOrPhone: string,
+    password: string,
+    verificationToken?: string | null
+  ) => Promise<void>;
   loginWithWallet: (walletAddress: string, verificationToken?: string | null) => Promise<void>;
-  register: (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone', verificationToken?: string | null) => Promise<void>;
-  registerWithWallet: (walletAddress: string, username: string, verificationToken?: string | null) => Promise<void>;
+  register: (
+    emailOrPhone: string,
+    password: string,
+    username: string,
+    signupMethod?: 'email' | 'phone',
+    verificationToken?: string | null
+  ) => Promise<void>;
+  registerWithWallet: (
+    walletAddress: string,
+    username: string,
+    verificationToken?: string | null
+  ) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   refreshUser: () => Promise<void>;
@@ -61,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         status: response.status,
         statusText: response.statusText,
         url: response.url,
-        headers: Object.fromEntries(response.headers.entries())
+        headers: Object.fromEntries(response.headers.entries()),
       };
 
       try {
@@ -87,11 +101,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (text.includes('<html') || text.includes('<!DOCTYPE')) {
             // This is common in Vercel when API routes aren't properly configured
             if (response.status === 404) {
-              errorMessage = 'API endpoint not found. This might be a Vercel deployment configuration issue.';
+              errorMessage =
+                'API endpoint not found. This might be a Vercel deployment configuration issue.';
             } else if (response.status === 500) {
-              errorMessage = 'Server error. Please check your environment variables and API configuration.';
+              errorMessage =
+                'Server error. Please check your environment variables and API configuration.';
             } else {
-              errorMessage = 'Server returned an error page instead of JSON. Please check your API routes.';
+              errorMessage =
+                'Server returned an error page instead of JSON. Please check your API routes.';
             }
           } else {
             errorMessage = text || errorMessage;
@@ -108,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         debugInfo,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        currentUrl: window.location.href
+        currentUrl: window.location.href,
       });
 
       // Provide more specific error messages based on common Vercel issues
@@ -131,7 +148,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      throw new Error('Expected JSON response but got: ' + (text.substring(0, 100) + (text.length > 100 ? '...' : '')));
+      throw new Error(
+        'Expected JSON response but got: ' +
+          (text.substring(0, 100) + (text.length > 100 ? '...' : ''))
+      );
     }
 
     try {
@@ -154,8 +174,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const response = await fetch('/api/user/profile', {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -168,7 +188,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ...userData,
           email_verified: userData.email_verified === 1 || userData.email_verified === true,
           phone_verified: userData.phone_verified === 1 || userData.phone_verified === true,
-          two_factor_enabled: userData.two_factor_enabled === 1 || userData.two_factor_enabled === true
+          two_factor_enabled:
+            userData.two_factor_enabled === 1 || userData.two_factor_enabled === true,
         });
       } else {
         // If unauthorized, remove token
@@ -191,8 +212,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const response = await fetch('/api/user/profile', {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -205,7 +226,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           ...userData,
           email_verified: userData.email_verified === 1 || userData.email_verified === true,
           phone_verified: userData.phone_verified === 1 || userData.phone_verified === true,
-          two_factor_enabled: userData.two_factor_enabled === 1 || userData.two_factor_enabled === true
+          two_factor_enabled:
+            userData.two_factor_enabled === 1 || userData.two_factor_enabled === true,
         });
       }
     } catch (error) {
@@ -213,7 +235,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   const login = async (emailOrPhone: string, password: string, verificationToken?: string | null) => {
+=======
+  const login = async (emailOrPhone: string, password: string) => {
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+  const login = async (
+    emailOrPhone: string,
+    password: string,
+    verificationToken?: string | null
+  ) => {
+>>>>>>> origin/copilot/fix-488
     try {
       // Determine if it's an email or phone number
       const isEmail = emailOrPhone.includes('@');
@@ -221,13 +255,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? { email: emailOrPhone, password }
         : { phone: emailOrPhone, password };
 
-      const response = await fetchWithPageVerification('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetchWithPageVerification(
+        '/api/auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
         },
-        body: JSON.stringify(requestBody),
-      }, verificationToken);
+        verificationToken
+      );
 
       const apiData = await parseApiResponse(response);
 
@@ -238,7 +276,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('Login was successful but authentication token was not provided. Please try logging in again.');
+        throw new Error(
+          'Login was successful but authentication token was not provided. Please try logging in again.'
+        );
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -248,13 +288,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loginWithWallet = async (walletAddress: string, verificationToken?: string | null) => {
     try {
-      const response = await fetchWithPageVerification('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetchWithPageVerification(
+        '/api/auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ walletAddress }),
         },
-        body: JSON.stringify({ walletAddress }),
-      }, verificationToken);
+        verificationToken
+      );
 
       const apiData = await parseApiResponse(response);
 
@@ -265,7 +309,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('Wallet login was successful but authentication token was not provided. Please try again.');
+        throw new Error(
+          'Wallet login was successful but authentication token was not provided. Please try again.'
+        );
       }
     } catch (error) {
       console.error('Wallet login error:', error);
@@ -273,7 +319,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone', verificationToken?: string | null) => {
+=======
+  const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone') => {
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
+=======
+  const register = async (
+    emailOrPhone: string,
+    password: string,
+    username: string,
+    signupMethod?: 'email' | 'phone',
+    verificationToken?: string | null
+  ) => {
+>>>>>>> origin/copilot/fix-488
     try {
       // Determine if it's an email or phone number
       const isEmail = signupMethod === 'email' || (!signupMethod && emailOrPhone.includes('@'));
@@ -281,13 +341,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? { email: emailOrPhone, password, username }
         : { phone: emailOrPhone, password, username };
 
-      const response = await fetchWithPageVerification('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetchWithPageVerification(
+        '/api/auth/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
         },
-        body: JSON.stringify(requestBody),
-      }, verificationToken);
+        verificationToken
+      );
 
       const apiData = await parseApiResponse(response);
 
@@ -298,7 +362,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('Registration was successful but authentication token was not provided. Please try logging in.');
+        throw new Error(
+          'Registration was successful but authentication token was not provided. Please try logging in.'
+        );
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -306,15 +372,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const registerWithWallet = async (walletAddress: string, username: string, verificationToken?: string | null) => {
+  const registerWithWallet = async (
+    walletAddress: string,
+    username: string,
+    verificationToken?: string | null
+  ) => {
     try {
-      const response = await fetchWithPageVerification('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetchWithPageVerification(
+        '/api/auth/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ walletAddress, username }),
         },
-        body: JSON.stringify({ walletAddress, username }),
-      }, verificationToken);
+        verificationToken
+      );
 
       const apiData = await parseApiResponse(response);
 
@@ -325,7 +399,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('token', responseData.token);
         await checkAuthStatus();
       } else {
-        throw new Error('Wallet registration was successful but authentication token was not provided. Please try logging in.');
+        throw new Error(
+          'Wallet registration was successful but authentication token was not provided. Please try logging in.'
+        );
       }
     } catch (error) {
       console.error('Wallet registration error:', error);
@@ -349,11 +425,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

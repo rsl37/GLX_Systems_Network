@@ -58,7 +58,10 @@ export function TwoFactorSetupPage() {
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      throw new Error('Expected JSON response but got: ' + (text.substring(0, 100) + (text.length > 100 ? '...' : '')));
+      throw new Error(
+        'Expected JSON response but got: ' +
+          (text.substring(0, 100) + (text.length > 100 ? '...' : ''))
+      );
     }
 
     return await response.json();
@@ -71,7 +74,7 @@ export function TwoFactorSetupPage() {
 
       const response = await fetch('/api/auth/2fa/status', {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -101,7 +104,7 @@ export function TwoFactorSetupPage() {
       const response = await fetch('/api/auth/2fa/setup', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -139,7 +142,7 @@ export function TwoFactorSetupPage() {
       const response = await fetch('/api/auth/2fa/enable', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ code: verificationCode }),
@@ -178,7 +181,7 @@ export function TwoFactorSetupPage() {
       const response = await fetch('/api/auth/2fa/disable', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ code: verificationCode }),
@@ -212,27 +215,24 @@ export function TwoFactorSetupPage() {
   };
 
   const renderStatusStep = () => (
-    <CardContent className="space-y-6">
-      <div className="text-center space-y-4">
-        <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+    <CardContent className='space-y-6'>
+      <div className='text-center space-y-4'>
+        <div className='mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center'>
           <Shield className={`h-10 w-10 ${status.enabled ? 'text-green-500' : 'text-blue-500'}`} />
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold">
-            Two-Factor Authentication
-          </h3>
-          <p className="text-gray-600">
+          <h3 className='text-lg font-semibold'>Two-Factor Authentication</h3>
+          <p className='text-gray-600'>
             {status.enabled
               ? 'Your account is protected with 2FA'
-              : 'Add an extra layer of security to your account'
-            }
+              : 'Add an extra layer of security to your account'}
           </p>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg text-left">
-          <h4 className="font-medium text-blue-900 mb-2">Benefits of 2FA:</h4>
-          <ul className="text-blue-800 text-sm space-y-1">
+        <div className='bg-blue-50 p-4 rounded-lg text-left'>
+          <h4 className='font-medium text-blue-900 mb-2'>Benefits of 2FA:</h4>
+          <ul className='text-blue-800 text-sm space-y-1'>
             <li>• Prevents unauthorized access even if password is compromised</li>
             <li>• Required for token mining and high-value transactions</li>
             <li>• Increases account security rating</li>
@@ -241,52 +241,48 @@ export function TwoFactorSetupPage() {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className='space-y-3'>
         {!status.enabled ? (
+<<<<<<< HEAD:GLX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           <Button
             onClick={startSetup}
             disabled={isLoading}
             className="glx-button w-full"
           >
+=======
+          <Button onClick={startSetup} disabled={isLoading} className='galax-button w-full'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
             {isLoading ? (
-              <div className="flex items-center gap-2">
-                <RefreshCw className="h-4 w-4 animate-spin" />
+              <div className='flex items-center gap-2'>
+                <RefreshCw className='h-4 w-4 animate-spin' />
                 Setting up...
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
+              <div className='flex items-center gap-2'>
+                <Shield className='h-4 w-4' />
                 Enable Two-Factor Authentication
               </div>
             )}
           </Button>
         ) : (
-          <div className="space-y-3">
-            <div className="bg-green-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 text-green-700">
-                <CheckCircle className="h-5 w-5" />
-                <span className="font-medium">2FA is Active</span>
+          <div className='space-y-3'>
+            <div className='bg-green-50 p-4 rounded-lg'>
+              <div className='flex items-center gap-2 text-green-700'>
+                <CheckCircle className='h-5 w-5' />
+                <span className='font-medium'>2FA is Active</span>
               </div>
-              <p className="text-green-600 text-sm mt-1">
+              <p className='text-green-600 text-sm mt-1'>
                 Your account is protected with two-factor authentication.
               </p>
             </div>
 
-            <Button
-              onClick={() => setStep('verify')}
-              variant="outline"
-              className="w-full"
-            >
+            <Button onClick={() => setStep('verify')} variant='outline' className='w-full'>
               Disable 2FA
             </Button>
           </div>
         )}
 
-        <Button
-          onClick={() => navigate('/dashboard')}
-          variant="ghost"
-          className="w-full"
-        >
+        <Button onClick={() => navigate('/dashboard')} variant='ghost' className='w-full'>
           Back to Dashboard
         </Button>
       </div>
@@ -294,44 +290,32 @@ export function TwoFactorSetupPage() {
   );
 
   const renderSetupStep = () => (
-    <CardContent className="space-y-6">
-      <div className="text-center space-y-4">
-        <h3 className="text-lg font-semibold">Scan QR Code</h3>
-        <p className="text-gray-600">
-          Use your authenticator app to scan this QR code
-        </p>
+    <CardContent className='space-y-6'>
+      <div className='text-center space-y-4'>
+        <h3 className='text-lg font-semibold'>Scan QR Code</h3>
+        <p className='text-gray-600'>Use your authenticator app to scan this QR code</p>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex justify-center">
-          <div className="bg-white p-4 rounded-lg border">
-            <img src={qrCode} alt="2FA QR Code" className="w-48 h-48" />
+      <div className='space-y-4'>
+        <div className='flex justify-center'>
+          <div className='bg-white p-4 rounded-lg border'>
+            <img src={qrCode} alt='2FA QR Code' className='w-48 h-48' />
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className='space-y-2'>
           <Label>Manual Entry Key (if QR scanning fails)</Label>
-          <div className="flex gap-2">
-            <Input
-              value={secret}
-              readOnly
-              className="font-mono text-sm"
-            />
-            <Button
-              onClick={copySecret}
-              variant="outline"
-              size="sm"
-            >
-              <Copy className="h-4 w-4" />
+          <div className='flex gap-2'>
+            <Input value={secret} readOnly className='font-mono text-sm' />
+            <Button onClick={copySecret} variant='outline' size='sm'>
+              <Copy className='h-4 w-4' />
             </Button>
           </div>
         </div>
 
-        <div className="bg-yellow-50 p-4 rounded-lg">
-          <h4 className="font-medium text-yellow-900 mb-2">
-            Recommended Authenticator Apps:
-          </h4>
-          <ul className="text-yellow-800 text-sm space-y-1">
+        <div className='bg-yellow-50 p-4 rounded-lg'>
+          <h4 className='font-medium text-yellow-900 mb-2'>Recommended Authenticator Apps:</h4>
+          <ul className='text-yellow-800 text-sm space-y-1'>
             <li>• Google Authenticator</li>
             <li>• Microsoft Authenticator</li>
             <li>• Authy</li>
@@ -340,12 +324,18 @@ export function TwoFactorSetupPage() {
         </div>
       </div>
 
+<<<<<<< HEAD:GLX_App_files/client/src/pages/TwoFactorSetupPage.tsx
       <Button
         onClick={() => setStep('verify')}
         className="glx-button w-full"
       >
         <div className="flex items-center gap-2">
           <Smartphone className="h-4 w-4" />
+=======
+      <Button onClick={() => setStep('verify')} className='galax-button w-full'>
+        <div className='flex items-center gap-2'>
+          <Smartphone className='h-4 w-4' />
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           Continue to Verification
         </div>
       </Button>
@@ -353,57 +343,64 @@ export function TwoFactorSetupPage() {
   );
 
   const renderVerifyStep = () => (
-    <CardContent className="space-y-6">
-      <div className="text-center space-y-4">
-        <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-          <Key className="h-8 w-8 text-green-500" />
+    <CardContent className='space-y-6'>
+      <div className='text-center space-y-4'>
+        <div className='mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center'>
+          <Key className='h-8 w-8 text-green-500' />
         </div>
-        <h3 className="text-lg font-semibold">
+        <h3 className='text-lg font-semibold'>
           {status.enabled ? 'Verify to Disable 2FA' : 'Verify Setup'}
         </h3>
-        <p className="text-gray-600">
+        <p className='text-gray-600'>
           {status.enabled
             ? 'Enter your current 2FA code to disable two-factor authentication'
-            : 'Enter the 6-digit code from your authenticator app'
-          }
+            : 'Enter the 6-digit code from your authenticator app'}
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="code">Verification Code</Label>
+      <div className='space-y-4'>
+        <div className='space-y-2'>
+          <Label htmlFor='code'>Verification Code</Label>
           <Input
-            id="code"
-            type="text"
-            placeholder="123456"
+            id='code'
+            type='text'
+            placeholder='123456'
             value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            onChange={e => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
             disabled={isLoading}
             maxLength={6}
-            className="text-center text-2xl tracking-widest"
+            className='text-center text-2xl tracking-widest'
           />
         </div>
 
-        <div className="space-y-3">
+        <div className='space-y-3'>
           <Button
             onClick={status.enabled ? disable2FA : verifyAndEnable}
             disabled={verificationCode.length !== 6 || isLoading}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/TwoFactorSetupPage.tsx
             className={status.enabled ? 'w-full bg-red-500 hover:bg-red-600' : 'glx-button w-full'}
+=======
+            className={
+              status.enabled ? 'w-full bg-red-500 hover:bg-red-600' : 'galax-button w-full'
+            }
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           >
             {isLoading ? (
-              <div className="flex items-center gap-2">
-                <RefreshCw className="h-4 w-4 animate-spin" />
+              <div className='flex items-center gap-2'>
+                <RefreshCw className='h-4 w-4 animate-spin' />
                 {status.enabled ? 'Disabling...' : 'Enabling...'}
               </div>
+            ) : status.enabled ? (
+              'Disable 2FA'
             ) : (
-              status.enabled ? 'Disable 2FA' : 'Enable 2FA'
+              'Enable 2FA'
             )}
           </Button>
 
           <Button
             onClick={() => setStep(status.enabled ? 'status' : 'setup')}
-            variant="ghost"
-            className="w-full"
+            variant='ghost'
+            className='w-full'
           >
             Back
           </Button>
@@ -413,22 +410,20 @@ export function TwoFactorSetupPage() {
   );
 
   const renderCompleteStep = () => (
-    <CardContent className="space-y-6 text-center">
-      <div className="space-y-4">
-        <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-          <CheckCircle className="h-10 w-10 text-green-500" />
+    <CardContent className='space-y-6 text-center'>
+      <div className='space-y-4'>
+        <div className='mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center'>
+          <CheckCircle className='h-10 w-10 text-green-500' />
         </div>
-        <h3 className="text-xl font-semibold text-green-600">
-          2FA Enabled Successfully!
-        </h3>
-        <p className="text-gray-600">
+        <h3 className='text-xl font-semibold text-green-600'>2FA Enabled Successfully!</h3>
+        <p className='text-gray-600'>
           Your account is now protected with two-factor authentication.
         </p>
       </div>
 
-      <div className="bg-green-50 p-4 rounded-lg text-left">
-        <h4 className="font-medium text-green-900 mb-2">Important Notes:</h4>
-        <ul className="text-green-800 text-sm space-y-1">
+      <div className='bg-green-50 p-4 rounded-lg text-left'>
+        <h4 className='font-medium text-green-900 mb-2'>Important Notes:</h4>
+        <ul className='text-green-800 text-sm space-y-1'>
           <li>• Keep your authenticator app secure and backed up</li>
           <li>• You'll need your authenticator for future logins</li>
           <li>• Contact support if you lose access to your authenticator</li>
@@ -436,19 +431,20 @@ export function TwoFactorSetupPage() {
         </ul>
       </div>
 
+<<<<<<< HEAD:GLX_App_files/client/src/pages/TwoFactorSetupPage.tsx
       <div className="space-y-3">
         <Button
           onClick={() => navigate('/dashboard')}
           className="glx-button w-full"
         >
+=======
+      <div className='space-y-3'>
+        <Button onClick={() => navigate('/dashboard')} className='galax-button w-full'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
           Continue to Dashboard
         </Button>
 
-        <Button
-          onClick={() => setStep('status')}
-          variant="outline"
-          className="w-full"
-        >
+        <Button onClick={() => setStep('status')} variant='outline' className='w-full'>
           Manage 2FA Settings
         </Button>
       </div>
@@ -456,16 +452,22 @@ export function TwoFactorSetupPage() {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className='w-full max-w-md'
       >
+<<<<<<< HEAD:GLX_App_files/client/src/pages/TwoFactorSetupPage.tsx
         <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+=======
+        <Card className='galax-card'>
+          <CardHeader className='text-center'>
+            <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/TwoFactorSetupPage.tsx
               Two-Factor Authentication
             </CardTitle>
             <CardDescription>
@@ -474,22 +476,22 @@ export function TwoFactorSetupPage() {
           </CardHeader>
 
           {error && (
-            <div className="mx-6 mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-red-700">
-                <AlertCircle className="h-5 w-5" />
-                <span className="font-medium">Error</span>
+            <div className='mx-6 mb-4 bg-red-50 border border-red-200 rounded-lg p-4'>
+              <div className='flex items-center gap-2 text-red-700'>
+                <AlertCircle className='h-5 w-5' />
+                <span className='font-medium'>Error</span>
               </div>
-              <p className="text-red-600 text-sm mt-1">{error}</p>
+              <p className='text-red-600 text-sm mt-1'>{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mx-6 mb-4 bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-green-700">
-                <CheckCircle className="h-5 w-5" />
-                <span className="font-medium">Success</span>
+            <div className='mx-6 mb-4 bg-green-50 border border-green-200 rounded-lg p-4'>
+              <div className='flex items-center gap-2 text-green-700'>
+                <CheckCircle className='h-5 w-5' />
+                <span className='font-medium'>Success</span>
               </div>
-              <p className="text-green-600 text-sm mt-1">{success}</p>
+              <p className='text-green-600 text-sm mt-1'>{success}</p>
             </div>
           )}
 

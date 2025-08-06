@@ -24,8 +24,8 @@ export function MediaUpload({
   onFileSelect,
   onFileRemove,
   selectedFile,
-  accept = "image/*,video/*,audio/*",
-  maxSize = 10
+  accept = 'image/*,video/*,audio/*',
+  maxSize = 10,
 }: MediaUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -93,10 +93,10 @@ export function MediaUpload({
   };
 
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith('image/')) return <Image className="h-5 w-5" />;
-    if (file.type.startsWith('video/')) return <Video className="h-5 w-5" />;
-    if (file.type.startsWith('audio/')) return <Music className="h-5 w-5" />;
-    return <File className="h-5 w-5" />;
+    if (file.type.startsWith('image/')) return <Image className='h-5 w-5' />;
+    if (file.type.startsWith('video/')) return <Video className='h-5 w-5' />;
+    if (file.type.startsWith('audio/')) return <Music className='h-5 w-5' />;
+    return <File className='h-5 w-5' />;
   };
 
   const formatFileSize = (bytes: number) => {
@@ -108,34 +108,28 @@ export function MediaUpload({
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
-        Media Upload (Optional)
-      </label>
+    <div className='space-y-2'>
+      <label className='block text-sm font-medium text-gray-700'>Media Upload (Optional)</label>
 
       {selectedFile ? (
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  {getFileIcon(selectedFile)}
-                </div>
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <div className='p-2 bg-purple-100 rounded-lg'>{getFileIcon(selectedFile)}</div>
                 <div>
-                  <p className="font-medium text-sm">{selectedFile.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {formatFileSize(selectedFile.size)}
-                  </p>
+                  <p className='font-medium text-sm'>{selectedFile.name}</p>
+                  <p className='text-xs text-gray-500'>{formatFileSize(selectedFile.size)}</p>
                 </div>
               </div>
               <Button
-                type="button"
-                variant="outline"
-                size="sm"
+                type='button'
+                variant='outline'
+                size='sm'
                 onClick={handleRemoveFile}
-                className="text-red-500 hover:text-red-700"
+                className='text-red-500 hover:text-red-700'
               >
-                <X className="h-4 w-4" />
+                <X className='h-4 w-4' />
               </Button>
             </div>
           </CardContent>
@@ -152,16 +146,16 @@ export function MediaUpload({
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
         >
-          <CardContent className="p-8">
-            <div className="text-center space-y-4">
-              <div className="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                <Upload className="h-6 w-6 text-purple-600" />
+          <CardContent className='p-8'>
+            <div className='text-center space-y-4'>
+              <div className='mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center'>
+                <Upload className='h-6 w-6 text-purple-600' />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">
+                <p className='text-sm font-medium text-gray-900'>
                   Click to upload or drag and drop
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className='text-xs text-gray-500'>
                   Images, videos, and audio files up to {maxSize}MB
                 </p>
               </div>
@@ -172,15 +166,13 @@ export function MediaUpload({
 
       <input
         ref={fileInputRef}
-        type="file"
+        type='file'
         accept={accept}
         onChange={handleFileInput}
-        className="hidden"
+        className='hidden'
       />
 
-      {error && (
-        <p className="text-red-500 text-sm">{error}</p>
-      )}
+      {error && <p className='text-red-500 text-sm'>{error}</p>}
     </div>
   );
 }

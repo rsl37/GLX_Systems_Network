@@ -6,8 +6,8 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-import { Request, Response, NextFunction } from "express";
-import crypto from "crypto";
+import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 
 /**
  * Page Verification System
@@ -41,7 +41,7 @@ const PAGE_VERIFICATION_CONFIG = {
       'Email',
       'Phone',
       'Password',
-      'Username for Wallet'
+      'Username for Wallet',
     ],
     register: [
       'GLX Civic Networking App',
@@ -50,9 +50,9 @@ const PAGE_VERIFICATION_CONFIG = {
       'Username',
       'Email',
       'Password',
-      'Create Account'
-    ]
-  }
+      'Create Account',
+    ],
+  },
 };
 
 /**
@@ -72,7 +72,7 @@ export function generatePageVerificationToken(
     timestamp: now,
     pageType,
     userAgent,
-    expiresAt: now + PAGE_VERIFICATION_CONFIG.tokenExpiry
+    expiresAt: now + PAGE_VERIFICATION_CONFIG.tokenExpiry,
   };
 
   // Store the verified page
@@ -88,7 +88,11 @@ export function generatePageVerificationToken(
 /**
  * Verify that a page token is valid and not expired
  */
-export function verifyPageToken(token: string, origin: string, pageType: 'login' | 'register'): boolean {
+export function verifyPageToken(
+  token: string,
+  origin: string,
+  pageType: 'login' | 'register'
+): boolean {
   const verifiedPage = verifiedPages.get(token);
 
   if (!verifiedPage) {
@@ -105,13 +109,17 @@ export function verifyPageToken(token: string, origin: string, pageType: 'login'
 
   // Check if origin matches
   if (verifiedPage.origin !== origin) {
-    console.warn(`⚠️ Page verification failed: Origin mismatch for ${origin} (expected ${verifiedPage.origin})`);
+    console.warn(
+      `⚠️ Page verification failed: Origin mismatch for ${origin} (expected ${verifiedPage.origin})`
+    );
     return false;
   }
 
   // Check if page type matches
   if (verifiedPage.pageType !== pageType) {
-    console.warn(`⚠️ Page verification failed: Page type mismatch for ${origin} (expected ${verifiedPage.pageType}, got ${pageType})`);
+    console.warn(
+      `⚠️ Page verification failed: Page type mismatch for ${origin} (expected ${verifiedPage.pageType}, got ${pageType})`
+    );
     return false;
   }
 
@@ -146,7 +154,10 @@ function cleanupTokensForOrigin(origin: string): void {
       .filter(([, page]) => page.origin === origin)
       .sort(([, a], [, b]) => a.timestamp - b.timestamp);
 
-    const tokensToRemove = originTokens.slice(0, tokenCount - PAGE_VERIFICATION_CONFIG.maxTokensPerOrigin);
+    const tokensToRemove = originTokens.slice(
+      0,
+      tokenCount - PAGE_VERIFICATION_CONFIG.maxTokensPerOrigin
+    );
     tokensToRemove.forEach(([token]) => verifiedPages.delete(token));
   }
 }
@@ -154,11 +165,7 @@ function cleanupTokensForOrigin(origin: string): void {
 /**
  * Middleware to verify that auth requests come from verified pages
  */
-export function requirePageVerification(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function requirePageVerification(req: Request, res: Response, next: NextFunction): void {
   // Skip verification in development mode (NODE_ENV undefined or 'development')
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined) {
     return next();
@@ -174,20 +181,22 @@ export function requirePageVerification(
       success: false,
       error: {
         message: 'Authentication requests must include origin information',
-        statusCode: 403
-      }
+        statusCode: 403,
+      },
     });
     return;
   }
 
   if (!pageVerificationToken) {
-    console.warn(`🚨 Auth request blocked: No page verification token for ${req.path} from ${origin}`);
+    console.warn(
+      `🚨 Auth request blocked: No page verification token for ${req.path} from ${origin}`
+    );
     res.status(403).json({
       success: false,
       error: {
         message: 'Authentication requests must include page verification',
-        statusCode: 403
-      }
+        statusCode: 403,
+      },
     });
     return;
   }
@@ -195,13 +204,15 @@ export function requirePageVerification(
   const isValidPage = verifyPageToken(pageVerificationToken, origin, pageType);
 
   if (!isValidPage) {
-    console.warn(`🚨 Auth request blocked: Invalid page verification for ${req.path} from ${origin}`);
+    console.warn(
+      `🚨 Auth request blocked: Invalid page verification for ${req.path} from ${origin}`
+    );
     res.status(403).json({
       success: false,
       error: {
         message: 'Authentication request from unverified page',
-        statusCode: 403
-      }
+        statusCode: 403,
+      },
     });
     return;
   }
@@ -217,33 +228,41 @@ export function createAuthCorsConfig() {
   return {
     origin: (
       origin: string | undefined,
-      callback: (err: Error | null, allow?: boolean) => void,
+      callback: (err: Error | null, allow?: boolean) => void
     ) => {
-      const isDevelopment = process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined;
-      const isProduction = process.env.NODE_ENV === "production";
+      const isDevelopment =
+        process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
+      const isProduction = process.env.NODE_ENV === 'production';
 
       const allowedOrigins = [
         // Development origins
         ...(isDevelopment
           ? [
-              "http://localhost:3000",
-              "http://localhost:3001",
-              "http://localhost:3002",
-              "http://localhost:5173",
-              "http://127.0.0.1:3000",
-              "http://127.0.0.1:3001",
-              "http://127.0.0.1:3002",
-              "http://127.0.0.1:5173",
+              'http://localhost:3000',
+              'http://localhost:3001',
+              'http://localhost:3002',
+              'http://localhost:5173',
+              'http://127.0.0.1:3000',
+              'http://127.0.0.1:3001',
+              'http://127.0.0.1:3002',
+              'http://127.0.0.1:5173',
             ]
           : []),
 
         // Production origins - Supporting both domains
         ...(isProduction
           ? [
+<<<<<<< HEAD:GLX_App_files/server/middleware/pageVerification.ts
               "https://glx-civic-networking.vercel.app",
               "https://glxcivicnetwork.me",
               "https://www.glxcivicnetwork.me",
               "https://staging.glxcivicnetwork.me",
+=======
+              'https://galax-civic-networking.vercel.app',
+              'https://galaxcivicnetwork.me',
+              'https://www.galaxcivicnetwork.me',
+              'https://staging.galaxcivicnetwork.me',
+>>>>>>> origin/all-merged:GALAX_App_files/server/middleware/pageVerification.ts
             ]
           : []),
 
@@ -254,9 +273,7 @@ export function createAuthCorsConfig() {
         process.env.STAGING_FRONTEND_URL,
 
         // Additional trusted origins from environment
-        ...(process.env.TRUSTED_ORIGINS
-          ? process.env.TRUSTED_ORIGINS.split(",")
-          : []),
+        ...(process.env.TRUSTED_ORIGINS ? process.env.TRUSTED_ORIGINS.split(',') : []),
       ].filter(Boolean);
 
       // In development, allow requests with no origin
@@ -266,8 +283,8 @@ export function createAuthCorsConfig() {
 
       // In production, require origin for auth endpoints
       if (!origin && isProduction) {
-        console.warn("🚨 Auth CORS: Blocked request with no origin in production");
-        return callback(new Error("Origin required for authentication requests"));
+        console.warn('🚨 Auth CORS: Blocked request with no origin in production');
+        return callback(new Error('Origin required for authentication requests'));
       }
 
       // Check against allowed origins
@@ -282,24 +299,21 @@ export function createAuthCorsConfig() {
           availableOrigins: allowedOrigins,
           timestamp: new Date().toISOString(),
         });
-        callback(new Error("Authentication not allowed from this origin"));
+        callback(new Error('Authentication not allowed from this origin'));
       }
     },
 
     credentials: true,
-    methods: ["POST", "OPTIONS"],
+    methods: ['POST', 'OPTIONS'],
     allowedHeaders: [
-      "Origin",
-      "X-Requested-With",
-      "Content-Type",
-      "Accept",
-      "Authorization",
-      "X-Page-Verification-Token",
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-Page-Verification-Token',
     ],
-    exposedHeaders: [
-      "X-Request-ID",
-      "X-Response-Time",
-    ],
+    exposedHeaders: ['X-Request-ID', 'X-Response-Time'],
     maxAge: 86400, // 24 hours
     preflightContinue: false,
     optionsSuccessStatus: 204,
@@ -309,21 +323,24 @@ export function createAuthCorsConfig() {
 /**
  * Periodic cleanup of expired tokens
  */
-setInterval(() => {
-  const now = Date.now();
-  const expiredTokens: string[] = [];
+setInterval(
+  () => {
+    const now = Date.now();
+    const expiredTokens: string[] = [];
 
-  for (const [token, page] of verifiedPages.entries()) {
-    if (now > page.expiresAt) {
-      expiredTokens.push(token);
+    for (const [token, page] of verifiedPages.entries()) {
+      if (now > page.expiresAt) {
+        expiredTokens.push(token);
+      }
     }
-  }
 
-  expiredTokens.forEach(token => verifiedPages.delete(token));
+    expiredTokens.forEach(token => verifiedPages.delete(token));
 
-  if (expiredTokens.length > 0) {
-    console.log(`🧹 Cleaned up ${expiredTokens.length} expired page verification tokens`);
-  }
-}, 5 * 60 * 1000); // Run every 5 minutes
+    if (expiredTokens.length > 0) {
+      console.log(`🧹 Cleaned up ${expiredTokens.length} expired page verification tokens`);
+    }
+  },
+  5 * 60 * 1000
+); // Run every 5 minutes
 
 export { PAGE_VERIFICATION_CONFIG };

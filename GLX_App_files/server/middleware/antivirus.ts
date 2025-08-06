@@ -7,13 +7,13 @@
  */
 
 // Added 2025-01-13 21:55:15 UTC - Comprehensive Antivirus Protection System
-import { Request, Response, NextFunction } from "express";
-import crypto from "crypto";
-import fs from "fs/promises";
-import path from "path";
+import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Directory where uploaded files are stored (must match upload middleware config)
-const UPLOADS_DIR = path.resolve("uploads");
+const UPLOADS_DIR = path.resolve('uploads');
 
 // Validate file path to prevent path traversal
 function validateFilePath(filePath: string, allowedDir: string): boolean {
@@ -27,10 +27,10 @@ interface VirusSignature {
   id: string;
   name: string;
   pattern: Buffer | RegExp | string;
-  type: "binary" | "text" | "hash";
+  type: 'binary' | 'text' | 'hash';
   family: string;
   description: string;
-  severity: "low" | "medium" | "high" | "critical";
+  severity: 'low' | 'medium' | 'high' | 'critical';
   firstSeen: string;
 }
 
@@ -38,182 +38,177 @@ interface VirusSignature {
 const VIRUS_SIGNATURES: VirusSignature[] = [
   // EICAR test file (standard antivirus test)
   {
-    id: "EICAR_TEST",
-    name: "EICAR Test File",
-    pattern:
-      "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*",
-    type: "text",
-    family: "Test",
-    description: "EICAR antivirus test file",
-    severity: "medium",
-    firstSeen: "1991-01-01",
+    id: 'EICAR_TEST',
+    name: 'EICAR Test File',
+    pattern: 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*',
+    type: 'text',
+    family: 'Test',
+    description: 'EICAR antivirus test file',
+    severity: 'medium',
+    firstSeen: '1991-01-01',
   },
 
   // Macro virus patterns
   {
-    id: "MACRO_AUTOOPEN",
-    name: "Macro AutoOpen",
+    id: 'MACRO_AUTOOPEN',
+    name: 'Macro AutoOpen',
     pattern: /(Auto_Open|AutoOpen|Document_Open|Auto_Exec|AutoExec)/gi,
-    type: "text",
-    family: "Macro",
-    description: "Suspicious macro auto-execution function",
-    severity: "high",
-    firstSeen: "1995-08-01",
+    type: 'text',
+    family: 'Macro',
+    description: 'Suspicious macro auto-execution function',
+    severity: 'high',
+    firstSeen: '1995-08-01',
   },
 
   // Script virus patterns
   {
-    id: "VBS_ILOVEYOU",
-    name: "VBScript ILOVEYOU variant",
+    id: 'VBS_ILOVEYOU',
+    name: 'VBScript ILOVEYOU variant',
     pattern:
       /(on error resume next|CreateObject.*Outlook|CreateObject.*Scripting\.FileSystemObject)/gi,
-    type: "text",
-    family: "VBScript",
-    description: "VBScript malware pattern similar to ILOVEYOU",
-    severity: "critical",
-    firstSeen: "2000-05-04",
+    type: 'text',
+    family: 'VBScript',
+    description: 'VBScript malware pattern similar to ILOVEYOU',
+    severity: 'critical',
+    firstSeen: '2000-05-04',
   },
 
   // PE file virus patterns
   {
-    id: "PE_SUSPICIOUS_IMPORTS",
-    name: "Suspicious PE Imports",
-    pattern:
-      /(CreateRemoteThread|WriteProcessMemory|VirtualAllocEx|SetWindowsHookEx)/gi,
-    type: "text",
-    family: "PE",
-    description: "PE file with suspicious API imports",
-    severity: "high",
-    firstSeen: "2010-01-01",
+    id: 'PE_SUSPICIOUS_IMPORTS',
+    name: 'Suspicious PE Imports',
+    pattern: /(CreateRemoteThread|WriteProcessMemory|VirtualAllocEx|SetWindowsHookEx)/gi,
+    type: 'text',
+    family: 'PE',
+    description: 'PE file with suspicious API imports',
+    severity: 'high',
+    firstSeen: '2010-01-01',
   },
 
   // Email worm patterns
   {
-    id: "EMAIL_WORM_OUTLOOK",
-    name: "Email Worm Outlook",
+    id: 'EMAIL_WORM_OUTLOOK',
+    name: 'Email Worm Outlook',
     pattern: /(Outlook\.Application|MailItem|Recipients\.Add)/gi,
-    type: "text",
-    family: "EmailWorm",
-    description: "Email worm attempting to access Outlook",
-    severity: "high",
-    firstSeen: "1999-03-26",
+    type: 'text',
+    family: 'EmailWorm',
+    description: 'Email worm attempting to access Outlook',
+    severity: 'high',
+    firstSeen: '1999-03-26',
   },
 
   // Trojan patterns
   {
-    id: "TROJAN_KEYLOGGER",
-    name: "Keylogger Trojan",
+    id: 'TROJAN_KEYLOGGER',
+    name: 'Keylogger Trojan',
     pattern: /(GetAsyncKeyState|SetWindowsHookEx|WH_KEYBOARD)/gi,
-    type: "text",
-    family: "Trojan",
-    description: "Keylogger trojan pattern",
-    severity: "critical",
-    firstSeen: "2008-01-01",
+    type: 'text',
+    family: 'Trojan',
+    description: 'Keylogger trojan pattern',
+    severity: 'critical',
+    firstSeen: '2008-01-01',
   },
 
   // Ransomware patterns
   {
-    id: "RANSOMWARE_CRYPTO",
-    name: "Crypto Ransomware",
-    pattern:
-      /(CryptEncrypt|CryptDecrypt|\.locked|\.encrypted|ransom|bitcoin)/gi,
-    type: "text",
-    family: "Ransomware",
-    description: "Potential ransomware encryption pattern",
-    severity: "critical",
-    firstSeen: "2013-09-01",
+    id: 'RANSOMWARE_CRYPTO',
+    name: 'Crypto Ransomware',
+    pattern: /(CryptEncrypt|CryptDecrypt|\.locked|\.encrypted|ransom|bitcoin)/gi,
+    type: 'text',
+    family: 'Ransomware',
+    description: 'Potential ransomware encryption pattern',
+    severity: 'critical',
+    firstSeen: '2013-09-01',
   },
 
   // Rootkit patterns
   {
-    id: "ROOTKIT_HOOK",
-    name: "Rootkit System Hook",
-    pattern:
-      /(ZwQuerySystemInformation|PsSetCreateProcessNotifyRoutine|ObRegisterCallbacks)/gi,
-    type: "text",
-    family: "Rootkit",
-    description: "Rootkit system hooking pattern",
-    severity: "critical",
-    firstSeen: "2005-01-01",
+    id: 'ROOTKIT_HOOK',
+    name: 'Rootkit System Hook',
+    pattern: /(ZwQuerySystemInformation|PsSetCreateProcessNotifyRoutine|ObRegisterCallbacks)/gi,
+    type: 'text',
+    family: 'Rootkit',
+    description: 'Rootkit system hooking pattern',
+    severity: 'critical',
+    firstSeen: '2005-01-01',
   },
 
   // Browser hijacker patterns
   {
-    id: "BROWSER_HIJACKER",
-    name: "Browser Hijacker",
-    pattern:
-      /(navigator\.userAgent|document\.cookie|localStorage|sessionStorage)/gi,
-    type: "text",
-    family: "BrowserHijacker",
-    description: "Browser hijacking script pattern",
-    severity: "medium",
-    firstSeen: "2010-01-01",
+    id: 'BROWSER_HIJACKER',
+    name: 'Browser Hijacker',
+    pattern: /(navigator\.userAgent|document\.cookie|localStorage|sessionStorage)/gi,
+    type: 'text',
+    family: 'BrowserHijacker',
+    description: 'Browser hijacking script pattern',
+    severity: 'medium',
+    firstSeen: '2010-01-01',
   },
 
   // Adware patterns
   {
-    id: "ADWARE_POPUP",
-    name: "Adware Popup",
+    id: 'ADWARE_POPUP',
+    name: 'Adware Popup',
     pattern: /(window\.open|alert\(|confirm\(|popup|advertisement)/gi,
-    type: "text",
-    family: "Adware",
-    description: "Adware popup generation pattern",
-    severity: "low",
-    firstSeen: "2001-01-01",
+    type: 'text',
+    family: 'Adware',
+    description: 'Adware popup generation pattern',
+    severity: 'low',
+    firstSeen: '2001-01-01',
   },
 
   // Botnet patterns
   {
-    id: "BOTNET_IRC",
-    name: "IRC Botnet Client",
+    id: 'BOTNET_IRC',
+    name: 'IRC Botnet Client',
     pattern: /(PRIVMSG|JOIN #|NICK bot|USER bot)/gi,
-    type: "text",
-    family: "Botnet",
-    description: "IRC botnet client pattern",
-    severity: "high",
-    firstSeen: "2003-01-01",
+    type: 'text',
+    family: 'Botnet',
+    description: 'IRC botnet client pattern',
+    severity: 'high',
+    firstSeen: '2003-01-01',
   },
 
   // Spyware patterns
   {
-    id: "SPYWARE_SCREENSHOT",
-    name: "Screenshot Spyware",
+    id: 'SPYWARE_SCREENSHOT',
+    name: 'Screenshot Spyware',
     pattern: /(BitBlt|GetDC|CreateCompatibleDC|GetDIBits)/gi,
-    type: "text",
-    family: "Spyware",
-    description: "Screenshot capture spyware pattern",
-    severity: "high",
-    firstSeen: "2006-01-01",
+    type: 'text',
+    family: 'Spyware',
+    description: 'Screenshot capture spyware pattern',
+    severity: 'high',
+    firstSeen: '2006-01-01',
   },
 
   // Binary virus signatures (simplified patterns)
   {
-    id: "BINARY_VIRUS_1",
-    name: "Binary Virus Pattern",
+    id: 'BINARY_VIRUS_1',
+    name: 'Binary Virus Pattern',
     pattern: Buffer.from([0x4d, 0x5a, 0x90, 0x00, 0x03, 0x00]), // Modified PE header
-    type: "binary",
-    family: "Binary",
-    description: "Suspicious binary file header",
-    severity: "medium",
-    firstSeen: "2000-01-01",
+    type: 'binary',
+    family: 'Binary',
+    description: 'Suspicious binary file header',
+    severity: 'medium',
+    firstSeen: '2000-01-01',
   },
 ];
 
 // Known virus file hashes (SHA-256)
 const VIRUS_HASHES = new Set([
   // EICAR test file hashes
-  "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f", // EICAR standard
-  "2546dcffc5ad854d4ddc64fbf056871cd5a00f2471cb7a5bfd4ac23b6e9eedad", // EICAR ZIP
-  "e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7c2e6fd1d70806f0f95", // EICAR variant
+  '275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f', // EICAR standard
+  '2546dcffc5ad854d4ddc64fbf056871cd5a00f2471cb7a5bfd4ac23b6e9eedad', // EICAR ZIP
+  'e1105070ba828007508566e28a2b8d4c65d192e9eaf3b7c2e6fd1d70806f0f95', // EICAR variant
 
   // Other known test/malware hashes (fictitious examples)
-  "d41d8cd98f00b204e9800998ecf8427e", // Empty file (MD5 converted to SHA-256 equivalent)
-  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", // Another empty file
+  'd41d8cd98f00b204e9800998ecf8427e', // Empty file (MD5 converted to SHA-256 equivalent)
+  'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', // Another empty file
 ]);
 
 // File quarantine system
-const VIRUS_QUARANTINE_DIR = path.join(process.cwd(), "virus_quarantine");
-const SCAN_LOGS_DIR = path.join(process.cwd(), "scan_logs");
+const VIRUS_QUARANTINE_DIR = path.join(process.cwd(), 'virus_quarantine');
+const SCAN_LOGS_DIR = path.join(process.cwd(), 'scan_logs');
 
 // Virus scan statistics
 interface ScanStats {
@@ -224,7 +219,7 @@ interface ScanStats {
   scanTime: number;
 }
 
-let globalScanStats: ScanStats = {
+const globalScanStats: ScanStats = {
   totalScans: 0,
   virusesDetected: 0,
   quarantinedFiles: 0,
@@ -246,17 +241,17 @@ async function ensureDirectories() {
 // Update virus definitions (simulated - in production, this would fetch from a real database)
 async function updateVirusDefinitions(): Promise<boolean> {
   try {
-    console.log("🔄 Updating virus definitions...");
+    console.log('🔄 Updating virus definitions...');
 
     // Simulate definition update
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     globalScanStats.lastUpdate = new Date().toISOString();
 
-    console.log("✅ Virus definitions updated successfully");
+    console.log('✅ Virus definitions updated successfully');
     return true;
   } catch (error) {
-    console.error("❌ Failed to update virus definitions:", error);
+    console.error('❌ Failed to update virus definitions:', error);
     return false;
   }
 }
@@ -268,17 +263,17 @@ async function calculateMultipleHashes(filePath: string): Promise<{
   sha1: string;
 }> {
   // Validate file path to prevent path traversal
-  const allowedDir = path.resolve("./data");
+  const allowedDir = path.resolve('./data');
   if (!validateFilePath(filePath, allowedDir)) {
-    throw new Error("Invalid file path");
+    throw new Error('Invalid file path');
   }
 
   const fileBuffer = await fs.readFile(filePath);
 
   return {
-    sha256: crypto.createHash("sha256").update(fileBuffer).digest("hex"),
-    md5: crypto.createHash("md5").update(fileBuffer).digest("hex"),
-    sha1: crypto.createHash("sha1").update(fileBuffer).digest("hex"),
+    sha256: crypto.createHash('sha256').update(fileBuffer).digest('hex'),
+    md5: crypto.createHash('md5').update(fileBuffer).digest('hex'),
+    sha1: crypto.createHash('sha1').update(fileBuffer).digest('hex'),
   };
 }
 
@@ -301,10 +296,8 @@ async function performVirusScan(filePath: string): Promise<{
   try {
     globalScanStats.totalScans++;
 
-    const sanitizedFileName = path.basename(filePath).replace(/[\n\r]/g, "");
-    console.log(
-      `🔍 Starting virus scan [${scanId}] for: ${sanitizedFileName}`,
-    );
+    const sanitizedFileName = path.basename(filePath).replace(/[\n\r]/g, '');
+    console.log(`🔍 Starting virus scan [${scanId}] for: ${sanitizedFileName}`);
 
     // Calculate file hashes
     const fileHashes = await calculateMultipleHashes(filePath);
@@ -316,14 +309,14 @@ async function performVirusScan(filePath: string): Promise<{
       VIRUS_HASHES.has(fileHashes.sha1)
     ) {
       viruses.push({
-        id: "KNOWN_VIRUS_HASH",
-        name: "Known Virus Hash",
-        pattern: "",
-        type: "hash",
-        family: "Known",
-        description: "File matches known virus hash",
-        severity: "critical",
-        firstSeen: "unknown",
+        id: 'KNOWN_VIRUS_HASH',
+        name: 'Known Virus Hash',
+        pattern: '',
+        type: 'hash',
+        family: 'Known',
+        description: 'File matches known virus hash',
+        severity: 'critical',
+        firstSeen: 'unknown',
       });
 
       console.warn(`🦠 Known virus hash detected: ${fileHashes.sha256}`);
@@ -332,25 +325,23 @@ async function performVirusScan(filePath: string): Promise<{
     // Read file content for signature scanning
     // Path validation already done in calculateMultipleHashes
     const fileBuffer = await fs.readFile(filePath);
-    const fileContent = fileBuffer.toString("utf8");
+    const fileContent = fileBuffer.toString('utf8');
 
     // Scan with virus signatures
     for (const signature of VIRUS_SIGNATURES) {
       let match = false;
 
       try {
-        if (signature.type === "text") {
-          if (typeof signature.pattern === "string") {
-            match = fileContent
-              .toLowerCase()
-              .includes(signature.pattern.toLowerCase());
+        if (signature.type === 'text') {
+          if (typeof signature.pattern === 'string') {
+            match = fileContent.toLowerCase().includes(signature.pattern.toLowerCase());
           } else if (signature.pattern instanceof RegExp) {
             match = signature.pattern.test(fileContent);
           }
-        } else if (signature.type === "binary") {
+        } else if (signature.type === 'binary') {
           if (signature.pattern instanceof Buffer) {
             match = fileBuffer.includes(signature.pattern);
-          } else if (typeof signature.pattern === "string") {
+          } else if (typeof signature.pattern === 'string') {
             match = fileBuffer.includes(Buffer.from(signature.pattern));
           }
         }
@@ -358,7 +349,7 @@ async function performVirusScan(filePath: string): Promise<{
         if (match) {
           viruses.push(signature);
           console.warn(
-            `🦠 Virus detected: ${signature.name} (${signature.family}/${signature.severity})`,
+            `🦠 Virus detected: ${signature.name} (${signature.family}/${signature.severity})`
           );
         }
       } catch (error) {
@@ -383,7 +374,7 @@ async function performVirusScan(filePath: string): Promise<{
       scanTime,
       timestamp: new Date().toISOString(),
       hashes: fileHashes,
-      signatures: viruses.map((v) => ({
+      signatures: viruses.map(v => ({
         id: v.id,
         name: v.name,
         family: v.family,
@@ -396,7 +387,7 @@ async function performVirusScan(filePath: string): Promise<{
     await fs.writeFile(logPath, JSON.stringify(scanResult, null, 2));
 
     console.log(
-      `✅ Virus scan complete [${scanId}]: ${viruses.length} threats found in ${scanTime}ms`,
+      `✅ Virus scan complete [${scanId}]: ${viruses.length} threats found in ${scanTime}ms`
     );
 
     return {
@@ -412,22 +403,22 @@ async function performVirusScan(filePath: string): Promise<{
       isClean: false,
       viruses: [
         {
-          id: "SCAN_ERROR",
-          name: "Scan Error",
-          pattern: "",
-          type: "text",
-          family: "Error",
-          description: "Failed to complete virus scan",
-          severity: "medium",
+          id: 'SCAN_ERROR',
+          name: 'Scan Error',
+          pattern: '',
+          type: 'text',
+          family: 'Error',
+          description: 'Failed to complete virus scan',
+          severity: 'medium',
           firstSeen: new Date().toISOString(),
         },
       ],
       scanId,
       scanTime: Date.now() - scanStart,
       fileHashes: {
-        sha256: "",
-        md5: "",
-        sha1: "",
+        sha256: '',
+        md5: '',
+        sha1: '',
       },
     };
   }
@@ -437,20 +428,17 @@ async function performVirusScan(filePath: string): Promise<{
 async function quarantineVirusFile(
   filePath: string,
   viruses: VirusSignature[],
-  scanId: string,
+  scanId: string
 ): Promise<string> {
   // Validate that filePath is within the uploads directory
   if (!validateFilePath(filePath, UPLOADS_DIR)) {
-    throw new Error("Invalid file path: outside of uploads directory");
+    throw new Error('Invalid file path: outside of uploads directory');
   }
   await ensureDirectories();
 
   const fileName = path.basename(filePath);
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const quarantinePath = path.join(
-    VIRUS_QUARANTINE_DIR,
-    `${timestamp}_${scanId}_${fileName}`,
-  );
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const quarantinePath = path.join(VIRUS_QUARANTINE_DIR, `${timestamp}_${scanId}_${fileName}`);
 
   try {
     // Copy file to quarantine
@@ -462,7 +450,7 @@ async function quarantineVirusFile(
       quarantinePath,
       scanId,
       quarantineTime: new Date().toISOString(),
-      virusesDetected: viruses.map((v) => ({
+      virusesDetected: viruses.map(v => ({
         id: v.id,
         name: v.name,
         family: v.family,
@@ -474,10 +462,10 @@ async function quarantineVirusFile(
         size: (await fs.stat(filePath)).size,
         name: fileName,
       },
-      action: "quarantined",
+      action: 'quarantined',
     };
 
-    const reportPath = quarantinePath + ".virus_report.json";
+    const reportPath = quarantinePath + '.virus_report.json';
     await fs.writeFile(reportPath, JSON.stringify(virusReport, null, 2));
 
     // Remove original file
@@ -487,9 +475,7 @@ async function quarantineVirusFile(
 
     console.warn(`🚨 VIRUS QUARANTINED: ${fileName}`);
     console.warn(`📁 Quarantine path: ${quarantinePath}`);
-    console.warn(
-      `🦠 Viruses: ${viruses.map((v) => `${v.name} (${v.severity})`).join(", ")}`,
-    );
+    console.warn(`🦠 Viruses: ${viruses.map(v => `${v.name} (${v.severity})`).join(', ')}`);
 
     return quarantinePath;
   } catch (error) {
@@ -499,11 +485,7 @@ async function quarantineVirusFile(
 }
 
 // Main antivirus middleware for file uploads
-export const antivirusFileScanner = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const antivirusFileScanner = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.file && !req.files) {
     return next();
   }
@@ -517,35 +499,27 @@ export const antivirusFileScanner = async (
   try {
     await ensureDirectories();
 
-    for (const file of files.filter((f) => f)) {
-      const sanitizedOriginalName = file.originalname.replace(/[\n\r]/g, "");
+    for (const file of files.filter(f => f)) {
+      const sanitizedOriginalName = file.originalname.replace(/[\n\r]/g, '');
       console.log(`🔍 Scanning file for viruses: ${sanitizedOriginalName}`);
 
       // Perform virus scan
       const scanResult = await performVirusScan(file.path);
 
       if (!scanResult.isClean) {
-        const criticalViruses = scanResult.viruses.filter(
-          (v) => v.severity === "critical",
-        );
-        const highViruses = scanResult.viruses.filter(
-          (v) => v.severity === "high",
-        );
+        const criticalViruses = scanResult.viruses.filter(v => v.severity === 'critical');
+        const highViruses = scanResult.viruses.filter(v => v.severity === 'high');
 
         // Quarantine file if viruses detected
         if (criticalViruses.length > 0 || highViruses.length > 0) {
-          await quarantineVirusFile(
-            file.path,
-            scanResult.viruses,
-            scanResult.scanId,
-          );
+          await quarantineVirusFile(file.path, scanResult.viruses, scanResult.scanId);
 
           return res.status(403).json({
             success: false,
             error: {
-              message: "Virus detected in uploaded file",
+              message: 'Virus detected in uploaded file',
               statusCode: 403,
-              viruses: scanResult.viruses.map((v) => ({
+              viruses: scanResult.viruses.map(v => ({
                 name: v.name,
                 family: v.family,
                 severity: v.severity,
@@ -562,18 +536,16 @@ export const antivirusFileScanner = async (
       // Add scan results to file object
       (file as any).antivirusScan = scanResult;
 
-      console.log(
-        `✅ File passed antivirus scan: ${sanitizedOriginalName} [${scanResult.scanId}]`,
-      );
+      console.log(`✅ File passed antivirus scan: ${sanitizedOriginalName} [${scanResult.scanId}]`);
     }
 
     next();
   } catch (error) {
-    console.error("❌ Antivirus scanning error:", error);
+    console.error('❌ Antivirus scanning error:', error);
     return res.status(500).json({
       success: false,
       error: {
-        message: "Antivirus scanning failed",
+        message: 'Antivirus scanning failed',
         statusCode: 500,
         scanId: crypto.randomUUID(),
       },
@@ -583,15 +555,17 @@ export const antivirusFileScanner = async (
 };
 
 // Real-time protection middleware (for ongoing monitoring)
-export const realTimeProtection = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const realTimeProtection = (req: Request, res: Response, next: NextFunction) => {
   // Add real-time protection headers
+<<<<<<< HEAD:GLX_App_files/server/middleware/antivirus.ts
   res.setHeader("X-Antivirus-Protection", "enabled");
   res.setHeader("X-Virus-Definitions", globalScanStats.lastUpdate);
   res.setHeader("X-Scan-Engine", "GLX-AV-v1.0");
+=======
+  res.setHeader('X-Antivirus-Protection', 'enabled');
+  res.setHeader('X-Virus-Definitions', globalScanStats.lastUpdate);
+  res.setHeader('X-Scan-Engine', 'GALAX-AV-v1.0');
+>>>>>>> origin/all-merged:GALAX_App_files/server/middleware/antivirus.ts
 
   next();
 };
@@ -602,7 +576,7 @@ const scheduleVirusUpdates = () => {
     async () => {
       await updateVirusDefinitions();
     },
-    4 * 60 * 60 * 1000,
+    4 * 60 * 60 * 1000
   ); // 4 hours
 
   // Initial update
@@ -633,7 +607,7 @@ export const antivirusAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to retrieve antivirus statistics",
+          message: 'Failed to retrieve antivirus statistics',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -658,7 +632,7 @@ export const antivirusAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to update virus definitions",
+          message: 'Failed to update virus definitions',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -671,7 +645,7 @@ export const antivirusAdmin = {
     try {
       await ensureDirectories();
       const files = await fs.readdir(VIRUS_QUARANTINE_DIR);
-      const reportFiles = files.filter((f) => f.endsWith(".virus_report.json"));
+      const reportFiles = files.filter(f => f.endsWith('.virus_report.json'));
 
       const quarantinedFiles = [];
       let totalSize = 0;
@@ -680,7 +654,7 @@ export const antivirusAdmin = {
         // Last 20 reports
         try {
           const reportPath = path.join(VIRUS_QUARANTINE_DIR, reportFile);
-          const report = JSON.parse(await fs.readFile(reportPath, "utf8"));
+          const report = JSON.parse(await fs.readFile(reportPath, 'utf8'));
           quarantinedFiles.push(report);
           totalSize += report.fileInfo?.size || 0;
         } catch (error) {
@@ -701,7 +675,7 @@ export const antivirusAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to retrieve quarantine information",
+          message: 'Failed to retrieve quarantine information',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -744,7 +718,7 @@ export const antivirusAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to clean quarantine",
+          message: 'Failed to clean quarantine',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -755,9 +729,13 @@ export const antivirusAdmin = {
 
 // Initialize antivirus system
 export const initializeAntivirus = () => {
+<<<<<<< HEAD:GLX_App_files/server/middleware/antivirus.ts
   console.log("🛡️ Initializing GLX Antivirus Protection System...");
+=======
+  console.log('🛡️ Initializing GALAX Antivirus Protection System...');
+>>>>>>> origin/all-merged:GALAX_App_files/server/middleware/antivirus.ts
   scheduleVirusUpdates();
-  console.log("✅ Antivirus system initialized successfully");
+  console.log('✅ Antivirus system initialized successfully');
 };
 
 // Export virus scan function for manual use

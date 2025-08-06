@@ -36,61 +36,61 @@ const REQUIRED_ENV_VARS: RequiredEnvVar[] = [
     name: 'NODE_ENV',
     required: true,
     description: 'Application environment (development, production, staging)',
-    validator: (value) => ['development', 'production', 'staging', 'test'].includes(value),
-    recommendation: 'Set to "production" for Vercel deployment'
+    validator: value => ['development', 'production', 'staging', 'test'].includes(value),
+    recommendation: 'Set to "production" for Vercel deployment',
   },
   {
     name: 'JWT_SECRET',
     required: true,
     description: 'JWT signing secret (minimum 32 characters)',
-    validator: (value) => value.length >= 32,
-    recommendation: 'Generate with: openssl rand -hex 32'
+    validator: value => value.length >= 32,
+    recommendation: 'Generate with: openssl rand -hex 32',
   },
   {
     name: 'JWT_REFRESH_SECRET',
     required: false,
     description: 'JWT refresh token secret',
-    validator: (value) => value.length >= 32,
-    recommendation: 'Generate with: openssl rand -hex 32'
+    validator: value => value.length >= 32,
+    recommendation: 'Generate with: openssl rand -hex 32',
   },
   {
     name: 'CLIENT_ORIGIN',
     required: true,
     description: 'Primary CORS origin for the frontend',
-    validator: (value) => value.startsWith('https://') || process.env.NODE_ENV === 'development',
-    recommendation: 'Set to your Vercel app URL (e.g., https://your-app.vercel.app)'
+    validator: value => value.startsWith('https://') || process.env.NODE_ENV === 'development',
+    recommendation: 'Set to your Vercel app URL (e.g., https://your-app.vercel.app)',
   },
   {
     name: 'DATABASE_URL',
     required: false,
     description: 'Database connection string (recommended for production)',
-    validator: (value) => value.includes('://'),
-    recommendation: 'Use PostgreSQL for production (Vercel Postgres)'
+    validator: value => value.includes('://'),
+    recommendation: 'Use PostgreSQL for production (Vercel Postgres)',
   },
   {
     name: 'TRUSTED_ORIGINS',
     required: false,
     description: 'Additional trusted origins (comma-separated)',
-    recommendation: 'Include staging domains and custom domains'
+    recommendation: 'Include staging domains and custom domains',
   },
   {
     name: 'SMTP_HOST',
     required: false,
     description: 'SMTP server for email functionality',
-    recommendation: 'Required for email verification and password reset'
+    recommendation: 'Required for email verification and password reset',
   },
   {
     name: 'SMTP_USER',
     required: false,
     description: 'SMTP username',
-    recommendation: 'Required if SMTP_HOST is set'
+    recommendation: 'Required if SMTP_HOST is set',
   },
   {
     name: 'SMTP_PASS',
     required: false,
     description: 'SMTP password or app password',
-    recommendation: 'Use app-specific password for Gmail'
-  }
+    recommendation: 'Use app-specific password for Gmail',
+  },
 ];
 
 /**
@@ -135,7 +135,9 @@ export function validateEnvironment(): EnvironmentValidationResult {
     }
 
     if (!value && !envVar.required) {
-      warnings.push(`Optional environment variable not set: ${envVar.name} - ${envVar.description}`);
+      warnings.push(
+        `Optional environment variable not set: ${envVar.name} - ${envVar.description}`
+      );
       if (envVar.recommendation) {
         recommendations.push(`${envVar.name}: ${envVar.recommendation}`);
       }
@@ -171,7 +173,7 @@ export function validateEnvironment(): EnvironmentValidationResult {
     isValid,
     errors,
     warnings,
-    recommendations
+    recommendations,
   };
 }
 
@@ -195,26 +197,49 @@ function validateAuthConfiguration(
     if (!validation.isValid || validation.severity === 'critical') {
       // In production mode, always enforce strict validation regardless of test environment
       if (isProduction) {
+<<<<<<< HEAD
         errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        errors.push(
+          `JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`
+        );
+>>>>>>> origin/copilot/fix-488
       } else if (process.env.NODE_ENV === 'test' && jwtSecret.length >= 16) {
         // Only use lenient validation for actual test environment, not development or CI
+=======
+      } else if (isTestOrCI && jwtSecret.length >= 16) {
+>>>>>>> origin/copilot/fix-386
+=======
+      } else if (process.env.NODE_ENV === 'test' && jwtSecret.length >= 16) {
+        // Only use lenient validation for actual test environment, not development or CI
+>>>>>>> origin/copilot/fix-466
         warnings.push(`JWT_SECRET is weak but acceptable for test environment`);
       } else {
-        errors.push(`JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+        errors.push(
+          `JWT_SECRET security validation failed: ${validation.recommendations.join(', ')}`
+        );
 
         if (validation.weakPatterns.length > 0) {
           const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
           const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
 
           if (criticalPatterns.length > 0) {
-            errors.push(`JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+            errors.push(
+              `JWT_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`
+            );
           }
           if (highPatterns.length > 0) {
-            errors.push(`JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+            errors.push(
+              `JWT_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`
+            );
           }
         }
 
-        recommendations.push('JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
+        recommendations.push(
+          'JWT_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32'
+        );
       }
     } else if (validation.severity === 'warning') {
       warnings.push(`JWT_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
@@ -229,30 +254,44 @@ function validateAuthConfiguration(
     if (!validation.isValid || validation.severity === 'critical') {
       // In production mode, always enforce strict validation regardless of test environment
       if (isProduction) {
-        errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+        errors.push(
+          `JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`
+        );
       } else if (process.env.NODE_ENV === 'test' && jwtRefreshSecret.length >= 16) {
         // Only use lenient validation for actual test environment, not development or CI
         warnings.push(`JWT_REFRESH_SECRET is weak but acceptable for test environment`);
       } else {
-        errors.push(`JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`);
+        errors.push(
+          `JWT_REFRESH_SECRET security validation failed: ${validation.recommendations.join(', ')}`
+        );
 
         if (validation.weakPatterns.length > 0) {
           const criticalPatterns = validation.weakPatterns.filter(p => p.severity === 'critical');
           const highPatterns = validation.weakPatterns.filter(p => p.severity === 'high');
 
           if (criticalPatterns.length > 0) {
-            errors.push(`JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`);
+            errors.push(
+              `JWT_REFRESH_SECRET contains critical security weaknesses: ${criticalPatterns.map(p => p.description).join(', ')}`
+            );
           }
           if (highPatterns.length > 0) {
-            errors.push(`JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`);
+            errors.push(
+              `JWT_REFRESH_SECRET contains high-risk patterns: ${highPatterns.map(p => p.description).join(', ')}`
+            );
           }
         }
 
-        recommendations.push('JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32');
+        recommendations.push(
+          'JWT_REFRESH_SECRET: Generate a cryptographically secure random string using: openssl rand -hex 32'
+        );
       }
     } else if (validation.severity === 'warning') {
-      warnings.push(`JWT_REFRESH_SECRET has security concerns: ${validation.recommendations.join(', ')}`);
-      recommendations.push('JWT_REFRESH_SECRET: Consider improving secret strength for enhanced security');
+      warnings.push(
+        `JWT_REFRESH_SECRET has security concerns: ${validation.recommendations.join(', ')}`
+      );
+      recommendations.push(
+        'JWT_REFRESH_SECRET: Consider improving secret strength for enhanced security'
+      );
     }
   }
 
@@ -315,10 +354,14 @@ function validateProductionConfiguration(
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
     warnings.push('No database URL configured - using SQLite fallback');
-    recommendations.push('DATABASE_URL: Use PostgreSQL for production (Vercel Postgres recommended)');
+    recommendations.push(
+      'DATABASE_URL: Use PostgreSQL for production (Vercel Postgres recommended)'
+    );
   } else if (databaseUrl.includes('sqlite') || databaseUrl.includes('file:')) {
     warnings.push('Using SQLite in production - PostgreSQL recommended');
-    recommendations.push('DATABASE_URL: Switch to PostgreSQL for better performance and reliability');
+    recommendations.push(
+      'DATABASE_URL: Switch to PostgreSQL for better performance and reliability'
+    );
   }
 
   // Check security settings
@@ -328,26 +371,31 @@ function validateProductionConfiguration(
   }
 
   // Check if common production URLs are configured
-  const hasVercelDomain = process.env.CLIENT_ORIGIN?.includes('vercel.app') ||
-                          process.env.FRONTEND_URL?.includes('vercel.app');
+  const hasVercelDomain =
+    process.env.CLIENT_ORIGIN?.includes('vercel.app') ||
+    process.env.FRONTEND_URL?.includes('vercel.app');
 
   if (!hasVercelDomain) {
     warnings.push('No Vercel domain detected in CORS configuration');
-    recommendations.push('CORS: Ensure your Vercel app URL is included in CLIENT_ORIGIN or TRUSTED_ORIGINS');
+    recommendations.push(
+      'CORS: Ensure your Vercel app URL is included in CLIENT_ORIGIN or TRUSTED_ORIGINS'
+    );
   }
 }
 
 /**
  * Generates a deployment checklist based on validation results
  */
-export function generateDeploymentChecklist(validationResult: EnvironmentValidationResult): string[] {
+export function generateDeploymentChecklist(
+  validationResult: EnvironmentValidationResult
+): string[] {
   const checklist: string[] = [
     '# Vercel Deployment Checklist',
     '',
     '## Environment Variables (Set in Vercel Dashboard)',
     '1. Go to Project Settings → Environment Variables',
     '2. Set the following required variables:',
-    ''
+    '',
   ];
 
   REQUIRED_ENV_VARS.forEach(envVar => {

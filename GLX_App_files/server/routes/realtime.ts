@@ -23,12 +23,12 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
 
       const connectionId = realtimeManager.createSSEConnection(userId, res);
       console.log(`📡 SSE connection created for user ${userId}: ${connectionId}`);
-
     } catch (error) {
       console.error('❌ Error creating SSE connection:', error);
       res.status(500).json({
         error: 'Failed to establish real-time connection',
-        details: 'Unable to connect to our real-time services. Please check your internet connection and try again.'
+        details:
+          'Unable to connect to our real-time services. Please check your internet connection and try again.',
       });
     }
   });
@@ -41,14 +41,14 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
       if (!helpRequestId || typeof helpRequestId !== 'number') {
         return res.status(400).json({
           error: 'Invalid help request ID',
-          details: 'Please provide a valid help request to join.'
+          details: 'Please provide a valid help request to join.',
         });
       }
 
       if (!connectionId || typeof connectionId !== 'string') {
         return res.status(400).json({
           error: 'Invalid connection ID',
-          details: 'Connection not found. Please refresh the page and try again.'
+          details: 'Connection not found. Please refresh the page and try again.',
         });
       }
 
@@ -59,20 +59,19 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
         res.json({
           success: true,
           roomId,
-          message: 'Successfully joined help request'
+          message: 'Successfully joined help request',
         });
       } else {
         res.status(404).json({
           error: 'Connection not found',
-          details: 'Your connection expired. Please refresh the page and try again.'
+          details: 'Your connection expired. Please refresh the page and try again.',
         });
       }
-
     } catch (error) {
       console.error('❌ Error joining room:', error);
       res.status(500).json({
         error: 'Failed to join room',
-        details: 'Unable to join the help request. Please try again in a moment.'
+        details: 'Unable to join the help request. Please try again in a moment.',
       });
     }
   });
@@ -85,14 +84,14 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
       if (!helpRequestId || typeof helpRequestId !== 'number') {
         return res.status(400).json({
           error: 'Invalid help request ID',
-          details: 'Please provide a valid help request to leave.'
+          details: 'Please provide a valid help request to leave.',
         });
       }
 
       if (!connectionId || typeof connectionId !== 'string') {
         return res.status(400).json({
           error: 'Invalid connection ID',
-          details: 'Connection not found. Please refresh the page and try again.'
+          details: 'Connection not found. Please refresh the page and try again.',
         });
       }
 
@@ -103,20 +102,19 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
         res.json({
           success: true,
           roomId,
-          message: 'Successfully left help request'
+          message: 'Successfully left help request',
         });
       } else {
         res.status(404).json({
           error: 'Connection not found',
-          details: 'Your connection expired. No action needed.'
+          details: 'Your connection expired. No action needed.',
         });
       }
-
     } catch (error) {
       console.error('❌ Error leaving room:', error);
       res.status(500).json({
         error: 'Failed to leave room',
-        details: 'Unable to leave the help request. This may resolve automatically.'
+        details: 'Unable to leave the help request. This may resolve automatically.',
       });
     }
   });
@@ -128,7 +126,7 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
       if (!userId) {
         return res.status(401).json({
           error: 'User not authenticated',
-          details: 'Please log in to send messages.'
+          details: 'Please log in to send messages.',
         });
       }
 
@@ -137,14 +135,14 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
       if (!helpRequestId || typeof helpRequestId !== 'number') {
         return res.status(400).json({
           error: 'Invalid help request ID',
-          details: 'Please select a valid help request to send a message.'
+          details: 'Please select a valid help request to send a message.',
         });
       }
 
       if (!message || typeof message !== 'string') {
         return res.status(400).json({
           error: 'Invalid message',
-          details: 'Please enter a message to send.'
+          details: 'Please enter a message to send.',
         });
       }
 
@@ -154,20 +152,19 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
         res.json({
           success: true,
           messageId: result.messageId,
-          message: 'Message sent successfully'
+          message: 'Message sent successfully',
         });
       } else {
         res.status(400).json({
           error: 'Failed to send message',
-          details: result.error || 'Unable to send your message. Please try again.'
+          details: result.error || 'Unable to send your message. Please try again.',
         });
       }
-
     } catch (error) {
       console.error('❌ Error sending message:', error);
       res.status(500).json({
         error: 'Failed to send message',
-        details: 'Unable to send your message due to a server error. Please try again in a moment.'
+        details: 'Unable to send your message due to a server error. Please try again in a moment.',
       });
     }
   });
@@ -178,13 +175,13 @@ function createRealtimeRoutes(realtimeManager: RealtimeManager) {
       const health = realtimeManager.getHealthStatus();
       res.json({
         status: 'healthy',
-        ...health
+        ...health,
       });
     } catch (error) {
       console.error('❌ Error getting health status:', error);
       res.status(500).json({
         status: 'unhealthy',
-        error: 'Health check failed'
+        error: 'Health check failed',
       });
     }
   });

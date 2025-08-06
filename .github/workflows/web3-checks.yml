@@ -1,6 +1,8 @@
 ---
 name: Web3 Functionality & Integration Tests
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 'on':
   push:
     branches: [main, develop]
@@ -14,6 +16,7 @@ name: Web3 Functionality & Integration Tests
       - 'GLX_App_files/package.json'
       - 'package.json'
       - '.github/workflows/web3-checks.yml'
+<<<<<<< HEAD
   pull_request:
     branches: [main]
     paths:
@@ -35,6 +38,40 @@ name: Web3 Functionality & Integration Tests
         description: 'Force run all Web3 checks'
         required: false
         default: 'false'
+=======
+on:
+=======
+'on':
+>>>>>>> origin/copilot/fix-470
+  push:
+    branches: [main, develop]
+=======
+>>>>>>> origin/copilot/fix-501
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*web3*'
+      - '**/*crypto*'
+      - '**/*blockchain*'
+      - '**/*defi*'
+      - 'GALAX_App_files/server/middleware/web3-security.ts'
+      - 'mcp-config.json'
+      - 'GALAX_App_files/package.json'
+      - 'package.json'
+      - '.github/workflows/web3-checks.yml'
+  schedule:
+    # Run web3 checks daily at 3 AM UTC
+    - cron: '0 3 * * *'
+<<<<<<< HEAD
+>>>>>>> origin/copilot/fix-468
+=======
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run all Web3 checks'
+        required: false
+        default: 'false'
+>>>>>>> origin/copilot/fix-501
 
 permissions:
   contents: read
@@ -46,6 +83,10 @@ env:
   WORKING_DIRECTORY: './GLX_App_files'
 
 jobs:
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
   detect-web3-changes:
     name: Detect Web3 Changes
     runs-on: ubuntu-latest
@@ -82,10 +123,19 @@ jobs:
               - 'GLX_App_files/package.json'
               - 'package.json'
 
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
   web3-functionality:
     name: Web3 Functionality Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     needs: detect-web3-changes
     if: |
       github.event_name == 'schedule' || 
@@ -93,6 +143,11 @@ jobs:
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_config_changes == 'true'
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
 
     steps:
       - name: Checkout code
@@ -103,10 +158,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
+<<<<<<< HEAD
+=======
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-470
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -116,7 +181,15 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🌐 Checking Web3 dependencies..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for Web3 libraries in package.json
           if grep -q "web3\|ethers\|@web3js\|viem" package.json; then
             echo "✅ Web3 libraries found in dependencies"
@@ -124,7 +197,15 @@ jobs:
           else
             echo "⚠️ No standard Web3 libraries detected"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for blockchain-related dependencies
           if grep -q "blockchain\|ethereum\|polygon\|solana" package.json; then
             echo "✅ Blockchain-related dependencies found"
@@ -137,21 +218,45 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔧 Validating Web3 configuration..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for Web3 provider configuration
           if [ -f "src/config/web3.ts" ] || [ -f "src/config/web3.js" ]; then
             echo "✅ Web3 configuration file found"
           else
             echo "⚠️ No dedicated Web3 configuration file found"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for wallet integration
           if grep -r "wallet\|metamask\|connect" src/ --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" 2>/dev/null; then
             echo "✅ Wallet integration code detected"
           else
             echo "⚠️ No wallet integration detected"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for smart contract interfaces
           if find . -name "*.abi" -o -name "*contract*" -name "*.ts" -o -name "*contract*" -name "*.js" | grep -v node_modules; then
             echo "✅ Smart contract interfaces found"
@@ -163,20 +268,48 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔗 Testing Web3 provider connectivity..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
           # Create a simple Web3 connection test
           cat > test-web3-connection.js << 'EOF'
           const https = require('https');
 
+=======
+          
+          # Create a simple Web3 connection test
+          cat > test-web3-connection.js << 'EOF'
+          const https = require('https');
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+          # Create a simple Web3 connection test
+          cat > test-web3-connection.js << 'EOF'
+          const https = require('https');
+
+>>>>>>> origin/copilot/fix-470
           // Test connection to common Web3 providers
           const providers = [
             'eth-mainnet.alchemyapi.io',
             'mainnet.infura.io',
             'ethereum.publicnode.com'
           ];
+<<<<<<< HEAD
+<<<<<<< HEAD
 
           console.log('Testing Web3 provider connectivity...');
 
+=======
+          
+          console.log('Testing Web3 provider connectivity...');
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+          console.log('Testing Web3 provider connectivity...');
+
+>>>>>>> origin/copilot/fix-470
           providers.forEach(provider => {
             const options = {
               hostname: provider,
@@ -185,6 +318,8 @@ jobs:
               method: 'HEAD',
               timeout: 5000
             };
+<<<<<<< HEAD
+<<<<<<< HEAD
 
             const req = https.request(options, (res) => {
               console.log(`✅ ${provider}: Reachable (${res.statusCode})`);
@@ -194,19 +329,59 @@ jobs:
               console.log(`⚠️ ${provider}: Not reachable (${err.message})`);
             });
 
+=======
+            
+=======
+
+>>>>>>> origin/copilot/fix-470
+            const req = https.request(options, (res) => {
+              console.log(`✅ ${provider}: Reachable (${res.statusCode})`);
+            });
+
+            req.on('error', (err) => {
+              console.log(`⚠️ ${provider}: Not reachable (${err.message})`);
+            });
+<<<<<<< HEAD
+            
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
             req.on('timeout', () => {
               console.log(`⚠️ ${provider}: Timeout`);
               req.destroy();
             });
+<<<<<<< HEAD
+<<<<<<< HEAD
 
             req.end();
           });
 
+=======
+            
+            req.end();
+          });
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+            req.end();
+          });
+
+>>>>>>> origin/copilot/fix-470
           setTimeout(() => {
             console.log('Web3 provider connectivity test completed');
           }, 10000);
           EOF
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           node test-web3-connection.js
           rm test-web3-connection.js
 
@@ -214,7 +389,15 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔮 Validating post-quantum cryptography implementation..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for post-quantum libraries
           if grep -q "@noble/post-quantum\|crystals-kyber\|dilithium" package.json; then
             echo "✅ Post-quantum cryptography libraries found in package.json"
@@ -222,7 +405,15 @@ jobs:
           else
             echo "⚠️ No post-quantum cryptography libraries in package.json"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for quantum-resistant algorithms in code
           if grep -r "kyber\|dilithium\|sphincs\|rainbow" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
             echo "✅ Post-quantum algorithm usage detected in code"
@@ -234,15 +425,37 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🛡️ Testing Web3 security middleware..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
           if [ -f "server/middleware/web3-security.ts" ]; then
             echo "✅ Web3 security middleware found"
 
+=======
+          
+          if [ -f "server/middleware/web3-security.ts" ]; then
+            echo "✅ Web3 security middleware found"
+            
+>>>>>>> origin/copilot/fix-468
+=======
+
+          if [ -f "server/middleware/web3-security.ts" ]; then
+            echo "✅ Web3 security middleware found"
+
+>>>>>>> origin/copilot/fix-470
             # Basic syntax check
             npx tsc --noEmit server/middleware/web3-security.ts 2>/dev/null && \
               echo "✅ Web3 security middleware compiles successfully" || \
               echo "⚠️ Web3 security middleware has compilation issues"
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+              
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
             # Check for security patterns
             if grep -q "rate.limit\|validate\|sanitize" server/middleware/web3-security.ts; then
               echo "✅ Security patterns detected in Web3 middleware"
@@ -258,6 +471,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🧪 Running Web3 unit tests..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
           # Check for Web3-specific test files
           WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" -o -name "*crypto*.test.*" | grep -v node_modules)
@@ -266,6 +481,23 @@ jobs:
             echo "✅ Web3 test files found:"
             echo "$WEB3_TESTS"
 
+=======
+          
+=======
+
+>>>>>>> origin/copilot/fix-470
+          # Check for Web3-specific test files
+          WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" -o -name "*crypto*.test.*" | grep -v node_modules)
+
+          if [ -n "$WEB3_TESTS" ]; then
+            echo "✅ Web3 test files found:"
+            echo "$WEB3_TESTS"
+<<<<<<< HEAD
+            
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
             # Run Web3 tests if npm script exists
             if grep -q '"test:web3"' package.json; then
               echo "Running Web3-specific tests..."
@@ -284,11 +516,21 @@ jobs:
     name: Web3 Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     needs: [detect-web3-changes, web3-functionality]
     if: |
       github.event_name == 'schedule' || 
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true'
+<<<<<<< HEAD
+=======
+    needs: web3-functionality
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
 
     steps:
       - name: Checkout code
@@ -299,10 +541,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
+<<<<<<< HEAD
+=======
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-470
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -316,7 +568,15 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔗 Testing Web3 MCP integration..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check if MCP config includes Web3
           if [ -f "../mcp-config.json" ]; then
             echo "✅ MCP configuration found"
@@ -334,11 +594,27 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "💰 Testing DeFi functionality..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
           # Check for DeFi-related code
           if grep -r "defi\|swap\|liquidity\|yield\|staking" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
             echo "✅ DeFi functionality detected"
 
+=======
+          
+          # Check for DeFi-related code
+          if grep -r "defi\|swap\|liquidity\|yield\|staking" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
+            echo "✅ DeFi functionality detected"
+            
+>>>>>>> origin/copilot/fix-468
+=======
+
+          # Check for DeFi-related code
+          if grep -r "defi\|swap\|liquidity\|yield\|staking" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
+            echo "✅ DeFi functionality detected"
+
+>>>>>>> origin/copilot/fix-470
             # Run DeFi tests if available
             if grep -q '"test:defi"' package.json; then
               echo "Running DeFi tests..."
@@ -354,7 +630,15 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🌐 Checking blockchain network compatibility..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for multi-chain support
           if grep -r "ethereum\|polygon\|bsc\|avalanche\|arbitrum\|optimism" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
             echo "✅ Multi-chain support detected"
@@ -362,7 +646,15 @@ jobs:
           else
             echo "⚠️ Limited blockchain network support"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for testnet configurations
           if grep -r "testnet\|goerli\|sepolia\|mumbai" . --include="*.ts" --include="*.js" --include="*.json" | grep -v node_modules; then
             echo "✅ Testnet configurations found"
@@ -374,12 +666,22 @@ jobs:
     name: Web3 Security Validation
     runs-on: ubuntu-latest
     timeout-minutes: 10
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-501
     needs: [detect-web3-changes, web3-functionality]
     if: |
       github.event_name == 'schedule' || 
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true'
+<<<<<<< HEAD
+=======
+    needs: web3-functionality
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-501
 
     steps:
       - name: Checkout code
@@ -390,10 +692,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/copilot/fix-470
           cache-dependency-path: './package-lock.json'
 
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
+<<<<<<< HEAD
+=======
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+>>>>>>> origin/copilot/fix-468
+=======
+>>>>>>> origin/copilot/fix-470
 
       - name: Install dependencies
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -403,21 +715,45 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔒 Validating Web3 security patterns..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for reentrancy protection patterns
           if grep -r "nonReentrant\|mutex\|guard" . --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "✅ Reentrancy protection patterns found"
           else
             echo "⚠️ No reentrancy protection patterns detected"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for input validation
           if grep -r "validate.*address\|isValidAddress\|checksum" . --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "✅ Address validation patterns found"
           else
             echo "⚠️ Limited address validation detected"
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check for amount/value validation
           if grep -r "validate.*amount\|isValidAmount\|BigNumber" . --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "✅ Amount validation patterns found"
@@ -429,25 +765,63 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🕵️ Checking for common Web3 vulnerabilities..."
+<<<<<<< HEAD
+<<<<<<< HEAD
 
           # Check for unsafe practices
           UNSAFE_PATTERNS=0
 
+=======
+          
+          # Check for unsafe practices
+          UNSAFE_PATTERNS=0
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+          # Check for unsafe practices
+          UNSAFE_PATTERNS=0
+
+>>>>>>> origin/copilot/fix-470
           if grep -r "eval\|Function\|setTimeout.*string" . --include="*.ts" --include="*.js" | grep -v node_modules | grep -v test; then
             echo "⚠️ Potentially unsafe dynamic code execution detected"
             UNSAFE_PATTERNS=$((UNSAFE_PATTERNS + 1))
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           if grep -r "localStorage.*private\|sessionStorage.*key" . --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "⚠️ Potential private key storage in browser storage detected"
             UNSAFE_PATTERNS=$((UNSAFE_PATTERNS + 1))
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           if grep -r "http://.*web3\|http://.*rpc" . --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "⚠️ Insecure HTTP connections to Web3 providers detected"
             UNSAFE_PATTERNS=$((UNSAFE_PATTERNS + 1))
           fi
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           if [ $UNSAFE_PATTERNS -eq 0 ]; then
             echo "✅ No obvious Web3 security vulnerabilities detected"
           else
@@ -458,8 +832,18 @@ jobs:
   web3-summary:
     name: Web3 Tests Summary
     runs-on: ubuntu-latest
+<<<<<<< HEAD
+<<<<<<< HEAD
     needs: [detect-web3-changes, web3-functionality, web3-integration, web3-security-validation]
     if: always() && needs.detect-web3-changes.result != 'skipped'
+=======
+    needs: [web3-functionality, web3-integration, web3-security-validation]
+    if: always()
+>>>>>>> origin/copilot/fix-468
+=======
+    needs: [detect-web3-changes, web3-functionality, web3-integration, web3-security-validation]
+    if: always() && needs.detect-web3-changes.result != 'skipped'
+>>>>>>> origin/copilot/fix-501
     timeout-minutes: 5
 
     steps:
@@ -472,7 +856,15 @@ jobs:
           echo "🔗 Web3 Integration: ${{ needs.web3-integration.result }}"
           echo "🔒 Web3 Security: ${{ needs.web3-security-validation.result }}"
           echo ""
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> origin/copilot/fix-468
+=======
+
+>>>>>>> origin/copilot/fix-470
           # Check if any critical tests failed
           if [[ "${{ needs.web3-functionality.result }}" == "failure" ]] || \
              [[ "${{ needs.web3-security-validation.result }}" == "failure" ]]; then
@@ -491,6 +883,19 @@ jobs:
         with:
           name: web3-test-results
           path: |
+<<<<<<< HEAD
             ./GLX_App_files/web3-test-results/
             ./GLX_App_files/coverage/
+=======
+            ./GALAX_App_files/web3-test-results/
+            ./GALAX_App_files/coverage/
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> origin/all-merged
           retention-days: 7
+=======
+          retention-days: 7
+>>>>>>> origin/copilot/fix-468
+=======
+          retention-days: 7
+>>>>>>> origin/copilot/fix-470

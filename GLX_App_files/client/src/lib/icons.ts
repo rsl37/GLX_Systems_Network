@@ -10,35 +10,13 @@
 // This helps with tree-shaking to reduce bundle size
 
 // Core UI icons
-export {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  ChevronLeft,
-  ChevronRight,
-  X,
-  Search
-} from 'lucide-react';
+export { Check, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Search } from 'lucide-react';
 
 // Navigation icons
-export {
-  Home,
-  HandHeart,
-  AlertTriangle,
-  Vote,
-  User,
-  DollarSign
-} from 'lucide-react';
+export { Home, HandHeart, AlertTriangle, Vote, User, DollarSign } from 'lucide-react';
 
 // Action icons
-export {
-  Send,
-  MessageCircle,
-  Loader2,
-  AlertCircle,
-  RefreshCw,
-  Mail
-} from 'lucide-react';
+export { Send, MessageCircle, Loader2, AlertCircle, RefreshCw, Mail } from 'lucide-react';
 
 // Dashboard icons
 export {
@@ -56,5 +34,5 @@ export {
   Minus,
   BarChart3,
   CheckCircle,
-  Info
+  Info,
 } from 'lucide-react';

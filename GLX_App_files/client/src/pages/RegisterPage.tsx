@@ -45,6 +45,7 @@ export function RegisterPage() {
       }
 
       // Format phone number with country code if it's a phone signup
+<<<<<<< HEAD
       let identifier = email;
       if (signupMethod === 'phone') {
         // Clean the phone number: remove all non-digit characters except leading +
@@ -63,13 +64,19 @@ export function RegisterPage() {
           // Remove any leading zeros (only if followed by other digits) and add the selected country code
           const phoneWithoutLeadingZeros = cleanPhone.replace(/^0+(?=\d)/, '');
           if (!phoneWithoutLeadingZeros) {
-            throw new Error('Invalid phone number: phone number cannot be empty after removing leading zeros.');
+            throw new Error(
+              'Invalid phone number: phone number cannot be empty after removing leading zeros.'
+            );
           }
           identifier = `${countryCode}${phoneWithoutLeadingZeros}`;
         }
       }
 
       await register(identifier, password, username, signupMethod, verificationToken);
+=======
+      const identifier = signupMethod === 'email' ? email : `${countryCode}${phone.replace(/^[\+\s0]+/, '').replace(/\s/g, '')}`;
+      await register(identifier, password, username, signupMethod);
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
       navigate('/dashboard');
     } catch (err) {
       // Provide more helpful error messages
@@ -79,7 +86,9 @@ export function RegisterPage() {
         setError(err);
       } else {
         // Enhanced fallback message with more actionable guidance
-        setError('Unable to create account. Please verify your information is correct and try again. If the problem persists, contact support.');
+        setError(
+          'Unable to create account. Please verify your information is correct and try again. If the problem persists, contact support.'
+        );
       }
     } finally {
       setIsLoading(false);
@@ -107,16 +116,22 @@ export function RegisterPage() {
           await registerWithWallet(accounts[0], username, verificationToken);
           navigate('/dashboard');
         } else {
-          setError('No wallet accounts available. Please unlock your MetaMask wallet and try again.');
+          setError(
+            'No wallet accounts available. Please unlock your MetaMask wallet and try again.'
+          );
         }
       } else {
-        setError('MetaMask wallet not detected. Please install MetaMask browser extension to continue.');
+        setError(
+          'MetaMask wallet not detected. Please install MetaMask browser extension to continue.'
+        );
       }
     } catch (err) {
       // Handle specific wallet registration errors
       if (err instanceof Error) {
         if (err.message.includes('User rejected')) {
-          setError('Wallet connection was denied. Please approve the connection request in MetaMask.');
+          setError(
+            'Wallet connection was denied. Please approve the connection request in MetaMask.'
+          );
         } else if (err.message.includes('wallet_requestPermissions')) {
           setError('MetaMask permissions denied. Please approve wallet access to continue.');
         } else {
@@ -125,7 +140,9 @@ export function RegisterPage() {
       } else if (typeof err === 'string') {
         setError(err);
       } else {
-        setError('Failed to register with your wallet. Please check your MetaMask connection and try again.');
+        setError(
+          'Failed to register with your wallet. Please check your MetaMask connection and try again.'
+        );
       }
     } finally {
       setIsLoading(false);
@@ -133,47 +150,67 @@ export function RegisterPage() {
   };
 
   return (
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
     <div className="min-h-screen flex items-center justify-center p-4 glx-holographic">
+=======
+    <div className='min-h-screen flex items-center justify-center p-4 galax-holographic'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className='w-full max-w-md'
       >
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
         <Card className="glx-card animate-pulse-glow">
           <CardHeader className="text-center pb-8">
+=======
+        <Card className='galax-card animate-pulse-glow'>
+          <CardHeader className='text-center pb-8'>
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex items-center justify-center gap-2 mb-4"
+              className='flex items-center justify-center gap-2 mb-4'
             >
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
               <Zap className="h-8 w-8 text-purple-500" />
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                 Join GLX
+=======
+              <Zap className='h-8 w-8 text-purple-500' />
+              <CardTitle className='text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent'>
+                Join GALAX
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               </CardTitle>
-              <Sparkles className="h-8 w-8 text-coral-500" />
+              <Sparkles className='h-8 w-8 text-coral-500' />
             </motion.div>
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
             <CardDescription className="text-lg text-gray-600">
               Connect the World
+=======
+            <CardDescription className='text-lg text-gray-600'>
+              Create your civic network account
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
             </CardDescription>
 
             {/* Security verification indicator */}
             {process.env.NODE_ENV === 'production' && (
-              <div className="mt-4">
+              <div className='mt-4'>
                 {isVerifying ? (
-                  <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                    <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                  <div className='flex items-center justify-center gap-2 text-sm text-gray-500'>
+                    <div className='w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin'></div>
                     Verifying page security...
                   </div>
                 ) : verificationToken ? (
-                  <div className="flex items-center justify-center gap-2 text-sm text-green-600">
-                    <Shield className="h-4 w-4" />
+                  <div className='flex items-center justify-center gap-2 text-sm text-green-600'>
+                    <Shield className='h-4 w-4' />
                     Page verified and secure
                   </div>
                 ) : verificationError ? (
-                  <div className="flex items-center justify-center gap-2 text-sm text-red-500">
-                    <AlertCircle className="h-4 w-4" />
+                  <div className='flex items-center justify-center gap-2 text-sm text-red-500'>
+                    <AlertCircle className='h-4 w-4' />
                     Security verification failed
                   </div>
                 ) : null}
@@ -181,86 +218,106 @@ export function RegisterPage() {
             )}
           </CardHeader>
 
-          <CardContent className="space-y-6">
+          <CardContent className='space-y-6'>
             {/* Signup Method Toggle */}
-            <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+            <div className='flex gap-2 p-1 bg-gray-100 rounded-xl'>
               <Button
-                type="button"
+                type='button'
                 variant={signupMethod === 'email' ? 'default' : 'ghost'}
                 className={`flex-1 ${signupMethod === 'email' ? 'glx-button' : ''}`}
                 onClick={() => setSignupMethod('email')}
               >
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className='h-4 w-4 mr-2' />
                 Email
               </Button>
               <Button
-                type="button"
+                type='button'
                 variant={signupMethod === 'phone' ? 'default' : 'ghost'}
                 className={`flex-1 ${signupMethod === 'phone' ? 'glx-button' : ''}`}
                 onClick={() => setSignupMethod('phone')}
               >
-                <Phone className="h-4 w-4 mr-2" />
+                <Phone className='h-4 w-4 mr-2' />
                 Phone
               </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+            <form onSubmit={handleSubmit} className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='username'>Username</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="Choose a username"
+                  id='username'
+                  type='text'
+                  placeholder='Choose a username'
                   value={username}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                   onChange={(e) => setUsername(e.target.value)}
                   className="glx-input"
+=======
+                  onChange={e => setUsername(e.target.value)}
+                  className='galax-input'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="identifier">
+              <div className='space-y-2'>
+                <Label htmlFor='identifier'>
                   {signupMethod === 'email' ? 'Email' : 'Phone Number'}
                 </Label>
                 {signupMethod === 'phone' ? (
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <CountryCodeSelector
                       value={countryCode}
                       onChange={(dialCode: string, country: Country) => setCountryCode(dialCode)}
-                      className="flex-shrink-0"
+                      className='flex-shrink-0'
                     />
                     <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="Enter your phone number"
+                      id='phone'
+                      type='tel'
+                      placeholder='Enter your phone number'
                       value={phone}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                       onChange={(e) => setPhone(e.target.value)}
                       className="glx-input flex-1"
+=======
+                      onChange={e => setPhone(e.target.value)}
+                      className='galax-input flex-1'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                       required
                     />
                   </div>
                 ) : (
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
+                    id='email'
+                    type='email'
+                    placeholder='Enter your email'
                     value={email}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
                     className="glx-input"
+=======
+                    onChange={e => setEmail(e.target.value)}
+                    className='galax-input'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                     required
                   />
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='password'>Password</Label>
                 <Input
-                  id="password"
-                  type="password"
-                  placeholder="Create a password"
+                  id='password'
+                  type='password'
+                  placeholder='Create a password'
                   value={password}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                   onChange={(e) => setPassword(e.target.value)}
                   className="glx-input"
+=======
+                  onChange={e => setPassword(e.target.value)}
+                  className='galax-input'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
                   required
                 />
               </div>
@@ -269,21 +326,29 @@ export function RegisterPage() {
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-2 text-red-500 text-sm bg-red-50 p-3 rounded-xl"
+                  className='flex items-center gap-2 text-red-500 text-sm bg-red-50 p-3 rounded-xl'
                 >
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle className='h-4 w-4' />
                   {error}
                 </motion.div>
               )}
 
               <Button
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                 type="submit"
                 className="w-full glx-button"
                 disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
+=======
+                type='submit'
+                className='w-full galax-button'
+                disabled={
+                  isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)
+                }
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               >
                 {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
                     Creating account...
                   </div>
                 ) : (
@@ -292,51 +357,67 @@ export function RegisterPage() {
               </Button>
             </form>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
+            <div className='relative'>
+              <div className='absolute inset-0 flex items-center'>
+                <span className='w-full border-t border-gray-300' />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">Or</span>
+              <div className='relative flex justify-center text-xs uppercase'>
+                <span className='bg-white px-2 text-gray-500'>Or</span>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="wallet-username">Username for Wallet</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='wallet-username'>Username for Wallet</Label>
               <Input
-                id="wallet-username"
-                type="text"
-                placeholder="Choose a username"
+                id='wallet-username'
+                type='text'
+                placeholder='Choose a username'
                 value={username}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                 onChange={(e) => setUsername(e.target.value)}
                 className="glx-input"
+=======
+                onChange={e => setUsername(e.target.value)}
+                className='galax-input'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               />
             </div>
 
             <Button
+<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
               variant="outline"
               className="w-full glx-button-accent"
+=======
+              variant='outline'
+              className='w-full galax-button-accent'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/pages/RegisterPage.tsx
               onClick={handleWalletRegister}
               disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >
-              <Wallet className="h-4 w-4 mr-2" />
+              <Wallet className='h-4 w-4 mr-2' />
               Register with MetaMask
             </Button>
 
-            <div className="text-center text-sm">
-              <span className="text-gray-600">Already have an account? </span>
-              <Link to="/login" className="text-purple-600 hover:text-purple-700 font-medium hover:underline">
+            <div className='text-center text-sm'>
+              <span className='text-gray-600'>Already have an account? </span>
+              <Link
+                to='/login'
+                className='text-purple-600 hover:text-purple-700 font-medium hover:underline'
+              >
                 Sign in
               </Link>
             </div>
 
             {/* Verification Notice */}
-            <div className="text-center text-xs text-gray-500 bg-blue-50 p-3 rounded-xl">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <User className="h-4 w-4" />
-                <span className="font-medium">Verification Required</span>
+            <div className='text-center text-xs text-gray-500 bg-blue-50 p-3 rounded-xl'>
+              <div className='flex items-center justify-center gap-2 mb-1'>
+                <User className='h-4 w-4' />
+                <span className='font-medium'>Verification Required</span>
               </div>
-              <p>Email/phone verification is required before you can use the app. KYC verification needed for token mining.</p>
+              <p>
+                Email/phone verification is required before you can use the app. KYC verification
+                needed for token mining.
+              </p>
             </div>
           </CardContent>
         </Card>

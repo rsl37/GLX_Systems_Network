@@ -143,9 +143,13 @@ class BranchCommitAnalyzer {
 
     try {
       // Get all branches including remotes with detailed info
-      const branchOutput = await this.executeGit('branch -av --format="%(refname:short)|%(objectname)|%(objectname:short)|%(committerdate:iso8601)|%(authorname)|%(subject)|%(upstream)"');
+      const branchOutput = await this.executeGit(
+        'branch -av --format="%(refname:short)|%(objectname)|%(objectname:short)|%(committerdate:iso8601)|%(authorname)|%(subject)|%(upstream)"'
+      );
 
-      const branchLines = branchOutput.split('\n').filter(line => line.trim() && !line.includes('HEAD'));
+      const branchLines = branchOutput
+        .split('\n')
+        .filter(line => line.trim() && !line.includes('HEAD'));
 
       for (const line of branchLines) {
         const [name, fullHash, shortHash, date, author, message, upstream] = line.split('|');
@@ -163,14 +167,23 @@ class BranchCommitAnalyzer {
         }
 
         // Check merge status
-        const mergedOutput = await this.executeGit(`branch --merged | grep -F "${cleanName}" || echo ""`);
+        const mergedOutput = await this.executeGit(
+          `branch --merged | grep -F "${cleanName}" || echo ""`
+        );
         const isMerged = mergedOutput.trim() !== '';
 
         // Get detailed merge information
-        let mergeInfo = { isMerged, mergedInto: undefined, mergeDate: undefined, mergeCommit: undefined };
+        let mergeInfo = {
+          isMerged,
+          mergedInto: undefined,
+          mergeDate: undefined,
+          mergeCommit: undefined,
+        };
         if (isMerged) {
           try {
-            const mergeCommitOutput = await this.executeGit(`log --oneline --merges --grep="${cleanName}" --format="%H|%ai" | head -1`);
+            const mergeCommitOutput = await this.executeGit(
+              `log --oneline --merges --grep="${cleanName}" --format="%H|%ai" | head -1`
+            );
             if (mergeCommitOutput) {
               const [mergeCommit, mergeDate] = mergeCommitOutput.split('|');
               mergeInfo = { ...mergeInfo, mergeCommit, mergeDate, mergedInto: 'main' };
@@ -201,7 +214,9 @@ class BranchCommitAnalyzer {
         }
 
         // Get tracking information
-        const trackingInfo = await this.executeGit(`rev-list --left-right --count ${cleanName}...origin/${cleanName} 2>/dev/null || echo "0	0"`);
+        const trackingInfo = await this.executeGit(
+          `rev-list --left-right --count ${cleanName}...origin/${cleanName} 2>/dev/null || echo "0	0"`
+        );
         const [ahead, behind] = trackingInfo.split('\t').map(n => parseInt(n) || 0);
 
         // Get commits for this branch
@@ -216,7 +231,7 @@ class BranchCommitAnalyzer {
             shortHash: shortHash || '',
             date,
             author: author || '',
-            message: message || ''
+            message: message || '',
           },
           commits: branchCommits,
           mergeStatus: mergeInfo,
@@ -224,21 +239,20 @@ class BranchCommitAnalyzer {
             hasErrors: false,
             hasConflicts,
             isBuilding: false,
-            lastBuildStatus: 'unknown'
+            lastBuildStatus: 'unknown',
           },
           location: {
             remote: type === 'remote' ? name : undefined,
             tracking: upstream || undefined,
             ahead,
-            behind
-          }
+            behind,
+          },
         };
 
         branches.push(branchAnalysis);
 
         console.log(`  ✓ ${cleanName} (${status}) - ${branchCommits.length} commits`);
       }
-
     } catch (error) {
       console.error('Error analyzing branches:', error);
     }
@@ -254,7 +268,9 @@ class BranchCommitAnalyzer {
 
     try {
       // Get commits for this branch
-      const commitOutput = await this.executeGit(`log ${branchName} --format="%H|%h|%an|%ae|%ai|%at|%s" --numstat`);
+      const commitOutput = await this.executeGit(
+        `log ${branchName} --format="%H|%h|%an|%ae|%ai|%at|%s" --numstat`
+      );
 
       let currentCommit: any = null;
       const lines = commitOutput.split('\n');
@@ -282,19 +298,19 @@ class BranchCommitAnalyzer {
             mergeStatus: {
               isMerged: false,
               mergedInto: [],
-              isUnmerged: false
+              isUnmerged: false,
             },
             healthIndicators: {
               affectsAuth: false,
               affectsDatabase: false,
               affectsTests: false,
               affectsConfig: false,
-              affectsCI: false
+              affectsCI: false,
             },
             location: {
               branch: branchName,
-              remoteRefs: []
-            }
+              remoteRefs: [],
+            },
           };
         } else if (line.trim() && currentCommit && line.includes('\t')) {
           // This is a file change line
@@ -305,19 +321,39 @@ class BranchCommitAnalyzer {
             currentCommit.deletions += parseInt(deletions) || 0;
 
             // Check health indicators
-            if (filename.includes('auth') || filename.includes('login') || filename.includes('session')) {
+            if (
+              filename.includes('auth') ||
+              filename.includes('login') ||
+              filename.includes('session')
+            ) {
               currentCommit.healthIndicators.affectsAuth = true;
             }
-            if (filename.includes('database') || filename.includes('.db') || filename.includes('migration')) {
+            if (
+              filename.includes('database') ||
+              filename.includes('.db') ||
+              filename.includes('migration')
+            ) {
               currentCommit.healthIndicators.affectsDatabase = true;
             }
-            if (filename.includes('test') || filename.includes('.test.') || filename.includes('.spec.')) {
+            if (
+              filename.includes('test') ||
+              filename.includes('.test.') ||
+              filename.includes('.spec.')
+            ) {
               currentCommit.healthIndicators.affectsTests = true;
             }
-            if (filename.includes('config') || filename.includes('.env') || filename.includes('package.json')) {
+            if (
+              filename.includes('config') ||
+              filename.includes('.env') ||
+              filename.includes('package.json')
+            ) {
               currentCommit.healthIndicators.affectsConfig = true;
             }
-            if (filename.includes('.github') || filename.includes('workflow') || filename.includes('ci.yml')) {
+            if (
+              filename.includes('.github') ||
+              filename.includes('workflow') ||
+              filename.includes('ci.yml')
+            ) {
               currentCommit.healthIndicators.affectsCI = true;
             }
           }
@@ -332,8 +368,13 @@ class BranchCommitAnalyzer {
       // Check merge status for each commit
       for (const commit of commits) {
         try {
-          const mergeCheck = await this.executeGit(`branch --contains ${commit.hash} | grep -v "^\\*" | head -5`);
-          const mergedBranches = mergeCheck.split('\n').map(b => b.trim()).filter(b => b);
+          const mergeCheck = await this.executeGit(
+            `branch --contains ${commit.hash} | grep -v "^\\*" | head -5`
+          );
+          const mergedBranches = mergeCheck
+            .split('\n')
+            .map(b => b.trim())
+            .filter(b => b);
 
           commit.mergeStatus.isMerged = mergedBranches.length > 0;
           commit.mergeStatus.mergedInto = mergedBranches;
@@ -342,7 +383,6 @@ class BranchCommitAnalyzer {
           // Continue processing if merge check fails
         }
       }
-
     } catch (error) {
       console.error(`Error getting commits for branch ${branchName}:`, error);
     }
@@ -356,12 +396,13 @@ class BranchCommitAnalyzer {
   async analyzeSessionErrors(commits: CommitAnalysis[]): Promise<any> {
     console.log('🔍 Analyzing session and authentication patterns...');
 
-    const authRelatedCommits = commits.filter(commit =>
-      commit.healthIndicators.affectsAuth ||
-      commit.message.toLowerCase().includes('auth') ||
-      commit.message.toLowerCase().includes('session') ||
-      commit.message.toLowerCase().includes('login') ||
-      commit.message.toLowerCase().includes('401')
+    const authRelatedCommits = commits.filter(
+      commit =>
+        commit.healthIndicators.affectsAuth ||
+        commit.message.toLowerCase().includes('auth') ||
+        commit.message.toLowerCase().includes('session') ||
+        commit.message.toLowerCase().includes('login') ||
+        commit.message.toLowerCase().includes('401')
     );
 
     const configurationIssues: string[] = [];
@@ -375,7 +416,10 @@ class BranchCommitAnalyzer {
       if (commit.filesChanged.some(file => file.includes('auth'))) {
         potentialCauses.push(`Commit ${commit.shortHash}: Authentication system changes`);
       }
-      if (commit.message.toLowerCase().includes('fix') && commit.message.toLowerCase().includes('401')) {
+      if (
+        commit.message.toLowerCase().includes('fix') &&
+        commit.message.toLowerCase().includes('401')
+      ) {
         potentialCauses.push(`Commit ${commit.shortHash}: Direct 401 error fix attempt`);
       }
     }
@@ -408,8 +452,8 @@ class BranchCommitAnalyzer {
         hash: c.shortHash,
         message: c.message,
         date: c.date,
-        filesChanged: c.filesChanged.length
-      }))
+        filesChanged: c.filesChanged.length,
+      })),
     };
   }
 
@@ -423,8 +467,8 @@ class BranchCommitAnalyzer {
     const allCommits = branches.flatMap(branch => branch.commits);
 
     // Remove duplicate commits (same hash)
-    const uniqueCommits = allCommits.filter((commit, index, array) =>
-      array.findIndex(c => c.hash === commit.hash) === index
+    const uniqueCommits = allCommits.filter(
+      (commit, index, array) => array.findIndex(c => c.hash === commit.hash) === index
     );
 
     const sessionErrorAnalysis = await this.analyzeSessionErrors(uniqueCommits);
@@ -438,15 +482,21 @@ class BranchCommitAnalyzer {
     const mergedCommits = uniqueCommits.filter(c => c.mergeStatus.isMerged).length;
     const unmergedCommits = uniqueCommits.filter(c => c.mergeStatus.isUnmerged).length;
 
-    const healthIssues = branches.filter(b => b.healthStatus.hasConflicts || b.healthStatus.hasErrors).length;
+    const healthIssues = branches.filter(
+      b => b.healthStatus.hasConflicts || b.healthStatus.hasErrors
+    ).length;
     const criticalIssues: string[] = [];
 
     // Identify critical issues
     if (sessionErrorAnalysis.authRelatedCommits > 0) {
-      criticalIssues.push(`${sessionErrorAnalysis.authRelatedCommits} authentication-related commits found`);
+      criticalIssues.push(
+        `${sessionErrorAnalysis.authRelatedCommits} authentication-related commits found`
+      );
     }
     if (sessionErrorAnalysis.configurationIssues.length > 0) {
-      criticalIssues.push(`Configuration issues detected: ${sessionErrorAnalysis.configurationIssues.join(', ')}`);
+      criticalIssues.push(
+        `Configuration issues detected: ${sessionErrorAnalysis.configurationIssues.join(', ')}`
+      );
     }
     if (healthIssues > 0) {
       criticalIssues.push(`${healthIssues} branches have health issues`);
@@ -458,7 +508,7 @@ class BranchCommitAnalyzer {
         url: remoteUrl,
         currentBranch: currentBranch,
         totalCommits: uniqueCommits.length,
-        totalBranches: branches.length
+        totalBranches: branches.length,
       },
       branches,
       commits: uniqueCommits,
@@ -468,9 +518,9 @@ class BranchCommitAnalyzer {
         mergedCommits,
         unmergedCommits,
         healthIssues,
-        criticalIssues
+        criticalIssues,
       },
-      sessionErrorAnalysis
+      sessionErrorAnalysis,
     };
 
     return report;
@@ -549,26 +599,40 @@ ${report.summary.criticalIssues.map(issue => `⚠️ ${issue}`).join('\n')}
 ## Branch Status Details
 
 ### Merged Branches
-${report.branches.filter(b => b.status === 'merged').map(branch =>
-`- **${branch.name}** (${branch.type}) - Last commit: ${branch.lastCommit.shortHash} by ${branch.lastCommit.author}`
-).join('\n')}
+${report.branches
+  .filter(b => b.status === 'merged')
+  .map(
+    branch =>
+      `- **${branch.name}** (${branch.type}) - Last commit: ${branch.lastCommit.shortHash} by ${branch.lastCommit.author}`
+  )
+  .join('\n')}
 
 ### Unmerged Branches
-${report.branches.filter(b => b.status !== 'merged').map(branch =>
-`- **${branch.name}** (${branch.status}) - ${branch.commits.length} commits, ahead: ${branch.location.ahead}, behind: ${branch.location.behind}`
-).join('\n')}
+${report.branches
+  .filter(b => b.status !== 'merged')
+  .map(
+    branch =>
+      `- **${branch.name}** (${branch.status}) - ${branch.commits.length} commits, ahead: ${branch.location.ahead}, behind: ${branch.location.behind}`
+  )
+  .join('\n')}
 
 ## Health and Location Status
 
 ### Branches with Issues
-${report.branches.filter(b => b.healthStatus.hasConflicts || b.healthStatus.hasErrors).map(branch =>
-`- **${branch.name}**: ${branch.healthStatus.hasConflicts ? 'Has Conflicts' : ''} ${branch.healthStatus.hasErrors ? 'Has Errors' : ''}`
-).join('\n')}
+${report.branches
+  .filter(b => b.healthStatus.hasConflicts || b.healthStatus.hasErrors)
+  .map(
+    branch =>
+      `- **${branch.name}**: ${branch.healthStatus.hasConflicts ? 'Has Conflicts' : ''} ${branch.healthStatus.hasErrors ? 'Has Errors' : ''}`
+  )
+  .join('\n')}
 
 ### Recent Authentication Changes
-${report.sessionErrorAnalysis.authRelatedCommits > 0 ?
-  `Found ${report.sessionErrorAnalysis.authRelatedCommits} authentication-related commits` :
-  'No recent authentication changes found'}
+${
+  report.sessionErrorAnalysis.authRelatedCommits > 0
+    ? `Found ${report.sessionErrorAnalysis.authRelatedCommits} authentication-related commits`
+    : 'No recent authentication changes found'
+}
 
 ## Recommendations
 
@@ -603,14 +667,15 @@ Based on this analysis for Issue #93:
       await this.saveReport(report);
 
       console.log('\n✅ Analysis Complete!');
-      console.log(`📊 Analyzed ${report.repository.totalBranches} branches and ${report.repository.totalCommits} commits`);
+      console.log(
+        `📊 Analyzed ${report.repository.totalBranches} branches and ${report.repository.totalCommits} commits`
+      );
       console.log(`🔍 Found ${report.summary.criticalIssues.length} critical issues`);
 
       if (report.summary.criticalIssues.length > 0) {
         console.log('\n⚠️  Critical Issues:');
         report.summary.criticalIssues.forEach(issue => console.log(`   - ${issue}`));
       }
-
     } catch (error) {
       console.error('\n❌ Analysis failed:', error);
       process.exit(1);

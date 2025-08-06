@@ -34,9 +34,15 @@ class RealtimeManager {
     protocol: 'wss://',
     secure: true,
     upgradeHeaders: {
+<<<<<<< HEAD:GLX_App_files/server/realtimeManager.ts
       'Sec-WebSocket-Protocol': 'glx-secure',
       'Sec-WebSocket-Extensions': 'permessage-deflate'
     }
+=======
+      'Sec-WebSocket-Protocol': 'galax-secure',
+      'Sec-WebSocket-Extensions': 'permessage-deflate',
+    },
+>>>>>>> origin/all-merged:GALAX_App_files/server/realtimeManager.ts
   };
 
   constructor() {
@@ -61,15 +67,15 @@ class RealtimeManager {
     response.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control'
+      'Access-Control-Allow-Headers': 'Cache-Control',
     });
 
     // Send initial connection event
     this.sendSSEMessage(response, {
       type: 'connected',
-      data: { connectionId, userId, timestamp: Date.now() }
+      data: { connectionId, userId, timestamp: Date.now() },
     });
 
     // Store connection
@@ -79,7 +85,7 @@ class RealtimeManager {
       response,
       rooms: new Set([`user_${userId}`]), // Join user's personal room
       connectedAt: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
 
     this.connections.set(connectionId, connection);
@@ -94,7 +100,7 @@ class RealtimeManager {
       if (!response.destroyed) {
         this.sendSSEMessage(response, {
           type: 'heartbeat',
-          data: { timestamp: Date.now() }
+          data: { timestamp: Date.now() },
         });
       } else {
         clearInterval(heartbeat);
@@ -126,7 +132,7 @@ class RealtimeManager {
 
     this.sendSSEMessage(connection.response, {
       type: 'room_joined',
-      data: { roomId, timestamp: Date.now() }
+      data: { roomId, timestamp: Date.now() },
     });
 
     console.log(`🏠 User ${connection.userId} joined room ${roomId}`);
@@ -143,7 +149,7 @@ class RealtimeManager {
 
     this.sendSSEMessage(connection.response, {
       type: 'room_left',
-      data: { roomId, timestamp: Date.now() }
+      data: { roomId, timestamp: Date.now() },
     });
 
     console.log(`🚪 User ${connection.userId} left room ${roomId}`);
@@ -195,7 +201,11 @@ class RealtimeManager {
   }
 
   // Handle message sending from API
-  public async handleMessageSend(userId: number, helpRequestId: number, message: string): Promise<{ success: boolean; messageId?: number; error?: string }> {
+  public async handleMessageSend(
+    userId: number,
+    helpRequestId: number,
+    message: string
+  ): Promise<{ success: boolean; messageId?: number; error?: string }> {
     try {
       // Validate input
       if (!message || message.trim().length === 0) {
@@ -212,7 +222,7 @@ class RealtimeManager {
         .values({
           help_request_id: helpRequestId,
           sender_id: userId,
-          message: message.trim()
+          message: message.trim(),
         })
         .returning(['id', 'created_at'])
         .executeTakeFirst();
@@ -234,17 +244,16 @@ class RealtimeManager {
         message: message.trim(),
         sender: sender?.username || 'Unknown',
         avatar: sender?.avatar_url,
-        timestamp: savedMessage.created_at
+        timestamp: savedMessage.created_at,
       };
 
       this.broadcastToRoom(`help_request_${helpRequestId}`, {
         type: 'new_message',
-        data: messageData
+        data: messageData,
       });
 
       console.log(`✅ Message ${savedMessage.id} sent successfully`);
       return { success: true, messageId: savedMessage.id };
-
     } catch (error) {
       console.error(`❌ Message send error:`, error);
       return { success: false, error: 'Failed to send message' };
@@ -261,9 +270,12 @@ class RealtimeManager {
 
   private startCleanupProcess() {
     // Cleanup every 15 minutes
-    this.cleanupInterval = setInterval(() => {
-      this.performCleanup();
-    }, 15 * 60 * 1000);
+    this.cleanupInterval = setInterval(
+      () => {
+        this.performCleanup();
+      },
+      15 * 60 * 1000
+    );
 
     console.log('🧹 SSE cleanup process started');
   }
@@ -285,7 +297,9 @@ class RealtimeManager {
       }
     }
 
-    console.log(`🧹 SSE cleanup complete. Active connections: ${this.connections.size}, cleaned: ${cleanedCount}`);
+    console.log(
+      `🧹 SSE cleanup complete. Active connections: ${this.connections.size}, cleaned: ${cleanedCount}`
+    );
   }
 
   // Public methods for monitoring
@@ -298,7 +312,7 @@ class RealtimeManager {
       activeConnections: this.connections.size,
       timestamp: new Date().toISOString(),
       secureProtocol: this.wssConfig.protocol,
-      securityEnabled: this.wssConfig.secure
+      securityEnabled: this.wssConfig.secure,
     };
   }
 
@@ -308,7 +322,7 @@ class RealtimeManager {
       protocol: this.wssConfig.protocol,
       secure: this.wssConfig.secure,
       supportedExtensions: this.wssConfig.upgradeHeaders['Sec-WebSocket-Extensions'],
-      securityProtocol: this.wssConfig.upgradeHeaders['Sec-WebSocket-Protocol']
+      securityProtocol: this.wssConfig.upgradeHeaders['Sec-WebSocket-Protocol'],
     };
   }
 
@@ -324,7 +338,7 @@ class RealtimeManager {
       write: () => {},
       on: () => {},
       end: () => {},
-      destroyed: false
+      destroyed: false,
     } as any;
 
     const connection: SSEConnection = {
@@ -333,7 +347,7 @@ class RealtimeManager {
       response: mockResponse,
       rooms: new Set([`user_${userId}`]),
       connectedAt: new Date(),
-      lastActivity: new Date()
+      lastActivity: new Date(),
     };
 
     this.connections.set(connectionId, connection);

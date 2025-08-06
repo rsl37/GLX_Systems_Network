@@ -90,7 +90,7 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Password',
         'Connect MetaMask',
         'Forgot your password',
-        'Sign up'
+        'Sign up',
       ];
 
       loginElements.forEach(text => {
@@ -105,8 +105,13 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Email',
         'Phone',
         'Password',
+<<<<<<< HEAD:GLX_App_files/client/src/hooks/usePageVerification.ts
         'Join GLX',
         'Create your civic network account'
+=======
+        'Join GALAX',
+        'Create your civic network account',
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/hooks/usePageVerification.ts
       ];
 
       registerElements.forEach(text => {

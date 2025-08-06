@@ -32,7 +32,7 @@ class ErrorBoundary extends Component<Props, State> {
       hasError: false,
       error: null,
       errorInfo: null,
-      errorId: this.generateErrorId()
+      errorId: this.generateErrorId(),
     };
   }
 
@@ -40,14 +40,14 @@ class ErrorBoundary extends Component<Props, State> {
     return {
       hasError: true,
       error,
-      errorId: ErrorBoundary.prototype.generateErrorId()
+      errorId: ErrorBoundary.prototype.generateErrorId(),
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Log error to console in development
@@ -65,7 +65,9 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   private generateErrorId(): string {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return (
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    );
   }
 
   private reportError = async (error: Error, errorInfo: ErrorInfo): Promise<void> => {
@@ -78,7 +80,7 @@ class ErrorBoundary extends Component<Props, State> {
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
         url: window.location.href,
-        userId: localStorage.getItem('userId') || 'anonymous'
+        userId: localStorage.getItem('userId') || 'anonymous',
       };
 
       // Send to error reporting endpoint
@@ -86,9 +88,9 @@ class ErrorBoundary extends Component<Props, State> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         },
-        body: JSON.stringify(errorReport)
+        body: JSON.stringify(errorReport),
       });
     } catch (reportingError) {
       console.error('Failed to report error:', reportingError);
@@ -102,7 +104,7 @@ class ErrorBoundary extends Component<Props, State> {
         hasError: false,
         error: null,
         errorInfo: null,
-        errorId: this.generateErrorId()
+        errorId: this.generateErrorId(),
       });
     }
   };
@@ -120,10 +122,11 @@ class ErrorBoundary extends Component<Props, State> {
       errorId: this.state.errorId,
       message: this.state.error?.message,
       stack: this.state.error?.stack,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
-    navigator.clipboard.writeText(JSON.stringify(errorDetails, null, 2))
+    navigator.clipboard
+      .writeText(JSON.stringify(errorDetails, null, 2))
       .then(() => {
         alert('Error details copied to clipboard');
       })
@@ -141,97 +144,100 @@ class ErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
+        <div className='min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center p-4'>
+          <div className='max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center'>
+            <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6'>
+              <AlertTriangle className='w-8 h-8 text-red-600' />
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              An unexpected error occurred
-            </h1>
+            <h1 className='text-2xl font-bold text-gray-900 mb-4'>An unexpected error occurred</h1>
 
-            <p className="text-gray-600 mb-6">
-              The application encountered a technical issue and couldn't complete your request. Our team has been automatically notified and is working on a fix.
+            <p className='text-gray-600 mb-6'>
+              The application encountered a technical issue and couldn't complete your request. Our
+              team has been automatically notified and is working on a fix.
             </p>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-              <p className="text-sm text-gray-500 mb-2">Error ID for support:</p>
-              <code className="text-xs font-mono text-gray-800 bg-white px-2 py-1 rounded border">
+            <div className='bg-gray-50 rounded-lg p-4 mb-6 text-left'>
+              <p className='text-sm text-gray-500 mb-2'>Error ID for support:</p>
+              <code className='text-xs font-mono text-gray-800 bg-white px-2 py-1 rounded border'>
                 {this.state.errorId}
               </code>
             </div>
 
-            <div className="space-y-3">
+            <div className='space-y-3'>
               {this.retryCount < this.maxRetries && (
                 <button
                   onClick={this.handleRetry}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                  aria-label="Try again"
+                  className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
+                  aria-label='Try again'
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <RefreshCw className='w-4 h-4' />
                   Try Again ({this.maxRetries - this.retryCount} attempts left)
                 </button>
               )}
 
               <button
                 onClick={this.handleHome}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                aria-label="Go to home page"
+                className='w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
+                aria-label='Go to home page'
               >
-                <Home className="w-4 h-4" />
+                <Home className='w-4 h-4' />
                 Go Home
               </button>
 
               <button
                 onClick={this.handleReload}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                aria-label="Reload page"
+                className='w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2'
+                aria-label='Reload page'
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className='w-4 h-4' />
                 Reload Page
               </button>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-500 mb-3">
-                Need help? Contact our support team:
-              </p>
-              <div className="flex justify-center space-x-4">
+            <div className='mt-6 pt-6 border-t border-gray-200'>
+              <p className='text-sm text-gray-500 mb-3'>Need help? Contact our support team:</p>
+              <div className='flex justify-center space-x-4'>
                 <button
                   onClick={this.copyErrorDetails}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
-                  aria-label="Copy error details"
+                  className='text-sm text-blue-600 hover:text-blue-800 underline'
+                  aria-label='Copy error details'
                 >
                   Copy Error Details
                 </button>
                 <a
+<<<<<<< HEAD:GLX_App_files/client/src/components/ErrorBoundary.tsx
                   href={`mailto:support@glxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
                   className="text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
                   aria-label="Email support"
+=======
+                  href={`mailto:support@galaxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
+                  className='text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1'
+                  aria-label='Email support'
+>>>>>>> origin/all-merged:GALAX_App_files/client/src/components/ErrorBoundary.tsx
                 >
-                  <Mail className="w-3 h-3" />
+                  <Mail className='w-3 h-3' />
                   Email Support
                 </a>
               </div>
             </div>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
+              <details className='mt-6 text-left'>
+                <summary className='cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900'>
                   Developer Details
                 </summary>
-                <div className="mt-2 p-4 bg-red-50 rounded-lg text-xs">
-                  <div className="font-medium text-red-800 mb-2">Error:</div>
-                  <div className="text-red-700 mb-4">{this.state.error.message}</div>
-                  <div className="font-medium text-red-800 mb-2">Stack Trace:</div>
-                  <pre className="text-red-700 whitespace-pre-wrap break-all">
+                <div className='mt-2 p-4 bg-red-50 rounded-lg text-xs'>
+                  <div className='font-medium text-red-800 mb-2'>Error:</div>
+                  <div className='text-red-700 mb-4'>{this.state.error.message}</div>
+                  <div className='font-medium text-red-800 mb-2'>Stack Trace:</div>
+                  <pre className='text-red-700 whitespace-pre-wrap break-all'>
                     {this.state.error.stack}
                   </pre>
                   {this.state.errorInfo && (
                     <>
-                      <div className="font-medium text-red-800 mb-2 mt-4">Component Stack:</div>
-                      <pre className="text-red-700 whitespace-pre-wrap break-all">
+                      <div className='font-medium text-red-800 mb-2 mt-4'>Component Stack:</div>
+                      <pre className='text-red-700 whitespace-pre-wrap break-all'>
                         {this.state.errorInfo.componentStack}
                       </pre>
                     </>
@@ -280,10 +286,7 @@ export const withErrorBoundary = <P extends object>(
   }
 ) => {
   const WrappedComponent = (props: P) => (
-    <ErrorBoundary
-      fallback={errorBoundaryConfig?.fallback}
-      onError={errorBoundaryConfig?.onError}
-    >
+    <ErrorBoundary fallback={errorBoundaryConfig?.fallback} onError={errorBoundaryConfig?.onError}>
       <Component {...props} />
     </ErrorBoundary>
   );

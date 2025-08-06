@@ -8,7 +8,13 @@
 
 import { Router } from 'express';
 import { AuthRequest, authenticateToken, hashPassword, comparePassword } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
+import {
+  sendSuccess,
+  sendError,
+  validateAuthUser,
+  StatusCodes,
+  ErrorMessages,
+} from '../utils/responseHelpers.js';
 import { profileUpdateLimiter } from '../middleware/rateLimiter.js';
 import { validateProfileUpdate } from '../middleware/validation.js';
 import { db } from '../database.js';
@@ -20,6 +26,7 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
 
+<<<<<<< HEAD
     console.log('👤 Profile request for user:', userId);
 
     const user = await db
@@ -383,6 +390,8 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
 
+=======
+>>>>>>> origin/copilot/fix-470
     console.log('👤 Profile request for user:', userId);
 
     const user = await db
@@ -426,68 +435,74 @@ router.get('/profile', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Update user profile
-router.put('/profile', profileUpdateLimiter, authenticateToken, validateProfileUpdate, async (req: AuthRequest, res) => {
-  try {
-    const userId = validateAuthUser(req.userId);
-    const { username, email, phone, skills, bio, wallet_address } = req.body;
+router.put(
+  '/profile',
+  profileUpdateLimiter,
+  authenticateToken,
+  validateProfileUpdate,
+  async (req: AuthRequest, res) => {
+    try {
+      const userId = validateAuthUser(req.userId);
+      const { username, email, phone, skills, bio, wallet_address } = req.body;
 
-    console.log('📝 Profile update for user:', userId);
+      console.log('📝 Profile update for user:', userId);
 
-    // Check if username is already taken by another user
-    if (username) {
-      const existingUser = await db
-        .selectFrom('users')
-        .select('id')
-        .where('username', '=', username)
-        .where('id', '!=', userId)
-        .executeTakeFirst();
+      // Check if username is already taken by another user
+      if (username) {
+        const existingUser = await db
+          .selectFrom('users')
+          .select('id')
+          .where('username', '=', username)
+          .where('id', '!=', userId)
+          .executeTakeFirst();
 
-      if (existingUser) {
-        return sendError(res, 'Username is already taken', StatusCodes.BAD_REQUEST);
+        if (existingUser) {
+          return sendError(res, 'Username is already taken', StatusCodes.BAD_REQUEST);
+        }
       }
-    }
 
-    // Check if wallet address is already taken by another user
-    if (wallet_address) {
-      const existingWallet = await db
-        .selectFrom('users')
-        .select('id')
-        .where('wallet_address', '=', wallet_address)
-        .where('id', '!=', userId)
-        .executeTakeFirst();
+      // Check if wallet address is already taken by another user
+      if (wallet_address) {
+        const existingWallet = await db
+          .selectFrom('users')
+          .select('id')
+          .where('wallet_address', '=', wallet_address)
+          .where('id', '!=', userId)
+          .executeTakeFirst();
 
-      if (existingWallet) {
-        return sendError(res, 'Wallet address is already associated with another account', StatusCodes.BAD_REQUEST);
+        if (existingWallet) {
+          return sendError(
+            res,
+            'Wallet address is already associated with another account',
+            StatusCodes.BAD_REQUEST
+          );
+        }
       }
+
+      // Update user profile
+      const updateData: any = {
+        updated_at: new Date().toISOString(),
+      };
+
+      if (username) updateData.username = username;
+      if (email !== undefined) updateData.email = email || null;
+      if (phone !== undefined) updateData.phone = phone || null;
+      if (skills !== undefined) updateData.skills = skills || '[]';
+      if (wallet_address !== undefined) updateData.wallet_address = wallet_address || null;
+
+      await db.updateTable('users').set(updateData).where('id', '=', userId).execute();
+
+      console.log('✅ Profile updated successfully for user:', userId);
+      sendSuccess(res, { message: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('❌ Profile update error:', error);
+      if (error.message === ErrorMessages.INVALID_TOKEN) {
+        return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      }
+      throw error;
     }
-
-    // Update user profile
-    const updateData: any = {
-      updated_at: new Date().toISOString(),
-    };
-
-    if (username) updateData.username = username;
-    if (email !== undefined) updateData.email = email || null;
-    if (phone !== undefined) updateData.phone = phone || null;
-    if (skills !== undefined) updateData.skills = skills || '[]';
-    if (wallet_address !== undefined) updateData.wallet_address = wallet_address || null;
-
-    await db
-      .updateTable('users')
-      .set(updateData)
-      .where('id', '=', userId)
-      .execute();
-
-    console.log('✅ Profile updated successfully for user:', userId);
-    sendSuccess(res, { message: 'Profile updated successfully' });
-  } catch (error) {
-    console.error('❌ Profile update error:', error);
-    if (error.message === ErrorMessages.INVALID_TOKEN) {
-      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
-    }
-    throw error;
   }
-});
+);
 
 // Change password
 router.post('/change-password', authenticateToken, async (req: AuthRequest, res) => {
@@ -496,11 +511,19 @@ router.post('/change-password', authenticateToken, async (req: AuthRequest, res)
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
-      return sendError(res, 'Current password and new password are required', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'Current password and new password are required',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     if (newPassword.length < 8) {
-      return sendError(res, 'New password must be at least 8 characters long', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'New password must be at least 8 characters long',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     // Get current user
@@ -511,7 +534,11 @@ router.post('/change-password', authenticateToken, async (req: AuthRequest, res)
       .executeTakeFirst();
 
     if (!user || !user.password_hash) {
-      return sendError(res, 'Cannot change password for this account type', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'Cannot change password for this account type',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     // Verify current password

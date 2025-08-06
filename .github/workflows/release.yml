@@ -161,8 +161,13 @@ jobs:
         cache: 'npm'
         cache-dependency-path: './package-lock.json'
 
+<<<<<<< HEAD
     - name: Ensure cache directories exist
       run: mkdir -p ./GLX_App_files/node_modules
+=======
+      - name: Ensure cache directories exist
+        run: mkdir -p ./GALAX_App_files/node_modules
+>>>>>>> origin/all-merged
 
     - name: Install dependencies
       working-directory: ./GLX_App_files
