@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -31,13 +31,12 @@ const toggleVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 );
 
 const Toggle = React.forwardRef<
   React.ElementRef<typeof TogglePrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> &
-    VariantProps<typeof toggleVariants>
+  React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>
 >(({ className, variant, size, ...props }, ref) => (
   <TogglePrimitive.Root
     ref={ref}

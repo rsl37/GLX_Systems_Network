@@ -19,16 +19,16 @@ class SmartDocumentationUpdater {
       // API/Backend changes
       api: {
         patterns: [
-          'GALAX_App_files/server/**/*.js',
-          'GALAX_App_files/server/**/*.ts',
-          'GALAX_App_files/api/**/*.js',
-          'GALAX_App_files/api/**/*.ts',
-          'GALAX_App_files/routes/**/*.js',
-          'GALAX_App_files/routes/**/*.ts'
+          'GLX_App_files/server/**/*.js',
+          'GLX_App_files/server/**/*.ts',
+          'GLX_App_files/api/**/*.js',
+          'GLX_App_files/api/**/*.ts',
+          'GLX_App_files/routes/**/*.js',
+          'GLX_App_files/routes/**/*.ts'
         ],
         affectedDocs: [
-          'GALAX_App_files/docs/API_REFERENCE.md',
-          'GALAX_App_files/docs/INTEGRATION_GUIDE.md',
+          'GLX_App_files/docs/API_REFERENCE.md',
+          'GLX_App_files/docs/INTEGRATION_GUIDE.md',
           'README.md'
         ],
         updateReason: 'API or backend functionality changes detected'
@@ -37,18 +37,18 @@ class SmartDocumentationUpdater {
       // Security changes
       security: {
         patterns: [
-          'GALAX_App_files/server/middleware/auth*.js',
-          'GALAX_App_files/server/middleware/security*.js',
-          'GALAX_App_files/server/utils/encryption*.js',
-          'GALAX_App_files/server/utils/validation*.js',
-          'GALAX_App_files/src/lib/auth*.js',
-          'GALAX_App_files/src/lib/security*.js'
+          'GLX_App_files/server/middleware/auth*.js',
+          'GLX_App_files/server/middleware/security*.js',
+          'GLX_App_files/server/utils/encryption*.js',
+          'GLX_App_files/server/utils/validation*.js',
+          'GLX_App_files/src/lib/auth*.js',
+          'GLX_App_files/src/lib/security*.js'
         ],
         affectedDocs: [
           'SECURITY.md',
-          'GALAX_App_files/docs/COMPREHENSIVE_SECURITY_PROTECTION.md',
+          'GLX_App_files/docs/COMPREHENSIVE_SECURITY_PROTECTION.md',
           'POST_QUANTUM_SECURITY_SUMMARY.md',
-          'GALAX_App_files/SECURITY_IMPLEMENTATION.md'
+          'GLX_App_files/SECURITY_IMPLEMENTATION.md'
         ],
         updateReason: 'Security implementation changes require documentation review'
       },
@@ -56,16 +56,16 @@ class SmartDocumentationUpdater {
       // UI/Frontend changes
       ui: {
         patterns: [
-          'GALAX_App_files/src/components/**/*.jsx',
-          'GALAX_App_files/src/components/**/*.tsx',
-          'GALAX_App_files/src/pages/**/*.jsx',
-          'GALAX_App_files/src/pages/**/*.tsx',
-          'GALAX_App_files/client/**/*.jsx',
-          'GALAX_App_files/client/**/*.tsx'
+          'GLX_App_files/src/components/**/*.jsx',
+          'GLX_App_files/src/components/**/*.tsx',
+          'GLX_App_files/src/pages/**/*.jsx',
+          'GLX_App_files/src/pages/**/*.tsx',
+          'GLX_App_files/client/**/*.jsx',
+          'GLX_App_files/client/**/*.tsx'
         ],
         affectedDocs: [
-          'GALAX_App_files/docs/USER_INTERFACE_GUIDE.md',
-          'GALAX_App_files/docs/COMPONENT_DOCUMENTATION.md',
+          'GLX_App_files/docs/USER_INTERFACE_GUIDE.md',
+          'GLX_App_files/docs/COMPONENT_DOCUMENTATION.md',
           'screenshots/README.md'
         ],
         updateReason: 'UI components or user interface changes detected'
@@ -75,19 +75,19 @@ class SmartDocumentationUpdater {
       config: {
         patterns: [
           'package.json',
-          'GALAX_App_files/package.json',
+          'GLX_App_files/package.json',
           'vercel.json',
-          'GALAX_App_files/vite.config.js',
-          'GALAX_App_files/tailwind.config.js',
-          'GALAX_App_files/tsconfig.json',
+          'GLX_App_files/vite.config.js',
+          'GLX_App_files/tailwind.config.js',
+          'GLX_App_files/tsconfig.json',
           '.env.example',
-          'GALAX_App_files/.env.example'
+          'GLX_App_files/.env.example'
         ],
         affectedDocs: [
           'README.md',
           'DEPLOYMENT.md',
-          'GALAX_App_files/SETUP_GUIDE.md',
-          'GALAX_App_files/ENV_SETUP.md'
+          'GLX_App_files/SETUP_GUIDE.md',
+          'GLX_App_files/ENV_SETUP.md'
         ],
         updateReason: 'Configuration or setup requirements changed'
       },
@@ -95,14 +95,14 @@ class SmartDocumentationUpdater {
       // Database/Schema changes
       database: {
         patterns: [
-          'GALAX_App_files/server/models/**/*.js',
-          'GALAX_App_files/server/schemas/**/*.js',
-          'GALAX_App_files/server/database/**/*.js',
-          'GALAX_App_files/database/**/*.sql'
+          'GLX_App_files/server/models/**/*.js',
+          'GLX_App_files/server/schemas/**/*.js',
+          'GLX_App_files/server/database/**/*.js',
+          'GLX_App_files/database/**/*.sql'
         ],
         affectedDocs: [
-          'GALAX_App_files/docs/DATABASE_SCHEMA.md',
-          'GALAX_App_files/docs/DATA_MODEL.md',
+          'GLX_App_files/docs/DATABASE_SCHEMA.md',
+          'GLX_App_files/docs/DATA_MODEL.md',
           'DEVELOPMENT_ACTIVITY_HISTORY.md'
         ],
         updateReason: 'Database schema or data model changes detected'
@@ -111,15 +111,15 @@ class SmartDocumentationUpdater {
       // Testing changes
       testing: {
         patterns: [
-          'GALAX_App_files/tests/**/*.js',
-          'GALAX_App_files/tests/**/*.ts',
-          'GALAX_App_files/e2e/**/*.js',
-          'GALAX_App_files/e2e/**/*.ts',
-          'GALAX_App_files/vitest.config.js',
-          'GALAX_App_files/playwright.config.ts'
+          'GLX_App_files/tests/**/*.js',
+          'GLX_App_files/tests/**/*.ts',
+          'GLX_App_files/e2e/**/*.js',
+          'GLX_App_files/e2e/**/*.ts',
+          'GLX_App_files/vitest.config.js',
+          'GLX_App_files/playwright.config.ts'
         ],
         affectedDocs: [
-          'GALAX_App_files/docs/TESTING_GUIDE.md',
+          'GLX_App_files/docs/TESTING_GUIDE.md',
           'README.md'
         ],
         updateReason: 'Testing configuration or test suites updated'
@@ -130,13 +130,13 @@ class SmartDocumentationUpdater {
         patterns: [
           '.github/workflows/**/*.yml',
           'scripts/**/*.sh',
-          'GALAX_App_files/scripts/**/*.sh',
+          'GLX_App_files/scripts/**/*.sh',
           'Dockerfile',
           'docker-compose.yml'
         ],
         affectedDocs: [
           'DEPLOYMENT.md',
-          'GALAX_App_files/PRODUCTION_MODE_GUIDE.md',
+          'GLX_App_files/PRODUCTION_MODE_GUIDE.md',
           '.github/workflows/README.md',
           'GITHUB_ACTIONS_STATUS_FIX.md'
         ],
@@ -345,7 +345,7 @@ class SmartDocumentationUpdater {
     }
     
     report += `\n---\n\n`;
-    report += `*This analysis was automatically generated by the GALAX smart documentation system.*\n`;
+    report += `*This analysis was automatically generated by the GLX smart documentation system.*\n`;
     
     return report;
   }

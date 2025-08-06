@@ -18,7 +18,7 @@ permissions:
 
 env:
   NODE_VERSION: '20'
-  WORKING_DIRECTORY: './GALAX_App_files'
+  WORKING_DIRECTORY: './GLX_App_files'
 
 jobs:
   service-connectivity-tests:

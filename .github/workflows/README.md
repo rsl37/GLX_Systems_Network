@@ -24,6 +24,9 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 ### 2. **Security Analysis** - `security-streamlined.yml` 
 **Purpose**: Comprehensive security vulnerability detection  
 **Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
+### 2. **Security Analysis** - `security-streamlined.yml` 
+**Purpose**: Comprehensive security vulnerability detection  
+**Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
 **Optimizations**:
 - ✅ Consolidated multiple security tools into unified workflow
 - ✅ Added job-level timeouts (10-20 minutes)
@@ -47,6 +50,17 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 **Purpose**: Container image building and publishing  
 **Jobs**: 1 (Build and publish Docker images)  
 **Optimizations**:
+- ✅ Consolidated performance and quality checks
+- ✅ Added application startup timeouts (30 seconds)
+- ✅ Enhanced memory usage monitoring and coverage reporting
+
+**Triggers**: Push to main/develop, Pull Requests  
+**Status Check**: ✅ Code Coverage, ✅ Performance Check, ✅ E2E Tests
+
+### 4. **Docker Deployment** - `docker-publish.yml`
+**Purpose**: Container image building and publishing  
+**Jobs**: 1 (Build and publish Docker images)  
+**Optimizations**:
 - ✅ Streamlined container deployment process
 - ✅ Proper caching and multi-stage builds
 
@@ -57,7 +71,7 @@ This repository implements **4 core CI workflows** instead of the previous 23+ r
 
 ### Health Monitoring - `health-location-status.yml`
 **Purpose**: System health and status monitoring  
-**Triggers**: Push to main, Pull Requests, Daily schedule  
+**Triggers**: Push to main/develop, Pull Requests, Daily schedule  
 
 ### Repository Maintenance
 - **`label.yml`** - Automated issue labeling
@@ -222,7 +236,7 @@ Set these repository secrets for full functionality:
 
 ```bash
 # Required for deployment testing
-STAGING_URL=https://staging.galax.app
+STAGING_URL=https://staging.glx.app
 
 # Optional for enhanced reporting
 CODECOV_TOKEN=your_codecov_token
@@ -286,7 +300,7 @@ When adding new workflows:
 Add these badges to your README.md:
 
 ```markdown
-![CI](https://github.com/rsl37/GALAX_App/workflows/Continuous%20Integration/badge.svg)
-![Security](https://github.com/rsl37/GALAX_App/workflows/Security%20Checks/badge.svg)
-![Tests](https://github.com/rsl37/GALAX_App/workflows/Testing/badge.svg)
+![CI](https://github.com/rsl37/GLX_App/workflows/Continuous%20Integration/badge.svg)
+![Security](https://github.com/rsl37/GLX_App/workflows/Security%20Checks/badge.svg)
+![Tests](https://github.com/rsl37/GLX_App/workflows/Testing/badge.svg)
 ```

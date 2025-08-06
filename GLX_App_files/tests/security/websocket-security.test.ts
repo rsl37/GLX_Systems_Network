@@ -1,19 +1,21 @@
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * Security Tests for WebSocket Security Middleware
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { WebSocketSecurityMiddleware, defaultSecurityConfig } from '../../server/middleware/websocket-security.js';
+import {
+  WebSocketSecurityMiddleware,
+  defaultSecurityConfig,
+} from '../../server/middleware/websocket-security.js';
 
 describe('WebSocket Security Middleware', () => {
   let securityMiddleware: WebSocketSecurityMiddleware;
@@ -24,7 +26,7 @@ describe('WebSocket Security Middleware', () => {
 
   describe('Origin Validation', () => {
     it('should accept allowed origins', () => {
-      const result = securityMiddleware.validateOrigin('https://galax-civic-platform.vercel.app');
+      const result = securityMiddleware.validateOrigin('https://glx-civic-platform.vercel.app');
       expect(result).toBe(true);
     });
 
@@ -141,7 +143,8 @@ describe('WebSocket Security Middleware', () => {
 
   describe('JWT Token Validation', () => {
     it('should validate proper JWT format', () => {
-      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywiZXhwIjoxNjQwOTk1MjAwfQ.signature';
+      const validToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywiZXhwIjoxNjQwOTk1MjAwfQ.signature';
       const result = securityMiddleware.validateTokenFormat(validToken);
       expect(result).toBe(true);
     });
@@ -153,7 +156,7 @@ describe('WebSocket Security Middleware', () => {
         '',
         null,
         undefined,
-        'notbase64!@#$.invalid$.chars'
+        'notbase64!@#$.invalid$.chars',
       ];
 
       invalidTokens.forEach(token => {
@@ -180,7 +183,7 @@ describe('WebSocket Security Middleware', () => {
     it('should detect suspicious user agents', () => {
       const headers = {
         host: 'localhost:3000',
-        'user-agent': 'curl/7.68.0'
+        'user-agent': 'curl/7.68.0',
       };
       const origin = 'https://localhost:3000';
       const result = securityMiddleware.detectCSWH(headers, origin);
@@ -190,7 +193,7 @@ describe('WebSocket Security Middleware', () => {
     it('should allow legitimate browser requests', () => {
       const headers = {
         host: 'localhost:3000',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       };
       const origin = 'https://localhost:3000';
       const result = securityMiddleware.detectCSWH(headers, origin);
@@ -204,15 +207,13 @@ describe('WebSocket Security Middleware', () => {
 
       securityMiddleware.logSecurityEvent('test_event', { test: 'data' }, 'high');
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Security Event [HIGH]')
-      );
+      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Security Event [HIGH]'));
 
       consoleSpy.mockRestore();
     });
 
     it('should include all required fields in security events', () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation((message) => {
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(message => {
         const eventData = JSON.parse(message.split('Security Event [HIGH]: ')[1]);
 
         expect(eventData).toHaveProperty('timestamp');

@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "archive"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -14,7 +14,7 @@ relatedDocs: []
 
 ## Overview
 
-This document provides comprehensive details for configuring firewalls to support GitHub services used by the GALAX application. It covers all GitHub-specific endpoints and services required for development, CI/CD, security scanning, and collaboration features.
+This document provides comprehensive details for configuring firewalls to support GitHub services used by the GLX application. It covers all GitHub-specific endpoints and services required for development, CI/CD, security scanning, and collaboration features.
 
 ## Core GitHub Domains
 

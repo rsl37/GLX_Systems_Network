@@ -62,11 +62,7 @@
       "type": "local",
       "command": "node",
       "args": ["./mcp-servers/realtime-server.js"],
-      "tools": [
-        "send_realtime_message",
-        "get_active_users",
-        "broadcast_message"
-      ],
+      "tools": ["send_realtime_message", "get_active_users", "broadcast_message"],
       "env": {
         "MCP_REALTIME_PORT": "3003",
         "JWT_SECRET": "COPILOT_MCP_JWT_SECRET"

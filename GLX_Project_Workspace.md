@@ -1,61 +1,61 @@
 ---
-title: "GALAX: Web-3 Civic Networking Platform - Full Project Workspace"
+title: "GLX: Web-3 Civic Networking Platform - Full Project Workspace"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX: Web-3 Civic Networking Platform - Full Project Workspace
+# GLX: Web-3 Civic Networking Platform - Full Project Workspace
 
 ## Overview
 
-**GALAX** is a next-generation civic engagement platform leveraging Web3 technologies, real-time mapping, anime-inspired UI, and token-based incentives. This project workspace tracks all phases, completed milestones, and upcoming deliverables.
+**GLX** is a next-generation civic engagement platform leveraging Web3 technologies, real-time mapping, anime-inspired UI, and token-based incentives. This project workspace tracks all phases, completed milestones, and upcoming deliverables.
 
 ---
 
 ## 📅 Project Phases & Milestones
 
-### **Phase 1: GALAX_alpha1_demo** ✅ (COMPLETED)
+### **Phase 1: GLX_alpha1_demo** ✅ (COMPLETED)
 - Anime-inspired UI with vibrant colors, gradients, Framer Motion animations
 - Enhanced auth (email/phone + password)
 - Google Maps with custom markers
 - Basic user profiles & help requests
 - Mobile-first PWA design
 
-### **Phase 2: GALAX_alpha2_demo** (CURRENT)
+### **Phase 2: GLX_alpha2_demo** (CURRENT)
 - Real-time help with Socket.IO
 - Basic chat between helpers/requesters
 - Offline request creation with sync
 - Media uploads (images, video, audio)
 - Advanced map features (clustering)
 
-### **Phase 3: GALAX_final_alpha_demo**
+### **Phase 3: GLX_final_alpha_demo**
 - Crisis response (verified users)
 - Token system (AP, CROWDS, GOV)
 - KYC verification workflow
 - Token burning for false alerts
 - Enhanced roles & permissions
 
-### **Phase 4: GALAX_first_beta_demo**
+### **Phase 4: GLX_first_beta_demo**
 - Liquid democracy (delegation)
 - Proposal creation & voting
 - Push notifications
 - Advanced reputation system
 - Community leaderboards
 
-### **Phase 5: GALAX_final_beta_demo**
+### **Phase 5: GLX_final_beta_demo**
 - Seasonal challenges, badges
 - Analytics, metrics
 - 3D avatar system
 - Community forums
 - Performance optimizations
 
-### **Phase 6: GALAX_1.0**
+### **Phase 6: GLX_1.0**
 - Full blockchain integration
 - Advanced AI matching algorithms
 - Full PWA capabilities
@@ -190,4 +190,4 @@ Deliver an anime-inspired, blockchain-enabled, AI-powered civic networking platf
 
 ---
 
-**Let’s make GALAX the future of civic engagement!**
+**Let’s make GLX the future of civic engagement!**

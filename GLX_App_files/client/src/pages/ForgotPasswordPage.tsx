@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -51,50 +51,51 @@ export function ForgotPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className='w-full max-w-md'
         >
-          <Card className="galax-card">
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
+          <Card className="glx-card">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4">
                 <CheckCircle className="h-16 w-16 text-green-500" />
+          <Card className='galax-card'>
+            <CardHeader className='text-center'>
+              <div className='mx-auto mb-4'>
+                <CheckCircle className='h-16 w-16 text-green-500' />
               </div>
-              <CardTitle className="text-2xl font-bold text-green-600">
-                Check Your Email
-              </CardTitle>
+              <CardTitle className='text-2xl font-bold text-green-600'>Check Your Email</CardTitle>
               <CardDescription>
                 We've sent a password reset link to your email address
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center space-y-2">
-                <p className="text-sm text-gray-600">
+            <CardContent className='space-y-4'>
+              <div className='text-center space-y-2'>
+                <p className='text-sm text-gray-600'>
                   If you don't see the email in your inbox, check your spam folder.
                 </p>
-                <p className="text-sm text-gray-600">
-                  The reset link will expire in 24 hours.
-                </p>
+                <p className='text-sm text-gray-600'>The reset link will expire in 24 hours.</p>
               </div>
 
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 <Button
                   onClick={() => {
                     setIsSuccess(false);
                     setEmail('');
                   }}
-                  variant="outline"
-                  className="w-full"
+                  variant='outline'
+                  className='w-full'
                 >
                   Send Another Email
                 </Button>
 
-                <Link to="/login">
-                  <Button variant="ghost" className="w-full">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
+                <Link to='/login'>
+                  <Button variant='ghost' className='w-full'>
+                    <ArrowLeft className='h-4 w-4 mr-2' />
                     Back to Login
                   </Button>
                 </Link>
@@ -107,16 +108,20 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className='w-full max-w-md'
       >
-        <Card className="galax-card">
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
+        <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <Card className='galax-card'>
+          <CardHeader className='text-center'>
+            <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               Forgot Password
             </CardTitle>
             <CardDescription>
@@ -124,44 +129,45 @@ export function ForgotPasswordPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <form onSubmit={handleSubmit} className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='email'>Email Address</Label>
+                <div className='relative'>
+                  <Mail className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
+                    id='email'
+                    type='email'
+                    placeholder='Enter your email'
                     value={email}
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
-                    className="galax-input pl-10"
+                    className="glx-input pl-10"
+                    onChange={e => setEmail(e.target.value)}
+                    className='galax-input pl-10'
                     required
                   />
                 </div>
               </div>
 
-              {error && (
-                <div className="text-red-500 text-sm text-center">
-                  {error}
-                </div>
-              )}
+              {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
 
+<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="galax-button w-full"
+                className="glx-button w-full"
               >
+              <Button type='submit' disabled={isLoading} className='galax-button w-full'>
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className='mt-6 text-center'>
               <Link
-                to="/login"
-                className="text-sm text-purple-600 hover:text-purple-700 flex items-center justify-center gap-2"
+                to='/login'
+                className='text-sm text-purple-600 hover:text-purple-700 flex items-center justify-center gap-2'
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className='h-4 w-4' />
                 Back to Login
               </Link>
             </div>

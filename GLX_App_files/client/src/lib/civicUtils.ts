@@ -1,5 +1,13 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+<<<<<<< HEAD:GLX_App_files/client/src/lib/civicUtils.ts
+ * Copyright (c) 2025 GLX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
+ *
+ * This software is licensed under the PolyForm Shield License 1.0.0.
+ * For the full license text, see LICENSE file in the root directory
+ * 
+ * This software is licensed under the PolyForm Shield License 1.0.0.
+ * For the full license text, see LICENSE file in the root directory 
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -9,6 +17,10 @@
 import { useMemo } from 'react';
 
 // Lean civic action types for efficient reputation calculation
+export type CivicActionType =
+  | 'help_provided'
+  | 'help_requested'
+  | 'community_organized'
 export type CivicActionType =
   | 'help_provided'
   | 'help_requested'
@@ -42,7 +54,7 @@ const ACTION_WEIGHTS: Record<CivicActionType, number> = {
   community_organized: 15,
   governance_participated: 8,
   crisis_response: 20,
-  verification_completed: 5
+  verification_completed: 5,
 };
 
 const IMPACT_THRESHOLD = 5;
@@ -59,7 +71,9 @@ export const useCivicReputation = () => {
         const verificationMultiplier = action.verified ? 1 : 0.5;
         const impactBonus = action.impact_score > IMPACT_THRESHOLD ? 1.2 : 1;
 
+
         return score + (weight * verificationMultiplier * impactBonus);
+        return score + weight * verificationMultiplier * impactBonus;
       }, 0);
     };
   }, []);
@@ -73,6 +87,11 @@ export const useCivicReputation = () => {
           // Simple distance-based sorting (in real app would use proper geolocation)
           const aDistance = Math.abs(a.location.localeCompare(userLocation));
           const bDistance = Math.abs(b.location.localeCompare(userLocation));
+
+          if (aDistance !== bDistance) {
+            return aDistance - bDistance;
+          }
+
 
           if (aDistance !== bDistance) {
             return aDistance - bDistance;
@@ -94,8 +113,13 @@ export const useCivicReputation = () => {
 
       // Check if already has this type of achievement recently
       const recentAchievement = existingAchievements.find(achievement =>
+      const recentAchievement = existingAchievements.find(achievement =>
         achievement.type === action.type &&
         Date.now() - achievement.earned_at.getTime() < 24 * 60 * 60 * 1000 // 24 hours
+      const recentAchievement = existingAchievements.find(
+        achievement =>
+          achievement.type === action.type &&
+          Date.now() - achievement.earned_at.getTime() < 24 * 60 * 60 * 1000 // 24 hours
       );
 
       if (recentAchievement) {
@@ -108,7 +132,7 @@ export const useCivicReputation = () => {
         type: action.type,
         impact_score: action.impact_score,
         verified: true,
-        earned_at: new Date()
+        earned_at: new Date(),
       };
 
       return [...existingAchievements, newAchievement];
@@ -120,7 +144,7 @@ export const useCivicReputation = () => {
     calculateCivicMatches,
     updateUserAchievements,
     ACTION_WEIGHTS,
-    IMPACT_THRESHOLD
+    IMPACT_THRESHOLD,
   };
 };
 
@@ -134,7 +158,13 @@ export const civicDataUtils = {
   filterActiveHelpRequests: (requests: any[]) => {
     return requests.filter(request =>
       request.status === 'active' &&
+    return requests.filter(request =>
+      request.status === 'active' &&
       new Date(request.created_at).getTime() > Date.now() - (7 * 24 * 60 * 60 * 1000) // Last 7 days
+    return requests.filter(
+      request =>
+        request.status === 'active' &&
+        new Date(request.created_at).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000 // Last 7 days
     );
   },
 
@@ -156,12 +186,14 @@ export const civicDataUtils = {
    */
   compressCivicData: (data: any) => {
     // Remove undefined values and compress for lean storage
-    return JSON.parse(JSON.stringify(data, (key, value) => {
-      if (value === undefined || value === null) {
-        return undefined;
-      }
-      return value;
-    }));
+    return JSON.parse(
+      JSON.stringify(data, (key, value) => {
+        if (value === undefined || value === null) {
+          return undefined;
+        }
+        return value;
+      })
+    );
   },
 
   /**
@@ -173,10 +205,10 @@ export const civicDataUtils = {
       batches.push(actions.slice(i, i + batchSize));
     }
     return batches;
-  }
+  },
 };
 
 export default {
   useCivicReputation,
-  civicDataUtils
+  civicDataUtils,
 };

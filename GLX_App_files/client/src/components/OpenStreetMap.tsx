@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -37,12 +37,12 @@ interface OpenStreetMapProps {
 
 export function OpenStreetMap({
   latitude = 40.7128,
-  longitude = -74.0060,
+  longitude = -74.006,
   zoom = 13,
   markers = [],
   onMapClick,
   height = '400px',
-  className = ''
+  className = '',
 }: OpenStreetMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -56,7 +56,7 @@ export function OpenStreetMap({
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+      attribution: '© OpenStreetMap contributors',
     }).addTo(mapInstanceRef.current);
 
     // Add click event listener
@@ -110,11 +110,7 @@ export function OpenStreetMap({
   }, [markers]);
 
   return (
-    <div
-      ref={mapRef}
-      style={{ height }}
-      className={`w-full rounded-lg border ${className}`}
-    />
+    <div ref={mapRef} style={{ height }} className={`w-full rounded-lg border ${className}`} />
   );
 }
 

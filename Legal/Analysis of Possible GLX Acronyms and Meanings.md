@@ -1,10 +1,10 @@
 ---
-title: "Of these naming choices, how would each name and each letter of the GALAX acronym reflect my vision?:"
+title: "Of these naming choices, how would each name and each letter of the GLX acronym reflect my vision?:"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -12,7 +12,7 @@ relatedDocs: []
 
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
-# Of these naming choices, how would each name and each letter of the GALAX acronym reflect my vision?:
+# Of these naming choices, how would each name and each letter of the GLX acronym reflect my vision?:
 
 -Global Active Liaison And Xchange
 -Group Action Link Assist X
@@ -49,7 +49,7 @@ I already have 4.
 
 Do the rest. Then give me 3 more titles and acronyms explanations for the 3.
 
-Based on the research and information gathered, I can now provide a comprehensive analysis of how each letter of the GALAX acronym options would reflect your vision for a gamified liquid democracy Web3 app. Let me complete the analysis of the remaining three acronyms and then provide three additional options.
+Based on the research and information gathered, I can now provide a comprehensive analysis of how each letter of the GLX acronym options would reflect your vision for a gamified liquid democracy Web3 app. Let me complete the analysis of the remaining three acronyms and then provide three additional options.
 
 ## Analysis of Remaining Three Acronyms
 
@@ -80,7 +80,7 @@ Based on the research and information gathered, I can now provide a comprehensiv
 - **X** (Network): Advanced/next-generation connected platform that leverages blockchain technology for transparent governance[^12][^13]
 
 
-## Three Additional GALAX Acronym Options
+## Three Additional GLX Acronym Options
 
 ### 1. Gamified Autonomous Liquid Assembly eXperience
 
@@ -111,7 +111,7 @@ Based on the research and information gathered, I can now provide a comprehensiv
 
 ## Key Insights from Research
 
-The research reveals several important trends that support your GALAX vision:
+The research reveals several important trends that support your GLX vision:
 
 **Gamification in Governance**: Studies show that gamified systems can increase civic engagement by 22-75% in various contexts, from traffic compliance to tax reporting[^3][^4][^14]. This validates your approach to making governance participation more engaging and rewarding.
 

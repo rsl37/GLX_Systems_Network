@@ -24,19 +24,43 @@
     --input: 240 5.9% 90%;
     --ring: 263 70% 50%;
     --radius: 0.5rem;
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
     
-    /* GALAX Anime Theme Colors */
+    /* GLX Anime Theme Colors */
+    --glx-purple: 263 70% 73%;
+    --glx-blue: 210 40% 70%;
+    --glx-coral: 15 86% 61%;
+    --glx-green: 88 45% 60%;
+    --glx-pink: 330 81% 60%;
+    --glx-yellow: 48 100% 67%;
+    --glx-gradient-primary: linear-gradient(135deg, hsl(var(--glx-purple)), hsl(var(--glx-blue)));
+    --glx-gradient-accent: linear-gradient(135deg, hsl(var(--glx-coral)), hsl(var(--glx-pink)));
+    --glx-gradient-success: linear-gradient(135deg, hsl(var(--glx-green)), hsl(var(--glx-yellow)));
+
+    /* GLX Anime Theme Colors */
     --galax-purple: 263 70% 73%;
     --galax-blue: 210 40% 70%;
     --galax-coral: 15 86% 61%;
     --galax-green: 88 45% 60%;
     --galax-pink: 330 81% 60%;
     --galax-yellow: 48 100% 67%;
-    --galax-gradient-primary: linear-gradient(135deg, hsl(var(--galax-purple)), hsl(var(--galax-blue)));
-    --galax-gradient-accent: linear-gradient(135deg, hsl(var(--galax-coral)), hsl(var(--galax-pink)));
-    --galax-gradient-success: linear-gradient(135deg, hsl(var(--galax-green)), hsl(var(--galax-yellow)));
+    --galax-gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--galax-purple)),
+      hsl(var(--galax-blue))
+    );
+    --galax-gradient-accent: linear-gradient(
+      135deg,
+      hsl(var(--galax-coral)),
+      hsl(var(--galax-pink))
+    );
+    --galax-gradient-success: linear-gradient(
+      135deg,
+      hsl(var(--galax-green)),
+      hsl(var(--galax-yellow))
+    );
   }
-  
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -66,94 +90,152 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family:
+      'Inter',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
   }
 }
 
 @layer components {
-  /* GALAX Anime Styles */
-  .galax-gradient-primary {
-    background: var(--galax-gradient-primary);
+  /* GLX Anime Styles */
+  .glx-gradient-primary {
+    background: var(--glx-gradient-primary);
+  }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
+  
+  .glx-gradient-accent {
+    background: var(--glx-gradient-accent);
   }
   
-  .galax-gradient-accent {
-    background: var(--galax-gradient-accent);
+  .glx-gradient-success {
+    background: var(--glx-gradient-success);
   }
   
-  .galax-gradient-success {
-    background: var(--galax-gradient-success);
-  }
-  
-  .galax-glow {
+  .glx-glow {
     box-shadow: 0 0 20px rgba(181, 147, 238, 0.5);
   }
   
+  .glx-card {
+
+  .galax-gradient-accent {
+    background: var(--galax-gradient-accent);
+  }
+
+  .galax-gradient-success {
+    background: var(--galax-gradient-success);
+  }
+
+  .galax-glow {
+    box-shadow: 0 0 20px rgba(181, 147, 238, 0.5);
+  }
+
   .galax-card {
     @apply rounded-2xl border-2 border-purple-200 bg-white/80 backdrop-blur-sm;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(181, 147, 238, 0.1));
     box-shadow: 0 8px 32px rgba(181, 147, 238, 0.2);
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
-  .galax-card-dark {
+  .glx-card-dark {
     @apply bg-gray-900/80 border-purple-500/30;
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(181, 147, 238, 0.1));
   }
   
+  .glx-button {
+
+  .galax-card-dark {
+    @apply bg-gray-900/80 border-purple-500/30;
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(181, 147, 238, 0.1));
+  }
+
   .galax-button {
     @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105;
-    background: var(--galax-gradient-primary);
+    background: var(--glx-gradient-primary);
     color: white;
     box-shadow: 0 4px 15px rgba(181, 147, 238, 0.4);
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
-  .galax-button:hover {
+  .glx-button:hover {
     box-shadow: 0 6px 20px rgba(181, 147, 238, 0.6);
   }
   
+  .glx-button-accent {
+    background: var(--glx-gradient-accent);
+    box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
+  }
+  
+  .glx-button-accent:hover {
+    box-shadow: 0 6px 20px rgba(255, 111, 97, 0.6);
+  }
+  
+  .glx-input {
+    @apply rounded-xl border-2 border-purple-200 bg-white/80 backdrop-blur-sm px-4 py-3 transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20;
+  }
+  
+  .glx-badge {
+
+  .galax-button:hover {
+    box-shadow: 0 6px 20px rgba(181, 147, 238, 0.6);
+  }
+
   .galax-button-accent {
     background: var(--galax-gradient-accent);
     box-shadow: 0 4px 15px rgba(255, 111, 97, 0.4);
   }
-  
+
   .galax-button-accent:hover {
     box-shadow: 0 6px 20px rgba(255, 111, 97, 0.6);
   }
-  
+
   .galax-input {
     @apply rounded-xl border-2 border-purple-200 bg-white/80 backdrop-blur-sm px-4 py-3 transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20;
   }
-  
+
   .galax-badge {
     @apply px-3 py-1 rounded-full text-sm font-medium;
-    background: var(--galax-gradient-primary);
+    background: var(--glx-gradient-primary);
     color: white;
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
+  .glx-badge-urgent {
+    background: var(--glx-gradient-accent);
+  }
+  
+  .glx-badge-success {
+    background: var(--glx-gradient-success);
+
   .galax-badge-urgent {
     background: var(--galax-gradient-accent);
   }
-  
+
   .galax-badge-success {
     background: var(--galax-gradient-success);
   }
-  
+
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
   }
-  
+
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 20px rgba(181, 147, 238, 0.5);
     }
     50% {
       box-shadow: 0 0 30px rgba(181, 147, 238, 0.8);
     }
   }
-  
+
   .animate-slide-in {
     animation: slide-in 0.3s ease-out;
   }
-  
+
   @keyframes slide-in {
     from {
       transform: translateY(20px);
@@ -164,31 +246,46 @@
       opacity: 1;
     }
   }
-  
+
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
-  
+
   @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
       transform: translateY(-5px);
     }
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
-  .galax-grid {
+  .glx-grid {
     display: grid;
     gap: 8px;
   }
   
-  .galax-glass {
+  .glx-glass {
     @apply bg-white/20 backdrop-blur-md border border-white/30;
   }
   
-  .galax-holographic {
+  .glx-holographic {
     background: linear-gradient(45deg, 
+
+  .galax-grid {
+    display: grid;
+    gap: 8px;
+  }
+
+  .galax-glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/30;
+  }
+
+  .galax-holographic {
+    background: linear-gradient(
+      45deg,
       rgba(181, 147, 238, 0.1),
       rgba(146, 168, 209, 0.1),
       rgba(255, 111, 97, 0.1),
@@ -197,9 +294,10 @@
     background-size: 400% 400%;
     animation: holographic 4s ease-in-out infinite;
   }
-  
+
   @keyframes holographic {
-    0%, 100% {
+    0%,
+    100% {
       background-position: 0% 50%;
     }
     50% {
@@ -209,28 +307,41 @@
 }
 
 /* Loading animations */
-.galax-loading {
+.glx-loading {
   @apply animate-spin;
 }
 
-.galax-loading-dots::after {
+.glx-loading-dots::after {
   content: '';
   animation: dots 1.5s infinite;
 }
 
 @keyframes dots {
-  0%, 20% { content: ''; }
-  40% { content: '.'; }
-  60% { content: '..'; }
-  80%, 100% { content: '...'; }
+  0%,
+  20% {
+    content: '';
+  }
+  40% {
+    content: '.';
+  }
+  60% {
+    content: '..';
+  }
+  80%,
+  100% {
+    content: '...';
+  }
 }
 
 /* Responsive utilities */
 @media (max-width: 768px) {
-  .galax-card {
+  .glx-card {
     @apply mx-2 rounded-xl;
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
+  .glx-button {
+
   .galax-button {
     @apply px-4 py-2 text-sm;
   }
@@ -241,10 +352,13 @@
   .animate-pulse-glow,
   .animate-slide-in,
   .animate-float,
-  .galax-holographic {
+  .glx-holographic {
     animation: none;
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
+  .glx-button {
+
   .galax-button {
     @apply transform-none;
   }
@@ -252,10 +366,13 @@
 
 /* High contrast mode */
 @media (prefers-contrast: high) {
-  .galax-card {
+  .glx-card {
     @apply border-4 border-purple-600;
   }
+<<<<<<< HEAD:GLX_App_files/client/src/index.css
   
+  .glx-button {
+
   .galax-button {
     @apply border-2 border-white;
   }

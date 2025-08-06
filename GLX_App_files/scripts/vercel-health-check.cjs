@@ -13,7 +13,7 @@ const url = require('url');
 
 class VercelHealthChecker {
   constructor(deploymentUrl) {
-    this.baseUrl = deploymentUrl || process.env.VERCEL_URL || 'https://galax-civic-networking.vercel.app';
+    this.baseUrl = deploymentUrl || process.env.VERCEL_URL || 'https://glx-civic-networking.vercel.app';
     this.results = {
       passed: 0,
       failed: 0,

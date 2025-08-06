@@ -1,5 +1,5 @@
 ---
-title: "About GLX: Connect the World"
+title: "About GLX Civic Network: Connect the World"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
@@ -10,22 +10,29 @@ tags: []
 relatedDocs: []
 ---
 
-# About GLX: Connect the World
+# About GLX Civic Network: Connect the World
 
-**GLX: Connect the World - Web3 Civic Networking Platform** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
+**GLX Civic Network: Connect the World** is an innovative civic engagement project created and led by [@rsl37](https://github.com/rsl37), designed to strengthen communities through technology and democratic participation.
 
-> **GLX** stands for **G**overnance **L**ink e**X**change - connecting communities through technology-enabled democracy.
+## 🌍 GLX Brand Hierarchy
 
-*Inspired by democratic ideals in Gatchaman Crowds (© Tatsunoko Production) while establishing GLX as an independent, legally protected civic technology platform. No official association, endorsement, or licensing relationship exists or is implied.*
+**GLX** stands for both **Global Liquid eXchange** and **Global Link eXchange**, representing our mission to facilitate both resource sharing and connection building worldwide.
+
+### Brand Names by Priority:
+1. **Primary**: GLX Civic Network: Connect the World
+2. **Secondary**: GLX: Connect the World  
+3. **Tertiary**: GLX Civic Network
+4. **Quaternary**: GLX Connect
 
 ## 🎯 Mission
 
 To build a next-generation civic networking platform that empowers communities to:
+- **Connect the World** through meaningful civic engagement
 - Connect and collaborate for social good
 - Organize emergency response and crisis management
 - Participate in democratic governance processes
-- Share skills and resources effectively
-- Build stronger, more resilient communities
+- Share skills and resources effectively through Global Liquid eXchange
+- Build stronger, more resilient communities through Global Link eXchange
 
 ## 🛠️ Technology Stack
 
@@ -63,7 +70,8 @@ GLX implements enterprise-grade security measures:
 
 Build a feature-rich, technologically advanced platform for civic engagement that can serve 
 as a model for democratic participation in the digital age, combining cutting-edge security 
-with user-friendly interfaces for maximum community impact.
+with user-friendly interfaces for maximum community impact. **Connect the World** through 
+Global Liquid eXchange and Global Link eXchange capabilities.
 
 ## 📈 Recent Achievements
 
@@ -75,4 +83,4 @@ with user-friendly interfaces for maximum community impact.
 
 ---
 
-*Building stronger communities through innovative technology and secure civic engagement* 🌟
+*Building stronger communities through innovative technology and secure civic engagement. Connect the World.* 🌟

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd GALAX_App_files && npm install && npm run build",
-  "outputDirectory": "GALAX_App_files/dist/public",
-  "installCommand": "cd GALAX_App_files && npm install",
+  "buildCommand": "cd GLX_App_files && npm install && npm run build",
+  "outputDirectory": "GLX_App_files/dist/public",
+  "installCommand": "cd GLX_App_files && npm install",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -13,9 +13,6 @@
       "destination": "/index.html"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "headers": [
     {
       "source": "/(.*)",
@@ -47,10 +44,6 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://cdnjs.cloudflare.com https://vitals.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https: wss: ws: https://vitals.vercel-insights.com https://vercel.live; media-src 'self' blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
         },
         {
           "key": "X-DNS-Prefetch-Control",
@@ -93,7 +86,7 @@
     }
   },
   "functions": {
-    "GALAX_App_files/api/**/*": {
+    "GLX_App_files/api/**/*": {
       "runtime": "@vercel/node",
       "maxDuration": 10
     }

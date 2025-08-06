@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "guide"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -14,7 +14,7 @@ relatedDocs: []
 
 ## Quick Start Guide
 
-This guide provides step-by-step instructions for implementing the CROWDS (Community Resilient Oversight Under Decentralized Systems) stablecoin framework within the GALAX platform, featuring the revolutionary **Holistically Fungible Token (HFT)** / **Holistically Oriented Fungible Token (HOFT)** architecture as the world's first ERC-2048 compliant stablecoin implementation.
+This guide provides step-by-step instructions for implementing the CROWDS (Community Resilient Oversight Under Decentralized Systems) stablecoin framework within the GLX platform, featuring the revolutionary **Holistically Fungible Token (HFT)** / **Holistically Oriented Fungible Token (HOFT)** architecture as the world's first ERC-2048 compliant stablecoin implementation.
 
 ## Prerequisites
 
@@ -32,11 +32,11 @@ This guide provides step-by-step instructions for implementing the CROWDS (Commu
 ### Development Environment Setup
 
 ```bash
-# Clone and setup the GALAX platform
+# Clone and setup the GLX platform
 npm run setup
 
 # Install additional dependencies for CROWDS HFT/HOFT framework
-cd GALAX_App_files
+cd GLX_App_files
 npm install @tensorflow/tfjs-node @ml-matrix/ml-matrix
 npm install axios ws socket.io-client
 npm install bcrypt jsonwebtoken helmet cors
@@ -675,7 +675,7 @@ export class SystemLearningManager {
 }
 ```
 
-### Step 5: Integration with GALAX Platform
+### Step 5: Integration with GLX Platform
 
 #### Service Integration
 
@@ -744,7 +744,7 @@ export class CrowdsStablecoinService {
     });
   }
 
-  // Public API methods for GALAX integration
+  // Public API methods for GLX integration
   async getUserStablecoinBalance(userId: string): Promise<StablecoinBalance> {
     const user = await this.userService.findById(userId);
     const balance = await this.calculateUserBalance(user);
@@ -831,7 +831,7 @@ describe('CrisisDetectionSystem', () => {
 
 ```typescript
 // tests/crowds/integration/CrowdsIntegration.test.ts
-describe('CROWDS Integration with GALAX', () => {
+describe('CROWDS Integration with GLX', () => {
   let app: Application;
   let crowdsService: CrowdsStablecoinService;
 
@@ -902,7 +902,7 @@ const monitoring = new CrowdsMonitoringService({
     detectionAccuracy: 0.90
   },
   notifications: {
-    email: ['admin@galax.com'],
+    email: ['admin@glx.com'],
     slack: '#crowds-alerts',
     dashboard: true
   }

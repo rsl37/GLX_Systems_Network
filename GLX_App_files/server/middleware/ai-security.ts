@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -16,6 +16,7 @@ interface AISecurityConfig {
   enableAuditLogging: boolean;
   allowedModelVersions: string[];
   knownGoodHashes?: string[];
+  allowedModelHashes: string[];
   riskThreshold: number;
 }
 
@@ -120,7 +121,7 @@ export class AIMCPSecurityMiddleware {
         isValid: false,
         sanitized: '',
         riskScore: 100,
-        threats: ['Invalid prompt format']
+        threats: ['Invalid prompt format'],
       };
     }
 
@@ -195,7 +196,7 @@ export class AIMCPSecurityMiddleware {
         isValid: false,
         sanitized: '',
         riskScore: 100,
-        threats: ['Invalid response format']
+        threats: ['Invalid response format'],
       };
     }
 
@@ -226,7 +227,15 @@ export class AIMCPSecurityMiddleware {
 
     // Update audit log with response information
     if (this.config.enableAuditLogging) {
-      this.logAIInteraction(originalPrompt, response, userId, ipAddress, modelVersion, riskScore, threats);
+      this.logAIInteraction(
+        originalPrompt,
+        response,
+        userId,
+        ipAddress,
+        modelVersion,
+        riskScore,
+        threats
+      );
     }
 
     const isValid = riskScore < this.config.riskThreshold;
@@ -249,7 +258,7 @@ export class AIMCPSecurityMiddleware {
     const existing = this.modelIntegrity.get(modelVersion);
 
     // If we have a cached verification that's less than 5 minutes old, use it
-    if (existing && (Date.now() - existing.verifiedAt.getTime()) < 5 * 60 * 1000) {
+    if (existing && Date.now() - existing.verifiedAt.getTime() < 5 * 60 * 1000) {
       return existing.isValid;
     }
 
@@ -261,6 +270,8 @@ export class AIMCPSecurityMiddleware {
         const hash = crypto.createHash('sha256').update(modelData).digest('hex');
         // Compare the computed hash against known good hashes
         const knownGoodHashes = this.config.knownGoodHashes || [];
+
+        
 
         // If we have known good hashes, check against them
         if (knownGoodHashes.length > 0) {
@@ -279,7 +290,7 @@ export class AIMCPSecurityMiddleware {
           hash,
           signature: '', // Would contain cryptographic signature
           verifiedAt: new Date(),
-          isValid
+          isValid,
         });
       } else {
         // Check if model version is in allowed list
@@ -287,7 +298,6 @@ export class AIMCPSecurityMiddleware {
       }
 
       console.log(`🔍 Model integrity check for ${modelVersion}: ${isValid ? 'PASSED' : 'FAILED'}`);
-
     } catch (error) {
       console.error(`❌ Model integrity verification failed for ${modelVersion}:`, error);
       isValid = false;
@@ -303,9 +313,9 @@ export class AIMCPSecurityMiddleware {
     // Check for unusual character patterns
     const unusualPatterns = [
       /[\u200B-\u200D\uFEFF]/g, // Zero-width characters
-      /[\u0300-\u036F]/g,       // Combining diacritical marks
-      /[\u2060-\u206F]/g,       // Word joiners and invisible characters
-      /[^\x00-\x7F]{5,}/g,      // Long sequences of non-ASCII characters
+      /[\u0300-\u036F]/g, // Combining diacritical marks
+      /[\u2060-\u206F]/g, // Word joiners and invisible characters
+      /[^\x00-\x7F]{5,}/g, // Long sequences of non-ASCII characters
     ];
 
     return unusualPatterns.some(pattern => pattern.test(text));
@@ -382,7 +392,7 @@ export class AIMCPSecurityMiddleware {
       riskScore,
       threats,
       timestamp: new Date(),
-      ipAddress
+      ipAddress,
     };
 
     this.auditLogs.push(auditEntry);
@@ -399,7 +409,7 @@ export class AIMCPSecurityMiddleware {
         userId,
         riskScore,
         threats,
-        timestamp: auditEntry.timestamp
+        timestamp: auditEntry.timestamp,
       });
     }
   }
@@ -423,10 +433,13 @@ export class AIMCPSecurityMiddleware {
    */
   getSecurityMetrics() {
     const totalInteractions = this.auditLogs.length;
-    const highRiskInteractions = this.auditLogs.filter(log => log.riskScore >= this.config.riskThreshold).length;
-    const averageRiskScore = totalInteractions > 0
-      ? this.auditLogs.reduce((sum, log) => sum + log.riskScore, 0) / totalInteractions
-      : 0;
+    const highRiskInteractions = this.auditLogs.filter(
+      log => log.riskScore >= this.config.riskThreshold
+    ).length;
+    const averageRiskScore =
+      totalInteractions > 0
+        ? this.auditLogs.reduce((sum, log) => sum + log.riskScore, 0) / totalInteractions
+        : 0;
 
     return {
       totalInteractions,
@@ -434,7 +447,7 @@ export class AIMCPSecurityMiddleware {
       riskPercentage: totalInteractions > 0 ? (highRiskInteractions / totalInteractions) * 100 : 0,
       averageRiskScore,
       verifiedModels: this.modelIntegrity.size,
-      lastUpdate: new Date().toISOString()
+      lastUpdate: new Date().toISOString(),
     };
   }
 
@@ -442,7 +455,7 @@ export class AIMCPSecurityMiddleware {
    * Clear old audit logs (for cleanup)
    */
   clearOldLogs(olderThanHours = 24) {
-    const cutoff = Date.now() - (olderThanHours * 60 * 60 * 1000);
+    const cutoff = Date.now() - olderThanHours * 60 * 60 * 1000;
     const initialCount = this.auditLogs.length;
 
     this.auditLogs = this.auditLogs.filter(log => log.timestamp.getTime() > cutoff);
@@ -469,12 +482,16 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'copilot-civic'
   ],
   knownGoodHashes: [
+  allowedModelHashes: [
     // Known good model hashes for verification
     '5dbbe3869b484fc6a9e44a8d0697d458c8413332294039d65f1f3a0a862ccb3a', // mock model data hash for tests
     'd2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2', // civic-ai-v1
-    'a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1'  // additional test model
+    'a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1', // additional test model
   ],
   riskThreshold: 25  // Lowered from 40 to 25 to properly detect security threats
+  ],
+  riskThreshold: 40
+  riskThreshold: 25, // Lowered from 40 to 25 to properly detect security threats
 };
 
 export default AIMCPSecurityMiddleware;

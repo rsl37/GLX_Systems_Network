@@ -1,10 +1,9 @@
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
-
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { TestServer } from '../setup/test-server.js';
@@ -23,7 +22,7 @@ describe('API Health Endpoints', () => {
         status: 'ok',
         timestamp: new Date().toISOString(),
         version: '0.2.0',
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
       });
     });
 
@@ -35,22 +34,18 @@ describe('API Health Endpoints', () => {
   });
 
   test('should return health status', async () => {
-    const response = await request(testServer.app)
-      .get('/api/health')
-      .expect(200);
+    const response = await request(testServer.app).get('/api/health').expect(200);
 
     expect(response.body).toMatchObject({
       status: 'ok',
       timestamp: expect.any(String),
       version: expect.any(String),
-      environment: expect.any(String)
+      environment: expect.any(String),
     });
   });
 
   test('should include valid timestamp', async () => {
-    const response = await request(testServer.app)
-      .get('/api/health')
-      .expect(200);
+    const response = await request(testServer.app).get('/api/health').expect(200);
 
     const timestamp = new Date(response.body.timestamp);
     expect(timestamp.getTime()).not.toBeNaN();
@@ -67,16 +62,12 @@ describe('API Health Endpoints', () => {
   });
 
   test('should handle malformed requests gracefully', async () => {
-    await request(testServer.app)
-      .get('/api/health?invalid=param')
-      .expect(200);
+    await request(testServer.app).get('/api/health?invalid=param').expect(200);
   });
 
   test('should respond quickly', async () => {
     const start = Date.now();
-    await request(testServer.app)
-      .get('/api/health')
-      .expect(200);
+    await request(testServer.app).get('/api/health').expect(200);
     const duration = Date.now() - start;
 
     expect(duration).toBeLessThan(1000); // Should respond within 1 second

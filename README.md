@@ -18,11 +18,17 @@ relatedDocs: []
 [![Workflow Health](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Workflow%20Health%20Monitor/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/workflow-monitor.yml)
 [![Codecov](https://codecov.io/gh/rsl37/GLX_Civic_Networking_App/branch/main/graph/badge.svg)](https://codecov.io/gh/rsl37/GLX_Civic_Networking_App)
 
+<<<<<<< HEAD
 **GLX: Connect the World** is a next-generation Web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance. Currently in active development with production deployment capabilities.
 
 > **GLX** stands for **G**overnance **L**ink e**X**change - connecting communities through technology-enabled democracy.
 
 *Inspired by democratic ideals in Gatchaman Crowds while establishing GLX as an independent, legally protected civic technology platform.*
+=======
+**GLX** (Global Liquid eXchange / Global Link eXchange) is a next-generation Web3-enabled civic networking platform that empowers communities to connect, organize, and collaborate for social good through real-time help requests, skill-based matching, and democratic governance. Currently in active development with production deployment capabilities.
+
+**GLX Civic Network: Connect the World** - Building stronger communities through technology and secure civic engagement.
+>>>>>>> main
 
 ---
 
@@ -65,9 +71,9 @@ npm run monitor:full       # Full monitoring suite
 # Option 2: Run commands from app directory
 cd GLX_App_files
 npm install
-
-# Development setup
-npm start
+npm run deployment:check   # Check deployment readiness
+npm run build              # Build the application
+npm start                  # Start development server
 
 # Production setup
 npm run production:setup
@@ -98,11 +104,28 @@ npm run production:check   # Validate production configuration
 npm run test:env           # Test environment configuration
 ```
 
+### Code Quality & Linting
+```bash
+# Code linting and formatting (from GLX_App_files directory)
+cd GLX_App_files
+
+# Lint code for quality issues
+npm run lint              # Check for linting issues
+npm run lint:fix          # Auto-fix linting issues where possible
+
+# Format code consistently
+npm run format            # Format all files with Prettier
+npm run format:check      # Check if files are formatted correctly
+
+# Combined quality check
+npm run lint && npm run format:check
+```
+
 ---
 
 ## 🔒 Security
 
-GALAX implements comprehensive security measures to protect against current and emerging threats, including zero-day vulnerabilities.
+GLX implements comprehensive security measures to protect against current and emerging threats, including zero-day vulnerabilities.
 
 ### Security Features
 
@@ -151,7 +174,7 @@ npm run security:audit
 
 ### Reporting Security Issues
 
-Report security vulnerabilities through [GitHub Security Advisories](https://github.com/rsl37/GALAX_Civic_Networking_App/security/advisories/new).
+Report security vulnerabilities through [GitHub Security Advisories](https://github.com/rsl37/GLX_Civic_Networking_App/security/advisories/new).
 
 **Please do not report security vulnerabilities in public issues.**
 
@@ -333,11 +356,15 @@ This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICE
 
 ## 🔗 Links
 
+<<<<<<< HEAD
 - **Live Demo**: [glxconnect.io](https://glxconnect.io) (future domain)
+=======
+- **Live Demo**: [glxcivicnetwork.me](https://glxcivicnetwork.me)
+>>>>>>> main
 - **Documentation**: [Project Docs](docs/)
 - **Production Guide**: [Production Setup](GLX_App_files/PRODUCTION_MODE_GUIDE.md)
 - **Issues**: [GitHub Issues](https://github.com/rsl37/GLX_Civic_Networking_App/issues)
 
 ---
 
-*Building stronger communities through technology* 🌟
+*Building stronger communities through technology. Connect the World.* 🌟

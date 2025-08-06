@@ -1,10 +1,9 @@
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
-
 
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import request from 'supertest';
@@ -39,9 +38,7 @@ describe('Realtime Communication Tests (Vercel Compatible)', () => {
 
   describe('Health Check', () => {
     test('should return health status', async () => {
-      const response = await request(app)
-        .get('/api/realtime/health')
-        .expect(200);
+      const response = await request(app).get('/api/realtime/health').expect(200);
 
       expect(response.body).toHaveProperty('status', 'healthy');
       expect(response.body).toHaveProperty('activeConnections');

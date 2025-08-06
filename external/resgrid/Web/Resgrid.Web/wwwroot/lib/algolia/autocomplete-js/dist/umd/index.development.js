@@ -1428,7 +1428,7 @@
     return parent === child || parent.contains(child);
   }
 
-  var regex = /((gt|sm)-|galaxy nexus)|samsung[- ]|samsungbrowser/i;
+  var regex = /((gt|sm)-|glxy nexus)|samsung[- ]|samsungbrowser/i;
   function isSamsung(userAgent) {
     return Boolean(userAgent && userAgent.match(regex));
   }

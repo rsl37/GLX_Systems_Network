@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -15,7 +15,7 @@ export const API_VERSIONS = {
   current: 'v1' as const,
   supported: ['v1'] as const,
   deprecated: [] as string[],
-  sunset: [] as string[]
+  sunset: [] as string[],
 };
 
 export type ApiVersion = keyof typeof API_VERSIONS;
@@ -49,9 +49,9 @@ export const detectApiVersion = (req: Request, res: Response, next: NextFunction
   else if (req.headers['api-version']) {
     version = req.headers['api-version'] as string;
   }
-  // Method 3: Accept header versioning (Accept: application/vnd.galax.v1+json)
+  // Method 3: Accept header versioning (Accept: application/vnd.glx.v1+json)
   else if (req.headers.accept) {
-    const acceptMatch = req.headers.accept.match(/application\/vnd\.galax\.(v\d+)\+json/);
+    const acceptMatch = req.headers.accept.match(/application\/vnd\.glx\.(v\d+)\+json/);
     if (acceptMatch) {
       version = acceptMatch[1];
     }
@@ -75,7 +75,7 @@ export const detectApiVersion = (req: Request, res: Response, next: NextFunction
     version,
     isSupported,
     isDeprecated,
-    isSunset
+    isSunset,
   };
 
   // Add version headers to response
@@ -104,8 +104,8 @@ export const validateApiVersion = (req: Request, res: Response, next: NextFuncti
       success: false,
       error: {
         message: 'API version detection failed',
-        statusCode: 500
-      }
+        statusCode: 500,
+      },
     });
     return;
   }
@@ -120,9 +120,9 @@ export const validateApiVersion = (req: Request, res: Response, next: NextFuncti
         details: {
           sunset_date: apiVersionInfo.sunsetDate,
           supported_versions: API_VERSIONS.supported,
-          migration_guide: '/docs/api/migration'
-        }
-      }
+          migration_guide: '/docs/api/migration',
+        },
+      },
     });
     return;
   }
@@ -137,9 +137,9 @@ export const validateApiVersion = (req: Request, res: Response, next: NextFuncti
         details: {
           supported_versions: API_VERSIONS.supported,
           current_version: API_VERSIONS.current,
-          requested_version: apiVersionInfo.version
-        }
-      }
+          requested_version: apiVersionInfo.version,
+        },
+      },
     });
     return;
   }
@@ -163,9 +163,9 @@ export const versionedRoute = (
           statusCode: 400,
           details: {
             available_versions: versions,
-            requested_version: requestedVersion
-          }
-        }
+            requested_version: requestedVersion,
+          },
+        },
       });
       return;
     }
@@ -185,7 +185,7 @@ export const addVersioningHeaders = (req: Request, res: Response, next: NextFunc
   // Intercept json method to add versioning info
   const originalJson = res.json;
 
-  res.json = function(data: any) {
+  res.json = function (data: any) {
     // Add API version metadata to successful responses
     if (data && typeof data === 'object' && data.success !== false) {
       data.api_version = req.apiVersion || API_VERSIONS.current;
@@ -194,7 +194,7 @@ export const addVersioningHeaders = (req: Request, res: Response, next: NextFunc
         supported_versions: API_VERSIONS.supported,
         is_deprecated: req.apiVersionInfo?.isDeprecated || false,
         documentation_url: `/docs/api/${req.apiVersion || API_VERSIONS.current}`,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
 
@@ -232,15 +232,26 @@ export const getApiVersionInfo = (req: Request, res: Response): void => {
           status: 'supported',
           documentation: '/docs/api/v1',
           release_date: '2025-01-01',
-          features: ['Authentication', 'Help Requests', 'Crisis Alerts', 'Governance', 'Stablecoin']
-        }
+          features: [
+            'Authentication',
+            'Help Requests',
+            'Crisis Alerts',
+            'Governance',
+            'Stablecoin',
+          ],
+        },
       },
       versioning_methods: [
         'URL path: /api/v1/endpoint',
         'Header: API-Version: v1',
-        'Accept header: application/vnd.galax.v1+json',
+<<<<<<< HEAD:GLX_App_files/server/middleware/versioning.ts
+        'Accept header: application/vnd.glx.v1+json',
         'Query parameter: ?api_version=v1'
       ]
     }
+        'Accept header: application/vnd.galax.v1+json',
+        'Query parameter: ?api_version=v1',
+      ],
+    },
   });
 };

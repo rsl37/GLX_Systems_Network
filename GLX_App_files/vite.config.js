@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -16,6 +16,9 @@ export const vitePort = 3000;
 // Asset inline limit - 4KB for production builds
 const ASSET_INLINE_LIMIT_BYTES = 4096;
 
+// Asset inline limit - 4KB for production builds
+const ASSET_INLINE_LIMIT_BYTES = 4096;
+
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const isDevelopment = mode === 'development';
@@ -24,19 +27,21 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       // Enable compression only for production builds
-      ...(isProduction ? [
-        compression({
-          algorithm: 'gzip',
-          threshold: 10240,
-          deleteOriginFile: false,
-        }),
-        compression({
-          algorithm: 'brotliCompress',
-          ext: '.br',
-          threshold: 10240,
-          deleteOriginFile: false,
-        })
-      ] : []),
+      ...(isProduction
+        ? [
+            compression({
+              algorithm: 'gzip',
+              threshold: 10240,
+              deleteOriginFile: false,
+            }),
+            compression({
+              algorithm: 'brotliCompress',
+              ext: '.br',
+              threshold: 10240,
+              deleteOriginFile: false,
+            }),
+          ]
+        : []),
       // Custom plugin to handle source map requests
       {
         name: 'handle-source-map-requests',
@@ -61,13 +66,10 @@ export default defineConfig(({ mode }) => {
           server.middlewares.use((req, res, next) => {
             // Add CORS headers to all responses
             res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader(
-              'Access-Control-Allow-Methods',
-              'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-            );
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
             res.setHeader(
               'Access-Control-Allow-Headers',
-              'Content-Type, Authorization, X-Requested-With',
+              'Content-Type, Authorization, X-Requested-With'
             );
 
             // Handle OPTIONS requests
@@ -110,7 +112,7 @@ export default defineConfig(({ mode }) => {
               '@radix-ui/react-slot',
               '@radix-ui/react-switch',
               '@radix-ui/react-toggle',
-              '@radix-ui/react-tooltip'
+              '@radix-ui/react-tooltip',
             ],
             icons: ['lucide-react'], // Separate icons chunk
             maps: ['@googlemaps/js-api-loader', 'leaflet'],
@@ -118,9 +120,15 @@ export default defineConfig(({ mode }) => {
             analytics: ['@vercel/analytics', '@vercel/speed-insights'] // Vercel monitoring tools
           }
         }
+            analytics: ['@vercel/analytics', '@vercel/speed-insights'], // Vercel monitoring tools
+          },
+        },
       },
-      chunkSizeWarningLimit: 500, // Set more appropriate warning limit
+      chunkSizeWarningLimit: 300, // Smaller chunks for better loading
       sourcemap: isProduction ? false : true, // Disable sourcemaps in production
+      
+      // Optimize CSS splitting
+      cssCodeSplit: true,
     },
     clearScreen: false,
     server: {
@@ -143,6 +151,7 @@ export default defineConfig(({ mode }) => {
       devSourcemap: !isProduction,
     },
     // Optimize build with better tree-shaking and production settings
+    // Optimize build with better tree-shaking and production settings
     esbuild: {
       sourcemap: !isProduction,
       drop: isProduction ? ['console', 'debugger'] : [], // Remove console logs in production
@@ -155,14 +164,15 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       include: [
         'react',
+        'react',
         'react-dom',
-        'react-router-dom' // Pre-bundle router since it's critical
+        'react-router-dom', // Pre-bundle router since it's critical
       ],
       exclude: [
         '@googlemaps/js-api-loader', // Lazy load maps
         '@vercel/analytics', // Lazy load analytics
         '@vercel/speed-insights', // Lazy load speed insights
-        'framer-motion' // Load on demand for animations
+        'framer-motion', // Load on demand for animations
       ],
     },
   };

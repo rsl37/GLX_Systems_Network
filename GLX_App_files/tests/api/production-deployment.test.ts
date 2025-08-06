@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -65,10 +65,10 @@ describe('Production Deployment Fixes', () => {
   describe('CORS Configuration for Vercel', () => {
     it('should allow requests from common Vercel deployment URLs', async () => {
       const vercelUrls = [
-        'https://galax-civic-networking.vercel.app',
-        'https://galax-civic-networking-git-main.vercel.app',
-        'https://galax-civic-networking-abc123.vercel.app',
-        'https://galaxcivicnetwork.me',
+        'https://glx-civic-networking.vercel.app',
+        'https://glx-civic-networking-git-main.vercel.app',
+        'https://glx-civic-networking-abc123.vercel.app',
+        'https://glxcivicnetwork.me',
       ];
 
       for (const origin of vercelUrls) {
@@ -110,9 +110,7 @@ describe('Production Deployment Fixes', () => {
 
   describe('Environment Debug Endpoints', () => {
     it('should provide environment debug information', async () => {
-      const response = await request(app)
-        .get('/api/debug/environment')
-        .expect(200);
+      const response = await request(app).get('/api/debug/environment').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('nodeEnv');
@@ -140,13 +138,11 @@ describe('Production Deployment Fixes', () => {
       const originalSecret = process.env.JWT_SECRET;
       delete process.env.JWT_SECRET;
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-          username: 'testuser',
-        });
+      const response = await request(app).post('/api/auth/register').send({
+        email: 'test@example.com',
+        password: 'password123',
+        username: 'testuser',
+      });
 
       // Should still work in test environment, but this validates the endpoint
       expect(response.status).toBe(200);
@@ -225,8 +221,8 @@ describe('Complete Authentication Flow (Production-like)', () => {
         success: true,
         data: {
           token: 'mock-jwt-token-for-testing',
-          userId: 12345
-        }
+          userId: 12345,
+        },
       });
     });
   });
@@ -242,7 +238,7 @@ describe('Complete Authentication Flow (Production-like)', () => {
     // Simulate the frontend making a registration request
     const response = await request(authApp)
       .post('/api/auth/register')
-      .set('Origin', 'https://galax-civic-networking.vercel.app')
+      .set('Origin', 'https://glx-civic-networking.vercel.app')
       .set('Content-Type', 'application/json')
       .send(registrationData);
 

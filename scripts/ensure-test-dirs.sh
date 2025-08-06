@@ -2,26 +2,26 @@
 
 # Ensure all required test directories exist for CI artifact upload
 # This script ensures the CI workflows don't fail due to missing directories
-# Can be run from either root directory or GALAX_App_files directory
+# Can be run from either root directory or GLX_App_files directory
 
 set -e
 
 echo "Ensuring test artifact directories exist..."
 
-# Detect if we're in root directory or GALAX_App_files directory
-if [ -f "GALAX_App_files/package.json" ]; then
+# Detect if we're in root directory or GLX_App_files directory
+if [ -f "GLX_App_files/package.json" ]; then
     # We're in the root directory
-    APP_DIR="./GALAX_App_files"
-    echo "📁 Detected root directory, using GALAX_App_files path..."
+    APP_DIR="./GLX_App_files"
+    echo "📁 Detected root directory, using GLX_App_files path..."
 elif [ -f "package.json" ] && [ -f ".env.example" ]; then
-    # We're already in GALAX_App_files directory
+    # We're already in GLX_App_files directory
     APP_DIR="."
-    echo "📁 Running from GALAX_App_files directory..."
+    echo "📁 Running from GLX_App_files directory..."
 else
-    echo "❌ Error: Could not find GALAX_App_files directory or required files"
+    echo "❌ Error: Could not find GLX_App_files directory or required files"
     echo "   Please run this script from either:"
     echo "   - Root directory: ./scripts/ensure-test-dirs.sh"
-    echo "   - GALAX_App_files directory: ./scripts/ensure-test-dirs.sh"
+    echo "   - GLX_App_files directory: ./scripts/ensure-test-dirs.sh"
     exit 1
 fi
 

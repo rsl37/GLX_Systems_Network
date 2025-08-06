@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# GALAX Civic Networking App - Environment Setup Script
+# GLX Civic Networking App - Environment Setup Script
 # This script creates .env files from .env.example templates with development defaults
 
 set -e
 
-echo "🚀 Setting up GALAX Civic Networking App environment..."
+echo "🚀 Setting up GLX Civic Networking App environment..."
 
 # Check if we're in the correct directory
 if [ ! -f "package.json" ] || [ ! -f ".env.example" ]; then
-    echo "❌ Error: Please run this script from the GALAX_App_files directory"
-    echo "   Usage: cd GALAX_App_files && scripts/setup-env.sh"
+    echo "❌ Error: Please run this script from the GLX_App_files directory"
+    echo "   Usage: cd GLX_App_files && scripts/setup-env.sh"
     exit 1
 fi
 
@@ -35,7 +35,7 @@ create_env_file() {
     if [ "$env_file" = ".env" ]; then
         # Main backend .env with development values
         cat > "$env_file" << 'EOF'
-# GALAX Civic Networking App - Development Environment Variables
+# GLX Civic Networking App - Development Environment Variables
 # This file was created automatically for local development
 
 # =============================================================================
@@ -118,7 +118,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 # DEVELOPMENT & DEBUGGING
 # =============================================================================
 
-DEBUG=galax:*
+DEBUG=glx:*
 DEVELOPMENT_MODE=true
 
 # =============================================================================
@@ -131,7 +131,7 @@ EOF
     elif [ "$env_file" = "client/.env" ]; then
         # Client .env with development values
         cat > "$env_file" << 'EOF'
-# GALAX Civic Networking App - Client Development Environment Variables
+# GLX Civic Networking App - Client Development Environment Variables
 # This file was created automatically for local development
 
 # Pusher configuration for real-time communication
@@ -178,7 +178,7 @@ create_directory "./data/logs" "application logs directory"
 create_directory "./data/encrypted_documents" "encrypted documents directory"
 create_directory "./quarantine" "antimalware quarantine directory"
 create_directory "./virus_quarantine" "antivirus quarantine directory"
-create_directory "/tmp/galax-sandbox-quarantine" "sandbox quarantine directory"
+create_directory "/tmp/glx-sandbox-quarantine" "sandbox quarantine directory"
 create_directory "/tmp/kyc-uploads" "temporary KYC uploads directory"
 create_directory "./coverage" "test coverage reports directory"
 create_directory "./test-results" "test results directory"

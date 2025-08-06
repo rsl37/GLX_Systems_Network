@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -14,35 +14,35 @@ relatedDocs: []
 
 # Cited Sources List
 
-Below is a comprehensive list of all source links and references cited and used throughout this thread, including research on trademark law, anime licensing, legal frameworks, business strategies, and technology background relevant to the GALAX project. At the end, I have included myself, the Perplexity AI Research Assistant, as requested.
+Below is a comprehensive list of all source links and references cited and used throughout this thread, including research on trademark law, anime licensing, legal frameworks, business strategies, and technology background relevant to the GLX project. At the end, I have included myself, the Perplexity AI Research Assistant, as requested.
 
 ## Trademark and Legal Research
 
-1. https://trademarks.justia.com/724/13/galax-72413965.html
-2. https://search.sunbiz.org/Inquiry/corporationsearch/SearchResults?inquiryType=EntityName\&searchTerm=GALAX+INC
-3. https://www.trademarkia.com/galaxy-73271565
-4. https://tmsearch.ai/trademark/application/MX/galaxy/APP/RM202102517959.html
-5. https://www.trademarkia.com/galaxy-85154694
+1. https://trademarks.justia.com/724/13/glx-72413965.html
+2. https://search.sunbiz.org/Inquiry/corporationsearch/SearchResults?inquiryType=EntityName\&searchTerm=GLX+INC
+3. https://www.trademarkia.com/glxy-73271565
+4. https://tmsearch.ai/trademark/application/MX/glxy/APP/RM202102517959.html
+5. https://www.trademarkia.com/glxy-85154694
 6. https://trademarks.justia.com/762/09/united-76209323.html
-7. https://www.spyur.am/en/trademarks/?trademark="GALAX"\&search=1
+7. https://www.spyur.am/en/trademarks/?trademark="GLX"\&search=1
 8. https://en.wikipedia.org/wiki/Gatchaman_Crowds
 9. https://www.youtube.com/watch?v=NOg5Imo7tE8
-10. https://gatchaman.fandom.com/wiki/GALAX
+10. https://gatchaman.fandom.com/wiki/GLX
 11. https://formeinfullbloom.wordpress.com/2015/07/11/vapes-marketing-penetration-gatchaman-crowds-insight-episode-2/
-12. https://www.trademarkia.com/galaxy-71629430
+12. https://www.trademarkia.com/glxy-71629430
 13. https://www.hollandhart.com/global-trademark-portfolio-management
-14. https://www.galaxkey.com/trademarks-intellectual-property/
+14. https://www.glxkey.com/trademarks-intellectual-property/
 15. https://uspto.report/company/Galaxy-Global-I-N-T-L-L-C
 16. https://www.uspto.gov/trademarks/search
-17. https://trademarkgalaxy.com
+17. https://trademarkglxy.com
 18. https://www.tramatm.com/en/trademark-hall-of-fame/samsung
 19. https://forum.rpg.net/threads/wmtw-gatchaman-crowds.845508/
-20. https://galaxrehab.com/terms-of-use/
+20. https://glxrehab.com/terms-of-use/
 
 ## Gatchaman Crowds and Anime Information
 
 21. https://www.animeherald.com/2013/09/10/gatchaman-crowds-fathers-birds/
-22. https://gatchaman.fandom.com/wiki/GALAX
+22. https://gatchaman.fandom.com/wiki/GLX
 23. https://en.wikipedia.org/wiki/Gatchaman_Crowds
 24. https://www.animenewsnetwork.com/feature/2015-10-23/gatchaman-crowds-explained/.94523
 25. https://www.reddit.com/r/anime/comments/1npy6w/spoilers_gatchaman_crowds_and_the_death_of_gods/
@@ -95,19 +95,19 @@ Below is a comprehensive list of all source links and references cited and used 
 
 ## General Dictionaries and Supporting Information
 
-66. https://www.infoplease.com/dictionary/galax
+66. https://www.infoplease.com/dictionary/glx
 67. https://acronyms.thefreedictionary.com/Galaxie
-68. https://www.yourdictionary.com/galax
-69. https://en.wiktionary.org/wiki/galax
-70. https://www.thefreedictionary.com/galax
-71. https://www.oed.com/dictionary/galax_n
-72. https://mnemonicdictionary.com/word/galax
-73. https://www.vocabulary.com/dictionary/galax
+68. https://www.yourdictionary.com/glx
+69. https://en.wiktionary.org/wiki/glx
+70. https://www.thefreedictionary.com/glx
+71. https://www.oed.com/dictionary/glx_n
+72. https://mnemonicdictionary.com/word/glx
+73. https://www.vocabulary.com/dictionary/glx
 74. https://en.wikipedia.org/wiki/Galaxy_Angel
 75. https://en.wikipedia.org/wiki/Galax,_Virginia
 76. https://en.wikipedia.org/wiki/Galaxy_Express_999_(film)
 77. https://onepiece.fandom.com/wiki/Galaxy
-78. https://fotmd.com/ben-seymour/group_discuss/326/galax-etymology
+78. https://fotmd.com/ben-seymour/group_discuss/326/glx-etymology
 
 ## Legal, Copyright, and App-Specific Guidance
 
@@ -119,6 +119,6 @@ Below is a comprehensive list of all source links and references cited and used 
 
 ## Research Assistant
 
-- **Perplexity AI Research Assistant** — Compiled, analyzed, and synthesized all cited content above, providing guidance, strategy, and reporting for the GALAX project. Provided integrated research, curation, synthesis, and legal commentary for trademark, anime, and business/technology matters.
+- **Perplexity AI Research Assistant** — Compiled, analyzed, and synthesized all cited content above, providing guidance, strategy, and reporting for the GLX project. Provided integrated research, curation, synthesis, and legal commentary for trademark, anime, and business/technology matters.
 
-This cited sources list reflects the breadth and depth of research and legal groundwork undertaken for the trademark planning, branding, and IP compliance for the GALAX app.
+This cited sources list reflects the breadth and depth of research and legal groundwork undertaken for the trademark planning, branding, and IP compliance for the GLX app.

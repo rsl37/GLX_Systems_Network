@@ -1,20 +1,18 @@
 #!/usr/bin/env tsx
 
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-
-
 /**
- * GALAX Deployment Readiness Check Script
+ * GLX Deployment Readiness Check Script
  *
  * This script performs comprehensive validation of deployment prerequisites
- * and can be run before attempting to deploy the GALAX application.
+ * and can be run before attempting to deploy the GLX application.
  *
  * Usage:
  *   npm run deployment:check
@@ -36,7 +34,7 @@ dotenv.config({ path: join(__dirname, '../.env') });
  * Main deployment check function
  */
 async function runDeploymentCheck() {
-  console.log('🚀 GALAX Deployment Readiness Check');
+  console.log('🚀 GLX Deployment Readiness Check');
   console.log('=====================================\n');
 
   console.log('DEBUG: About to call performDeploymentReadinessCheck...');
@@ -46,10 +44,20 @@ async function runDeploymentCheck() {
 
     console.log('DEBUG: Got report:', report.overall_status);
 
+  console.log('DEBUG: About to call performDeploymentReadinessCheck...');
+
+  try {
+    const report = await performDeploymentReadinessCheck();
+
+    console.log('DEBUG: Got report:', report.overall_status);
+    
+
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
-    console.log(`Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`);
+    console.log(
+      `Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`
+    );
     console.log(`Environment: ${report.environment}`);
     console.log(`Timestamp: ${report.timestamp}`);
     console.log(`\nChecks Summary:`);
@@ -109,7 +117,6 @@ async function runDeploymentCheck() {
       console.log('\n✅ Deployment readiness check PASSED');
       process.exit(0);
     }
-
   } catch (error) {
     console.error('\n❌ Deployment readiness check failed to run:');
     console.error(error);
@@ -122,10 +129,14 @@ async function runDeploymentCheck() {
  */
 function getStatusEmoji(status) {
   switch (status) {
-    case 'ready': return '✅';
-    case 'warning': return '⚠️';
-    case 'not_ready': return '❌';
-    default: return '❓';
+    case 'ready':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'not_ready':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 
@@ -134,10 +145,14 @@ function getStatusEmoji(status) {
  */
 function getCheckEmoji(status) {
   switch (status) {
-    case 'pass': return '✅';
-    case 'warning': return '⚠️';
-    case 'fail': return '❌';
-    default: return '❓';
+    case 'pass':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'fail':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 
@@ -146,7 +161,7 @@ function getCheckEmoji(status) {
  */
 function displayHelp() {
   console.log(`
-🚀 GALAX Deployment Readiness Check Script
+🚀 GLX Deployment Readiness Check Script
 
 This script validates that your environment is properly configured for deployment.
 
@@ -170,16 +185,16 @@ Environment Variables:
 Example .env file:
   NODE_ENV=production
   PORT=3001
-  DATA_DIRECTORY=/opt/galax/data
+  DATA_DIRECTORY=/opt/glx/data
   JWT_SECRET=your-super-secure-jwt-secret-key-here
-  FRONTEND_URL=https://galaxcivicnetwork.me
-  # Both domains supported: galaxcivicnetwork.me and galax-civic-networking.vercel.app
-  TRUSTED_ORIGINS=https://galaxcivicnetwork.me,https://galax-civic-networking.vercel.app
+  FRONTEND_URL=https://glxcivicnetwork.me
+  # Both domains supported: glxcivicnetwork.me and glx-civic-networking.vercel.app
+  TRUSTED_ORIGINS=https://glxcivicnetwork.me,https://glx-civic-networking.vercel.app
   SMTP_HOST=smtp.gmail.com
   SMTP_PORT=587
   SMTP_USER=your-email@gmail.com
   SMTP_PASS=your-app-password
-  SMTP_FROM=GALAX Support <noreply@galaxcivicnetwork.me>
+  SMTP_FROM=GLX Support <noreply@glxcivicnetwork.me>
 
 For more information, see the deployment guide:
   docs/BETA_DEPLOYMENT_GUIDE.md

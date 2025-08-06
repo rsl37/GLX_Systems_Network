@@ -1,26 +1,26 @@
 #!/bin/bash
 
-# GALAX Civic Networking App - Environment Setup Script
+# GLX Civic Networking App - Environment Setup Script
 # This script creates .env files from .env.example templates with development defaults
-# Can be run from either root directory or GALAX_App_files directory
+# Can be run from either root directory or GLX_App_files directory
 
 set -e
 
-echo "🚀 Setting up GALAX Civic Networking App environment..."
+echo "🚀 Setting up GLX Civic Networking App environment..."
 
-# Detect if we're in root directory or GALAX_App_files directory
-if [ -f "GALAX_App_files/package.json" ] && [ -f "GALAX_App_files/.env.example" ]; then
-    # We're in the root directory, cd to GALAX_App_files
-    echo "📁 Detected root directory, changing to GALAX_App_files..."
-    cd GALAX_App_files
+# Detect if we're in root directory or GLX_App_files directory
+if [ -f "GLX_App_files/package.json" ] && [ -f "GLX_App_files/.env.example" ]; then
+    # We're in the root directory, cd to GLX_App_files
+    echo "📁 Detected root directory, changing to GLX_App_files..."
+    cd GLX_App_files
 elif [ -f "package.json" ] && [ -f ".env.example" ]; then
-    # We're already in GALAX_App_files directory
-    echo "📁 Running from GALAX_App_files directory..."
+    # We're already in GLX_App_files directory
+    echo "📁 Running from GLX_App_files directory..."
 else
-    echo "❌ Error: Could not find GALAX_App_files directory or required files"
+    echo "❌ Error: Could not find GLX_App_files directory or required files"
     echo "   Please run this script from either:"
     echo "   - Root directory: ./scripts/setup-env.sh"
-    echo "   - GALAX_App_files directory: ./scripts/setup-env.sh"
+    echo "   - GLX_App_files directory: ./scripts/setup-env.sh"
     exit 1
 fi
 
@@ -45,7 +45,7 @@ create_env_file() {
     if [ "$env_file" = ".env" ]; then
         # Main backend .env with development values
         cat > "$env_file" << 'EOF'
-# GALAX Civic Networking App - Development Environment Variables
+# GLX Civic Networking App - Development Environment Variables
 # This file was created automatically for local development
 
 # =============================================================================
@@ -128,7 +128,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 # DEVELOPMENT & DEBUGGING
 # =============================================================================
 
-DEBUG=galax:*
+DEBUG=glx:*
 DEVELOPMENT_MODE=true
 
 # =============================================================================
@@ -141,7 +141,7 @@ EOF
     elif [ "$env_file" = "client/.env" ]; then
         # Client .env with development values
         cat > "$env_file" << 'EOF'
-# GALAX Civic Networking App - Client Development Environment Variables
+# GLX Civic Networking App - Client Development Environment Variables
 # This file was created automatically for local development
 
 # Pusher configuration for real-time communication
@@ -188,7 +188,7 @@ create_directory "./data/logs" "application logs directory"
 create_directory "./data/encrypted_documents" "encrypted documents directory"
 create_directory "./quarantine" "antimalware quarantine directory"
 create_directory "./virus_quarantine" "antivirus quarantine directory"
-create_directory "/tmp/galax-sandbox-quarantine" "sandbox quarantine directory"
+create_directory "/tmp/glx-sandbox-quarantine" "sandbox quarantine directory"
 create_directory "/tmp/kyc-uploads" "temporary KYC uploads directory"
 create_directory "./coverage" "test coverage reports directory"
 create_directory "./test-results" "test results directory"

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2025 GALAX Civic Networking App
+=======
+ * Copyright (c) 2025 GLX Civic Networking App
+>>>>>>> main
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -54,11 +58,15 @@ export function sendSuccess<T>(
 /**
  * Send a standardized error response
  */
+<<<<<<< HEAD
 export function sendError(
   res: Response,
   message: string,
   statusCode: number = 500
 ): void {
+=======
+export function sendError(res: Response, message: string, statusCode: number = 500): void {
+>>>>>>> main
   const response: ErrorResponse = {
     success: false,
     error: {
@@ -153,6 +161,7 @@ export function createPaginationMeta(
       prev: hasPrev ? `${basePath}?page=${currentPage - 1}&limit=${perPage}` : null,
     },
   };
+<<<<<<< HEAD
 }/*
  * Copyright (c) 2025 GALAX Civic Networking App
  *
@@ -338,3 +347,6 @@ export function createPaginationMeta(
     },
   };
 }
+=======
+}
+>>>>>>> main

@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "metrics"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -12,7 +12,7 @@ relatedDocs: []
 
 # Executive Summary: Branch Management Report
 
-**Repository:** rsl37/GALAX_Civic_Networking_App  
+**Repository:** rsl37/GLX_Civic_Networking_App  
 **Analysis Date:** July 26, 2025  
 **Requested By:** Issue #84 - Branch Status Investigation
 

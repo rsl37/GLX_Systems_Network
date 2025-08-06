@@ -1,20 +1,20 @@
 ---
-title: "GALAX Civic Networking App - Security Architecture"
+title: "GLX Civic Networking App - Security Architecture"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "security"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX Civic Networking App - Security Architecture
+# GLX Civic Networking App - Security Architecture
 
 ## Executive Summary
 
-This document outlines the comprehensive security architecture for the GALAX Civic Networking App, designed to protect against current and emerging zero-day vulnerabilities targeting Web3 civic platforms.
+This document outlines the comprehensive security architecture for the GLX Civic Networking App, designed to protect against current and emerging zero-day vulnerabilities targeting Web3 civic platforms.
 
 ## Threat Model
 

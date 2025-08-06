@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "overview"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -12,7 +12,7 @@ relatedDocs: []
 
 # End-to-End Tests
 
-This directory contains Playwright end-to-end tests for the GALAX Civic Networking App.
+This directory contains Playwright end-to-end tests for the GLX Civic Networking App.
 
 ## Running Tests
 
@@ -27,4 +27,4 @@ npm run test:e2e
 
 ## Configuration
 
-The tests are configured via `playwright.config.ts` in the root of the GALAX_App_files directory.
+The tests are configured via `playwright.config.ts` in the root of the GLX_App_files directory.

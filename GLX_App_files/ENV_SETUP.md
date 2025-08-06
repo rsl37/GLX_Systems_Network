@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -12,18 +12,19 @@ relatedDocs: []
 
 # Environment Setup Guide
 
-This document explains how to set up the environment variables required for the GALAX Civic Networking App.
+This document explains how to set up the environment variables required for the GLX Civic Networking App.
 
 ## Quick Setup
 
 The easiest way to set up your environment is to use the automated setup script:
 
 ```bash
-cd GALAX_App_files
+cd GLX_App_files
 ./scripts/setup-env.sh
 ```
 
 This script will:
+
 - Create `.env` files from the `.env.example` templates
 - Set appropriate development defaults
 - Create all required application directories:
@@ -35,7 +36,7 @@ This script will:
   - `./coverage` - Test coverage reports
   - `./test-results` - Test result files
   - `./playwright-report` - End-to-end test reports
-  - `/tmp/galax-sandbox-quarantine` - Sandbox quarantine (temporary)
+  - `/tmp/glx-sandbox-quarantine` - Sandbox quarantine (temporary)
   - `/tmp/kyc-uploads` - KYC upload processing (temporary)
 - Set appropriate permissions for security-sensitive directories
 - Provide guidance on configuration options
@@ -44,10 +45,10 @@ This script will:
 
 If you prefer to set up manually:
 
-### 1. Backend Environment (GALAX_App_files/.env)
+### 1. Backend Environment (GLX_App_files/.env)
 
 ```bash
-cd GALAX_App_files
+cd GLX_App_files
 cp .env.example .env
 ```
 
@@ -61,10 +62,10 @@ CLIENT_ORIGIN=http://localhost:5173
 DATABASE_URL=  # Leave empty for SQLite, or set PostgreSQL URL
 ```
 
-### 2. Frontend Environment (GALAX_App_files/client/.env)
+### 2. Frontend Environment (GLX_App_files/client/.env)
 
 ```bash
-cd GALAX_App_files/client
+cd GLX_App_files/client
 cp .env.example .env
 ```
 
@@ -80,27 +81,27 @@ REACT_APP_API_URL=http://localhost:3001/api
 
 ### Required Variables
 
-| Variable | Description | Development Default |
-|----------|-------------|-------------------|
-| `NODE_ENV` | Application environment | `development` |
-| `PORT` | Server port | `3001` |
-| `JWT_SECRET` | JWT signing secret | Generated dev secret |
+| Variable     | Description             | Development Default  |
+| ------------ | ----------------------- | -------------------- |
+| `NODE_ENV`   | Application environment | `development`        |
+| `PORT`       | Server port             | `3001`               |
+| `JWT_SECRET` | JWT signing secret      | Generated dev secret |
 
 ### Recommended Variables
 
-| Variable | Description | Development Default |
-|----------|-------------|-------------------|
+| Variable        | Description         | Development Default     |
+| --------------- | ------------------- | ----------------------- |
 | `CLIENT_ORIGIN` | CORS allowed origin | `http://localhost:5173` |
-| `DATABASE_URL` | Database connection | Empty (uses SQLite) |
-| `SOCKET_PATH` | WebSocket path | `/socket.io` |
+| `DATABASE_URL`  | Database connection | Empty (uses SQLite)     |
+| `SOCKET_PATH`   | WebSocket path      | `/socket.io`            |
 
 ### Optional Variables (External Services)
 
-| Variable | Description | Required For |
-|----------|-------------|--------------|
-| `PUSHER_*` | Pusher configuration | Real-time features |
-| `SMTP_*` | Email configuration | Email verification, password reset |
-| `TWILIO_*` | SMS configuration | Phone verification, 2FA |
+| Variable   | Description          | Required For                       |
+| ---------- | -------------------- | ---------------------------------- |
+| `PUSHER_*` | Pusher configuration | Real-time features                 |
+| `SMTP_*`   | Email configuration  | Email verification, password reset |
+| `TWILIO_*` | SMS configuration    | Phone verification, 2FA            |
 
 ## Testing Your Configuration
 
@@ -122,15 +123,18 @@ This will verify that all required variables are set and properly formatted.
 ## Troubleshooting
 
 ### "Environment variables missing" error
+
 - Ensure `.env` files exist in the correct locations
 - Run `npm run test:env` to check configuration
 - Use the setup script: `./scripts/setup-env.sh`
 
 ### CORS errors in development
+
 - Verify `CLIENT_ORIGIN` matches your frontend URL
 - Check `TRUSTED_ORIGINS` includes your development URLs
 
 ### Database connection issues
+
 - For development: leave `DATABASE_URL` empty to use SQLite
 - For production: set a valid PostgreSQL connection string
 
@@ -143,4 +147,5 @@ For production deployment (e.g., Vercel):
 3. **Set environment variables in your deployment platform**
 4. **Use the `.env.vercel` file as a reference for Vercel deployment**
 
+See `DEPLOYMENT.md` for detailed production deployment instructions.
 See `DEPLOYMENT.md` for detailed production deployment instructions.

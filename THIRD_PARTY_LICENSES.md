@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "legal"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -12,7 +12,7 @@ relatedDocs: []
 
 # Third-Party Licenses
 
-This document provides information about third-party software components used in the GALAX Civic Networking App and their respective licenses.
+This document provides information about third-party software components used in the GLX Civic Networking App and their respective licenses.
 
 ## External Projects
 
@@ -20,13 +20,13 @@ This document provides information about third-party software components used in
 - **Location**: `external/resgrid/`
 - **License**: Apache License 2.0
 - **Copyright**: Copyright Resgrid Contributors
-- **Description**: Emergency response platform integrated into GALAX for emergency coordination features
+- **Description**: Emergency response platform integrated into GLX for emergency coordination features
 - **License File**: `external/resgrid/LICENSE`
 - **Website**: https://github.com/Resgrid/Core
 
 ## NPM Dependencies
 
-### Production Dependencies (GALAX_App_files)
+### Production Dependencies (GLX_App_files)
 
 #### Major Components
 
@@ -181,19 +181,19 @@ The following package overrides are applied in the main application:
 This document covers direct dependencies. Each package may include additional transitive (indirect) dependencies with their own licenses. For complete license information of all dependencies, you can run:
 
 ```bash
-cd GALAX_App_files
+cd GLX_App_files
 npm ls --long
 ```
 
 ## License Compliance
 
-- **GALAX Civic Networking App**: PolyForm Shield License 1.0.0
+- **GLX Civic Networking App**: PolyForm Shield License 1.0.0
 - **Most NPM Dependencies**: MIT License (permissive)
 - **External Resgrid Project**: Apache License 2.0 (permissive)
 - **Some Build Tools**: Apache-2.0 License (permissive)
 - **Database/System Libraries**: Various permissive licenses (MIT, BSD)
 
-All third-party dependencies use permissive open-source licenses that are compatible with the GALAX Civic Networking App's PolyForm Shield License 1.0.0.
+All third-party dependencies use permissive open-source licenses that are compatible with the GLX Civic Networking App's PolyForm Shield License 1.0.0.
 
 ## Updates
 

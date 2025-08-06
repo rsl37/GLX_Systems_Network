@@ -3,7 +3,7 @@ version: 2
 updates:
   # Enable version updates for npm dependencies
   - package-ecosystem: "npm"
-    directory: "/GALAX_App_files"
+    directory: "/GLX_App_files"
     schedule:
       interval: "weekly"
       day: "monday"

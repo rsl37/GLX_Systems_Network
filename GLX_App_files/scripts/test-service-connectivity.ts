@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -307,7 +307,7 @@ async function testWeb3Config(): Promise<void> {
 
 // Main test function
 async function runServiceTests(): Promise<void> {
-  console.log("🔧 GALAX Service Connectivity Tests");
+  console.log("🔧 GLX Service Connectivity Tests");
   console.log("=====================================\n");
 
   try {

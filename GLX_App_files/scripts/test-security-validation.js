@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
@@ -14,7 +14,8 @@ console.log('🔒 Testing Enhanced TRUSTED_ORIGINS Security Validation\n');
 // Test Case 1: Secure production configuration
 console.log('📋 Test Case 1: Secure Production Configuration');
 process.env.NODE_ENV = 'production';
-process.env.TRUSTED_ORIGINS = 'https://secure-app.example.com,https://api.example.com,https://secure.partner.com';
+process.env.TRUSTED_ORIGINS =
+  'https://secure-app.example.com,https://api.example.com,https://secure.partner.com';
 
 let results = validateEnvironmentVariables();
 let trustedOriginsResult = results.find(r => r.check === 'TRUSTED_ORIGINS Security');
@@ -28,7 +29,8 @@ console.log('');
 // Test Case 2: Security risks detected
 console.log('📋 Test Case 2: Security Risks in Production');
 process.env.NODE_ENV = 'production';
-process.env.TRUSTED_ORIGINS = 'https://secure-app.example.com,http://localhost:3000,https://192.168.1.100:8080';
+process.env.TRUSTED_ORIGINS =
+  'https://secure-app.example.com,http://localhost:3000,https://192.168.1.100:8080';
 
 results = validateEnvironmentVariables();
 trustedOriginsResult = results.find(r => r.check === 'TRUSTED_ORIGINS Security');

@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -9,7 +9,7 @@
  */
 
 /**
- * GALAX Monitoring Dashboard
+ * GLX Monitoring Dashboard
  *
  * Aggregates and displays health, location, and status monitoring results
  * from all analysis tools. Provides a unified view of repository health
@@ -127,16 +127,17 @@ class MonitoringDashboard {
       detected: false,
       count: 0,
       patterns: [],
-      recommendations: []
+      recommendations: [],
     };
 
     // Check health logs for session errors
     if (healthData && healthData.logs) {
-      const errorLogs = healthData.logs.filter((log: any) =>
-        log.level === 'error' &&
-        (log.message.includes('401') ||
-         log.message.includes('session') ||
-         log.message.includes('auth'))
+      const errorLogs = healthData.logs.filter(
+        (log: any) =>
+          log.level === 'error' &&
+          (log.message.includes('401') ||
+            log.message.includes('session') ||
+            log.message.includes('auth'))
       );
 
       sessionErrors.count += errorLogs.length;
@@ -154,7 +155,9 @@ class MonitoringDashboard {
       if (authAnalysis.authRelatedCommits > 0) {
         sessionErrors.detected = true;
         sessionErrors.count += authAnalysis.authRelatedCommits;
-        sessionErrors.patterns.push(`${authAnalysis.authRelatedCommits} authentication-related commits`);
+        sessionErrors.patterns.push(
+          `${authAnalysis.authRelatedCommits} authentication-related commits`
+        );
       }
 
       if (authAnalysis.configurationIssues && authAnalysis.configurationIssues.length > 0) {
@@ -174,7 +177,7 @@ class MonitoringDashboard {
         'Check authentication middleware for 401 error handling',
         'Review recent authentication-related commits',
         'Monitor API endpoints for session failures',
-        'Validate environment configuration in deployment'
+        'Validate environment configuration in deployment',
       ];
     }
 
@@ -213,14 +216,17 @@ class MonitoringDashboard {
       overall: 'unknown' as 'healthy' | 'warning' | 'critical' | 'unknown',
       lastCheck: 'never',
       issues: [],
-      warnings: []
+      warnings: [],
     };
 
     if (healthData && healthData.logs && Array.isArray(healthData.logs)) {
       const errorLogs = healthData.logs.filter((log: any) => log.level === 'error');
       const warningLogs = healthData.logs.filter((log: any) => log.level === 'warn');
 
-      healthStatus.lastCheck = (healthData.logs && healthData.logs.length > 0) ? healthData.logs[0]?.timestamp || 'unknown' : 'unknown';
+      healthStatus.lastCheck =
+        healthData.logs && healthData.logs.length > 0
+          ? healthData.logs[0]?.timestamp || 'unknown'
+          : 'unknown';
       healthStatus.issues = errorLogs.map((log: any) => log.message);
       healthStatus.warnings = warningLogs.map((log: any) => log.message);
 
@@ -239,7 +245,7 @@ class MonitoringDashboard {
       merged: 0,
       unmerged: 0,
       critical: 0,
-      lastAnalysis: 'never'
+      lastAnalysis: 'never',
     };
 
     if (branchData) {
@@ -256,7 +262,7 @@ class MonitoringDashboard {
       merged: 0,
       unmerged: 0,
       authRelated: 0,
-      lastAnalysis: 'never'
+      lastAnalysis: 'never',
     };
 
     if (branchData) {
@@ -276,7 +282,7 @@ class MonitoringDashboard {
       branchStatus,
       commitStatus,
       sessionErrors,
-      alertLevel: 'green' // Will be calculated below
+      alertLevel: 'green', // Will be calculated below
     };
 
     // Calculate alert level
@@ -292,18 +298,18 @@ class MonitoringDashboard {
     const alertEmoji = {
       green: '🟢',
       yellow: '🟡',
-      red: '🔴'
+      red: '🔴',
     };
 
     const statusEmoji = {
       healthy: '✅',
       warning: '⚠️',
       critical: '🚨',
-      unknown: '❓'
+      unknown: '❓',
     };
 
     console.log('\n' + '='.repeat(70));
-    console.log('📊 GALAX MONITORING DASHBOARD');
+    console.log('📊 GLX MONITORING DASHBOARD');
     console.log('='.repeat(70));
     console.log(`${alertEmoji[data.alertLevel]} Overall Status: ${data.alertLevel.toUpperCase()}`);
     console.log(`📅 Last Updated: ${data.timestamp}`);
@@ -311,7 +317,9 @@ class MonitoringDashboard {
 
     console.log('🏥 HEALTH STATUS');
     console.log('-'.repeat(40));
-    console.log(`${statusEmoji[data.healthStatus.overall]} Overall Health: ${data.healthStatus.overall.toUpperCase()}`);
+    console.log(
+      `${statusEmoji[data.healthStatus.overall]} Overall Health: ${data.healthStatus.overall.toUpperCase()}`
+    );
     console.log(`📅 Last Check: ${data.healthStatus.lastCheck}`);
     console.log(`❌ Issues: ${data.healthStatus.issues.length}`);
     console.log(`⚠️  Warnings: ${data.healthStatus.warnings.length}`);
@@ -344,16 +352,12 @@ class MonitoringDashboard {
 
     if (data.sessionErrors.patterns.length > 0) {
       console.log('\n   Error Patterns:');
-      data.sessionErrors.patterns.slice(0, 5).forEach(pattern =>
-        console.log(`   - ${pattern}`)
-      );
+      data.sessionErrors.patterns.slice(0, 5).forEach(pattern => console.log(`   - ${pattern}`));
     }
 
     if (data.sessionErrors.recommendations.length > 0) {
       console.log('\n   Recommendations:');
-      data.sessionErrors.recommendations.slice(0, 3).forEach(rec =>
-        console.log(`   - ${rec}`)
-      );
+      data.sessionErrors.recommendations.slice(0, 3).forEach(rec => console.log(`   - ${rec}`));
     }
 
     console.log('\n' + '='.repeat(70));
@@ -370,13 +374,29 @@ class MonitoringDashboard {
   }
 
   /**
+   * Get alert message based on alert level
+   */
+  static getAlertMessage(alertLevel: 'green' | 'yellow' | 'red'): string {
+    switch (alertLevel) {
+      case 'green':
+        return '✅ ALL SYSTEMS HEALTHY';
+      case 'yellow':
+        return '⚠️ WARNING CONDITIONS DETECTED';
+      case 'red':
+        return '🚨 CRITICAL ISSUES REQUIRE ATTENTION';
+      default:
+        throw new Error(`Unexpected alert level: ${alertLevel}`);
+    }
+  }
+
+  /**
    * Generate HTML dashboard
    */
   generateHTML(data: DashboardData): string {
     const alertColor = {
       green: '#28a745',
       yellow: '#ffc107',
-      red: '#dc3545'
+      red: '#dc3545',
     };
 
     return `<!DOCTYPE html>
@@ -384,7 +404,7 @@ class MonitoringDashboard {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALAX Monitoring Dashboard</title>
+    <title>GLX Monitoring Dashboard</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f6fa; }
         .dashboard { max-width: 1200px; margin: 0 auto; }
@@ -410,15 +430,13 @@ class MonitoringDashboard {
 <body>
     <div class="dashboard">
         <div class="header">
-            <h1>🔍 GALAX Monitoring Dashboard</h1>
+            <h1>🔍 GLX Monitoring Dashboard</h1>
             <p>Health, Location, and Status Monitoring (Issue #93)</p>
             <p><strong>Last Updated:</strong> ${data.timestamp}</p>
         </div>
 
         <div class="alert ${data.alertLevel}">
-            ${data.alertLevel === 'green' ? '✅ ALL SYSTEMS HEALTHY' :
-              data.alertLevel === 'yellow' ? '⚠️ WARNING CONDITIONS DETECTED' :
-              '🚨 CRITICAL ISSUES REQUIRE ATTENTION'}
+            ${MonitoringDashboard.getAlertMessage(data.alertLevel)}
         </div>
 
         <div class="cards">
@@ -440,14 +458,18 @@ class MonitoringDashboard {
                     <span class="metric-label">Warnings:</span>
                     <span class="metric-value">${data.healthStatus.warnings.length}</span>
                 </div>
-                ${data.healthStatus.issues.length > 0 ? `
+                ${
+                  data.healthStatus.issues.length > 0
+                    ? `
                 <div class="issues-list">
                     <strong>Critical Issues:</strong>
                     <ul>
                         ${data.healthStatus.issues.map(issue => `<li>${issue}</li>`).join('')}
                     </ul>
                 </div>
-                ` : ''}
+                `
+                    : ''
+                }
             </div>
 
             <div class="card">
@@ -506,27 +528,41 @@ class MonitoringDashboard {
                     <span class="metric-label">Error Count:</span>
                     <span class="metric-value">${data.sessionErrors.count}</span>
                 </div>
-                ${data.sessionErrors.patterns.length > 0 ? `
+                ${
+                  data.sessionErrors.patterns.length > 0
+                    ? `
                 <div class="issues-list">
                     <strong>Error Patterns:</strong>
                     <ul>
-                        ${data.sessionErrors.patterns.slice(0, 5).map(pattern => `<li>${pattern}</li>`).join('')}
+                        ${data.sessionErrors.patterns
+                          .slice(0, 5)
+                          .map(pattern => `<li>${pattern}</li>`)
+                          .join('')}
                     </ul>
                 </div>
-                ` : ''}
-                ${data.sessionErrors.recommendations.length > 0 ? `
+                `
+                    : ''
+                }
+                ${
+                  data.sessionErrors.recommendations.length > 0
+                    ? `
                 <div class="issues-list">
                     <strong>Recommendations:</strong>
                     <ul>
-                        ${data.sessionErrors.recommendations.slice(0, 3).map(rec => `<li>${rec}</li>`).join('')}
+                        ${data.sessionErrors.recommendations
+                          .slice(0, 3)
+                          .map(rec => `<li>${rec}</li>`)
+                          .join('')}
                     </ul>
                 </div>
-                ` : ''}
+                `
+                    : ''
+                }
             </div>
         </div>
 
         <div class="footer">
-            <p><strong>GALAX Civic Networking App - Monitoring Dashboard</strong></p>
+            <p><strong>GLX Civic Networking App - Monitoring Dashboard</strong></p>
             <p>This dashboard provides comprehensive health, location, and status monitoring as requested in Issue #93</p>
             <p>Last generated: ${data.timestamp}</p>
         </div>
@@ -578,7 +614,6 @@ class MonitoringDashboard {
         console.log('\n✅ All systems healthy');
         process.exit(0);
       }
-
     } catch (error) {
       console.error('\n❌ Dashboard generation failed:', error);
       process.exit(1);

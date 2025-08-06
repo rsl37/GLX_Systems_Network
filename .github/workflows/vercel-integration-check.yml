@@ -7,7 +7,7 @@ on:
     paths:
       - 'vercel.json'
       - '.github/workflows/**'
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
   workflow_dispatch:
 
 permissions:
@@ -17,7 +17,7 @@ permissions:
 
 env:
   NODE_VERSION: '20.x'
-  WORKING_DIRECTORY: './GALAX_App_files'
+  WORKING_DIRECTORY: './GLX_App_files'
 
 jobs:
   validate-vercel-config:

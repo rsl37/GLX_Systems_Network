@@ -1,10 +1,9 @@
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
-
 
 import express from 'express';
 import { createServer } from 'http';
@@ -41,7 +40,7 @@ export class TestServer {
   }
 
   async stop(): Promise<void> {
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       this.realtimeManager.shutdown();
       this.server.close(() => {
         resolve();
@@ -70,10 +69,10 @@ export class TestServer {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
         });
         return response.json();
-      }
+      },
     };
   }
 }
@@ -106,5 +105,5 @@ export const mockDb = {
     const newRequest = { id, ...request, created_at: new Date() };
     this.helpRequests.push(newRequest);
     return newRequest;
-  }
+  },
 };

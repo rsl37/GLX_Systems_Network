@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -75,7 +75,7 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
     method: req.method,
     ip: req.ip,
     userAgent: req.get('User-Agent'),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Validation error (express-validator)
@@ -147,11 +147,11 @@ const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunc
       statusCode,
       ...(process.env.NODE_ENV === 'development' && {
         stack: err.stack,
-        details: err
-      })
+        details: err,
+      }),
     },
     timestamp: new Date().toISOString(),
-    path: req.url
+    path: req.url,
   });
 };
 

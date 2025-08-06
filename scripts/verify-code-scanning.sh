@@ -2,7 +2,7 @@
 # Code Scanning Setup Verification Script
 # This script verifies that the CodeQL workflow is properly configured
 
-echo "🔍 GALAX Code Scanning Setup Verification"
+echo "🔍 GLX Code Scanning Setup Verification"
 echo "=========================================="
 echo
 
@@ -34,14 +34,14 @@ else
 fi
 
 # Check required directories
-if [ -d "GALAX_App_files" ]; then
-    echo "✅ GALAX_App_files directory exists"
+if [ -d "GLX_App_files" ]; then
+    echo "✅ GLX_App_files directory exists"
 else
-    echo "❌ GALAX_App_files directory missing"
+    echo "❌ GLX_App_files directory missing"
     exit 1
 fi
 
-if [ -f "GALAX_App_files/package.json" ]; then
+if [ -f "GLX_App_files/package.json" ]; then
     echo "✅ Application package.json exists"
 else
     echo "❌ Application package.json missing"

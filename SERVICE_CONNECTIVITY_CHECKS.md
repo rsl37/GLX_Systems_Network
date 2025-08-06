@@ -1,6 +1,6 @@
 # Service Connectivity Checks
 
-This document describes the service connectivity checks implemented for the GALAX Civic Networking App. These checks validate the configuration and connectivity of essential services required for the application to function properly.
+This document describes the service connectivity checks implemented for the GLX Civic Networking App. These checks validate the configuration and connectivity of essential services required for the application to function properly.
 
 ## Overview
 
@@ -14,14 +14,14 @@ The service connectivity checks validate four essential services:
 ## Files Added
 
 ### Scripts
-- `GALAX_App_files/scripts/test-service-connectivity.ts` - Main service testing script
-- `GALAX_App_files/tests/setup/service-connectivity.test.ts` - Unit tests for service checks
+- `GLX_App_files/scripts/test-service-connectivity.ts` - Main service testing script
+- `GLX_App_files/tests/setup/service-connectivity.test.ts` - Unit tests for service checks
 
 ### Workflows
 - `.github/workflows/service-connectivity-checks.yml` - GitHub Actions workflow for automated testing
 
 ### Configuration
-- `GALAX_App_files/.env.test.services` - Example environment configuration with proper service values
+- `GLX_App_files/.env.test.services` - Example environment configuration with proper service values
 
 ## Usage
 
@@ -33,7 +33,7 @@ Run service connectivity checks locally:
 # From the root directory
 npm run test:services
 
-# From the GALAX_App_files directory
+# From the GLX_App_files directory
 npm run test:services
 ```
 
@@ -88,7 +88,7 @@ The script provides detailed feedback on each service:
 
 ### Example Output
 ```
-🔧 GALAX Service Connectivity Tests
+🔧 GLX Service Connectivity Tests
 =====================================
 
 📧 Testing SMTP Configuration...

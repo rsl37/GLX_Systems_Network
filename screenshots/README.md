@@ -1,6 +1,6 @@
-# GALAX Civic Networking App - Comprehensive Screenshots
+# GLX Civic Networking App - Comprehensive Screenshots
 
-This directory contains comprehensive screenshots of all pages, features, and menus of the GALAX Civic Networking App.
+This directory contains comprehensive screenshots of all pages, features, and menus of the GLX Civic Networking App.
 
 ## Screenshots Captured
 
@@ -49,7 +49,7 @@ The new screenshots (8-11) demonstrate interactive app functionality through sim
 ### User Interface Design
 - **Mobile-first responsive design** with gradient backgrounds and centered content cards
 - **Interactive forms** with proper placeholder text and validation states
-- **Clean typography** and consistent GALAX branding throughout
+- **Clean typography** and consistent GLX branding throughout
 - **Intuitive navigation** with clear call-to-action buttons and workflow guidance
 
 ### User Experience Features
@@ -63,12 +63,12 @@ The new screenshots (8-11) demonstrate interactive app functionality through sim
 The app uses a responsive design with:
 - Centered content cards on a gradient background
 - Mobile-first design approach
-- Consistent branding with GALAX logo and styling
+- Consistent branding with GLX logo and styling
 - Clean typography and intuitive navigation
 
 ## Available App Functionality
 
-While authentication system integration is in development, the screenshots demonstrate the comprehensive functionality planned for the GALAX Civic Networking App:
+While authentication system integration is in development, the screenshots demonstrate the comprehensive functionality planned for the GLX Civic Networking App:
 
 ### Core App Actions (Post-Authentication)
 Based on the application architecture, users will have access to:

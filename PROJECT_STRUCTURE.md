@@ -1,21 +1,21 @@
 ---
-title: "GALAX App Directory Structure"
+title: "GLX App Directory Structure"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX App Directory Structure
+# GLX App Directory Structure
 
-Below is an overview diagram of the GALAX App folder structure and main files:
+Below is an overview diagram of the GLX App folder structure and main files:
 
 ```
-GALAX_App_files/
+GLX_App_files/
 ├── components.json
 ├── IMPLEMENTATION_STATUS.md
 ├── package.json
@@ -34,19 +34,31 @@ GALAX_App_files/
 │   │   ├── favicon.ico
 │   │   ├── favicon.svg
 │   │   ├── manifest.json
-│   │   └── site.webmanifest
+│   │   ├── site.webmanifest
+│   │   └── sw.js             # Service worker for PWA
 │   └── src/
 │       ├── App.tsx
 │       ├── index.css
 │       ├── main.tsx
+│       ├── global.d.ts       # Global type definitions
 │       ├── components/
+│       │   ├── AccountSettings.tsx
 │       │   ├── AnimatedBackground.tsx
 │       │   ├── BottomNavigation.tsx
 │       │   ├── ChatInterface.tsx
+│       │   ├── CountryCodeSelector.tsx
 │       │   ├── EmailVerificationBanner.tsx
+│       │   ├── ErrorBoundary.tsx
+│       │   ├── LazyMap.tsx
 │       │   ├── MediaUpload.tsx
 │       │   ├── OpenStreetMap.tsx
+│       │   ├── PerformanceMonitor.tsx
+│       │   ├── PrivacySettings.tsx
+│       │   ├── StablecoinDashboard.tsx
+│       │   ├── UserBadges.tsx
+│       │   ├── VirtualizedList.tsx
 │       │   └── ui/
+│       │       ├── alert.tsx
 │       │       ├── avatar.tsx
 │       │       ├── badge.tsx
 │       │       ├── button.tsx

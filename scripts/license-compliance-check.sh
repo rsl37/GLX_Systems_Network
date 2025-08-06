@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# GALAX Civic Networking App - License Compliance Check Script
+# GLX Civic Networking App - License Compliance Check Script
 # This script performs comprehensive license compliance checking for the entire project
 
 set -euo pipefail
@@ -89,7 +89,7 @@ MAIN_REPORT="$REPORT_DIR/license-compliance-report-$TIMESTAMP.txt"
 
 # Initialize report
 cat > "$MAIN_REPORT" << EOF
-GALAX Civic Networking App - License Compliance Report
+GLX Civic Networking App - License Compliance Report
 =====================================================
 
 Report Generated: $(date -u)
@@ -210,7 +210,7 @@ scan_npm_dependencies() {
                     done < <(tail -n +$(($(grep -n "$line" "$temp_report" | cut -d: -f1) + 1)) "$temp_report")
                     
                     # Special handling for main application packages
-                    if [[ "$pkg" == "galax-civic-platform@"* || "$pkg" == "galax-civic-networking-app@"* || "$pkg" == "galax-mcp-servers@"* ]]; then
+                    if [[ "$pkg" == "glx-civic-platform@"* || "$pkg" == "glx-civic-networking-app@"* || "$pkg" == "glx-mcp-servers@"* ]]; then
                         echo "✅ $pkg: PolyForm-Shield-1.0.0 (Main Application)" >> "$MAIN_REPORT"
                         ((total++))
                     elif [[ -n "$license_info" && "$license_info" != "null" ]]; then
@@ -342,7 +342,7 @@ validate_license_documentation() {
         fi
         
         # Check for major dependencies documentation
-        if [[ -f "$PROJECT_ROOT/GALAX_App_files/package.json" ]]; then
+        if [[ -f "$PROJECT_ROOT/GLX_App_files/package.json" ]]; then
             local major_deps=("react" "express" "tailwindcss" "socket.io" "leaflet" "vite" "typescript")
             echo "" >> "$MAIN_REPORT"
             echo "Major dependency documentation check:" >> "$MAIN_REPORT"
@@ -374,7 +374,7 @@ check_api_licenses() {
     local api_found=false
     
     # Check for Google Maps API
-    if grep -r "googlemaps\|maps\.googleapis\.com" "$PROJECT_ROOT/GALAX_App_files/" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" >/dev/null 2>&1; then
+    if grep -r "googlemaps\|maps\.googleapis\.com" "$PROJECT_ROOT/GLX_App_files/" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" >/dev/null 2>&1; then
         echo "📍 Google Maps API detected" >> "$MAIN_REPORT"
         echo "   License: Google Maps Platform Terms of Service" >> "$MAIN_REPORT"
         echo "   Status: ✅ Commercial use allowed with API key" >> "$MAIN_REPORT"
@@ -383,7 +383,7 @@ check_api_licenses() {
     fi
     
     # Check for Pusher API
-    if grep -r "pusher" "$PROJECT_ROOT/GALAX_App_files/" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" >/dev/null 2>&1; then
+    if grep -r "pusher" "$PROJECT_ROOT/GLX_App_files/" --include="*.js" --include="*.ts" --include="*.jsx" --include="*.tsx" >/dev/null 2>&1; then
         echo "📡 Pusher API detected" >> "$MAIN_REPORT"
         echo "   License: Pusher Terms of Service" >> "$MAIN_REPORT"
         echo "   Status: ✅ Commercial use allowed with subscription" >> "$MAIN_REPORT"
@@ -392,7 +392,7 @@ check_api_licenses() {
     fi
     
     # Check for Vercel services
-    if grep -r "vercel\|@vercel" "$PROJECT_ROOT/GALAX_App_files/" --include="*.json" >/dev/null 2>&1; then
+    if grep -r "vercel\|@vercel" "$PROJECT_ROOT/GLX_App_files/" --include="*.json" >/dev/null 2>&1; then
         echo "☁️ Vercel services detected" >> "$MAIN_REPORT"
         echo "   License: Vercel Terms of Service" >> "$MAIN_REPORT"
         echo "   Status: ✅ Commercial use allowed with subscription" >> "$MAIN_REPORT"
@@ -413,7 +413,7 @@ generate_compliance_summary() {
     echo "=== COMPLIANCE SUMMARY ===" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
     echo "Report completed: $(date -u)" >> "$MAIN_REPORT"
-    echo "Project: GALAX Civic Networking App" >> "$MAIN_REPORT"
+    echo "Project: GLX Civic Networking App" >> "$MAIN_REPORT"
     echo "Main License: PolyForm Shield License 1.0.0" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
     
@@ -476,7 +476,7 @@ main() {
     fi
     
     # Run compliance checks
-    scan_npm_dependencies "$PROJECT_ROOT/GALAX_App_files" "GALAX Main Application" || exit_code=1
+    scan_npm_dependencies "$PROJECT_ROOT/GLX_App_files" "GLX Main Application" || exit_code=1
     
     if [[ -f "$PROJECT_ROOT/mcp-servers/package.json" ]]; then
         scan_npm_dependencies "$PROJECT_ROOT/mcp-servers" "MCP Servers" || exit_code=1

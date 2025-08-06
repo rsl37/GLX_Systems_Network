@@ -1,7 +1,11 @@
 {
   "name": "glx-civic-networking-app",
   "version": "0.2.0",
+<<<<<<< HEAD
   "description": "GLX: Connect the World - Civic Networking Application - Root Project",
+=======
+  "description": "GLX Civic Network: Connect the World - Root Project",
+>>>>>>> main
   "private": true,
   "type": "module",
   "license": "PolyForm-Shield-1.0.0",
@@ -36,7 +40,17 @@
     "docs:list": "node .github/scripts/doc-metadata.js list",
     "docs:analyze": "node .github/scripts/smart-doc-update.js analyze",
     "docs:report": "node .github/scripts/smart-doc-update.js report",
-    "docs:auto-update": "node .github/scripts/smart-doc-update.js update-metadata"
+    "docs:auto-update": "node .github/scripts/smart-doc-update.js update-metadata",
+    "lint": "eslint . --ext .js,.jsx,.json",
+    "lint:fix": "eslint . --ext .js,.jsx,.json --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:app": "cd GLX_App_files && npm run lint",
+    "lint:app:fix": "cd GLX_App_files && npm run lint:fix",
+    "format:app": "cd GLX_App_files && npm run format",
+    "format:app:check": "cd GLX_App_files && npm run format:check",
+    "quality:check": "npm run lint && npm run format:check && npm run lint:app && npm run format:app:check",
+    "quality:fix": "npm run lint:fix && npm run format && npm run lint:app:fix && npm run format:app"
   },
   "workspaces": [
     "GLX_App_files"
@@ -59,5 +73,10 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "prettier": "^3.6.2"
   }
 }

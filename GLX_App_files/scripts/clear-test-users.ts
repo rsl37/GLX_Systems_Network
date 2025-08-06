@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -19,14 +19,18 @@ async function clearTestUsers() {
     const db = new Database(dbPath);
 
     // Get current user count
-    const beforeCount = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number };
+    const beforeCount = db.prepare('SELECT COUNT(*) as count FROM users').get() as {
+      count: number;
+    };
     console.log(`📊 Current user count: ${beforeCount.count}`);
 
     // List current users
     const users = db.prepare('SELECT id, username, email, phone FROM users').all();
     console.log('👥 Current users:');
     users.forEach((user: any) => {
-      console.log(`  - ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, Phone: ${user.phone || 'N/A'}`);
+      console.log(
+        `  - ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, Phone: ${user.phone || 'N/A'}`
+      );
     });
 
     // Delete all users (this will reset the table)
@@ -49,7 +53,7 @@ async function clearTestUsers() {
       'email_verification_tokens',
       'phone_verification_tokens',
       'kyc_verifications',
-      'stablecoin_transactions'
+      'stablecoin_transactions',
     ];
 
     for (const table of tables) {
@@ -75,7 +79,6 @@ async function clearTestUsers() {
     db.close();
     console.log('✅ Database cleanup completed successfully!');
     console.log('🚀 You can now test registration and login with a fresh database');
-
   } catch (error) {
     console.error('❌ Error clearing test users:', error);
     process.exit(1);

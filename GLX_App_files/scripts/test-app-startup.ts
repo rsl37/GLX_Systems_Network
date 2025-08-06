@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 /*
- * Copyright © 2025 GALAX Civic Networking.
+ * Copyright © 2025 GLX Civic Networking.
  * Licensed under the PolyForm Shield License 1.0.0.
- * "GALAX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
+ * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
@@ -40,19 +40,19 @@ async function startAppForTesting() {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      PORT: '3001'
-    }
+      PORT: '3001',
+    },
   });
 
   // Set up output handling
-  appProcess.stdout?.on('data', (data) => {
+  appProcess.stdout?.on('data', data => {
     const output = data.toString();
     if (output.includes('API Server with Socket.IO running')) {
       console.log('✅ Server startup detected');
     }
   });
 
-  appProcess.stderr?.on('data', (data) => {
+  appProcess.stderr?.on('data', data => {
     console.error('Server error:', data.toString());
   });
 

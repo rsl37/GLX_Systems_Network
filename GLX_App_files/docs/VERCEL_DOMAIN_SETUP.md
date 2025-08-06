@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "documentation"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -18,10 +18,13 @@ This guide explains how to properly configure a custom domain with SSL on Vercel
 
 ## Issue Description
 
+<<<<<<< HEAD:GLX_App_files/docs/VERCEL_DOMAIN_SETUP.md
+When accessing the custom domain `glxcivicnetwork.me`, users encounter:
 When accessing the custom domain `galaxcivicnetwork.me`, users encounter:
+
 ```
 This site can't provide a secure connection
-galaxcivicnetwork.me sent an invalid response.
+glxcivicnetwork.me sent an invalid response.
 ERR_SSL_PROTOCOL_ERROR
 ```
 
@@ -37,7 +40,7 @@ This error occurs when the SSL certificate is not properly configured or the dom
 
 2. **Add Custom Domain**
    - Click "Add Domain"
-   - Enter your domain: `galaxcivicnetwork.me`
+   - Enter your domain: `glxcivicnetwork.me`
    - Choose "Add domain"
 
 3. **DNS Configuration**
@@ -59,18 +62,21 @@ This error occurs when the SSL certificate is not properly configured or the dom
 ### 3. Common Issues & Solutions
 
 #### DNS Not Propagated
+
 ```bash
 # Check DNS resolution
-dig galaxcivicnetwork.me A
+dig glxcivicnetwork.me A
 # Should return Vercel's IP addresses
 ```
 
 #### SSL Certificate Pending
+
 - Wait for automatic certificate issuance
 - Check domain status in Vercel dashboard
 - May take 5-10 minutes after DNS verification
 
 #### Mixed HTTP/HTTPS Content
+
 - Ensure all resources load over HTTPS
 - Check for mixed content warnings in browser console
 
@@ -101,7 +107,7 @@ The project's `vercel.json` includes:
           "value": "http"
         }
       ],
-      "destination": "https://galaxcivicnetwork.me/",
+      "destination": "https://glxcivicnetwork.me/",
       "permanent": true
     }
   ]
@@ -109,6 +115,7 @@ The project's `vercel.json` includes:
 ```
 
 These configurations:
+
 - Force HTTPS with HSTS headers
 - Redirect HTTP traffic to HTTPS
 - Add security headers for better SSL/TLS behavior
@@ -116,17 +123,19 @@ These configurations:
 ### 5. Verification Steps
 
 1. **Check Domain Status**
+
    ```bash
-   curl -I https://galaxcivicnetwork.me
+   curl -I https://glxcivicnetwork.me
    ```
 
 2. **Verify SSL Certificate**
+
    ```bash
-   openssl s_client -connect galaxcivicnetwork.me:443 -servername galaxcivicnetwork.me
+   openssl s_client -connect glxcivicnetwork.me:443 -servername glxcivicnetwork.me
    ```
 
 3. **Test in Browser**
-   - Visit `https://galaxcivicnetwork.me`
+   - Visit `https://glxcivicnetwork.me`
    - Check for secure lock icon
    - Verify no mixed content warnings
 
@@ -160,7 +169,11 @@ These configurations:
 ## Testing
 
 After configuration, test both:
-- Direct Vercel URL: `https://galax-civic-networking-app.vercel.app`
+<<<<<<< HEAD:GLX_App_files/docs/VERCEL_DOMAIN_SETUP.md
+- Direct Vercel URL: `https://glx-civic-networking-app.vercel.app`
+- Custom domain: `https://glxcivicnetwork.me`
+
+- Direct Vercel URL: `https://glx-civic-networking-app.vercel.app`
 - Custom domain: `https://galaxcivicnetwork.me`
 
 Both should work without SSL errors.

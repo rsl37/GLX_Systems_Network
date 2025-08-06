@@ -12,7 +12,7 @@ on:
     branches: [main]
     paths:
       - '**.md'
-      - 'GALAX_App_files/**'
+      - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/scripts/doc-metadata.js'
@@ -66,10 +66,10 @@ jobs:
               - '**.md'
               - '.github/scripts/doc-metadata.js'
             code:
-              - 'GALAX_App_files/src/**'
-              - 'GALAX_App_files/server/**'
-              - 'GALAX_App_files/client/**'
-              - 'GALAX_App_files/package.json'
+              - 'GLX_App_files/src/**'
+              - 'GLX_App_files/server/**'
+              - 'GLX_App_files/client/**'
+              - 'GLX_App_files/package.json'
               - 'package.json'
               - 'vercel.json'
 

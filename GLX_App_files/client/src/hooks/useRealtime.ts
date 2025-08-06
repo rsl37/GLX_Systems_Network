@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GALAX Civic Networking App
+ * Copyright (c) 2025 GLX Civic Networking App
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -32,7 +32,7 @@ export function useRealtime(token: string | null) {
     retryAttempts: 0,
     maxRetries: 5,
     lastError: null,
-    connectionTime: null
+    connectionTime: null,
   });
 
   const retryTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -65,7 +65,7 @@ export function useRealtime(token: string | null) {
 
       // Create Server-Sent Events connection
       const apiBase = isProduction
-        ? 'https://galaxcivicnetwork.me/api'
+        ? 'https://glxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
       // WSS configuration for secure WebSocket fallback support
@@ -73,9 +73,13 @@ export function useRealtime(token: string | null) {
         protocol: secureProtocol,
         secure: isProduction,
         upgradeHeaders: {
-          'Sec-WebSocket-Protocol': 'galax-secure',
+<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
+          'Sec-WebSocket-Protocol': 'glx-secure',
           'Sec-WebSocket-Extensions': 'permessage-deflate'
         }
+          'Sec-WebSocket-Protocol': 'galax-secure',
+          'Sec-WebSocket-Extensions': 'permessage-deflate',
+        },
       };
 
       if (isProduction) {
@@ -84,7 +88,7 @@ export function useRealtime(token: string | null) {
       }
 
       const eventSource = new EventSource(`${apiBase}/realtime/events`, {
-        withCredentials: true
+        withCredentials: true,
       });
 
       eventSource.onopen = () => {
@@ -95,11 +99,11 @@ export function useRealtime(token: string | null) {
           authenticated: true,
           connectionTime: Date.now() - connectionStartTime.current,
           lastError: null,
-          retryAttempts: 0
+          retryAttempts: 0,
         }));
       };
 
-      eventSource.onmessage = (event) => {
+      eventSource.onmessage = event => {
         try {
           const message: RealtimeMessage = JSON.parse(event.data);
           handleMessage(message);
@@ -108,13 +112,13 @@ export function useRealtime(token: string | null) {
         }
       };
 
-      eventSource.onerror = (error) => {
+      eventSource.onerror = error => {
         console.error('❌ SSE connection error:', error);
         setHealth(prev => ({
           ...prev,
           connected: false,
           authenticated: false,
-          lastError: 'Connection error'
+          lastError: 'Connection error',
         }));
 
         // Attempt reconnection with exponential backoff
@@ -126,19 +130,20 @@ export function useRealtime(token: string | null) {
             initializeConnection();
           }, delay);
 
-          console.log(`🔄 SSE reconnection attempt ${health.retryAttempts + 1}/${health.maxRetries} in ${delay}ms`);
+          console.log(
+            `🔄 SSE reconnection attempt ${health.retryAttempts + 1}/${health.maxRetries} in ${delay}ms`
+          );
         }
       };
 
       eventSourceRef.current = eventSource;
-
     } catch (error) {
       console.error('❌ Error initializing SSE connection:', error);
       setHealth(prev => ({
         ...prev,
         connected: false,
         authenticated: false,
-        lastError: 'Connection failed'
+        lastError: 'Connection failed',
       }));
     }
   }, [token, health.retryAttempts, health.maxRetries]);
@@ -197,7 +202,7 @@ export function useRealtime(token: string | null) {
       retryAttempts: 0,
       maxRetries: 5,
       lastError: null,
-      connectionTime: null
+      connectionTime: null,
     });
 
     connectionId.current = null;
@@ -215,6 +220,7 @@ export function useRealtime(token: string | null) {
   }, []);
 
   // Join help request room
+<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
   const joinRoom = useCallback(async (helpRequestId: number): Promise<boolean> => {
     if (!connectionId.current || !token) {
       console.error('❌ No active connection to join room');
@@ -223,7 +229,7 @@ export function useRealtime(token: string | null) {
 
     try {
       const apiBase = process.env.NODE_ENV === 'production'
-        ? 'https://galaxcivicnetwork.me/api'
+        ? 'https://glxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
       const response = await fetch(`${apiBase}/realtime/join-room`, {
@@ -245,16 +251,50 @@ export function useRealtime(token: string | null) {
         return true;
       } else {
         console.error('❌ Failed to join room:', result.error);
+  const joinRoom = useCallback(
+    async (helpRequestId: number): Promise<boolean> => {
+      if (!connectionId.current || !token) {
+        console.error('❌ No active connection to join room');
         return false;
       }
 
-    } catch (error) {
-      console.error('❌ Error joining room:', error);
-      return false;
-    }
-  }, [token]);
+      try {
+        const apiBase =
+          process.env.NODE_ENV === 'production'
+            ? 'https://galaxcivicnetwork.me/api'
+            : 'http://localhost:3001/api';
+
+        const response = await fetch(`${apiBase}/realtime/join-room`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            helpRequestId,
+            connectionId: connectionId.current,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Successfully joined room:', result.roomId);
+          return true;
+        } else {
+          console.error('❌ Failed to join room:', result.error);
+          return false;
+        }
+      } catch (error) {
+        console.error('❌ Error joining room:', error);
+        return false;
+      }
+    },
+    [token]
+  );
 
   // Leave help request room
+<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
   const leaveRoom = useCallback(async (helpRequestId: number): Promise<boolean> => {
     if (!connectionId.current || !token) {
       console.error('❌ No active connection to leave room');
@@ -263,7 +303,7 @@ export function useRealtime(token: string | null) {
 
     try {
       const apiBase = process.env.NODE_ENV === 'production'
-        ? 'https://galaxcivicnetwork.me/api'
+        ? 'https://glxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
       const response = await fetch(`${apiBase}/realtime/leave-room`, {
@@ -285,16 +325,50 @@ export function useRealtime(token: string | null) {
         return true;
       } else {
         console.error('❌ Failed to leave room:', result.error);
+  const leaveRoom = useCallback(
+    async (helpRequestId: number): Promise<boolean> => {
+      if (!connectionId.current || !token) {
+        console.error('❌ No active connection to leave room');
         return false;
       }
 
-    } catch (error) {
-      console.error('❌ Error leaving room:', error);
-      return false;
-    }
-  }, [token]);
+      try {
+        const apiBase =
+          process.env.NODE_ENV === 'production'
+            ? 'https://galaxcivicnetwork.me/api'
+            : 'http://localhost:3001/api';
+
+        const response = await fetch(`${apiBase}/realtime/leave-room`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            helpRequestId,
+            connectionId: connectionId.current,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Successfully left room:', result.roomId);
+          return true;
+        } else {
+          console.error('❌ Failed to leave room:', result.error);
+          return false;
+        }
+      } catch (error) {
+        console.error('❌ Error leaving room:', error);
+        return false;
+      }
+    },
+    [token]
+  );
 
   // Send message to help request
+<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
   const sendMessage = useCallback(async (helpRequestId: number, message: string): Promise<{ success: boolean; messageId?: number; error?: string }> => {
     if (!token) {
       return { success: false, error: 'Not authenticated' };
@@ -302,7 +376,7 @@ export function useRealtime(token: string | null) {
 
     try {
       const apiBase = process.env.NODE_ENV === 'production'
-        ? 'https://galaxcivicnetwork.me/api'
+        ? 'https://glxcivicnetwork.me/api'
         : 'http://localhost:3001/api';
 
       const response = await fetch(`${apiBase}/realtime/send-message`, {
@@ -325,13 +399,52 @@ export function useRealtime(token: string | null) {
       } else {
         console.error('❌ Failed to send message:', result.error);
         return { success: false, error: result.details || result.error || 'Failed to send message' };
+  const sendMessage = useCallback(
+    async (
+      helpRequestId: number,
+      message: string
+    ): Promise<{ success: boolean; messageId?: number; error?: string }> => {
+      if (!token) {
+        return { success: false, error: 'Not authenticated' };
       }
 
-    } catch (error) {
-      console.error('❌ Error sending message:', error);
-      return { success: false, error: 'Network error occurred while sending message' };
-    }
-  }, [token]);
+      try {
+        const apiBase =
+          process.env.NODE_ENV === 'production'
+            ? 'https://galaxcivicnetwork.me/api'
+            : 'http://localhost:3001/api';
+
+        const response = await fetch(`${apiBase}/realtime/send-message`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            helpRequestId,
+            message,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          console.log('✅ Message sent successfully:', result.messageId);
+          return { success: true, messageId: result.messageId };
+        } else {
+          console.error('❌ Failed to send message:', result.error);
+          return {
+            success: false,
+            error: result.details || result.error || 'Failed to send message',
+          };
+        }
+      } catch (error) {
+        console.error('❌ Error sending message:', error);
+        return { success: false, error: 'Network error occurred while sending message' };
+      }
+    },
+    [token]
+  );
 
   // Manual reconnection
   const reconnect = useCallback(() => {
@@ -348,6 +461,6 @@ export function useRealtime(token: string | null) {
     leaveRoom,
     sendMessage,
     reconnect,
-    connectionId: connectionId.current
+    connectionId: connectionId.current,
   };
 }

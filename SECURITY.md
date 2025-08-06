@@ -4,7 +4,7 @@ description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "security"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -14,7 +14,7 @@ relatedDocs: []
 
 ## 🔒 Security Overview
 
-GALAX implements comprehensive, enterprise-grade security measures designed to protect against current and emerging threats, including post-quantum vulnerabilities.
+GLX implements comprehensive, enterprise-grade security measures designed to protect against current and emerging threats, including post-quantum vulnerabilities.
 
 ## 🛡️ Security Features
 
@@ -55,7 +55,7 @@ Security updates are provided for actively maintained branches:
 
 ## 🚨 Reporting Security Vulnerabilities
 
-**Report security vulnerabilities confidentially via [GitHub Security Advisories](https://github.com/rsl37/GALAX_Civic_Networking_App/security/advisories/new).**
+**Report security vulnerabilities confidentially via [GitHub Security Advisories](https://github.com/rsl37/GLX_Civic_Networking_App/security/advisories/new).**
 
 ### Response Timeline
 - **Initial Response**: Within 24 hours
@@ -73,7 +73,7 @@ For urgent security matters, create a security advisory with:
 ## 🔑 PAT_TOKEN Authentication Security
 
 ### Secure Personal Access Token Implementation
-GALAX implements industry-standard PAT_TOKEN authentication for enhanced GitHub Actions capabilities:
+GLX implements industry-standard PAT_TOKEN authentication for enhanced GitHub Actions capabilities:
 
 #### PAT_TOKEN Security Features
 - **Fine-Grained Permissions**: Minimal required scopes (Contents:Read, Metadata:Read)
@@ -143,7 +143,7 @@ Our security workflows provide comprehensive protection through multiple layers:
 
 ## 🎯 Security Standards
 
-GALAX follows industry-standard security practices:
+GLX follows industry-standard security practices:
 - **OWASP Top 10**: Protection against common web vulnerabilities
 - **NIST Cybersecurity Framework**: Comprehensive security management
 - **Post-Quantum Readiness**: Quantum-resistant cryptography implementation
@@ -159,4 +159,4 @@ Regular security validation through:
 
 ---
 
-**Note**: GALAX is actively developed with security-first principles. All security measures are continuously updated to address emerging threats and maintain the highest protection standards.
+**Note**: GLX is actively developed with security-first principles. All security measures are continuously updated to address emerging threats and maintain the highest protection standards.

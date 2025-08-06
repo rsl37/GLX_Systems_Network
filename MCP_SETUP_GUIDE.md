@@ -1,18 +1,18 @@
 ---
-title: "GALAX MCP Configuration Setup Guide"
+title: "GLX MCP Configuration Setup Guide"
 description: ""
 lastUpdated: "2025-08-03"
 nextReview: "2025-09-03"
 contentType: "guide"
-maintainer: "GALAX Development Team"
+maintainer: "GLX Development Team"
 version: "1.0.0"
 tags: []
 relatedDocs: []
 ---
 
-# GALAX MCP Configuration Setup Guide
+# GLX MCP Configuration Setup Guide
 
-This repository now includes a complete Model Context Protocol (MCP) configuration for GitHub Copilot, specifically designed for the GALAX Civic Networking App.
+This repository now includes a complete Model Context Protocol (MCP) configuration for GitHub Copilot, specifically designed for the GLX Civic Networking App.
 
 ## 🎯 Overview
 
@@ -198,7 +198,7 @@ After setup, test GitHub Copilot integration by asking questions like:
 
 - [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
 - [GitHub Copilot MCP Integration Guide](https://docs.github.com/copilot)
-- [GALAX Project Documentation](./README.md)
+- [GLX Project Documentation](./README.md)
 
 ## 🆘 Troubleshooting
 

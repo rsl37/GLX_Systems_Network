@@ -53,12 +53,12 @@ class VercelTroubleshooter {
       // Check essential fields
       if (!config.buildCommand) {
         this.log('critical', 'Configuration', 'buildCommand not specified in vercel.json',
-          'Add buildCommand: "cd GALAX_App_files && npm install && npm run build"');
+          'Add buildCommand: "cd GLX_App_files && npm install && npm run build"');
       }
       
       if (!config.outputDirectory) {
         this.log('critical', 'Configuration', 'outputDirectory not specified in vercel.json',
-          'Add outputDirectory: "GALAX_App_files/dist/public"');
+          'Add outputDirectory: "GLX_App_files/dist/public"');
       }
       
       if (!config.headers) {
@@ -67,7 +67,7 @@ class VercelTroubleshooter {
       }
       
       // Check functions configuration
-      if (!config.functions || !config.functions['GALAX_App_files/api/**/*']) {
+      if (!config.functions || !config.functions['GLX_App_files/api/**/*']) {
         this.log('warning', 'Functions', 'API functions not properly configured',
           'Add functions configuration for serverless API routes');
       }
@@ -271,8 +271,8 @@ class VercelTroubleshooter {
     // Try to detect Vercel deployment URL
     const possibleUrls = [
       process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-      'https://galax-civic-networking.vercel.app',
-      'https://galaxcivicnetwork.me'
+      'https://glx-civic-networking.vercel.app',
+      'https://glxcivicnetwork.me'
     ].filter(Boolean);
     
     for (const url of possibleUrls) {
