@@ -1,7 +1,6 @@
 ---
 name: Quality & Performance
 
-<<<<<<< HEAD
 on:
   push:
     branches: [main, develop]
@@ -18,11 +17,6 @@ on:
       - 'package-lock.json'
       - '.github/workflows/quality.yml'
   workflow_dispatch:
-=======
-'on':
-  pull_request:
-    branches: [main, develop, production]
->>>>>>> origin/all-merged
 
 permissions:
   contents: read
@@ -30,13 +24,9 @@ permissions:
   checks: write
   pull-requests: write
 
-<<<<<<< HEAD
 env:
   NODE_VERSION: '20'
   WORKING_DIRECTORY: './GLX_App_files'
-
-=======
->>>>>>> origin/all-merged
 jobs:
   code-coverage:
     name: Code Coverage

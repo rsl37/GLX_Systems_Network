@@ -1,7 +1,6 @@
 ---
 name: CI/CD Pipeline
 
-<<<<<<< HEAD
 on:
   push:
     branches: [main, develop, 'copilot/**']
@@ -17,11 +16,6 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'vercel.json'
-=======
-'on':
-  pull_request:
-    branches: [main]
->>>>>>> origin/all-merged
   workflow_dispatch:
     inputs:
       branch:
@@ -39,15 +33,9 @@ permissions:
   pull-requests: write
 
 env:
-<<<<<<< HEAD
   NODE_VERSION: 20.x
   WORKING_DIRECTORY: ./GLX_App_files
   CACHE_VERSION: v1
-=======
-  NODE_VERSION: '20.x'
-  WORKING_DIRECTORY: './GALAX_App_files'
-  CACHE_VERSION: 'v1'  # Increment to bust cache when needed
->>>>>>> origin/all-merged
 
 jobs:
   build-and-test:
