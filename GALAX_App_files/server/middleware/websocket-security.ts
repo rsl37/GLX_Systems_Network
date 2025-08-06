@@ -35,21 +35,21 @@ export class WebSocketSecurityMiddleware {
       connections: new Map(),
       messages: new Map(),
       authAttempts: new Map(),
-      lastReset: Date.now()
+      lastReset: Date.now(),
     };
 
     // Common injection patterns to detect
     this.suspiciousPatterns = [
       /<script.*?>.*?<\/script>/gi, // XSS attempts
-      /javascript\s*:/gi,           // JavaScript protocol
-      /on\w+\s*=.*?["']/gi,        // Event handlers
-      /eval\s*\(/gi,               // Code evaluation
-      /expression\s*\(/gi,         // CSS expressions
-      /vbscript\s*:/gi,            // VBScript protocol
-      /data\s*:\s*text\/html/gi,   // Data URI HTML
+      /javascript\s*:/gi, // JavaScript protocol
+      /on\w+\s*=.*?["']/gi, // Event handlers
+      /eval\s*\(/gi, // Code evaluation
+      /expression\s*\(/gi, // CSS expressions
+      /vbscript\s*:/gi, // VBScript protocol
+      /data\s*:\s*text\/html/gi, // Data URI HTML
       /\bUNION\b.*?\bSELECT\b/gi, // SQL injection
-      /\bDROP\b.*?\bTABLE\b/gi,   // SQL injection
-      /\bINSERT\b.*?\bINTO\b/gi,  // SQL injection
+      /\bDROP\b.*?\bTABLE\b/gi, // SQL injection
+      /\bINSERT\b.*?\bINTO\b/gi, // SQL injection
     ];
 
     // Reset counters every minute
@@ -91,7 +91,9 @@ export class WebSocketSecurityMiddleware {
     const currentCount = this.rateLimitState.connections.get(ip) || 0;
 
     if (currentCount >= this.config.maxConnectionsPerIP) {
-      console.warn(`🚨 Connection rate limit exceeded for IP: ${ip} (${currentCount}/${this.config.maxConnectionsPerIP})`);
+      console.warn(
+        `🚨 Connection rate limit exceeded for IP: ${ip} (${currentCount}/${this.config.maxConnectionsPerIP})`
+      );
       return false;
     }
 
@@ -106,7 +108,9 @@ export class WebSocketSecurityMiddleware {
     const currentCount = this.rateLimitState.messages.get(userId) || 0;
 
     if (currentCount >= this.config.maxMessagesPerMinute) {
-      console.warn(`🚨 Message rate limit exceeded for user: ${userId} (${currentCount}/${this.config.maxMessagesPerMinute})`);
+      console.warn(
+        `🚨 Message rate limit exceeded for user: ${userId} (${currentCount}/${this.config.maxMessagesPerMinute})`
+      );
       return false;
     }
 
@@ -121,7 +125,9 @@ export class WebSocketSecurityMiddleware {
     const currentCount = this.rateLimitState.authAttempts.get(ip) || 0;
 
     if (currentCount >= this.config.maxAuthAttemptsPerMinute) {
-      console.warn(`🚨 Auth rate limit exceeded for IP: ${ip} (${currentCount}/${this.config.maxAuthAttemptsPerMinute})`);
+      console.warn(
+        `🚨 Auth rate limit exceeded for IP: ${ip} (${currentCount}/${this.config.maxAuthAttemptsPerMinute})`
+      );
       return false;
     }
 
@@ -230,9 +236,7 @@ export class WebSocketSecurityMiddleware {
     // Check for suspicious user agent patterns
     const userAgent = headers['user-agent'];
     if (userAgent) {
-      const suspiciousAgents = [
-        /curl/i, /wget/i, /python/i, /java/i, /go-http/i, /node/i
-      ];
+      const suspiciousAgents = [/curl/i, /wget/i, /python/i, /java/i, /go-http/i, /node/i];
 
       if (suspiciousAgents.some(pattern => pattern.test(userAgent))) {
         console.warn(`🚨 Potential CSWH: Suspicious user agent: ${userAgent}`);
@@ -252,7 +256,7 @@ export class WebSocketSecurityMiddleware {
       type,
       severity,
       details,
-      source: 'WebSocketSecurity'
+      source: 'WebSocketSecurity',
     };
 
     console.log(`🔒 Security Event [${severity.toUpperCase()}]: ${JSON.stringify(event)}`);
@@ -286,7 +290,7 @@ export class WebSocketSecurityMiddleware {
       connections: this.rateLimitState.connections.size,
       messages: this.rateLimitState.messages.size,
       authAttempts: this.rateLimitState.authAttempts.size,
-      lastReset: new Date(this.rateLimitState.lastReset).toISOString()
+      lastReset: new Date(this.rateLimitState.lastReset).toISOString(),
     };
   }
 
@@ -301,17 +305,21 @@ export class WebSocketSecurityMiddleware {
       standardHeaders: true,
       legacyHeaders: false,
       handler: (req: Request, res: Response) => {
-        this.logSecurityEvent('rate_limit_exceeded', {
-          ip: req.ip,
-          userAgent: req.get('User-Agent'),
-          endpoint: 'websocket_connection'
-        }, 'medium');
+        this.logSecurityEvent(
+          'rate_limit_exceeded',
+          {
+            ip: req.ip,
+            userAgent: req.get('User-Agent'),
+            endpoint: 'websocket_connection',
+          },
+          'medium'
+        );
 
         res.status(429).json({
           error: 'Rate limit exceeded',
-          retryAfter: '60 seconds'
+          retryAfter: '60 seconds',
         });
-      }
+      },
     });
   }
 }
@@ -324,9 +332,9 @@ export const defaultSecurityConfig: SecurityConfig = {
   allowedOrigins: [
     'https://galax-civic-platform.vercel.app',
     'https://localhost:3000',
-    'https://127.0.0.1:3000'
+    'https://127.0.0.1:3000',
   ],
-  blockSuspiciousPatterns: true
+  blockSuspiciousPatterns: true,
 };
 
 export default WebSocketSecurityMiddleware;

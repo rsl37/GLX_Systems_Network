@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import express from 'express';
 import { createServer } from 'http';
 import RealtimeManager from '../../server/realtimeManager.js';
@@ -41,7 +40,7 @@ export class TestServer {
   }
 
   async stop(): Promise<void> {
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       this.realtimeManager.shutdown();
       this.server.close(() => {
         resolve();
@@ -70,10 +69,10 @@ export class TestServer {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
         });
         return response.json();
-      }
+      },
     };
   }
 }
@@ -106,5 +105,5 @@ export const mockDb = {
     const newRequest = { id, ...request, created_at: new Date() };
     this.helpRequests.push(newRequest);
     return newRequest;
-  }
+  },
 };

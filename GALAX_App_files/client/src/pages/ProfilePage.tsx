@@ -16,7 +16,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { AccountSettings } from '../components/AccountSettings';
 import { UserBadges } from '../components/UserBadges';
@@ -45,7 +51,7 @@ import {
   Globe,
   Heart,
   Lock,
-  Wallet
+  Wallet,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -77,14 +83,14 @@ export function ProfilePage() {
     showEmail: false,
     showPhone: false,
     showWallet: false,
-    walletDisplayMode: 'hidden' as 'hidden' | 'public' | 'tip-button'
+    walletDisplayMode: 'hidden' as 'hidden' | 'public' | 'tip-button',
   });
   const [editForm, setEditForm] = useState({
     username: user?.username || '',
     email: user?.email || '',
     phone: user?.phone || '',
     wallet_address: user?.wallet_address || '',
-    skills: ''
+    skills: '',
   });
 
   useEffect(() => {
@@ -97,7 +103,7 @@ export function ProfilePage() {
 
       // Fetch user stats
       const statsResponse = await fetch('/api/user/stats', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (statsResponse.ok) {
@@ -107,7 +113,7 @@ export function ProfilePage() {
 
       // Fetch transactions
       const transactionsResponse = await fetch('/api/transactions', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (transactionsResponse.ok) {
@@ -117,19 +123,20 @@ export function ProfilePage() {
 
       // Fetch privacy settings
       const privacyResponse = await fetch('/api/user/privacy-settings', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (privacyResponse.ok) {
         const privacyData = await privacyResponse.json();
-        setPrivacySettings(privacyData.data || {
-          showEmail: false,
-          showPhone: false,
-          showWallet: false,
-          walletDisplayMode: 'hidden'
-        });
+        setPrivacySettings(
+          privacyData.data || {
+            showEmail: false,
+            showPhone: false,
+            showWallet: false,
+            walletDisplayMode: 'hidden',
+          }
+        );
       }
-
     } catch (error) {
       console.error('Profile data fetch error:', error);
     } finally {
@@ -143,10 +150,10 @@ export function ProfilePage() {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editForm)
+        body: JSON.stringify(editForm),
       });
 
       if (response.ok) {
@@ -159,7 +166,13 @@ export function ProfilePage() {
   };
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase() || name.substring(0, 2).toUpperCase();
+    return (
+      name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase() || name.substring(0, 2).toUpperCase()
+    );
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -175,43 +188,56 @@ export function ProfilePage() {
 
   const formatTransactionType = (type: string) => {
     const types: { [key: string]: string } = {
-      'claim': 'Claim',
-      'reward': 'Reward',
-      'transfer': 'Transfer',
-      'purchase': 'Purchase',
-      'refund': 'Refund'
+      claim: 'Claim',
+      reward: 'Reward',
+      transfer: 'Transfer',
+      purchase: 'Purchase',
+      refund: 'Refund',
     };
     return types[type] || type;
   };
 
   const getTransactionColor = (type: string) => {
     switch (type) {
-      case 'reward': return 'text-green-600';
-      case 'claim': return 'text-blue-600';
-      case 'transfer': return 'text-purple-600';
-      case 'purchase': return 'text-orange-600';
-      case 'refund': return 'text-cyan-600';
-      default: return 'text-gray-600';
+      case 'reward':
+        return 'text-green-600';
+      case 'claim':
+        return 'text-blue-600';
+      case 'transfer':
+        return 'text-purple-600';
+      case 'purchase':
+        return 'text-orange-600';
+      case 'refund':
+        return 'text-cyan-600';
+      default:
+        return 'text-gray-600';
     }
   };
 
   const getReputationLevel = (score: number) => {
     if (score >= 10000) return { level: 'Legend', color: 'text-yellow-600', progress: 100 };
-    if (score >= 5000) return { level: 'Champion', color: 'text-purple-600', progress: (score - 5000) / 5000 * 100 };
-    if (score >= 2000) return { level: 'Expert', color: 'text-blue-600', progress: (score - 2000) / 3000 * 100 };
-    if (score >= 500) return { level: 'Helper', color: 'text-green-600', progress: (score - 500) / 1500 * 100 };
-    return { level: 'Newcomer', color: 'text-gray-600', progress: score / 500 * 100 };
+    if (score >= 5000)
+      return {
+        level: 'Champion',
+        color: 'text-purple-600',
+        progress: ((score - 5000) / 5000) * 100,
+      };
+    if (score >= 2000)
+      return { level: 'Expert', color: 'text-blue-600', progress: ((score - 2000) / 3000) * 100 };
+    if (score >= 500)
+      return { level: 'Helper', color: 'text-green-600', progress: ((score - 500) / 1500) * 100 };
+    return { level: 'Newcomer', color: 'text-gray-600', progress: (score / 500) * 100 };
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-48 bg-gray-200 rounded-lg"></div>
+      <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-4'>
+        <div className='max-w-4xl mx-auto'>
+          <div className='animate-pulse space-y-6'>
+            <div className='h-8 bg-gray-200 rounded w-1/4'></div>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className='h-48 bg-gray-200 rounded-lg'></div>
               ))}
             </div>
           </div>
@@ -222,11 +248,11 @@ export function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-4">
-        <div className="max-w-4xl mx-auto text-center py-12">
-          <AlertCircle className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-          <h2 className="text-2xl font-bold text-gray-600 mb-4">Profile Not Found</h2>
-          <p className="text-gray-500">Please log in to view your profile.</p>
+      <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-4'>
+        <div className='max-w-4xl mx-auto text-center py-12'>
+          <AlertCircle className='h-16 w-16 mx-auto mb-4 text-gray-400' />
+          <h2 className='text-2xl font-bold text-gray-600 mb-4'>Profile Not Found</h2>
+          <p className='text-gray-500'>Please log in to view your profile.</p>
         </div>
       </div>
     );
@@ -235,19 +261,19 @@ export function ProfilePage() {
   const reputationInfo = getReputationLevel(user.reputation_score);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className='min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 p-4'>
+      <div className='max-w-4xl mx-auto space-y-6'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center space-y-4"
+          className='text-center space-y-4'
         >
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
             My Profile
           </h1>
-          <p className="text-gray-600">Manage your GALAX account and community participation</p>
+          <p className='text-gray-600'>Manage your GALAX account and community participation</p>
         </motion.div>
 
         {/* Profile Overview */}
@@ -256,148 +282,148 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Card className="galax-card">
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <div className="relative">
-                  <Avatar className="h-24 w-24">
+          <Card className='galax-card'>
+            <CardContent className='p-6'>
+              <div className='flex flex-col md:flex-row items-center md:items-start gap-6'>
+                <div className='relative'>
+                  <Avatar className='h-24 w-24'>
                     <AvatarImage src={user.avatar_url || ''} alt={user.username} />
-                    <AvatarFallback className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-2xl">
+                    <AvatarFallback className='bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-2xl'>
                       {getInitials(user.username)}
                     </AvatarFallback>
                   </Avatar>
                   <Button
-                    size="sm"
-                    variant="ghost"
-                    className="absolute -bottom-2 -right-2 h-8 w-8 p-0 bg-white shadow-md rounded-full"
+                    size='sm'
+                    variant='ghost'
+                    className='absolute -bottom-2 -right-2 h-8 w-8 p-0 bg-white shadow-md rounded-full'
                   >
-                    <Camera className="h-4 w-4" />
+                    <Camera className='h-4 w-4' />
                   </Button>
                 </div>
 
-                <div className="flex-1 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                    <h2 className="text-2xl font-bold text-gray-800">{user.username}</h2>
+                <div className='flex-1 text-center md:text-left'>
+                  <div className='flex items-center justify-center md:justify-start gap-2 mb-2'>
+                    <h2 className='text-2xl font-bold text-gray-800'>{user.username}</h2>
                     {user.email_verified && (
-                      <Badge className="bg-green-100 text-green-800">
-                        <CheckCircle className="h-3 w-3 mr-1" />
+                      <Badge className='bg-green-100 text-green-800'>
+                        <CheckCircle className='h-3 w-3 mr-1' />
                         Verified
                       </Badge>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-gray-600 mb-4">
+                  <div className='flex items-center justify-center md:justify-start gap-4 text-sm text-gray-600 mb-4'>
                     {user.email && privacySettings.showEmail && (
-                      <div className="flex items-center gap-1">
-                        <Mail className="h-4 w-4" />
+                      <div className='flex items-center gap-1'>
+                        <Mail className='h-4 w-4' />
                         {user.email}
                       </div>
                     )}
                     {user.phone && privacySettings.showPhone && (
-                      <div className="flex items-center gap-1">
-                        <Phone className="h-4 w-4" />
+                      <div className='flex items-center gap-1'>
+                        <Phone className='h-4 w-4' />
                         {user.phone}
                       </div>
                     )}
                     {user.wallet_address && privacySettings.showWallet && (
-                      <div className="flex items-center gap-1">
-                        <Wallet className="h-4 w-4" />
+                      <div className='flex items-center gap-1'>
+                        <Wallet className='h-4 w-4' />
                         {privacySettings.walletDisplayMode === 'public' ? (
-                          <span className="font-mono text-xs">
+                          <span className='font-mono text-xs'>
                             {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
                           </span>
                         ) : (
-                          <div className="flex items-center gap-2">
-                            <Badge className="bg-green-100 text-green-800">
-                              <CheckCircle className="h-3 w-3 mr-1" />
+                          <div className='flex items-center gap-2'>
+                            <Badge className='bg-green-100 text-green-800'>
+                              <CheckCircle className='h-3 w-3 mr-1' />
                               Wallet Verified
                             </Badge>
-                            <Button size="sm" variant="outline" className="h-6 px-2 text-xs">
-                              <DollarSign className="h-3 w-3 mr-1" />
+                            <Button size='sm' variant='outline' className='h-6 px-2 text-xs'>
+                              <DollarSign className='h-3 w-3 mr-1' />
                               Tip
                             </Button>
                           </div>
                         )}
                       </div>
                     )}
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
+                    <div className='flex items-center gap-1'>
+                      <Calendar className='h-4 w-4' />
                       Member since {formatTimeAgo(user.created_at || '')}
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-center md:justify-start gap-2">
+                  <div className='space-y-2'>
+                    <div className='flex items-center justify-center md:justify-start gap-2'>
                       <Star className={`h-4 w-4 ${reputationInfo.color}`} />
                       <span className={`font-medium ${reputationInfo.color}`}>
                         {reputationInfo.level}
                       </span>
-                      <span className="text-gray-600">
-                        ({user.reputation_score} points)
-                      </span>
+                      <span className='text-gray-600'>({user.reputation_score} points)</span>
                     </div>
-                    <Progress value={reputationInfo.progress} className="h-2" />
+                    <Progress value={reputationInfo.progress} className='h-2' />
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   <Dialog open={isEditing} onOpenChange={setIsEditing}>
                     <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4 mr-2" />
+                      <Button variant='outline' size='sm'>
+                        <Edit className='h-4 w-4 mr-2' />
                         Edit Profile
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
+                    <DialogContent className='sm:max-w-md'>
                       <DialogHeader>
                         <DialogTitle>Edit Profile</DialogTitle>
                       </DialogHeader>
-                      <div className="space-y-4">
+                      <div className='space-y-4'>
                         <div>
-                          <Label htmlFor="username">Username</Label>
+                          <Label htmlFor='username'>Username</Label>
                           <Input
-                            id="username"
+                            id='username'
                             value={editForm.username}
-                            onChange={(e) => setEditForm({...editForm, username: e.target.value})}
+                            onChange={e => setEditForm({ ...editForm, username: e.target.value })}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="email">Email</Label>
+                          <Label htmlFor='email'>Email</Label>
                           <Input
-                            id="email"
-                            type="email"
+                            id='email'
+                            type='email'
                             value={editForm.email}
-                            onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                            onChange={e => setEditForm({ ...editForm, email: e.target.value })}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="phone">Phone</Label>
+                          <Label htmlFor='phone'>Phone</Label>
                           <Input
-                            id="phone"
+                            id='phone'
                             value={editForm.phone}
-                            onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
+                            onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="wallet">Wallet Address</Label>
+                          <Label htmlFor='wallet'>Wallet Address</Label>
                           <Input
-                            id="wallet"
+                            id='wallet'
                             value={editForm.wallet_address}
-                            onChange={(e) => setEditForm({...editForm, wallet_address: e.target.value})}
-                            placeholder="Enter wallet address"
-                            className="font-mono text-sm"
+                            onChange={e =>
+                              setEditForm({ ...editForm, wallet_address: e.target.value })
+                            }
+                            placeholder='Enter wallet address'
+                            className='font-mono text-sm'
                           />
                         </div>
                         <div>
-                          <Label htmlFor="skills">Skills</Label>
+                          <Label htmlFor='skills'>Skills</Label>
                           <Textarea
-                            id="skills"
+                            id='skills'
                             value={editForm.skills}
-                            onChange={(e) => setEditForm({...editForm, skills: e.target.value})}
-                            placeholder="Describe your skills and expertise"
+                            onChange={e => setEditForm({ ...editForm, skills: e.target.value })}
+                            placeholder='Describe your skills and expertise'
                           />
                         </div>
-                        <Button onClick={handleUpdateProfile} className="galax-button w-full">
+                        <Button onClick={handleUpdateProfile} className='galax-button w-full'>
                           Save Changes
                         </Button>
                       </div>
@@ -406,8 +432,8 @@ export function ProfilePage() {
 
                   <AccountSettings
                     trigger={
-                      <Button variant="outline" size="sm">
-                        <Settings className="h-4 w-4 mr-2" />
+                      <Button variant='outline' size='sm'>
+                        <Settings className='h-4 w-4 mr-2' />
                         Settings
                       </Button>
                     }
@@ -423,45 +449,45 @@ export function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className='grid grid-cols-1 md:grid-cols-3 gap-4'
         >
-          <Card className="galax-card">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
+          <Card className='galax-card'>
+            <CardContent className='p-4'>
+              <div className='flex items-center justify-between'>
                 <div>
-                  <p className="text-sm text-gray-600">Action Points</p>
-                  <p className="text-2xl font-bold text-purple-600">{user.ap_balance}</p>
+                  <p className='text-sm text-gray-600'>Action Points</p>
+                  <p className='text-2xl font-bold text-purple-600'>{user.ap_balance}</p>
                 </div>
-                <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-purple-600" />
+                <div className='h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center'>
+                  <TrendingUp className='h-6 w-6 text-purple-600' />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="galax-card">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
+          <Card className='galax-card'>
+            <CardContent className='p-4'>
+              <div className='flex items-center justify-between'>
                 <div>
-                  <p className="text-sm text-gray-600">CROWDS Balance</p>
-                  <p className="text-2xl font-bold text-blue-600">{user.crowds_balance}</p>
+                  <p className='text-sm text-gray-600'>CROWDS Balance</p>
+                  <p className='text-2xl font-bold text-blue-600'>{user.crowds_balance}</p>
                 </div>
-                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <DollarSign className="h-6 w-6 text-blue-600" />
+                <div className='h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center'>
+                  <DollarSign className='h-6 w-6 text-blue-600' />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="galax-card">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
+          <Card className='galax-card'>
+            <CardContent className='p-4'>
+              <div className='flex items-center justify-between'>
                 <div>
-                  <p className="text-sm text-gray-600">Governance</p>
-                  <p className="text-2xl font-bold text-green-600">{user.gov_balance}</p>
+                  <p className='text-sm text-gray-600'>Governance</p>
+                  <p className='text-2xl font-bold text-green-600'>{user.gov_balance}</p>
                 </div>
-                <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Vote className="h-6 w-6 text-green-600" />
+                <div className='h-12 w-12 bg-green-100 rounded-full flex items-center justify-center'>
+                  <Vote className='h-6 w-6 text-green-600' />
                 </div>
               </div>
             </CardContent>
@@ -473,74 +499,78 @@ export function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className='grid grid-cols-1 md:grid-cols-2 gap-6'
         >
-          <Card className="galax-card">
+          <Card className='galax-card'>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Activity className='h-5 w-5' />
                 Community Activity
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className='space-y-4'>
               {stats ? (
                 <>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Help Requests Created</span>
-                    <span className="font-bold">{stats.helpRequestsCreated}</span>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-gray-600'>Help Requests Created</span>
+                    <span className='font-bold'>{stats.helpRequestsCreated}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Help Offered</span>
-                    <span className="font-bold">{stats.helpOffered}</span>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-gray-600'>Help Offered</span>
+                    <span className='font-bold'>{stats.helpOffered}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Crisis Reported</span>
-                    <span className="font-bold">{stats.crisisReported}</span>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-gray-600'>Crisis Reported</span>
+                    <span className='font-bold'>{stats.crisisReported}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Proposals Created</span>
-                    <span className="font-bold">{stats.proposalsCreated}</span>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-gray-600'>Proposals Created</span>
+                    <span className='font-bold'>{stats.proposalsCreated}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Votes Cast</span>
-                    <span className="font-bold">{stats.votescast}</span>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-gray-600'>Votes Cast</span>
+                    <span className='font-bold'>{stats.votescast}</span>
                   </div>
                 </>
               ) : (
-                <div className="text-center py-4 text-gray-500">
-                  <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <div className='text-center py-4 text-gray-500'>
+                  <Activity className='h-8 w-8 mx-auto mb-2 opacity-50' />
                   <p>Loading activity stats...</p>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          <Card className="galax-card">
+          <Card className='galax-card'>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <DollarSign className='h-5 w-5' />
                 Recent Transactions
               </CardTitle>
             </CardHeader>
             <CardContent>
               {transactions.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <DollarSign className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <div className='text-center py-8 text-gray-500'>
+                  <DollarSign className='h-12 w-12 mx-auto mb-4 opacity-50' />
                   <p>No recent transactions</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {transactions.slice(0, 5).map((transaction) => (
-                    <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className='space-y-3'>
+                  {transactions.slice(0, 5).map(transaction => (
+                    <div
+                      key={transaction.id}
+                      className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'
+                    >
                       <div>
-                        <p className="font-medium">{formatTransactionType(transaction.type)}</p>
-                        <p className="text-sm text-gray-600">{transaction.description}</p>
+                        <p className='font-medium'>{formatTransactionType(transaction.type)}</p>
+                        <p className='text-sm text-gray-600'>{transaction.description}</p>
                       </div>
-                      <div className="text-right">
+                      <div className='text-right'>
                         <p className={`font-bold ${getTransactionColor(transaction.type)}`}>
-                          {transaction.amount > 0 ? '+' : ''}{transaction.amount} {transaction.token_type}
+                          {transaction.amount > 0 ? '+' : ''}
+                          {transaction.amount} {transaction.token_type}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className='text-xs text-gray-500'>
                           {formatTimeAgo(transaction.created_at)}
                         </p>
                       </div>
@@ -558,94 +588,94 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className="galax-card">
+          <Card className='galax-card'>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Shield className='h-5 w-5' />
                 Security & Verification
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-gray-500" />
+            <CardContent className='space-y-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Mail className='h-5 w-5 text-gray-500' />
                     <div>
-                      <p className="font-medium">Email Verification</p>
-                      <p className="text-sm text-gray-600">
+                      <p className='font-medium'>Email Verification</p>
+                      <p className='text-sm text-gray-600'>
                         {user.email_verified ? 'Verified' : 'Not verified'}
                       </p>
                     </div>
                   </div>
                   {user.email_verified ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className='h-5 w-5 text-green-500' />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-500" />
+                    <XCircle className='h-5 w-5 text-red-500' />
                   )}
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-gray-500" />
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Phone className='h-5 w-5 text-gray-500' />
                     <div>
-                      <p className="font-medium">Phone Verification</p>
-                      <p className="text-sm text-gray-600">
+                      <p className='font-medium'>Phone Verification</p>
+                      <p className='text-sm text-gray-600'>
                         {user.phone_verified ? 'Verified' : 'Not verified'}
                       </p>
                     </div>
                   </div>
                   {user.phone_verified ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className='h-5 w-5 text-green-500' />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-500" />
+                    <XCircle className='h-5 w-5 text-red-500' />
                   )}
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Wallet className="h-5 w-5 text-gray-500" />
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Wallet className='h-5 w-5 text-gray-500' />
                     <div>
-                      <p className="font-medium">Wallet Address</p>
-                      <p className="text-sm text-gray-600">
+                      <p className='font-medium'>Wallet Address</p>
+                      <p className='text-sm text-gray-600'>
                         {user.wallet_address ? 'Connected' : 'Not connected'}
                       </p>
                     </div>
                   </div>
                   {user.wallet_address ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className='h-5 w-5 text-green-500' />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-500" />
+                    <XCircle className='h-5 w-5 text-red-500' />
                   )}
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Key className="h-5 w-5 text-gray-500" />
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Key className='h-5 w-5 text-gray-500' />
                     <div>
-                      <p className="font-medium">Two-Factor Auth</p>
-                      <p className="text-sm text-gray-600">
+                      <p className='font-medium'>Two-Factor Auth</p>
+                      <p className='text-sm text-gray-600'>
                         {user.two_factor_enabled ? 'Enabled' : 'Disabled'}
                       </p>
                     </div>
                   </div>
                   {user.two_factor_enabled ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className='h-5 w-5 text-green-500' />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-500" />
+                    <XCircle className='h-5 w-5 text-red-500' />
                   )}
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Lock className="h-5 w-5 text-gray-500" />
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Lock className='h-5 w-5 text-gray-500' />
                     <div>
-                      <p className="font-medium">Password</p>
-                      <p className="text-sm text-gray-600">Last changed recently</p>
+                      <p className='font-medium'>Password</p>
+                      <p className='text-sm text-gray-600'>Last changed recently</p>
                     </div>
                   </div>
                   <AccountSettings
                     trigger={
-                      <Button variant="outline" size="sm">
+                      <Button variant='outline' size='sm'>
                         Change
                       </Button>
                     }
@@ -662,7 +692,7 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <UserBadges user={user} className="galax-card" />
+          <UserBadges user={user} className='galax-card' />
         </motion.div>
       </div>
     </div>

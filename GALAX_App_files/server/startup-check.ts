@@ -35,8 +35,13 @@ export async function performStartupCheck() {
     if (dbHealth.primary.status === 'healthy') {
       console.log('✅ Database connection successful');
     } else {
-      console.log('❌ Database connection failed:', 'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error');
-      throw new Error(`Database connection failed: ${'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error'}`);
+      console.log(
+        '❌ Database connection failed:',
+        'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error'
+      );
+      throw new Error(
+        `Database connection failed: ${'error' in dbHealth.primary ? dbHealth.primary.error : 'Unknown error'}`
+      );
     }
 
     // Check database diagnostics
@@ -46,8 +51,13 @@ export async function performStartupCheck() {
     // Check required tables
     console.log('📋 Required tables check:');
     const requiredTables = [
-      'users', 'help_requests', 'crisis_alerts', 'messages',
-      'notifications', 'password_reset_tokens', 'email_verification_tokens'
+      'users',
+      'help_requests',
+      'crisis_alerts',
+      'messages',
+      'notifications',
+      'password_reset_tokens',
+      'email_verification_tokens',
     ];
 
     let allTablesExist = true;
@@ -61,7 +71,9 @@ export async function performStartupCheck() {
         const count = result[0]?.count || 0;
         console.log(`  ✅ ${tableName}: ${count} records`);
       } catch (error) {
-        console.log(`  ❌ ${tableName}: Error - ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.log(
+          `  ❌ ${tableName}: Error - ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
         allTablesExist = false;
       }
     }
@@ -73,7 +85,6 @@ export async function performStartupCheck() {
 
     console.log('✅ Startup check completed successfully');
     return true;
-
   } catch (error) {
     console.error('❌ Startup check failed:', error);
     console.error('🔍 This is likely the database issue you are experiencing');

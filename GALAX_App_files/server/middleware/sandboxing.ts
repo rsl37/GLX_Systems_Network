@@ -41,8 +41,8 @@ const sandboxConfig: SandboxConfig = {
     '/root',
     '/proc',
     '/sys',
-    '/dev'
-  ]
+    '/dev',
+  ],
 };
 
 // Sandbox session tracking
@@ -89,7 +89,7 @@ const sandboxStats: SandboxStats = {
   violationsDetected: 0,
   maliciousActivitiesBlocked: 0,
   averageSessionDuration: 0,
-  isolationEffectiveness: 100
+  isolationEffectiveness: 100,
 };
 
 // Initialize quarantine directory
@@ -118,7 +118,8 @@ function assessRequestRisk(req: Request): 'low' | 'medium' | 'high' | 'critical'
   }
 
   // Large payloads
-  if (contentLength > 10 * 1024 * 1024) { // > 10MB
+  if (contentLength > 10 * 1024 * 1024) {
+    // > 10MB
     riskScore += 3;
   }
 
@@ -169,7 +170,7 @@ function createSandboxSession(req: Request): SandboxSession {
     operations: [],
     status: 'active',
     risk,
-    violations: []
+    violations: [],
   };
 
   activeSandboxSessions.set(sessionId, session);
@@ -182,7 +183,10 @@ function createSandboxSession(req: Request): SandboxSession {
 }
 
 // Monitor sandbox operations
-function monitorOperation(sessionId: string, operation: Omit<SandboxOperation, 'timestamp' | 'allowed'>): boolean {
+function monitorOperation(
+  sessionId: string,
+  operation: Omit<SandboxOperation, 'timestamp' | 'allowed'>
+): boolean {
   const session = activeSandboxSessions.get(sessionId);
   if (!session) return false;
 
@@ -204,11 +208,13 @@ function monitorOperation(sessionId: string, operation: Omit<SandboxOperation, '
 
     case 'network_request':
       // Allow only HTTP/HTTPS to public networks
-      if (!operation.details.startsWith('http') ||
-          operation.details.includes('localhost') ||
-          operation.details.includes('127.0.0.1') ||
-          operation.details.includes('192.168.') ||
-          operation.details.includes('10.0.')) {
+      if (
+        !operation.details.startsWith('http') ||
+        operation.details.includes('localhost') ||
+        operation.details.includes('127.0.0.1') ||
+        operation.details.includes('192.168.') ||
+        operation.details.includes('10.0.')
+      ) {
         allowed = false;
         violation = `Blocked network request: ${operation.details}`;
       }
@@ -232,7 +238,7 @@ function monitorOperation(sessionId: string, operation: Omit<SandboxOperation, '
   const sandboxOperation: SandboxOperation = {
     ...operation,
     timestamp: new Date(),
-    allowed
+    allowed,
   };
 
   session.operations.push(sandboxOperation);
@@ -268,7 +274,9 @@ async function quarantineSession(sessionId: string) {
     const quarantineFile = path.join(sandboxConfig.quarantinePath, `session-${sessionId}.json`);
     await fs.writeFile(quarantineFile, JSON.stringify(session, null, 2));
 
-    console.log(`[SANDBOX] Session ${sessionId} quarantined - ${session.violations.length} violations`);
+    console.log(
+      `[SANDBOX] Session ${sessionId} quarantined - ${session.violations.length} violations`
+    );
 
     // Remove from active sessions
     activeSandboxSessions.delete(sessionId);
@@ -279,7 +287,6 @@ async function quarantineSession(sessionId: string) {
     if (sandboxHistory.length > MAX_HISTORY) {
       sandboxHistory.pop();
     }
-
   } catch (error) {
     console.error(`[SANDBOX] Failed to quarantine session ${sessionId}:`, error);
   }
@@ -333,7 +340,7 @@ export function sandboxingMiddleware(req: Request, res: Response, next: NextFunc
 
   // Override response to complete session
   const originalEnd = res.end.bind(res);
-  res.end = function(chunk?: any, encoding?: any, cb?: () => void) {
+  res.end = function (chunk?: any, encoding?: any, cb?: () => void) {
     completeSandboxSession(session.id);
     return originalEnd(chunk, encoding, cb);
   } as any;
@@ -371,14 +378,14 @@ export function sandboxFileUpload(req: Request, res: Response, next: NextFunctio
     const allowed = monitorOperation(session.id, {
       type: 'file_access',
       details: `Upload: ${file.originalname || 'unknown'} (${file.size} bytes)`,
-      riskLevel: file.size > 10 * 1024 * 1024 ? 'high' : 'medium'
+      riskLevel: file.size > 10 * 1024 * 1024 ? 'high' : 'medium',
     });
 
     if (!allowed) {
       return res.status(403).json({
         error: 'File upload blocked by sandbox security policy',
         sessionId: session.id,
-        reference: crypto.randomUUID().slice(0, 8)
+        reference: crypto.randomUUID().slice(0, 8),
       });
     }
   }
@@ -393,7 +400,7 @@ export function monitorNetworkAccess(url: string, sessionId?: string): boolean {
   return monitorOperation(sessionId, {
     type: 'network_request',
     details: url,
-    riskLevel: url.includes('localhost') || url.includes('127.0.0.1') ? 'high' : 'low'
+    riskLevel: url.includes('localhost') || url.includes('127.0.0.1') ? 'high' : 'low',
   });
 }
 
@@ -404,7 +411,7 @@ export function monitorMemoryAllocation(size: number, sessionId?: string): boole
   return monitorOperation(sessionId, {
     type: 'memory_allocation',
     details: `${size} bytes`,
-    riskLevel: size > 50 * 1024 * 1024 ? 'high' : 'low' // 50MB threshold
+    riskLevel: size > 50 * 1024 * 1024 ? 'high' : 'low', // 50MB threshold
   });
 }
 
@@ -425,8 +432,8 @@ export function sandboxAdmin(req: Request, res: Response) {
           risk: s.risk,
           operations: s.operations.length,
           violations: s.violations.length,
-          duration: Date.now() - s.startTime.getTime()
-        }))
+          duration: Date.now() - s.startTime.getTime(),
+        })),
       });
 
     case 'sessions':
@@ -434,14 +441,14 @@ export function sandboxAdmin(req: Request, res: Response) {
       return res.json({
         active: Array.from(activeSandboxSessions.values()),
         history: sandboxHistory.slice(0, limit),
-        total: sandboxHistory.length
+        total: sandboxHistory.length,
       });
 
     case 'quarantine':
       const quarantinedSessions = sandboxHistory.filter(s => s.status === 'quarantined');
       return res.json({
         quarantined: quarantinedSessions,
-        count: quarantinedSessions.length
+        count: quarantinedSessions.length,
       });
 
     case 'terminate-session':
@@ -472,7 +479,9 @@ export async function initializeSandboxing() {
   await initializeQuarantine();
   console.log(`[SANDBOX] Isolation level: ${sandboxConfig.isolationLevel}`);
   console.log(`[SANDBOX] Max execution time: ${sandboxConfig.maxExecutionTime}ms`);
-  console.log(`[SANDBOX] Max memory usage: ${Math.round(sandboxConfig.maxMemoryUsage / 1024 / 1024)}MB`);
+  console.log(
+    `[SANDBOX] Max memory usage: ${Math.round(sandboxConfig.maxMemoryUsage / 1024 / 1024)}MB`
+  );
   console.log(`[SANDBOX] Restricted paths: ${sandboxConfig.restrictedPaths.length}`);
   console.log('[SANDBOX] File upload monitoring: ACTIVE');
   console.log('[SANDBOX] Network access monitoring: ACTIVE');
@@ -481,10 +490,4 @@ export async function initializeSandboxing() {
 }
 
 // Export sandbox utilities
-export {
-  sandboxConfig,
-  sandboxStats,
-  activeSandboxSessions,
-  sandboxHistory,
-  monitorOperation
-};
+export { sandboxConfig, sandboxStats, activeSandboxSessions, sandboxHistory, monitorOperation };

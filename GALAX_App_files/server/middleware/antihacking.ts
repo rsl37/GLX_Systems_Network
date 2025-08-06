@@ -7,8 +7,8 @@
  */
 
 // Added 2025-01-13 21:56:18 UTC - Comprehensive Anti-Hacking Protection System
-import { Request, Response, NextFunction } from "express";
-import crypto from "crypto";
+import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 
 // Attack pattern detection
 interface AttackPattern {
@@ -16,17 +16,17 @@ interface AttackPattern {
   name: string;
   pattern: RegExp | string;
   type:
-    | "sql_injection"
-    | "xss"
-    | "command_injection"
-    | "path_traversal"
-    | "ldap_injection"
-    | "xml_injection"
-    | "nosql_injection"
-    | "ddos"
-    | "brute_force"
-    | "suspicious_behavior";
-  severity: "low" | "medium" | "high" | "critical";
+    | 'sql_injection'
+    | 'xss'
+    | 'command_injection'
+    | 'path_traversal'
+    | 'ldap_injection'
+    | 'xml_injection'
+    | 'nosql_injection'
+    | 'ddos'
+    | 'brute_force'
+    | 'suspicious_behavior';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   countermeasure: string;
 }
@@ -35,135 +35,134 @@ interface AttackPattern {
 const ATTACK_PATTERNS: AttackPattern[] = [
   // SQL Injection patterns - made more precise to avoid false positives
   {
-    id: "SQL_UNION_ATTACK",
-    name: "SQL Union Attack",
+    id: 'SQL_UNION_ATTACK',
+    name: 'SQL Union Attack',
     pattern: /(\bunion\s+select\b|\bselect\s+.*\s+union\b)/gi,
-    type: "sql_injection",
-    severity: "critical",
-    description: "SQL UNION injection attempt",
-    countermeasure: "Block request and log IP",
+    type: 'sql_injection',
+    severity: 'critical',
+    description: 'SQL UNION injection attempt',
+    countermeasure: 'Block request and log IP',
   },
   {
-    id: "SQL_COMMENT_INJECTION",
-    name: "SQL Comment Injection",
+    id: 'SQL_COMMENT_INJECTION',
+    name: 'SQL Comment Injection',
     pattern: /(--\s+|\/\*[\s\S]*?\*\/)/g, // More specific: requires space after -- or proper comment block
-    type: "sql_injection",
-    severity: "high",
-    description: "SQL comment injection attempt",
-    countermeasure: "Sanitize input and log attempt",
+    type: 'sql_injection',
+    severity: 'high',
+    description: 'SQL comment injection attempt',
+    countermeasure: 'Sanitize input and log attempt',
   },
   {
-    id: "SQL_STACKED_QUERIES",
-    name: "SQL Stacked Queries",
+    id: 'SQL_STACKED_QUERIES',
+    name: 'SQL Stacked Queries',
     pattern: /;\s*(select|insert|update|delete|drop|create|alter)\s+/gi,
-    type: "sql_injection",
-    severity: "critical",
-    description: "SQL stacked queries injection",
-    countermeasure: "Block request immediately",
+    type: 'sql_injection',
+    severity: 'critical',
+    description: 'SQL stacked queries injection',
+    countermeasure: 'Block request immediately',
   },
 
   // XSS patterns - using safer patterns
   {
-    id: "XSS_SCRIPT_TAG",
-    name: "XSS Script Tag",
+    id: 'XSS_SCRIPT_TAG',
+    name: 'XSS Script Tag',
     pattern: /<script\b[^>]{0,100}>/i,
-    type: "xss",
-    severity: "high",
-    description: "Cross-site scripting via script tags",
-    countermeasure: "Block request and sanitize input",
+    type: 'xss',
+    severity: 'high',
+    description: 'Cross-site scripting via script tags',
+    countermeasure: 'Block request and sanitize input',
   },
   {
-    id: "XSS_EVENT_HANDLER",
-    name: "XSS Event Handler",
+    id: 'XSS_EVENT_HANDLER',
+    name: 'XSS Event Handler',
     pattern: /on(load|click|mouseover|error|focus|blur)\s*=/i,
-    type: "xss",
-    severity: "medium",
-    description: "XSS via HTML event handlers",
-    countermeasure: "Strip event handlers",
+    type: 'xss',
+    severity: 'medium',
+    description: 'XSS via HTML event handlers',
+    countermeasure: 'Strip event handlers',
   },
   {
-    id: "XSS_JAVASCRIPT_URL",
-    name: "XSS JavaScript URL",
+    id: 'XSS_JAVASCRIPT_URL',
+    name: 'XSS JavaScript URL',
     pattern: /javascript\s*:/gi,
-    type: "xss",
-    severity: "high",
-    description: "XSS via javascript: URLs",
-    countermeasure: "Block javascript: protocol",
+    type: 'xss',
+    severity: 'high',
+    description: 'XSS via javascript: URLs',
+    countermeasure: 'Block javascript: protocol',
   },
 
   // Command Injection patterns - made more precise to avoid false positives
   {
-    id: "CMD_SHELL_OPERATORS",
-    name: "Shell Command Operators",
-    pattern:
-      /(\|\||&&|;\s*(cat|ls|dir|rm|del|chmod|ps|kill|wget|curl)\s+|`[^`]*`|\$\([^)]*\))/g,
-    type: "command_injection",
-    severity: "critical",
-    description: "Command injection via shell operators",
-    countermeasure: "Block request and alert admin",
+    id: 'CMD_SHELL_OPERATORS',
+    name: 'Shell Command Operators',
+    pattern: /(\|\||&&|;\s*(cat|ls|dir|rm|del|chmod|ps|kill|wget|curl)\s+|`[^`]*`|\$\([^)]*\))/g,
+    type: 'command_injection',
+    severity: 'critical',
+    description: 'Command injection via shell operators',
+    countermeasure: 'Block request and alert admin',
   },
   {
-    id: "CMD_SYSTEM_COMMANDS",
-    name: "System Commands",
+    id: 'CMD_SYSTEM_COMMANDS',
+    name: 'System Commands',
     pattern:
       /\b(cat|ls|dir|type|copy|move|del|rm|chmod|chown|ps|kill|netstat|whoami|id|uname)\s+[\/\w\-\.]+/gi,
-    type: "command_injection",
-    severity: "high",
-    description: "System command injection attempt",
-    countermeasure: "Block and log suspicious activity",
+    type: 'command_injection',
+    severity: 'high',
+    description: 'System command injection attempt',
+    countermeasure: 'Block and log suspicious activity',
   },
 
   // Path Traversal patterns
   {
-    id: "PATH_TRAVERSAL_DOTS",
-    name: "Path Traversal Dots",
+    id: 'PATH_TRAVERSAL_DOTS',
+    name: 'Path Traversal Dots',
     pattern: /(\.\.[\/\\]){2,}/g,
-    type: "path_traversal",
-    severity: "high",
-    description: "Directory traversal attack",
-    countermeasure: "Normalize paths and block",
+    type: 'path_traversal',
+    severity: 'high',
+    description: 'Directory traversal attack',
+    countermeasure: 'Normalize paths and block',
   },
   {
-    id: "PATH_TRAVERSAL_ENCODED",
-    name: "Encoded Path Traversal",
+    id: 'PATH_TRAVERSAL_ENCODED',
+    name: 'Encoded Path Traversal',
     pattern: /(%2e%2e[%2f%5c]|%2e%2e\/|%2e%2e\\)/gi,
-    type: "path_traversal",
-    severity: "high",
-    description: "URL-encoded path traversal",
-    countermeasure: "Decode and validate paths",
+    type: 'path_traversal',
+    severity: 'high',
+    description: 'URL-encoded path traversal',
+    countermeasure: 'Decode and validate paths',
   },
 
   // LDAP Injection patterns
   {
-    id: "LDAP_INJECTION",
-    name: "LDAP Injection",
+    id: 'LDAP_INJECTION',
+    name: 'LDAP Injection',
     pattern: /(\(\||\)\(|\*\)|\(\&)/g,
-    type: "ldap_injection",
-    severity: "medium",
-    description: "LDAP injection attempt",
-    countermeasure: "Escape LDAP special characters",
+    type: 'ldap_injection',
+    severity: 'medium',
+    description: 'LDAP injection attempt',
+    countermeasure: 'Escape LDAP special characters',
   },
 
   // XML Injection patterns
   {
-    id: "XML_EXTERNAL_ENTITY",
-    name: "XML External Entity",
+    id: 'XML_EXTERNAL_ENTITY',
+    name: 'XML External Entity',
     pattern: /<!ENTITY|SYSTEM|PUBLIC/gi,
-    type: "xml_injection",
-    severity: "high",
-    description: "XML External Entity (XXE) attack",
-    countermeasure: "Disable external entity resolution",
+    type: 'xml_injection',
+    severity: 'high',
+    description: 'XML External Entity (XXE) attack',
+    countermeasure: 'Disable external entity resolution',
   },
 
   // NoSQL Injection patterns
   {
-    id: "NOSQL_INJECTION",
-    name: "NoSQL Injection",
+    id: 'NOSQL_INJECTION',
+    name: 'NoSQL Injection',
     pattern: /(\$where|\$ne|\$gt|\$lt|\$or|\$and|\$regex)/gi,
-    type: "nosql_injection",
-    severity: "high",
-    description: "NoSQL injection attempt",
-    countermeasure: "Validate query structure",
+    type: 'nosql_injection',
+    severity: 'high',
+    description: 'NoSQL injection attempt',
+    countermeasure: 'Validate query structure',
   },
 ];
 
@@ -174,7 +173,7 @@ interface SuspiciousActivity {
   lastAttempt: Date;
   attacks: string[];
   blocked: boolean;
-  severity: "low" | "medium" | "high" | "critical";
+  severity: 'low' | 'medium' | 'high' | 'critical';
 }
 
 const suspiciousIPs = new Map<string, SuspiciousActivity>();
@@ -213,39 +212,36 @@ const BOT_USER_AGENTS = [
 
 // Paths that should have relaxed security for user registration
 const REGISTRATION_PATHS = new Set([
-  "/api/auth/register",
-  "/api/auth/login",
-  "/api/auth/forgot-password",
-  "/api/auth/reset-password",
-  "/api/auth/verify-email",
-  "/api/auth/send-email-verification",
+  '/api/auth/register',
+  '/api/auth/login',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+  '/api/auth/verify-email',
+  '/api/auth/send-email-verification',
 ]);
 
 // Honeypot system
 const HONEYPOT_PATHS = new Set([
-  "/admin",
-  "/wp-admin",
-  "/phpMyAdmin",
-  "/mysql",
-  "/phpmyadmin",
-  "/administrator",
-  "/login.php",
-  "/wp-login.php",
-  "/.env",
-  "/config.php",
-  "/backup",
-  "/test",
+  '/admin',
+  '/wp-admin',
+  '/phpMyAdmin',
+  '/mysql',
+  '/phpmyadmin',
+  '/administrator',
+  '/login.php',
+  '/wp-login.php',
+  '/.env',
+  '/config.php',
+  '/backup',
+  '/test',
 ]);
 
 // CSRF token management
-const csrfTokens = new Map<
-  string,
-  { token: string; created: Date; used: boolean }
->();
+const csrfTokens = new Map<string, { token: string; created: Date; used: boolean }>();
 
 // Generate CSRF token
 export const generateCSRFToken = (sessionId: string): string => {
-  const token = crypto.randomBytes(32).toString("hex");
+  const token = crypto.randomBytes(32).toString('hex');
   csrfTokens.set(sessionId, {
     token,
     created: new Date(),
@@ -262,17 +258,14 @@ export const generateCSRFToken = (sessionId: string): string => {
         }
       }
     },
-    60 * 60 * 1000,
+    60 * 60 * 1000
   );
 
   return token;
 };
 
 // Validate CSRF token
-export const validateCSRFToken = (
-  sessionId: string,
-  token: string,
-): boolean => {
+export const validateCSRFToken = (sessionId: string, token: string): boolean => {
   const stored = csrfTokens.get(sessionId);
   if (!stored || stored.used || stored.token !== token) {
     return false;
@@ -287,7 +280,7 @@ export const validateCSRFToken = (
 const addSuspiciousIP = (
   ip: string,
   attackType: string,
-  severity: "low" | "medium" | "high" | "critical",
+  severity: 'low' | 'medium' | 'high' | 'critical'
 ) => {
   const existing = suspiciousIPs.get(ip);
 
@@ -296,21 +289,19 @@ const addSuspiciousIP = (
     existing.lastAttempt = new Date();
     existing.attacks.push(attackType);
     existing.severity =
-      severity === "critical" || existing.severity === "critical"
-        ? "critical"
-        : severity === "high" || existing.severity === "high"
-          ? "high"
-          : severity === "medium" || existing.severity === "medium"
-            ? "medium"
-            : "low";
+      severity === 'critical' || existing.severity === 'critical'
+        ? 'critical'
+        : severity === 'high' || existing.severity === 'high'
+          ? 'high'
+          : severity === 'medium' || existing.severity === 'medium'
+            ? 'medium'
+            : 'low';
 
     // Block IP after 5 suspicious attempts or any critical attack
-    if (existing.attempts >= 5 || severity === "critical") {
+    if (existing.attempts >= 5 || severity === 'critical') {
       existing.blocked = true;
       blockedIPs.add(ip);
-      console.warn(
-        `🚨 IP BLOCKED: ${ip} (${existing.attempts} attempts, ${severity} severity)`,
-      );
+      console.warn(`🚨 IP BLOCKED: ${ip} (${existing.attempts} attempts, ${severity} severity)`);
     }
   } else {
     const activity: SuspiciousActivity = {
@@ -318,35 +309,29 @@ const addSuspiciousIP = (
       attempts: 1,
       lastAttempt: new Date(),
       attacks: [attackType],
-      blocked: severity === "critical",
+      blocked: severity === 'critical',
       severity,
     };
 
     suspiciousIPs.set(ip, activity);
 
-    if (severity === "critical") {
+    if (severity === 'critical') {
       blockedIPs.add(ip);
-      console.warn(
-        `🚨 IP IMMEDIATELY BLOCKED: ${ip} (critical attack: ${attackType})`,
-      );
+      console.warn(`🚨 IP IMMEDIATELY BLOCKED: ${ip} (critical attack: ${attackType})`);
     }
   }
 };
 
 // IP blocking middleware
-export const ipBlockingMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
+export const ipBlockingMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
 
   if (blockedIPs.has(clientIP)) {
     console.warn(`🚫 Blocked IP attempted access: ${clientIP} -> ${req.path}`);
     return res.status(403).json({
       success: false,
       error: {
-        message: "Access denied - IP blocked due to suspicious activity",
+        message: 'Access denied - IP blocked due to suspicious activity',
         statusCode: 403,
         blocked: true,
       },
@@ -358,13 +343,9 @@ export const ipBlockingMiddleware = (
 };
 
 // Attack pattern detection middleware
-export const attackDetectionMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
-  const userAgent = req.get("User-Agent") || "";
+export const attackDetectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
+  const userAgent = req.get('User-Agent') || '';
   const requestPath = req.path;
 
   // Skip attack detection for registration and authentication paths
@@ -408,10 +389,8 @@ export const attackDetectionMiddleware = (
     for (const pattern of ATTACK_PATTERNS) {
       let match = false;
 
-      if (typeof pattern.pattern === "string") {
-        match = requestData
-          .toLowerCase()
-          .includes(pattern.pattern.toLowerCase());
+      if (typeof pattern.pattern === 'string') {
+        match = requestData.toLowerCase().includes(pattern.pattern.toLowerCase());
       } else {
         match = pattern.pattern.test(requestData);
       }
@@ -424,22 +403,20 @@ export const attackDetectionMiddleware = (
 
     // Handle detected attacks
     if (detectedAttacks.length > 0) {
-      const criticalAttacks = detectedAttacks.filter(
-        (a) => a.severity === "critical",
-      );
-      const highAttacks = detectedAttacks.filter((a) => a.severity === "high");
+      const criticalAttacks = detectedAttacks.filter(a => a.severity === 'critical');
+      const highAttacks = detectedAttacks.filter(a => a.severity === 'high');
 
       // Add to suspicious IP tracking
       const maxSeverity =
         criticalAttacks.length > 0
-          ? "critical"
+          ? 'critical'
           : highAttacks.length > 0
-            ? "high"
-            : detectedAttacks.some((a) => a.severity === "medium")
-              ? "medium"
-              : "low";
+            ? 'high'
+            : detectedAttacks.some(a => a.severity === 'medium')
+              ? 'medium'
+              : 'low';
 
-      const attackNames = detectedAttacks.map((a) => a.name).join(", ");
+      const attackNames = detectedAttacks.map(a => a.name).join(', ');
       addSuspiciousIP(clientIP, attackNames, maxSeverity);
 
       // Block critical and high severity attacks immediately
@@ -447,9 +424,9 @@ export const attackDetectionMiddleware = (
         return res.status(403).json({
           success: false,
           error: {
-            message: "Security violation detected",
+            message: 'Security violation detected',
             statusCode: 403,
-            attacksDetected: detectedAttacks.map((a) => ({
+            attacksDetected: detectedAttacks.map(a => ({
               type: a.type,
               severity: a.severity,
               description: a.description,
@@ -462,18 +439,14 @@ export const attackDetectionMiddleware = (
 
     next();
   } catch (error) {
-    console.error("❌ Attack detection error:", error);
+    console.error('❌ Attack detection error:', error);
     next(); // Continue on error to maintain availability
   }
 };
 
 // DDoS protection middleware
-export const ddosProtectionMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
+export const ddosProtectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
   const now = new Date();
 
   // Request rate tracking (per minute)
@@ -493,39 +466,31 @@ export const ddosProtectionMiddleware = (
   const BLOCK_THRESHOLD = 200; // requests per minute
 
   if (requestCount > BLOCK_THRESHOLD) {
-    addSuspiciousIP(clientIP, "DDoS Attack", "critical");
-    console.warn(
-      `🚨 DDoS attack detected from IP: ${clientIP} (${requestCount} req/min)`,
-    );
+    addSuspiciousIP(clientIP, 'DDoS Attack', 'critical');
+    console.warn(`🚨 DDoS attack detected from IP: ${clientIP} (${requestCount} req/min)`);
 
     return res.status(429).json({
       success: false,
       error: {
-        message: "DDoS attack detected - access blocked",
+        message: 'DDoS attack detected - access blocked',
         statusCode: 429,
         requestCount,
-        timeWindow: "1 minute",
+        timeWindow: '1 minute',
       },
       timestamp: new Date().toISOString(),
     });
   } else if (requestCount > WARNING_THRESHOLD) {
-    console.warn(
-      `⚠️ High request rate from IP: ${clientIP} (${requestCount} req/min)`,
-    );
-    addSuspiciousIP(clientIP, "High Request Rate", "medium");
+    console.warn(`⚠️ High request rate from IP: ${clientIP} (${requestCount} req/min)`);
+    addSuspiciousIP(clientIP, 'High Request Rate', 'medium');
   }
 
   next();
 };
 
 // Bot detection middleware
-export const botDetectionMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const userAgent = req.get("User-Agent") || "";
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
+export const botDetectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const userAgent = req.get('User-Agent') || '';
+  const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
   const requestPath = req.path;
 
   // Skip bot detection for registration and authentication paths
@@ -534,29 +499,29 @@ export const botDetectionMiddleware = (
   }
 
   // Check for bot user agents - only block clearly malicious bots
-  const isBot = BOT_USER_AGENTS.some((pattern) => pattern.test(userAgent));
+  const isBot = BOT_USER_AGENTS.some(pattern => pattern.test(userAgent));
 
   if (isBot) {
     console.log(`🤖 Bot detected: ${userAgent} from IP ${clientIP}`);
 
     // Allow legitimate bots
     if (
-      userAgent.toLowerCase().includes("googlebot") ||
-      userAgent.toLowerCase().includes("bingbot") ||
-      userAgent.toLowerCase().includes("facebookexternalhit") ||
-      userAgent.toLowerCase().includes("twitterbot") ||
-      userAgent.toLowerCase().includes("linkedinbot")
+      userAgent.toLowerCase().includes('googlebot') ||
+      userAgent.toLowerCase().includes('bingbot') ||
+      userAgent.toLowerCase().includes('facebookexternalhit') ||
+      userAgent.toLowerCase().includes('twitterbot') ||
+      userAgent.toLowerCase().includes('linkedinbot')
     ) {
       return next();
     } else {
       // Suspicious bot - add to monitoring but don't block immediately
-      addSuspiciousIP(clientIP, "Suspicious Bot", "low");
+      addSuspiciousIP(clientIP, 'Suspicious Bot', 'low');
 
       // Rate limit bots more strictly for non-auth endpoints
       return res.status(429).json({
         success: false,
         error: {
-          message: "Bot access rate limited",
+          message: 'Bot access rate limited',
           statusCode: 429,
           userAgent: userAgent.substring(0, 100), // Truncate for security
         },
@@ -569,19 +534,18 @@ export const botDetectionMiddleware = (
 };
 
 // Honeypot middleware
-export const honeypotMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const honeypotMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const path = req.path.toLowerCase();
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
+  const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
 
   // Check if accessing honeypot path
   for (const honeypotPath of HONEYPOT_PATHS) {
     // Only trigger for exact matches or direct admin access, not API endpoints
-    if (path === honeypotPath || (path.startsWith(honeypotPath) && !path.startsWith('/api/admin'))) {
-      addSuspiciousIP(clientIP, `Honeypot Access: ${honeypotPath}`, "high");
+    if (
+      path === honeypotPath ||
+      (path.startsWith(honeypotPath) && !path.startsWith('/api/admin'))
+    ) {
+      addSuspiciousIP(clientIP, `Honeypot Access: ${honeypotPath}`, 'high');
 
       console.warn(`🍯 Honeypot triggered by IP ${clientIP}: ${path}`);
 
@@ -589,7 +553,7 @@ export const honeypotMiddleware = (
       return res.status(404).json({
         success: false,
         error: {
-          message: "Not Found",
+          message: 'Not Found',
           statusCode: 404,
         },
         timestamp: new Date().toISOString(),
@@ -601,29 +565,25 @@ export const honeypotMiddleware = (
 };
 
 // CSRF protection middleware
-export const csrfProtectionMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const csrfProtectionMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // Skip CSRF for GET requests and certain paths
-  if (req.method === "GET" || req.path.startsWith("/api/auth/")) {
+  if (req.method === 'GET' || req.path.startsWith('/api/auth/')) {
     return next();
   }
 
   const sessionId = (req as any).session?.id || req.ip;
-  const token = req.get("X-CSRF-Token") || req.body?.csrf_token;
+  const token = req.get('X-CSRF-Token') || req.body?.csrf_token;
 
   if (!token || !validateCSRFToken(sessionId, token)) {
-    const clientIP = req.ip || req.socket.remoteAddress || "unknown";
-    addSuspiciousIP(clientIP, "CSRF Attack", "medium");
+    const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
+    addSuspiciousIP(clientIP, 'CSRF Attack', 'medium');
 
     console.warn(`🛡️ CSRF attack blocked from IP: ${clientIP}`);
 
     return res.status(403).json({
       success: false,
       error: {
-        message: "CSRF token validation failed",
+        message: 'CSRF token validation failed',
         statusCode: 403,
         csrfRequired: true,
       },
@@ -635,29 +595,25 @@ export const csrfProtectionMiddleware = (
 };
 
 // Behavioral analysis middleware
-export const behavioralAnalysisMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
-  const userAgent = req.get("User-Agent") || "";
+export const behavioralAnalysisMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
+  const userAgent = req.get('User-Agent') || '';
 
   // Analyze request patterns
   const suspiciousIndicators = [];
 
   // Check for missing common headers
-  if (!req.get("Accept")) {
-    suspiciousIndicators.push("Missing Accept header");
+  if (!req.get('Accept')) {
+    suspiciousIndicators.push('Missing Accept header');
   }
 
-  if (!req.get("Accept-Language")) {
-    suspiciousIndicators.push("Missing Accept-Language header");
+  if (!req.get('Accept-Language')) {
+    suspiciousIndicators.push('Missing Accept-Language header');
   }
 
   // Check for suspicious user agent patterns
-  if (userAgent.length < 10 || userAgent === "Mozilla/5.0") {
-    suspiciousIndicators.push("Suspicious User-Agent");
+  if (userAgent.length < 10 || userAgent === 'Mozilla/5.0') {
+    suspiciousIndicators.push('Suspicious User-Agent');
   }
 
   // Check for rapid sequential requests to different endpoints
@@ -667,7 +623,7 @@ export const behavioralAnalysisMiddleware = (
 
   if (existing > 50) {
     // More than 50 different endpoints accessed
-    suspiciousIndicators.push("Scanning behavior detected");
+    suspiciousIndicators.push('Scanning behavior detected');
   }
 
   // Check request timing patterns
@@ -677,19 +633,15 @@ export const behavioralAnalysisMiddleware = (
 
   if (now - lastRequest < 100) {
     // Requests less than 100ms apart
-    suspiciousIndicators.push("Automated request timing");
+    suspiciousIndicators.push('Automated request timing');
   }
 
   (req as any).app.locals[requestKey] = now;
 
   if (suspiciousIndicators.length >= 2) {
-    addSuspiciousIP(
-      clientIP,
-      `Behavioral Analysis: ${suspiciousIndicators.join(", ")}`,
-      "medium",
-    );
+    addSuspiciousIP(clientIP, `Behavioral Analysis: ${suspiciousIndicators.join(', ')}`, 'medium');
     console.warn(
-      `🧠 Suspicious behavior detected from ${clientIP}: ${suspiciousIndicators.join(", ")}`,
+      `🧠 Suspicious behavior detected from ${clientIP}: ${suspiciousIndicators.join(', ')}`
     );
   }
 
@@ -697,30 +649,23 @@ export const behavioralAnalysisMiddleware = (
 };
 
 // Enhanced security headers middleware
-export const enhancedSecurityHeaders = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const enhancedSecurityHeaders = (req: Request, res: Response, next: NextFunction) => {
   // Advanced security headers
-  res.setHeader("X-Anti-Hacking-Protection", "enabled");
-  res.setHeader("X-Attack-Detection", "active");
-  res.setHeader("X-DDoS-Protection", "enabled");
-  res.setHeader("X-Bot-Detection", "active");
-  res.setHeader("X-Behavioral-Analysis", "enabled");
-  res.setHeader("X-Honeypot-System", "active");
+  res.setHeader('X-Anti-Hacking-Protection', 'enabled');
+  res.setHeader('X-Attack-Detection', 'active');
+  res.setHeader('X-DDoS-Protection', 'enabled');
+  res.setHeader('X-Bot-Detection', 'active');
+  res.setHeader('X-Behavioral-Analysis', 'enabled');
+  res.setHeader('X-Honeypot-System', 'active');
   res.setHeader(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains; preload", // 1 year = 31536000 seconds
+    'Strict-Transport-Security',
+    'max-age=31536000; includeSubDomains; preload' // 1 year = 31536000 seconds
   );
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
-  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.setHeader(
-    "Permissions-Policy",
-    "geolocation=(), microphone=(), camera=()",
-  );
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
   next();
 };
@@ -736,9 +681,7 @@ export const antiHackingAdmin = {
         attackPatternsDetected: ATTACK_PATTERNS.length,
         honeypotPaths: HONEYPOT_PATHS.size,
         recentSuspiciousActivity: Array.from(suspiciousIPs.entries())
-          .sort(
-            ([, a], [, b]) => b.lastAttempt.getTime() - a.lastAttempt.getTime(),
-          )
+          .sort(([, a], [, b]) => b.lastAttempt.getTime() - a.lastAttempt.getTime())
           .slice(0, 10)
           .map(([ip, activity]) => ({
             ip,
@@ -759,7 +702,7 @@ export const antiHackingAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to retrieve security statistics",
+          message: 'Failed to retrieve security statistics',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -776,7 +719,7 @@ export const antiHackingAdmin = {
         return res.status(400).json({
           success: false,
           error: {
-            message: "IP address is required",
+            message: 'IP address is required',
             statusCode: 400,
           },
           timestamp: new Date().toISOString(),
@@ -784,7 +727,7 @@ export const antiHackingAdmin = {
       }
 
       blockedIPs.add(ip);
-      addSuspiciousIP(ip, reason || "Manual block", "critical");
+      addSuspiciousIP(ip, reason || 'Manual block', 'critical');
 
       console.warn(`🚨 IP manually blocked: ${ip} (${reason})`);
 
@@ -792,7 +735,7 @@ export const antiHackingAdmin = {
         success: true,
         data: {
           blockedIP: ip,
-          reason: reason || "Manual block",
+          reason: reason || 'Manual block',
         },
         timestamp: new Date().toISOString(),
       });
@@ -800,7 +743,7 @@ export const antiHackingAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to block IP",
+          message: 'Failed to block IP',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -817,7 +760,7 @@ export const antiHackingAdmin = {
         return res.status(400).json({
           success: false,
           error: {
-            message: "IP address is required",
+            message: 'IP address is required',
             statusCode: 400,
           },
           timestamp: new Date().toISOString(),
@@ -840,7 +783,7 @@ export const antiHackingAdmin = {
       res.status(500).json({
         success: false,
         error: {
-          message: "Failed to unblock IP",
+          message: 'Failed to unblock IP',
           statusCode: 500,
         },
         timestamp: new Date().toISOString(),
@@ -874,9 +817,9 @@ setInterval(
       }
     }
   },
-  60 * 60 * 1000,
+  60 * 60 * 1000
 ); // Every hour
 
-console.log("🛡️ Anti-Hacking Protection System initialized");
+console.log('🛡️ Anti-Hacking Protection System initialized');
 
 export { suspiciousIPs, blockedIPs, ATTACK_PATTERNS, HONEYPOT_PATHS };

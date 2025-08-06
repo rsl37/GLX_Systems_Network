@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { validateEnvironment } from '../../server/envValidation.js';
 
@@ -32,14 +31,19 @@ describe('JWT Security Integration Tests', () => {
       const result = validateEnvironment();
 
       expect(result.isValid).toBe(false);
-      expect(result.errors.some(e => e.includes('JWT_SECRET security validation failed'))).toBe(true);
-      expect(result.errors.some(e => e.includes('JWT_REFRESH_SECRET security validation failed'))).toBe(true);
+      expect(result.errors.some(e => e.includes('JWT_SECRET security validation failed'))).toBe(
+        true
+      );
+      expect(
+        result.errors.some(e => e.includes('JWT_REFRESH_SECRET security validation failed'))
+      ).toBe(true);
     });
 
     it('should pass validation with strong secrets', () => {
       process.env.NODE_ENV = 'production';
       process.env.JWT_SECRET = 'K8x$mP9#vR2@nL5!wQ7^eT4&yU6*iO3%aS1$dF8#gH2@jK9!zX3^cV7&bN4*mL8!';
-      process.env.JWT_REFRESH_SECRET = 'Tr7$pL9#mN4@vB8!qW3^eR6&tY2*uI5%oP1$aS8#dF4@gH7!wE3^rT6&yU9*iO2%';
+      process.env.JWT_REFRESH_SECRET =
+        'Tr7$pL9#mN4@vB8!qW3^eR6&tY2*uI5%oP1$aS8#dF4@gH7!wE3^rT6&yU9*iO2%';
       process.env.CLIENT_ORIGIN = 'https://example.com';
 
       const result = validateEnvironment();
@@ -50,16 +54,19 @@ describe('JWT Security Integration Tests', () => {
 
     it('should detect hardcoded default secrets', () => {
       process.env.NODE_ENV = 'production';
-      process.env.JWT_SECRET = 'your-secret-key-made-long-enough-for-64-character-minimum-requirement';
-      process.env.JWT_REFRESH_SECRET = 'your-refresh-secret-key-made-long-enough-for-64-character-min';
+      process.env.JWT_SECRET =
+        'your-secret-key-made-long-enough-for-64-character-minimum-requirement';
+      process.env.JWT_REFRESH_SECRET =
+        'your-refresh-secret-key-made-long-enough-for-64-character-min';
       process.env.CLIENT_ORIGIN = 'https://example.com';
 
       const result = validateEnvironment();
 
       expect(result.isValid).toBe(false);
       // Should detect weak patterns or provide security-related recommendations
-      const hasSecurityIssues = result.errors.some(e => e.includes('security validation failed')) ||
-                                result.errors.some(e => e.includes('critical security weaknesses'));
+      const hasSecurityIssues =
+        result.errors.some(e => e.includes('security validation failed')) ||
+        result.errors.some(e => e.includes('critical security weaknesses'));
       expect(hasSecurityIssues).toBe(true);
     });
 
@@ -72,9 +79,10 @@ describe('JWT Security Integration Tests', () => {
       const result = validateEnvironment();
 
       // Should have warnings about weak patterns or security concerns
-      const hasSecurityWarnings = result.warnings.some(w => w.includes('JWT_SECRET has security concerns')) ||
-                                  result.warnings.some(w => w.includes('JWT_REFRESH_SECRET has security concerns')) ||
-                                  result.errors.some(e => e.includes('security validation failed'));
+      const hasSecurityWarnings =
+        result.warnings.some(w => w.includes('JWT_SECRET has security concerns')) ||
+        result.warnings.some(w => w.includes('JWT_REFRESH_SECRET has security concerns')) ||
+        result.errors.some(e => e.includes('security validation failed'));
       expect(hasSecurityWarnings).toBe(true);
     });
 

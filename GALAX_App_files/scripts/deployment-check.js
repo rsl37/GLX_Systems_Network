@@ -8,8 +8,6 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-
-
 /**
  * GALAX Deployment Readiness Check Script
  *
@@ -68,7 +66,9 @@ async function runDeploymentCheck() {
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
-    console.log(`Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`);
+    console.log(
+      `Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`
+    );
     console.log(`Environment: ${report.environment}`);
     console.log(`Timestamp: ${report.timestamp}`);
     console.log(`\nChecks Summary:`);
@@ -128,7 +128,6 @@ async function runDeploymentCheck() {
       console.log('\n✅ Deployment readiness check PASSED');
       process.exit(0);
     }
-
   } catch (error) {
     console.error('\n❌ Deployment readiness check failed to run:');
     console.error(error);
@@ -141,10 +140,14 @@ async function runDeploymentCheck() {
  */
 function getStatusEmoji(status) {
   switch (status) {
-    case 'ready': return '✅';
-    case 'warning': return '⚠️';
-    case 'not_ready': return '❌';
-    default: return '❓';
+    case 'ready':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'not_ready':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 
@@ -153,10 +156,14 @@ function getStatusEmoji(status) {
  */
 function getCheckEmoji(status) {
   switch (status) {
-    case 'pass': return '✅';
-    case 'warning': return '⚠️';
-    case 'fail': return '❌';
-    default: return '❓';
+    case 'pass':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'fail':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 

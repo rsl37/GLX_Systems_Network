@@ -35,18 +35,14 @@ export async function debugDatabaseTables() {
       console.log('👥 Users table count:', userCount?.count || 0);
 
       // Get first user if exists
-      const firstUser = await db
-        .selectFrom('users')
-        .selectAll()
-        .limit(1)
-        .executeTakeFirst();
+      const firstUser = await db.selectFrom('users').selectAll().limit(1).executeTakeFirst();
 
       if (firstUser) {
         console.log('👤 First user sample:', {
           id: firstUser.id,
           username: firstUser.username,
           email: firstUser.email,
-          created_at: firstUser.created_at
+          created_at: firstUser.created_at,
         });
       }
     } catch (error) {
@@ -64,7 +60,6 @@ export async function debugDatabaseTables() {
     } catch (error) {
       console.error('❌ Error checking help_requests table:', error);
     }
-
   } catch (error) {
     console.error('❌ Debug database tables error:', error);
   }
@@ -97,14 +92,13 @@ export async function createTestUser() {
         gov_balance: 0,
         roles: 'helper,requester,voter',
         skills: '[]',
-        badges: '[]'
+        badges: '[]',
       })
       .returning('id')
       .executeTakeFirst();
 
     console.log('✅ Test user created:', testUser?.id);
     return testUser;
-
   } catch (error) {
     console.error('❌ Error creating test user:', error);
     throw error;

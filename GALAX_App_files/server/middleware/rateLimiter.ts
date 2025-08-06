@@ -16,9 +16,9 @@ export const apiLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many requests from this IP, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -28,12 +28,12 @@ export const apiLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many requests from this IP, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Strict rate limiting for authentication endpoints
@@ -44,9 +44,9 @@ export const authLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many authentication attempts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   skipSuccessfulRequests: true, // Don't count successful requests
   handler: (req, res) => {
@@ -55,12 +55,12 @@ export const authLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many authentication attempts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Phone/SMS verification rate limiting
@@ -71,9 +71,9 @@ export const phoneLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many verification attempts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 Phone verification rate limit exceeded for IP: ${req.ip}`);
@@ -81,12 +81,12 @@ export const phoneLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many verification attempts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Email verification rate limiting
@@ -97,9 +97,9 @@ export const emailLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many email verification attempts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 Email verification rate limit exceeded for IP: ${req.ip}`);
@@ -107,12 +107,12 @@ export const emailLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many email verification attempts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // File upload rate limiting
@@ -123,9 +123,9 @@ export const uploadLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many file uploads, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 File upload rate limit exceeded for IP: ${req.ip}`);
@@ -133,12 +133,12 @@ export const uploadLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many file uploads, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Password reset rate limiting
@@ -149,9 +149,9 @@ export const passwordResetLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many password reset attempts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 Password reset rate limit exceeded for IP: ${req.ip}`);
@@ -159,12 +159,12 @@ export const passwordResetLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many password reset attempts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Crisis alert rate limiting (stricter to prevent spam)
@@ -175,9 +175,9 @@ export const crisisLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many crisis alerts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 Crisis alert rate limit exceeded for IP: ${req.ip}`);
@@ -185,12 +185,12 @@ export const crisisLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many crisis alerts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Voting rate limiting (stricter to prevent vote manipulation)
@@ -201,9 +201,9 @@ export const votingLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many voting attempts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 Voting rate limit exceeded for IP: ${req.ip}`);
@@ -211,12 +211,12 @@ export const votingLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many voting attempts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Profile update rate limiting
@@ -227,9 +227,9 @@ export const profileUpdateLimiter = rateLimit({
     success: false,
     error: {
       message: 'Too many profile update attempts, please try again later.',
-      statusCode: 429
+      statusCode: 429,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   },
   handler: (req, res) => {
     console.log(`🚨 Profile update rate limit exceeded for IP: ${req.ip}`);
@@ -237,12 +237,12 @@ export const profileUpdateLimiter = rateLimit({
       success: false,
       error: {
         message: 'Too many profile update attempts, please try again later.',
-        statusCode: 429
+        statusCode: 429,
       },
       timestamp: new Date().toISOString(),
-      path: req.path
+      path: req.path,
     });
-  }
+  },
 });
 
 // Create rate limiter with custom config
@@ -254,9 +254,9 @@ export const createRateLimiter = (windowMs: number, max: number, message: string
       success: false,
       error: {
         message,
-        statusCode: 429
+        statusCode: 429,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -266,11 +266,11 @@ export const createRateLimiter = (windowMs: number, max: number, message: string
         success: false,
         error: {
           message,
-          statusCode: 429
+          statusCode: 429,
         },
         timestamp: new Date().toISOString(),
-        path: req.path
+        path: req.path,
       });
-    }
+    },
   });
 };

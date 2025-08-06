@@ -13,7 +13,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import {
   Eye,
@@ -24,7 +30,7 @@ import {
   AlertTriangle,
   DollarSign,
   Shield,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react';
 
 interface PrivacySettingsProps {
@@ -37,17 +43,22 @@ interface PrivacySettingsProps {
   onUpdatePrivacySettings: (settings: any) => Promise<void>;
 }
 
-export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }: PrivacySettingsProps) {
+export function PrivacySettings({
+  userPrivacySettings,
+  onUpdatePrivacySettings,
+}: PrivacySettingsProps) {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showWalletWarning, setShowWalletWarning] = useState(false);
-  const [pendingWalletSetting, setPendingWalletSetting] = useState<'public' | 'tip-button' | null>(null);
+  const [pendingWalletSetting, setPendingWalletSetting] = useState<'public' | 'tip-button' | null>(
+    null
+  );
 
   const handleEmailToggle = async (checked: boolean) => {
     setIsLoading(true);
     await onUpdatePrivacySettings({
       ...userPrivacySettings,
-      showEmail: checked
+      showEmail: checked,
     });
     setIsLoading(false);
   };
@@ -56,7 +67,7 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
     setIsLoading(true);
     await onUpdatePrivacySettings({
       ...userPrivacySettings,
-      showPhone: checked
+      showPhone: checked,
     });
     setIsLoading(false);
   };
@@ -70,7 +81,9 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
       await onUpdatePrivacySettings({
         ...userPrivacySettings,
         showWallet: checked,
-        walletDisplayMode: checked ? userPrivacySettings.walletDisplayMode || 'tip-button' : 'hidden'
+        walletDisplayMode: checked
+          ? userPrivacySettings.walletDisplayMode || 'tip-button'
+          : 'hidden',
       });
       setIsLoading(false);
     }
@@ -81,7 +94,7 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
     await onUpdatePrivacySettings({
       ...userPrivacySettings,
       showWallet: true,
-      walletDisplayMode: mode
+      walletDisplayMode: mode,
     });
     setShowWalletWarning(false);
     setPendingWalletSetting(null);
@@ -97,26 +110,27 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5" />
+          <CardTitle className='flex items-center gap-2'>
+            <Eye className='h-5 w-5' />
             Profile Privacy Settings
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className='space-y-6'>
           <Alert>
-            <Shield className="h-4 w-4" />
+            <Shield className='h-4 w-4' />
             <AlertDescription>
-              Control what information is visible on your public profile. Your authentication methods remain secure regardless of these settings.
+              Control what information is visible on your public profile. Your authentication
+              methods remain secure regardless of these settings.
             </AlertDescription>
           </Alert>
 
           {/* Email Privacy */}
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="flex items-center gap-3">
-              <Mail className="h-5 w-5 text-gray-500" />
+          <div className='flex items-center justify-between p-4 border rounded-lg'>
+            <div className='flex items-center gap-3'>
+              <Mail className='h-5 w-5 text-gray-500' />
               <div>
-                <Label className="text-base font-medium">Email Address</Label>
-                <p className="text-sm text-gray-600">
+                <Label className='text-base font-medium'>Email Address</Label>
+                <p className='text-sm text-gray-600'>
                   {user?.email ? `Show ${user.email} on your profile` : 'No email address added'}
                 </p>
               </div>
@@ -129,12 +143,12 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
           </div>
 
           {/* Phone Privacy */}
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="flex items-center gap-3">
-              <Phone className="h-5 w-5 text-gray-500" />
+          <div className='flex items-center justify-between p-4 border rounded-lg'>
+            <div className='flex items-center gap-3'>
+              <Phone className='h-5 w-5 text-gray-500' />
               <div>
-                <Label className="text-base font-medium">Phone Number</Label>
-                <p className="text-sm text-gray-600">
+                <Label className='text-base font-medium'>Phone Number</Label>
+                <p className='text-sm text-gray-600'>
                   {user?.phone ? `Show ${user.phone} on your profile` : 'No phone number added'}
                 </p>
               </div>
@@ -147,19 +161,19 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
           </div>
 
           {/* Wallet Privacy */}
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="flex items-center gap-3">
-              <Wallet className="h-5 w-5 text-gray-500" />
+          <div className='flex items-center justify-between p-4 border rounded-lg'>
+            <div className='flex items-center gap-3'>
+              <Wallet className='h-5 w-5 text-gray-500' />
               <div>
-                <Label className="text-base font-medium">Wallet Address</Label>
-                <p className="text-sm text-gray-600">
-                  {user?.wallet_address ? (
-                    userPrivacySettings.walletDisplayMode === 'public' ?
-                      'Show full wallet address on your profile' :
-                    userPrivacySettings.walletDisplayMode === 'tip-button' ?
-                      'Show "Wallet Verified" badge with tip button' :
-                      'Keep wallet address private'
-                  ) : 'No wallet address added'}
+                <Label className='text-base font-medium'>Wallet Address</Label>
+                <p className='text-sm text-gray-600'>
+                  {user?.wallet_address
+                    ? userPrivacySettings.walletDisplayMode === 'public'
+                      ? 'Show full wallet address on your profile'
+                      : userPrivacySettings.walletDisplayMode === 'tip-button'
+                        ? 'Show "Wallet Verified" badge with tip button'
+                        : 'Keep wallet address private'
+                    : 'No wallet address added'}
                 </p>
               </div>
             </div>
@@ -173,19 +187,18 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
           {/* Current wallet display mode info */}
           {user?.wallet_address && userPrivacySettings.showWallet && (
             <Alert>
-              <Wallet className="h-4 w-4" />
+              <Wallet className='h-4 w-4' />
               <AlertDescription>
-                <div className="flex items-center justify-between">
+                <div className='flex items-center justify-between'>
                   <span>
-                    Current display mode: <strong>
-                      {userPrivacySettings.walletDisplayMode === 'public' ? 'Full Address' : 'Tip Button Only'}
+                    Current display mode:{' '}
+                    <strong>
+                      {userPrivacySettings.walletDisplayMode === 'public'
+                        ? 'Full Address'
+                        : 'Tip Button Only'}
                     </strong>
                   </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowWalletWarning(true)}
-                  >
+                  <Button variant='outline' size='sm' onClick={() => setShowWalletWarning(true)}>
                     Change Mode
                   </Button>
                 </div>
@@ -197,63 +210,78 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
 
       {/* Wallet Display Warning Dialog */}
       <Dialog open={showWalletWarning} onOpenChange={setShowWalletWarning}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className='sm:max-w-lg'>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
+            <DialogTitle className='flex items-center gap-2'>
+              <AlertTriangle className='h-5 w-5 text-orange-500' />
               Wallet Address Display Options
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
-            <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
+          <div className='space-y-4'>
+            <Alert variant='destructive'>
+              <AlertTriangle className='h-4 w-4' />
               <AlertDescription>
-                <strong>Security Warning:</strong> Displaying your wallet address publicly may expose your transaction history and holdings to anyone who views your profile.
+                <strong>Security Warning:</strong> Displaying your wallet address publicly may
+                expose your transaction history and holdings to anyone who views your profile.
               </AlertDescription>
             </Alert>
 
-            <div className="space-y-3">
-              <div className="p-4 border-2 border-blue-200 rounded-lg cursor-pointer hover:border-blue-400 transition-colors"
-                   onClick={() => setPendingWalletSetting('tip-button')}>
-                <div className="flex items-start gap-3">
-                  <div className={`w-4 h-4 rounded-full border-2 mt-0.5 ${
-                    pendingWalletSetting === 'tip-button' ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
-                  }`}>
+            <div className='space-y-3'>
+              <div
+                className='p-4 border-2 border-blue-200 rounded-lg cursor-pointer hover:border-blue-400 transition-colors'
+                onClick={() => setPendingWalletSetting('tip-button')}
+              >
+                <div className='flex items-start gap-3'>
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 mt-0.5 ${
+                      pendingWalletSetting === 'tip-button'
+                        ? 'border-blue-500 bg-blue-500'
+                        : 'border-gray-300'
+                    }`}
+                  >
                     {pendingWalletSetting === 'tip-button' && (
-                      <CheckCircle className="h-3 w-3 text-white" />
+                      <CheckCircle className='h-3 w-3 text-white' />
                     )}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <DollarSign className="h-4 w-4 text-blue-500" />
+                    <div className='flex items-center gap-2 mb-1'>
+                      <DollarSign className='h-4 w-4 text-blue-500' />
                       <strong>Tip Button Only (Recommended)</strong>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      Show a "Wallet Verified" badge and tip button without revealing your actual wallet address.
-                      This keeps your privacy while allowing people to send you tips.
+                    <p className='text-sm text-gray-600'>
+                      Show a "Wallet Verified" badge and tip button without revealing your actual
+                      wallet address. This keeps your privacy while allowing people to send you
+                      tips.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 border-2 border-red-200 rounded-lg cursor-pointer hover:border-red-400 transition-colors"
-                   onClick={() => setPendingWalletSetting('public')}>
-                <div className="flex items-start gap-3">
-                  <div className={`w-4 h-4 rounded-full border-2 mt-0.5 ${
-                    pendingWalletSetting === 'public' ? 'border-red-500 bg-red-500' : 'border-gray-300'
-                  }`}>
+              <div
+                className='p-4 border-2 border-red-200 rounded-lg cursor-pointer hover:border-red-400 transition-colors'
+                onClick={() => setPendingWalletSetting('public')}
+              >
+                <div className='flex items-start gap-3'>
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 mt-0.5 ${
+                      pendingWalletSetting === 'public'
+                        ? 'border-red-500 bg-red-500'
+                        : 'border-gray-300'
+                    }`}
+                  >
                     {pendingWalletSetting === 'public' && (
-                      <CheckCircle className="h-3 w-3 text-white" />
+                      <CheckCircle className='h-3 w-3 text-white' />
                     )}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Eye className="h-4 w-4 text-red-500" />
+                    <div className='flex items-center gap-2 mb-1'>
+                      <Eye className='h-4 w-4 text-red-500' />
                       <strong>Show Full Address</strong>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      Display your complete wallet address on your profile. Anyone can see your transaction history and token balances.
+                    <p className='text-sm text-gray-600'>
+                      Display your complete wallet address on your profile. Anyone can see your
+                      transaction history and token balances.
                     </p>
                   </div>
                 </div>
@@ -261,12 +289,14 @@ export function PrivacySettings({ userPrivacySettings, onUpdatePrivacySettings }
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={handleCancelWalletWarning}>
+          <DialogFooter className='gap-2'>
+            <Button variant='outline' onClick={handleCancelWalletWarning}>
               Cancel
             </Button>
             <Button
-              onClick={() => pendingWalletSetting && handleWalletModeSelection(pendingWalletSetting)}
+              onClick={() =>
+                pendingWalletSetting && handleWalletModeSelection(pendingWalletSetting)
+              }
               disabled={!pendingWalletSetting || isLoading}
               className={pendingWalletSetting === 'public' ? 'bg-red-600 hover:bg-red-700' : ''}
             >

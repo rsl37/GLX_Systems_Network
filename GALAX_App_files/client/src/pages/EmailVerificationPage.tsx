@@ -52,7 +52,9 @@ export function EmailVerificationPage() {
           // Non-JSON response, likely HTML error page
           const text = await response.text();
           if (text.includes('<html') || text.includes('<!DOCTYPE')) {
-            throw new Error('Server returned an error page instead of JSON. Please check your API routes.');
+            throw new Error(
+              'Server returned an error page instead of JSON. Please check your API routes.'
+            );
           }
           errorMessage = text || errorMessage;
         }
@@ -66,7 +68,10 @@ export function EmailVerificationPage() {
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      throw new Error('Expected JSON response but got: ' + (text.substring(0, 100) + (text.length > 100 ? '...' : '')));
+      throw new Error(
+        'Expected JSON response but got: ' +
+          (text.substring(0, 100) + (text.length > 100 ? '...' : ''))
+      );
     }
 
     try {
@@ -129,7 +134,7 @@ export function EmailVerificationPage() {
       const response = await fetch('/api/auth/send-email-verification', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -161,18 +166,18 @@ export function EmailVerificationPage() {
   // Token verification in progress
   if (isVerifying) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className='w-full max-w-md'
         >
-          <Card className="galax-card">
-            <CardContent className="p-8 text-center">
-              <div className="animate-spin mx-auto mb-4 h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full"></div>
-              <h2 className="text-xl font-semibold mb-2">Verifying Your Email</h2>
-              <p className="text-gray-600">Please wait while we verify your email address...</p>
+          <Card className='galax-card'>
+            <CardContent className='p-8 text-center'>
+              <div className='animate-spin mx-auto mb-4 h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full'></div>
+              <h2 className='text-xl font-semibold mb-2'>Verifying Your Email</h2>
+              <p className='text-gray-600'>Please wait while we verify your email address...</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -183,29 +188,27 @@ export function EmailVerificationPage() {
   // Email successfully verified
   if (isVerified) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+      <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className='w-full max-w-md'
         >
-          <Card className="galax-card">
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-4">
-                <CheckCircle className="h-16 w-16 text-green-500" />
+          <Card className='galax-card'>
+            <CardHeader className='text-center'>
+              <div className='mx-auto mb-4'>
+                <CheckCircle className='h-16 w-16 text-green-500' />
               </div>
-              <CardTitle className="text-2xl font-bold text-green-600">
-                Email Verified!
-              </CardTitle>
+              <CardTitle className='text-2xl font-bold text-green-600'>Email Verified!</CardTitle>
               <CardDescription>
                 Your email has been successfully verified. Welcome to GALAX!
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <div className="bg-green-50 p-4 rounded-lg">
-                <p className="text-green-800 font-medium">🎉 You can now:</p>
-                <ul className="text-green-700 text-sm mt-2 space-y-1">
+            <CardContent className='text-center space-y-4'>
+              <div className='bg-green-50 p-4 rounded-lg'>
+                <p className='text-green-800 font-medium'>🎉 You can now:</p>
+                <ul className='text-green-700 text-sm mt-2 space-y-1'>
                   <li>• Access all platform features</li>
                   <li>• Request and offer help</li>
                   <li>• Participate in governance</li>
@@ -213,14 +216,9 @@ export function EmailVerificationPage() {
                 </ul>
               </div>
 
-              <p className="text-sm text-gray-600">
-                Redirecting to dashboard in a few seconds...
-              </p>
+              <p className='text-sm text-gray-600'>Redirecting to dashboard in a few seconds...</p>
 
-              <Button
-                onClick={() => navigate('/dashboard')}
-                className="galax-button w-full"
-              >
+              <Button onClick={() => navigate('/dashboard')} className='galax-button w-full'>
                 Go to Dashboard
               </Button>
             </CardContent>
@@ -232,97 +230,91 @@ export function EmailVerificationPage() {
 
   // Error state or verification prompt
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className='w-full max-w-md'
       >
-        <Card className="galax-card">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4">
-              <Mail className="h-16 w-16 text-blue-500" />
+        <Card className='galax-card'>
+          <CardHeader className='text-center'>
+            <div className='mx-auto mb-4'>
+              <Mail className='h-16 w-16 text-blue-500' />
             </div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               Verify Your Email
             </CardTitle>
             <CardDescription>
-              {error ? 'Unable to verify email address. Please check the verification link or request a new one.' : 'Check your email for a verification link'}
+              {error
+                ? 'Unable to verify email address. Please check the verification link or request a new one.'
+                : 'Check your email for a verification link'}
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-4">
+          <CardContent className='space-y-4'>
             {error ? (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-red-700">
-                  <AlertCircle className="h-5 w-5" />
-                  <span className="font-medium">Verification Failed</span>
+              <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+                <div className='flex items-center gap-2 text-red-700'>
+                  <AlertCircle className='h-5 w-5' />
+                  <span className='font-medium'>Verification Failed</span>
                 </div>
-                <p className="text-red-600 text-sm mt-1">{error}</p>
+                <p className='text-red-600 text-sm mt-1'>{error}</p>
               </div>
             ) : (
-              <div className="text-center space-y-3">
-                <p className="text-gray-600">
+              <div className='text-center space-y-3'>
+                <p className='text-gray-600'>
                   We've sent a verification email to <strong>{user?.email}</strong>
                 </p>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-blue-800 text-sm">
-                    📧 Check your inbox (and spam folder) for the verification email.
-                    Click the link in the email to verify your account.
+                <div className='bg-blue-50 p-4 rounded-lg'>
+                  <p className='text-blue-800 text-sm'>
+                    📧 Check your inbox (and spam folder) for the verification email. Click the link
+                    in the email to verify your account.
                   </p>
                 </div>
               </div>
             )}
 
             {resendSuccess && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-green-700">
-                  <CheckCircle className="h-5 w-5" />
-                  <span className="font-medium">Email Sent!</span>
+              <div className='bg-green-50 border border-green-200 rounded-lg p-4'>
+                <div className='flex items-center gap-2 text-green-700'>
+                  <CheckCircle className='h-5 w-5' />
+                  <span className='font-medium'>Email Sent!</span>
                 </div>
-                <p className="text-green-600 text-sm mt-1">
+                <p className='text-green-600 text-sm mt-1'>
                   A new verification email has been sent to your inbox.
                 </p>
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className='space-y-3'>
               <Button
                 onClick={resendVerification}
                 disabled={isResending}
-                variant="outline"
-                className="w-full"
+                variant='outline'
+                className='w-full'
               >
                 {isResending ? (
-                  <div className="flex items-center gap-2">
-                    <RefreshCw className="h-4 w-4 animate-spin" />
+                  <div className='flex items-center gap-2'>
+                    <RefreshCw className='h-4 w-4 animate-spin' />
                     Sending...
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
+                  <div className='flex items-center gap-2'>
+                    <Mail className='h-4 w-4' />
                     Resend Verification Email
                   </div>
                 )}
               </Button>
 
-              <Button
-                onClick={() => navigate('/dashboard')}
-                variant="ghost"
-                className="w-full"
-              >
+              <Button onClick={() => navigate('/dashboard')} variant='ghost' className='w-full'>
                 I'll verify later
               </Button>
             </div>
 
-            <div className="text-center text-xs text-gray-500">
-              <p>
-                Didn't receive the email? Check your spam folder or try resending.
-              </p>
-              <p className="mt-1">
-                Need help? Contact support at support@galax.app
-              </p>
+            <div className='text-center text-xs text-gray-500'>
+              <p>Didn't receive the email? Check your spam folder or try resending.</p>
+              <p className='mt-1'>Need help? Contact support at support@galax.app</p>
             </div>
           </CardContent>
         </Card>

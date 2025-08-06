@@ -1,7 +1,7 @@
 {
   "name": "galax-civic-platform",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "license": "PolyForm-Shield-1.0.0",
   "engines": {
@@ -20,7 +20,8 @@
     "test:watch": "scripts/ensure-test-dirs.sh && vitest",
     "test:coverage": "scripts/ensure-test-dirs.sh && vitest run --coverage",
     "test:ui": "scripts/ensure-test-dirs.sh && vitest --ui",
-    "test:e2e": "scripts/ensure-test-dirs.sh && playwright test",
+    "test:e2e": "scripts/run-e2e-tests.sh",
+    "test:e2e:force": "scripts/ensure-test-dirs.sh && playwright test",
     "test:all": "npm run test && npm run test:security && npm run test:e2e",
     "test:env": "npx tsx scripts/test-env.ts",
 <<<<<<< HEAD
@@ -48,10 +49,17 @@
     "logs:all": "npm run health:log && npm run branch:analyze",
     "dashboard": "npx tsx scripts/monitoring-dashboard.ts",
     "monitor:full": "npm run logs:all && npm run dashboard",
+<<<<<<< HEAD
     "vercel:validate": "node scripts/validate-vercel-env.cjs",
     "vercel:health": "node scripts/vercel-health-check.cjs",
     "vercel:deploy-check": "npm run vercel:validate && npm run build && npm run vercel:health",
     "vercel:troubleshoot": "node scripts/vercel-troubleshoot.cjs"
+=======
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+>>>>>>> origin/copilot/fix-488
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
@@ -132,6 +140,10 @@
   },
   "devDependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    "@eslint/js": "^9.32.0",
+>>>>>>> origin/copilot/fix-488
     "@lhci/cli": "^0.15.1",
 =======
 >>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
@@ -144,15 +156,21 @@
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "@vercel/node": "^5.3.8",
     "@vitejs/plugin-react": "4.7.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "autocannon": "^8.0.0",
     "autoprefixer": "10.4.21",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "ignore": "7.0.5",
     "jsdom": "^26.1.0",
     "postcss": "8.5.6",
+    "prettier": "^3.6.2",
     "supertest": "^7.1.4",
     "tailwindcss": "3.4.17",
     "tsx": "^4.20.3",
@@ -168,6 +186,7 @@
     "rimraf": "^5.0.0",
     "uuid": "^10.0.0",
     "esbuild": "^0.25.8",
+<<<<<<< HEAD
     "undici": "^6.0.0",
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -175,13 +194,25 @@
 >>>>>>> origin/copilot/fix-470
     "path-to-regexp": "^8.0.0",
     "@vercel/node": {
+=======
+    "undici": "^6.21.3",
+    "path-to-regexp": "^8.2.0",
+    "@vercel/node": "^5.3.8",
+    "@vercel/node@*": {
+>>>>>>> origin/copilot/fix-488
       "esbuild": "^0.25.8",
-      "undici": "^6.0.0",
-      "path-to-regexp": "^8.0.0"
+      "undici": "^6.21.3",
+      "path-to-regexp": "^8.2.0"
+    },
+    "**/@vercel/node": {
+      "esbuild": "^0.25.8",
+      "undici": "^6.21.3",
+      "path-to-regexp": "^8.2.0"
     }
   },
   "resolutions": {
     "esbuild": "^0.25.8",
+<<<<<<< HEAD
     "undici": "^6.0.0",
 <<<<<<< HEAD
 =======
@@ -189,5 +220,9 @@
 =======
 >>>>>>> origin/copilot/fix-470
     "path-to-regexp": "^8.0.0"
+=======
+    "undici": "^6.21.3",
+    "path-to-regexp": "^8.2.0"
+>>>>>>> origin/copilot/fix-488
   }
 }

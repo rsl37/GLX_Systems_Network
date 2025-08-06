@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { TestServer, mockDb } from '../setup/test-server.js';
 import request from 'supertest';
@@ -25,7 +24,7 @@ describe('Authentication API Contract', () => {
       if (!email || !password || !firstName || !lastName) {
         return res.status(400).json({
           error: 'Missing required fields',
-          required: ['email', 'password', 'firstName', 'lastName']
+          required: ['email', 'password', 'firstName', 'lastName'],
         });
       }
 
@@ -33,7 +32,7 @@ describe('Authentication API Contract', () => {
       const existingUser = mockDb.findUser({ email });
       if (existingUser) {
         return res.status(409).json({
-          error: 'User already exists'
+          error: 'User already exists',
         });
       }
 
@@ -43,7 +42,7 @@ describe('Authentication API Contract', () => {
         firstName,
         lastName,
         created_at: new Date().toISOString(),
-        verified: false
+        verified: false,
       });
 
       res.status(201).json({
@@ -53,8 +52,8 @@ describe('Authentication API Contract', () => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          verified: user.verified
-        }
+          verified: user.verified,
+        },
       });
     });
 
@@ -63,14 +62,14 @@ describe('Authentication API Contract', () => {
 
       if (!email || !password) {
         return res.status(400).json({
-          error: 'Email and password are required'
+          error: 'Email and password are required',
         });
       }
 
       const user = mockDb.findUser({ email });
       if (!user) {
         return res.status(401).json({
-          error: 'Invalid credentials'
+          error: 'Invalid credentials',
         });
       }
 
@@ -82,14 +81,14 @@ describe('Authentication API Contract', () => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          verified: user.verified
-        }
+          verified: user.verified,
+        },
       });
     });
 
     testServer.app.post('/api/auth/logout', (req, res) => {
       res.json({
-        message: 'Logout successful'
+        message: 'Logout successful',
       });
     });
 
@@ -98,14 +97,14 @@ describe('Authentication API Contract', () => {
 
       if (!token || !email) {
         return res.status(400).json({
-          error: 'Token and email are required'
+          error: 'Token and email are required',
         });
       }
 
       const user = mockDb.findUser({ email });
       if (!user) {
         return res.status(404).json({
-          error: 'User not found'
+          error: 'User not found',
         });
       }
 
@@ -117,8 +116,8 @@ describe('Authentication API Contract', () => {
         user: {
           id: user.id,
           email: user.email,
-          verified: user.verified
-        }
+          verified: user.verified,
+        },
       });
     });
 
@@ -139,7 +138,7 @@ describe('Authentication API Contract', () => {
         email: 'test@example.com',
         password: 'SecurePass123!',
         firstName: 'John',
-        lastName: 'Doe'
+        lastName: 'Doe',
       };
 
       const response = await request(testServer.app)
@@ -154,15 +153,15 @@ describe('Authentication API Contract', () => {
           email: userData.email,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          verified: false
-        }
+          verified: false,
+        },
       });
     });
 
     test('should reject registration with missing fields', async () => {
       const incompleteData = {
         email: 'test@example.com',
-        password: 'SecurePass123!'
+        password: 'SecurePass123!',
         // Missing firstName and lastName
       };
 
@@ -173,7 +172,7 @@ describe('Authentication API Contract', () => {
 
       expect(response.body).toMatchObject({
         error: 'Missing required fields',
-        required: expect.arrayContaining(['firstName', 'lastName'])
+        required: expect.arrayContaining(['firstName', 'lastName']),
       });
     });
 
@@ -182,14 +181,11 @@ describe('Authentication API Contract', () => {
         email: 'test@example.com',
         password: 'SecurePass123!',
         firstName: 'John',
-        lastName: 'Doe'
+        lastName: 'Doe',
       };
 
       // First registration
-      await request(testServer.app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(201);
+      await request(testServer.app).post('/api/auth/register').send(userData).expect(201);
 
       // Second registration with same email
       const response = await request(testServer.app)
@@ -198,7 +194,7 @@ describe('Authentication API Contract', () => {
         .expect(409);
 
       expect(response.body).toMatchObject({
-        error: 'User already exists'
+        error: 'User already exists',
       });
     });
 
@@ -207,29 +203,24 @@ describe('Authentication API Contract', () => {
         email: 'invalid-email',
         password: 'SecurePass123!',
         firstName: 'John',
-        lastName: 'Doe'
+        lastName: 'Doe',
       };
 
       // Note: In a real implementation, this would validate email format
       // For now, we'll accept it but document the expected behavior
-      await request(testServer.app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(201);
+      await request(testServer.app).post('/api/auth/register').send(userData).expect(201);
     });
   });
 
   describe('POST /api/auth/login', () => {
     beforeEach(async () => {
       // Create a user for login tests
-      await request(testServer.app)
-        .post('/api/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'SecurePass123!',
-          firstName: 'John',
-          lastName: 'Doe'
-        });
+      await request(testServer.app).post('/api/auth/register').send({
+        email: 'test@example.com',
+        password: 'SecurePass123!',
+        firstName: 'John',
+        lastName: 'Doe',
+      });
     });
 
     test('should login with valid credentials', async () => {
@@ -237,7 +228,7 @@ describe('Authentication API Contract', () => {
         .post('/api/auth/login')
         .send({
           email: 'test@example.com',
-          password: 'SecurePass123!'
+          password: 'SecurePass123!',
         })
         .expect(200);
 
@@ -248,8 +239,8 @@ describe('Authentication API Contract', () => {
           id: expect.any(Number),
           email: 'test@example.com',
           firstName: 'John',
-          lastName: 'Doe'
-        }
+          lastName: 'Doe',
+        },
       });
     });
 
@@ -260,7 +251,7 @@ describe('Authentication API Contract', () => {
         .expect(400);
 
       expect(response.body).toMatchObject({
-        error: 'Email and password are required'
+        error: 'Email and password are required',
       });
     });
 
@@ -269,24 +260,22 @@ describe('Authentication API Contract', () => {
         .post('/api/auth/login')
         .send({
           email: 'nonexistent@example.com',
-          password: 'WrongPassword'
+          password: 'WrongPassword',
         })
         .expect(401);
 
       expect(response.body).toMatchObject({
-        error: 'Invalid credentials'
+        error: 'Invalid credentials',
       });
     });
   });
 
   describe('POST /api/auth/logout', () => {
     test('should logout successfully', async () => {
-      const response = await request(testServer.app)
-        .post('/api/auth/logout')
-        .expect(200);
+      const response = await request(testServer.app).post('/api/auth/logout').expect(200);
 
       expect(response.body).toMatchObject({
-        message: 'Logout successful'
+        message: 'Logout successful',
       });
     });
   });
@@ -294,14 +283,12 @@ describe('Authentication API Contract', () => {
   describe('POST /api/auth/verify-email', () => {
     beforeEach(async () => {
       // Create a user for verification tests
-      await request(testServer.app)
-        .post('/api/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'SecurePass123!',
-          firstName: 'John',
-          lastName: 'Doe'
-        });
+      await request(testServer.app).post('/api/auth/register').send({
+        email: 'test@example.com',
+        password: 'SecurePass123!',
+        firstName: 'John',
+        lastName: 'Doe',
+      });
     });
 
     test('should verify email with valid token', async () => {
@@ -309,7 +296,7 @@ describe('Authentication API Contract', () => {
         .post('/api/auth/verify-email')
         .send({
           token: 'valid-verification-token',
-          email: 'test@example.com'
+          email: 'test@example.com',
         })
         .expect(200);
 
@@ -318,8 +305,8 @@ describe('Authentication API Contract', () => {
         user: {
           id: expect.any(Number),
           email: 'test@example.com',
-          verified: true
-        }
+          verified: true,
+        },
       });
     });
 
@@ -330,7 +317,7 @@ describe('Authentication API Contract', () => {
         .expect(400);
 
       expect(response.body).toMatchObject({
-        error: 'Token and email are required'
+        error: 'Token and email are required',
       });
     });
 
@@ -339,12 +326,12 @@ describe('Authentication API Contract', () => {
         .post('/api/auth/verify-email')
         .send({
           token: 'valid-verification-token',
-          email: 'nonexistent@example.com'
+          email: 'nonexistent@example.com',
         })
         .expect(404);
 
       expect(response.body).toMatchObject({
-        error: 'User not found'
+        error: 'User not found',
       });
     });
   });

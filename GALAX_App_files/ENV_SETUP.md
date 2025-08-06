@@ -27,6 +27,7 @@ cd GALAX_App_files
 ```
 
 This script will:
+
 - Create `.env` files from the `.env.example` templates
 - Set appropriate development defaults
 - Create all required application directories:
@@ -83,27 +84,27 @@ REACT_APP_API_URL=http://localhost:3001/api
 
 ### Required Variables
 
-| Variable | Description | Development Default |
-|----------|-------------|-------------------|
-| `NODE_ENV` | Application environment | `development` |
-| `PORT` | Server port | `3001` |
-| `JWT_SECRET` | JWT signing secret | Generated dev secret |
+| Variable     | Description             | Development Default  |
+| ------------ | ----------------------- | -------------------- |
+| `NODE_ENV`   | Application environment | `development`        |
+| `PORT`       | Server port             | `3001`               |
+| `JWT_SECRET` | JWT signing secret      | Generated dev secret |
 
 ### Recommended Variables
 
-| Variable | Description | Development Default |
-|----------|-------------|-------------------|
+| Variable        | Description         | Development Default     |
+| --------------- | ------------------- | ----------------------- |
 | `CLIENT_ORIGIN` | CORS allowed origin | `http://localhost:5173` |
-| `DATABASE_URL` | Database connection | Empty (uses SQLite) |
-| `SOCKET_PATH` | WebSocket path | `/socket.io` |
+| `DATABASE_URL`  | Database connection | Empty (uses SQLite)     |
+| `SOCKET_PATH`   | WebSocket path      | `/socket.io`            |
 
 ### Optional Variables (External Services)
 
-| Variable | Description | Required For |
-|----------|-------------|--------------|
-| `PUSHER_*` | Pusher configuration | Real-time features |
-| `SMTP_*` | Email configuration | Email verification, password reset |
-| `TWILIO_*` | SMS configuration | Phone verification, 2FA |
+| Variable   | Description          | Required For                       |
+| ---------- | -------------------- | ---------------------------------- |
+| `PUSHER_*` | Pusher configuration | Real-time features                 |
+| `SMTP_*`   | Email configuration  | Email verification, password reset |
+| `TWILIO_*` | SMS configuration    | Phone verification, 2FA            |
 
 ## Testing Your Configuration
 
@@ -125,15 +126,18 @@ This will verify that all required variables are set and properly formatted.
 ## Troubleshooting
 
 ### "Environment variables missing" error
+
 - Ensure `.env` files exist in the correct locations
 - Run `npm run test:env` to check configuration
 - Use the setup script: `./scripts/setup-env.sh`
 
 ### CORS errors in development
+
 - Verify `CLIENT_ORIGIN` matches your frontend URL
 - Check `TRUSTED_ORIGINS` includes your development URLs
 
 ### Database connection issues
+
 - For development: leave `DATABASE_URL` empty to use SQLite
 - For production: set a valid PostgreSQL connection string
 
@@ -147,7 +151,11 @@ For production deployment (e.g., Vercel):
 4. **Use the `.env.vercel` file as a reference for Vercel deployment**
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 See `DEPLOYMENT.md` for detailed production deployment instructions.
 =======
 See `DEPLOYMENT.md` for detailed production deployment instructions.
 >>>>>>> origin/copilot/fix-190
+=======
+See `DEPLOYMENT.md` for detailed production deployment instructions.
+>>>>>>> origin/copilot/fix-488

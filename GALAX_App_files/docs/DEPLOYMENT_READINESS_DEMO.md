@@ -15,11 +15,13 @@ relatedDocs: []
 ## 🧪 Demo Scenario: Current Test Environment
 
 ### Command Used
+
 ```bash
 npm run deployment:check
 ```
 
 ### Summary Output
+
 ```
 📊 DEPLOYMENT READINESS SUMMARY
 ==============================
@@ -37,6 +39,7 @@ Checks Summary:
 ### Status Breakdown
 
 #### ✅ Passed Checks (20/25)
+
 - Environment Variable: NODE_ENV ✅
 - Environment Variable: PORT ✅
 - Environment Variable: DATA_DIRECTORY ✅
@@ -59,6 +62,7 @@ Checks Summary:
 - Port Configuration ✅ (3001)
 
 #### ⚠️ Warning Issues (5/25)
+
 - Optional Environment Variable: SMTP_HOST ⚠️
 - Optional Environment Variable: SMTP_PORT ⚠️
 - Optional Environment Variable: SMTP_USER ⚠️
@@ -66,6 +70,7 @@ Checks Summary:
 - Optional Environment Variable: SMTP_FROM ⚠️
 
 ### Recommendations
+
 ```
 ⚠️  Your application is mostly ready for deployment.
    Please address the warnings below for optimal production setup:

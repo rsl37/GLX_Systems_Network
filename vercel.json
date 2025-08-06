@@ -82,6 +82,7 @@
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       "source": "/**/*.{js,css,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}",
 =======
       "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
@@ -89,6 +90,9 @@
 =======
       "source": "/**/*.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)",
 >>>>>>> origin/copilot/fix-386
+=======
+      "source": "/**/*.{js,css,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}",
+>>>>>>> origin/copilot/fix-488
       "headers": [
         {
           "key": "Cache-Control",
@@ -118,9 +122,12 @@
     "app/api/**/*": {
       "runtime": "@vercel/node"
     }
+<<<<<<< HEAD
   },
 >>>>>>> origin/copilot/fix-151
   "env": {
     "NODE_ENV": "production"
+=======
+>>>>>>> origin/copilot/fix-488
   }
 }

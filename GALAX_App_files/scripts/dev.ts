@@ -37,7 +37,6 @@ async function startDev() {
     console.log(`✅ Vite dev server running on port ${viteServer.config.server.port}`);
     console.log(`🌍 Frontend: http://localhost:${viteServer.config.server.port}`);
     console.log(`🔧 API: http://localhost:3001/api`);
-
   } catch (error) {
     console.error('❌ Failed to start Vite dev server:', error);
     process.exit(1);
@@ -45,10 +44,7 @@ async function startDev() {
 }
 
 // Handle nodemon restarts - only needed if we're running under nodemon
-if (
-  process.env.npm_lifecycle_event &&
-  process.env.npm_lifecycle_event.includes('watch')
-) {
+if (process.env.npm_lifecycle_event && process.env.npm_lifecycle_event.includes('watch')) {
   let isRestarting = false;
 
   process.once('SIGUSR2', async () => {

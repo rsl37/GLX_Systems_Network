@@ -35,19 +35,21 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       // Enable compression only for production builds
-      ...(isProduction ? [
-        compression({
-          algorithm: 'gzip',
-          threshold: 10240,
-          deleteOriginFile: false,
-        }),
-        compression({
-          algorithm: 'brotliCompress',
-          ext: '.br',
-          threshold: 10240,
-          deleteOriginFile: false,
-        })
-      ] : []),
+      ...(isProduction
+        ? [
+            compression({
+              algorithm: 'gzip',
+              threshold: 10240,
+              deleteOriginFile: false,
+            }),
+            compression({
+              algorithm: 'brotliCompress',
+              ext: '.br',
+              threshold: 10240,
+              deleteOriginFile: false,
+            }),
+          ]
+        : []),
       // Custom plugin to handle source map requests
       {
         name: 'handle-source-map-requests',
@@ -72,13 +74,10 @@ export default defineConfig(({ mode }) => {
           server.middlewares.use((req, res, next) => {
             // Add CORS headers to all responses
             res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader(
-              'Access-Control-Allow-Methods',
-              'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-            );
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
             res.setHeader(
               'Access-Control-Allow-Headers',
-              'Content-Type, Authorization, X-Requested-With',
+              'Content-Type, Authorization, X-Requested-With'
             );
 
             // Handle OPTIONS requests
@@ -122,11 +121,12 @@ export default defineConfig(({ mode }) => {
               '@radix-ui/react-slot',
               '@radix-ui/react-switch',
               '@radix-ui/react-toggle',
-              '@radix-ui/react-tooltip'
+              '@radix-ui/react-tooltip',
             ],
             icons: ['lucide-react'], // Separate icons chunk
             maps: ['@googlemaps/js-api-loader', 'leaflet'],
             animation: ['framer-motion'],
+<<<<<<< HEAD
             analytics: ['@vercel/analytics', '@vercel/speed-insights'] // Vercel monitoring tools
           }
 =======
@@ -184,6 +184,11 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/[name]-[hash].js'
 >>>>>>> origin/copilot/fix-175
         }
+=======
+            analytics: ['@vercel/analytics', '@vercel/speed-insights'], // Vercel monitoring tools
+          },
+        },
+>>>>>>> origin/copilot/fix-488
       },
       chunkSizeWarningLimit: 300, // Smaller chunks for better loading
       sourcemap: isProduction ? false : true, // Disable sourcemaps in production
@@ -234,13 +239,13 @@ export default defineConfig(({ mode }) => {
         'react',
 >>>>>>> origin/copilot/fix-470
         'react-dom',
-        'react-router-dom' // Pre-bundle router since it's critical
+        'react-router-dom', // Pre-bundle router since it's critical
       ],
       exclude: [
         '@googlemaps/js-api-loader', // Lazy load maps
         '@vercel/analytics', // Lazy load analytics
         '@vercel/speed-insights', // Lazy load speed insights
-        'framer-motion' // Load on demand for animations
+        'framer-motion', // Load on demand for animations
       ],
     },
   };

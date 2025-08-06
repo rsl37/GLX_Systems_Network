@@ -61,7 +61,7 @@ export async function createPerformanceIndexes() {
     // Composite indexes for common query patterns
     'CREATE INDEX IF NOT EXISTS idx_help_requests_status_created ON help_requests(status, created_at)',
     'CREATE INDEX IF NOT EXISTS idx_proposals_status_category ON proposals(status, category)',
-    'CREATE INDEX IF NOT EXISTS idx_users_verification_status ON users(email_verified, phone_verified)'
+    'CREATE INDEX IF NOT EXISTS idx_users_verification_status ON users(email_verified, phone_verified)',
   ];
 
   let created = 0;
@@ -91,12 +91,13 @@ export async function analyzeQueryPerformance() {
       'SELECT * FROM users WHERE email = ?',
       'SELECT * FROM help_requests WHERE status = ? ORDER BY created_at DESC',
       'SELECT * FROM proposals WHERE category = ? AND status = ?',
-      'SELECT COUNT(*) FROM votes WHERE proposal_id = ?'
+      'SELECT COUNT(*) FROM votes WHERE proposal_id = ?',
     ];
 
     for (const query of sampleQueries) {
       try {
-        const explainResult = await sql`EXPLAIN QUERY PLAN ${sql.raw(query.replace(/\?/g, "'test'"))}`.execute(db);
+        const explainResult =
+          await sql`EXPLAIN QUERY PLAN ${sql.raw(query.replace(/\?/g, "'test'"))}`.execute(db);
         console.log(`📈 Query plan for: ${query}`);
         console.log('   Plan:', explainResult.rows);
       } catch (error) {

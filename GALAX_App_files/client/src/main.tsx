@@ -23,7 +23,7 @@ const AnalyticsWrapper = React.lazy(() =>
 const AnalyticsWrapper = React.lazy(() =>
 >>>>>>> origin/copilot/fix-470
   import('@vercel/analytics/react').then(module => ({
-    default: () => <module.Analytics />
+    default: () => <module.Analytics />,
   }))
 );
 
@@ -37,7 +37,7 @@ const SpeedInsightsWrapper = React.lazy(() =>
 const SpeedInsightsWrapper = React.lazy(() =>
 >>>>>>> origin/copilot/fix-470
   import('@vercel/speed-insights/react').then(module => ({
-    default: () => <module.SpeedInsights />
+    default: () => <module.SpeedInsights />,
   }))
 );
 
@@ -54,7 +54,8 @@ darkQuery.addEventListener('change', updateDarkClass);
 // Register service worker for lean civic data caching
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker
+      .register('/sw.js')
       .then(registration => {
         console.log('🌟 Service Worker registered for lean civic caching:', registration.scope);
       })
@@ -71,5 +72,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AnalyticsWrapper />
       <SpeedInsightsWrapper />
     </React.Suspense>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

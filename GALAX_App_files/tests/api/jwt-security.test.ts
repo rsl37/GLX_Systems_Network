@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   detectWeakSecretPatterns,
@@ -14,7 +13,7 @@ import {
   getCharacterTypeDiversity,
   hasExcessiveRepeatedChars,
   WEAK_SECRET_PATTERNS,
-  JWT_SECURITY_REQUIREMENTS
+  JWT_SECURITY_REQUIREMENTS,
 } from '../../server/config/security.js';
 
 describe('JWT Secret Security Validation', () => {
@@ -28,7 +27,7 @@ describe('JWT Secret Security Validation', () => {
         'qwerty',
         'admin',
         'secret',
-        'test'
+        'test',
       ];
 
       weakSecrets.forEach(secret => {
@@ -55,11 +54,7 @@ describe('JWT Secret Security Validation', () => {
     });
 
     it('should detect contains-based weak patterns', () => {
-      const weakSecrets = [
-        'my-localhost-secret',
-        'example-jwt-token',
-        'demo-application-key'
-      ];
+      const weakSecrets = ['my-localhost-secret', 'example-jwt-token', 'demo-application-key'];
 
       weakSecrets.forEach(secret => {
         const patterns = detectWeakSecretPatterns(secret);
@@ -72,13 +67,15 @@ describe('JWT Secret Security Validation', () => {
       const strongSecrets = [
         'K8x$mP9#vR2@nL5!wQ7^eT4&yU6*iO3%aS1$dF8#gH2@jK9!',
         'Tr7$pL9#mN4@vB8!qW3^eR6&tY2*uI5%oP1$aS8#dF4@gH7!',
-        'cryptographically-secure-random-string-with-good-entropy-2024'
+        'cryptographically-secure-random-string-with-good-entropy-2024',
       ];
 
       strongSecrets.forEach(secret => {
         const patterns = detectWeakSecretPatterns(secret);
         // Should have no critical or high severity patterns
-        expect(patterns.filter(p => p.severity === 'critical' || p.severity === 'high').length).toBe(0);
+        expect(
+          patterns.filter(p => p.severity === 'critical' || p.severity === 'high').length
+        ).toBe(0);
       });
     });
   });
@@ -88,7 +85,7 @@ describe('JWT Secret Security Validation', () => {
       const defaultSecrets = [
         'your-secret-key',
         'your-refresh-secret-key',
-        'your-super-secret-jwt-key-change-this-in-production-min-32-chars'
+        'your-super-secret-jwt-key-change-this-in-production-min-32-chars',
       ];
 
       defaultSecrets.forEach(secret => {
@@ -123,10 +120,10 @@ describe('JWT Secret Security Validation', () => {
     it('should validate character type diversity', () => {
       // The dashes in the secrets count as symbols, so these expectations need adjustment
       const secrets = {
-        'lowercaseonly': { expectedTypes: 1 }, // only lowercase
-        'MixedCase': { expectedTypes: 2 }, // lowercase + uppercase
-        'MixedCase123': { expectedTypes: 3 }, // lowercase + uppercase + numbers
-        'MixedCase123!': { expectedTypes: 4 } // all types
+        lowercaseonly: { expectedTypes: 1 }, // only lowercase
+        MixedCase: { expectedTypes: 2 }, // lowercase + uppercase
+        MixedCase123: { expectedTypes: 3 }, // lowercase + uppercase + numbers
+        'MixedCase123!': { expectedTypes: 4 }, // all types
       };
 
       Object.entries(secrets).forEach(([secret, expected]) => {
@@ -150,7 +147,7 @@ describe('JWT Secret Security Validation', () => {
     it('should approve strong secrets', () => {
       const strongSecrets = [
         'K8x$mP9#vR2@nL5!wQ7^eT4&yU6*iO3%aS1$dF8#gH2@jK9!zX3^cV7&bN4*mL8!',
-        'Tr7$pL9#mN4@vB8!qW3^eR6&tY2*uI5%oP1$aS8#dF4@gH7!wE3^rT6&yU9*iO2%'
+        'Tr7$pL9#mN4@vB8!qW3^eR6&tY2*uI5%oP1$aS8#dF4@gH7!wE3^rT6&yU9*iO2%',
       ];
 
       strongSecrets.forEach(secret => {
@@ -158,7 +155,9 @@ describe('JWT Secret Security Validation', () => {
         expect(result.isValid).toBe(true);
         expect(result.severity).toBe('ok');
         expect(result.lengthOk).toBe(true);
-        expect(result.weakPatterns.filter(p => p.severity === 'critical' || p.severity === 'high').length).toBe(0);
+        expect(
+          result.weakPatterns.filter(p => p.severity === 'critical' || p.severity === 'high').length
+        ).toBe(0);
       });
     });
 
@@ -168,13 +167,17 @@ describe('JWT Secret Security Validation', () => {
 
       expect(shortResult.recommendations.length).toBeGreaterThan(0);
       // Since "weak" is short and weak, it should get the length message
-      expect(shortResult.recommendations.join(' ')).toContain('Increase length to at least 32 characters');
+      expect(shortResult.recommendations.join(' ')).toContain(
+        'Increase length to at least 32 characters'
+      );
 
       // Test a weak pattern that gets the "Replace" message - use an actual default secret
       const weakPatternSecret = 'your-secret-key';
       const weakResult = validateJWTSecret(weakPatternSecret, false);
 
-      expect(weakResult.recommendations.join(' ')).toContain('Replace with a cryptographically secure random string');
+      expect(weakResult.recommendations.join(' ')).toContain(
+        'Replace with a cryptographically secure random string'
+      );
     });
   });
 
@@ -241,7 +244,9 @@ describe('JWT Secret Security Validation', () => {
 
     it('should have reasonable security requirements', () => {
       expect(JWT_SECURITY_REQUIREMENTS.MIN_LENGTH).toBeGreaterThanOrEqual(32);
-      expect(JWT_SECURITY_REQUIREMENTS.PRODUCTION_MIN_LENGTH).toBeGreaterThan(JWT_SECURITY_REQUIREMENTS.MIN_LENGTH);
+      expect(JWT_SECURITY_REQUIREMENTS.PRODUCTION_MIN_LENGTH).toBeGreaterThan(
+        JWT_SECURITY_REQUIREMENTS.MIN_LENGTH
+      );
       expect(JWT_SECURITY_REQUIREMENTS.REQUIRED_CHARACTER_TYPES).toBeGreaterThanOrEqual(3);
       expect(JWT_SECURITY_REQUIREMENTS.MIN_ENTROPY_BITS).toBeGreaterThanOrEqual(128);
     });

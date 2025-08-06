@@ -32,12 +32,12 @@ describe('StablecoinService Integration', () => {
     const testConfig = {
       ...DEFAULT_STABLECOIN_CONFIG,
       rebalanceInterval: 5000, // 5 seconds for testing
-      toleranceBand: 0.02
+      toleranceBand: 0.02,
     };
 
     const testOracleConfig = {
       ...DEFAULT_ORACLE_CONFIG,
-      updateInterval: 2000 // 2 seconds for testing
+      updateInterval: 2000, // 2 seconds for testing
     };
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -191,12 +191,12 @@ describe('StablecoinService Integration', () => {
     // Update stablecoin config
     service.updateConfig({
       toleranceBand: 0.03, // Change to 3%
-      maxSupplyChange: 0.08 // Change to 8%
+      maxSupplyChange: 0.08, // Change to 8%
     });
 
     // Update oracle config
     service.updateOracleConfig({
-      updateInterval: 3000 // Change to 3 seconds
+      updateInterval: 3000, // Change to 3 seconds
     });
 <<<<<<< HEAD
 <<<<<<< HEAD

@@ -8,7 +8,15 @@
 
 import { Router } from 'express';
 import { AuthRequest, authenticateToken } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, validateNumericId, createPaginationMeta, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
+import {
+  sendSuccess,
+  sendError,
+  validateAuthUser,
+  validateNumericId,
+  createPaginationMeta,
+  StatusCodes,
+  ErrorMessages,
+} from '../utils/responseHelpers.js';
 import { uploadLimiter } from '../middleware/rateLimiter.js';
 import { validateHelpRequest, validateFileUpload } from '../middleware/validation.js';
 import { fileUploadSecurity } from '../middleware/security.js';
@@ -98,7 +106,7 @@ export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeMa
             latitude: latitude ? parseFloat(latitude) : null,
             longitude: longitude ? parseFloat(longitude) : null,
             created_at: helpRequest.created_at,
-          }
+          },
         });
 
         console.log('✅ Help request created:', helpRequest.id);
@@ -181,7 +189,7 @@ export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeMa
         query = query.where('help_requests.urgency', '=', urgency as string);
       }
       if (search) {
-        query = query.where((eb) =>
+        query = query.where(eb =>
           eb.or([
             eb('help_requests.title', 'like', `%${search}%`),
             eb('help_requests.description', 'like', `%${search}%`),
@@ -191,15 +199,15 @@ export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeMa
       }
 
       // Get total count
-      const countQuery = query
-        .clearSelect()
-        .select(db.fn.count('help_requests.id').as('total'));
+      const countQuery = query.clearSelect().select(db.fn.count('help_requests.id').as('total'));
       const totalResult = await countQuery.executeTakeFirst();
       const total = Number(totalResult?.total || 0);
 
       // Add sorting
       const validSortFields = ['created_at', 'updated_at', 'urgency', 'status', 'title'];
-      const sortField = validSortFields.includes(sortBy as string) ? (sortBy as string) : 'created_at';
+      const sortField = validSortFields.includes(sortBy as string)
+        ? (sortBy as string)
+        : 'created_at';
       const order = sortOrder === 'asc' ? 'asc' : 'desc';
 
       query = query.orderBy(`help_requests.${sortField}` as any, order);
@@ -312,7 +320,7 @@ export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeMa
           id: helpRequestId,
           status: 'matched',
           helper_id: userId,
-        }
+        },
       });
 
       console.log('✅ Help offered successfully:', { helpRequestId, helperId: userId });

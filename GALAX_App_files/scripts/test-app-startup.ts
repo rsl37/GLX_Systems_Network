@@ -40,19 +40,19 @@ async function startAppForTesting() {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      PORT: '3001'
-    }
+      PORT: '3001',
+    },
   });
 
   // Set up output handling
-  appProcess.stdout?.on('data', (data) => {
+  appProcess.stdout?.on('data', data => {
     const output = data.toString();
     if (output.includes('API Server with Socket.IO running')) {
       console.log('✅ Server startup detected');
     }
   });
 
-  appProcess.stderr?.on('data', (data) => {
+  appProcess.stderr?.on('data', data => {
     console.error('Server error:', data.toString());
   });
 

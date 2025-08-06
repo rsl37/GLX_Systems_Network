@@ -6,9 +6,12 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/copilot/fix-190
+=======
+>>>>>>> origin/copilot/fix-488
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { TestServer } from '../setup/test-server.js';
 import supertest from 'supertest';
@@ -33,6 +36,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
       res.json({
         success: true,
         data: {
+<<<<<<< HEAD
           type: "Pusher WebSocket",
           status: "active",
           cluster: process.env.PUSHER_CLUSTER || 'us2'
@@ -56,6 +60,12 @@ describe('Real-time Communication Tests (Pusher)', () => {
 =======
         }
 >>>>>>> origin/copilot/fix-470
+=======
+          type: 'Pusher WebSocket',
+          status: 'active',
+          cluster: process.env.PUSHER_CLUSTER || 'us2',
+        },
+>>>>>>> origin/copilot/fix-488
       });
     });
 
@@ -80,6 +90,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (!channel_name.startsWith('private-user-notifications') &&
 =======
       if (!channel_name.startsWith('private-user-notifications') && 
@@ -88,6 +99,12 @@ describe('Real-time Communication Tests (Pusher)', () => {
       if (!channel_name.startsWith('private-user-notifications') &&
 >>>>>>> origin/copilot/fix-470
           !channel_name.startsWith('private-help-request-')) {
+=======
+      if (
+        !channel_name.startsWith('private-user-notifications') &&
+        !channel_name.startsWith('private-help-request-')
+      ) {
+>>>>>>> origin/copilot/fix-488
         return res.status(403).json({ error: 'Unauthorized channel access' });
       }
 
@@ -136,9 +153,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
   describe('Real-time Health Check', () => {
     test('should confirm Pusher is active for real-time communication', async () => {
-      const response = await request
-        .get('/api/realtime/health')
-        .expect(200);
+      const response = await request.get('/api/realtime/health').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.type).toBe('Pusher WebSocket');
@@ -153,7 +168,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .post('/api/pusher/auth')
         .send({
           socket_id: 'test-socket-123',
-          channel_name: 'private-user-notifications-1'
+          channel_name: 'private-user-notifications-1',
         })
         .expect(401); // Unauthorized without token
 
@@ -166,7 +181,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .set('Authorization', 'Bearer valid-token')
         .send({
           socket_id: 'test-socket-123',
-          channel_name: 'private-user-notifications-1'
+          channel_name: 'private-user-notifications-1',
         })
         .expect(200);
 
@@ -179,7 +194,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .set('Authorization', 'Bearer valid-token')
         .send({
           socket_id: 'test-socket-123',
-          channel_name: 'invalid-channel-name'
+          channel_name: 'invalid-channel-name',
         })
         .expect(403);
 
@@ -189,9 +204,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
   describe('HTTP Polling for Real-time Features', () => {
     test('should provide chat message polling endpoint', async () => {
-      const unauthorizedResponse = await request
-        .get('/api/chat/messages')
-        .expect(401);
+      const unauthorizedResponse = await request.get('/api/chat/messages').expect(401);
 
       expect(unauthorizedResponse.body.error).toContain('token');
 
@@ -236,7 +249,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .post('/api/chat/send')
         .send({
           helpRequestId: '1',
-          message: 'Test message'
+          message: 'Test message',
         })
         .expect(401);
 
@@ -247,7 +260,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         .set('Authorization', 'Bearer valid-token')
         .send({
           helpRequestId: '1',
-          message: 'Test message'
+          message: 'Test message',
         })
         .expect(200);
 

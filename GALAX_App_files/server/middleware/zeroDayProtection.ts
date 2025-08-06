@@ -35,7 +35,7 @@ const AI_ML_THREATS: ZeroDayThreat[] = [
     severity: 'critical',
     description: 'AI model poisoning attempt detected',
     countermeasure: 'Block request, quarantine payload, alert security team',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'PROMPT_INJECTION',
@@ -45,7 +45,7 @@ const AI_ML_THREATS: ZeroDayThreat[] = [
     severity: 'high',
     description: 'Prompt injection attack against AI systems',
     countermeasure: 'Sanitize input, block suspicious prompts',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'MODEL_INVERSION',
@@ -55,7 +55,7 @@ const AI_ML_THREATS: ZeroDayThreat[] = [
     severity: 'high',
     description: 'Model inversion attack to extract training data',
     countermeasure: 'Block request, monitor for data extraction patterns',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'SHADOW_AI_DETECTION',
@@ -69,8 +69,8 @@ const AI_ML_THREATS: ZeroDayThreat[] = [
     severity: 'medium',
     description: 'Unauthorized AI system access attempt',
     countermeasure: 'Log suspicious AI client activity, require authorization',
-    detectionCount: 0
-  }
+    detectionCount: 0,
+  },
 ];
 
 // Cloud/Edge Computing Threat Patterns
@@ -83,7 +83,7 @@ const CLOUD_EDGE_THREATS: ZeroDayThreat[] = [
     severity: 'critical',
     description: 'Container escape vulnerability exploitation attempt',
     countermeasure: 'Immediate container isolation, security alert',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'SERVERLESS_EXPLOIT',
@@ -93,7 +93,7 @@ const CLOUD_EDGE_THREATS: ZeroDayThreat[] = [
     severity: 'high',
     description: 'Serverless function exploitation attempt',
     countermeasure: 'Function isolation, runtime monitoring',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'MULTI_TENANT_BREACH',
@@ -103,7 +103,7 @@ const CLOUD_EDGE_THREATS: ZeroDayThreat[] = [
     severity: 'critical',
     description: 'Multi-tenant isolation breach attempt',
     countermeasure: 'Strengthen tenant isolation, audit access',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'EDGE_DEVICE_COMPROMISE',
@@ -117,8 +117,8 @@ const CLOUD_EDGE_THREATS: ZeroDayThreat[] = [
     severity: 'medium',
     description: 'Suspicious edge device API access',
     countermeasure: 'Validate edge device certificates, monitor traffic',
-    detectionCount: 0
-  }
+    detectionCount: 0,
+  },
 ];
 
 // Network Infrastructure Threat Patterns
@@ -131,7 +131,7 @@ const NETWORK_INFRA_THREATS: ZeroDayThreat[] = [
     severity: 'high',
     description: 'Network slicing vulnerability exploitation',
     countermeasure: 'Network isolation, slice monitoring',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'BASE_STATION_ATTACK',
@@ -141,7 +141,7 @@ const NETWORK_INFRA_THREATS: ZeroDayThreat[] = [
     severity: 'critical',
     description: 'Base station infrastructure attack',
     countermeasure: 'Network security alert, traffic analysis',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'SDN_EXPLOIT',
@@ -151,8 +151,8 @@ const NETWORK_INFRA_THREATS: ZeroDayThreat[] = [
     severity: 'high',
     description: 'Software-defined networking exploitation',
     countermeasure: 'SDN controller protection, flow monitoring',
-    detectionCount: 0
-  }
+    detectionCount: 0,
+  },
 ];
 
 // Post-Quantum Cryptography Threat Patterns
@@ -161,22 +161,24 @@ const POST_QUANTUM_THREATS: ZeroDayThreat[] = [
     id: 'LATTICE_CRYPTO_EXPLOIT',
     category: 'post_quantum_crypto',
     type: 'lattice_attack',
-    pattern: /(?:lattice|basis.?reduction|SVP|CVP|LWE|Ring.?LWE|NTRU|shortest.?vector|closest.?vector|Babai|LLL|BKZ|sieve|enumeration)/gi,
+    pattern:
+      /(?:lattice|basis.?reduction|SVP|CVP|LWE|Ring.?LWE|NTRU|shortest.?vector|closest.?vector|Babai|LLL|BKZ|sieve|enumeration)/gi,
     severity: 'critical',
     description: 'Lattice-based cryptography exploit attempt detected',
     countermeasure: 'Block request, strengthen lattice parameters, alert cryptographic team',
-    detectionCount: 0
+    detectionCount: 0,
   },
   {
     id: 'QKD_VULNERABILITY_EXPLOIT',
     category: 'post_quantum_crypto',
     type: 'quantum_key_distribution',
-    pattern: /(?:QKD|quantum.?key.?distribution|photon.?interception|quantum.?channel|BB84|E91|quantum.?eavesdrop|no.?cloning|quantum.?state.?measurement|quantum.?security)/gi,
+    pattern:
+      /(?:QKD|quantum.?key.?distribution|photon.?interception|quantum.?channel|BB84|E91|quantum.?eavesdrop|no.?cloning|quantum.?state.?measurement|quantum.?security)/gi,
     severity: 'critical',
     description: 'Quantum key distribution vulnerability exploitation attempt',
     countermeasure: 'Secure quantum channels, verify photon integrity, quantum protocol validation',
-    detectionCount: 0
-  }
+    detectionCount: 0,
+  },
 ];
 
 // Behavioral anomaly detection
@@ -197,7 +199,7 @@ const ALL_ZERO_DAY_THREATS = [
   ...AI_ML_THREATS,
   ...CLOUD_EDGE_THREATS,
   ...NETWORK_INFRA_THREATS,
-  ...POST_QUANTUM_THREATS
+  ...POST_QUANTUM_THREATS,
 ];
 
 // Zero-day detection statistics
@@ -225,10 +227,10 @@ const zeroDayStats: ZeroDayStats = {
     cloud_edge: 0,
     network_infra: 0,
     post_quantum_crypto: 0,
-    behavioral_anomaly: 0
+    behavioral_anomaly: 0,
   },
   criticalThreats: 0,
-  blockedRequests: 0
+  blockedRequests: 0,
 };
 
 // Security events log
@@ -253,7 +255,7 @@ function logSecurityEvent(event: Omit<SecurityEvent, 'id' | 'timestamp'>) {
   const securityEvent: SecurityEvent = {
     id: crypto.randomUUID(),
     timestamp: new Date(),
-    ...event
+    ...event,
   };
 
   securityEvents.unshift(securityEvent);
@@ -290,7 +292,7 @@ function analyzeBehavioralPatterns(req: Request): boolean {
       timePattern: [],
       headerAnomalies: [],
       payloadSizePattern: [],
-      lastAnalysis: new Date()
+      lastAnalysis: new Date(),
     };
     behavioralMetrics.set(clientIP, metrics);
   }
@@ -311,7 +313,7 @@ function analyzeBehavioralPatterns(req: Request): boolean {
   // Detect anomalies
   const timeGaps = [];
   for (let i = 1; i < metrics.timePattern.length; i++) {
-    timeGaps.push(metrics.timePattern[i] - metrics.timePattern[i-1]);
+    timeGaps.push(metrics.timePattern[i] - metrics.timePattern[i - 1]);
   }
 
   // Check for rapid requests (potential bot/script)
@@ -322,24 +324,25 @@ function analyzeBehavioralPatterns(req: Request): boolean {
 
   // Check for unusual payload sizes
   if (metrics.payloadSizePattern.length > 10) {
-    const avgPayload = metrics.payloadSizePattern.reduce((a, b) => a + b, 0) / metrics.payloadSizePattern.length;
+    const avgPayload =
+      metrics.payloadSizePattern.reduce((a, b) => a + b, 0) / metrics.payloadSizePattern.length;
     const recentPayload = contentLength;
-    if (recentPayload > avgPayload * 10 && recentPayload > 10000) { // 10x average and > 10KB
+    if (recentPayload > avgPayload * 10 && recentPayload > 10000) {
+      // 10x average and > 10KB
       return true; // Anomaly detected
     }
   }
 
   // Check for suspicious header patterns
   const userAgent = req.get('User-Agent') || '';
-  const suspiciousHeaders = [
-    'curl', 'wget', 'python', 'bot', 'scanner', 'crawler'
-  ];
+  const suspiciousHeaders = ['curl', 'wget', 'python', 'bot', 'scanner', 'crawler'];
 
   const hasSuspiciousUA = suspiciousHeaders.some(pattern =>
     userAgent.toLowerCase().includes(pattern)
   );
 
-  if (hasSuspiciousUA && metrics.requestPattern.size > 20) { // Many different endpoints
+  if (hasSuspiciousUA && metrics.requestPattern.size > 20) {
+    // Many different endpoints
     return true; // Anomaly detected
   }
 
@@ -364,7 +367,7 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
       ip: clientIP,
       userAgent,
       path: req.path,
-      action: 'Monitoring increased, rate limiting applied'
+      action: 'Monitoring increased, rate limiting applied',
     });
 
     // Apply additional rate limiting for anomalous behavior
@@ -395,7 +398,7 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
         userAgent,
         path: req.path,
         threat,
-        action: threat.countermeasure
+        action: threat.countermeasure,
       });
 
       // Take countermeasures based on severity
@@ -407,13 +410,13 @@ export function zeroDayProtectionMiddleware(req: Request, res: Response, next: N
           ip: clientIP,
           userAgent,
           path: req.path,
-          action: 'Request blocked, IP flagged for monitoring'
+          action: 'Request blocked, IP flagged for monitoring',
         });
 
         return res.status(403).json({
           error: 'Security violation detected',
           code: 'ZERO_DAY_THREAT_BLOCKED',
-          reference: crypto.randomUUID().slice(0, 8)
+          reference: crypto.randomUUID().slice(0, 8),
         });
       } else if (threat.severity === 'high') {
         res.set('X-Zero-Day-Alert', 'high-severity-threat');
@@ -447,26 +450,24 @@ interface ThreatIntelligence {
 }
 
 const threatIntelligence: ThreatIntelligence = {
-  sources: [
-    'internal-patterns',
-    'behavioral-analysis',
-    'security-community'
-  ],
+  sources: ['internal-patterns', 'behavioral-analysis', 'security-community'],
   lastUpdate: new Date(),
   newThreats: 0,
-  enabled: true
+  enabled: true,
 };
 
 // Update threat patterns (simulated - in production would connect to real threat feeds)
 export function updateThreatIntelligence(): Promise<boolean> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // Simulate threat intelligence update
     setTimeout(() => {
       threatIntelligence.lastUpdate = new Date();
       threatIntelligence.newThreats += Math.floor(Math.random() * 3); // Simulate 0-2 new threats
 
       console.log('[ZERO-DAY-PROTECTION] Threat intelligence updated');
-      console.log(`[ZERO-DAY-PROTECTION] New threats in database: ${threatIntelligence.newThreats}`);
+      console.log(
+        `[ZERO-DAY-PROTECTION] New threats in database: ${threatIntelligence.newThreats}`
+      );
 
       resolve(true);
     }, 1000);
@@ -474,11 +475,14 @@ export function updateThreatIntelligence(): Promise<boolean> {
 }
 
 // Auto-update threat intelligence every hour
-setInterval(async () => {
-  if (threatIntelligence.enabled) {
-    await updateThreatIntelligence();
-  }
-}, 60 * 60 * 1000); // 1 hour
+setInterval(
+  async () => {
+    if (threatIntelligence.enabled) {
+      await updateThreatIntelligence();
+    }
+  },
+  60 * 60 * 1000
+); // 1 hour
 
 // Admin endpoints for zero-day protection management
 export function zeroDayProtectionAdmin(req: Request, res: Response) {
@@ -492,14 +496,14 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
         threatIntelligence,
         totalPatterns: ALL_ZERO_DAY_THREATS.length,
         behavioralMonitoring: behavioralMetrics.size,
-        lastScan: new Date().toISOString()
+        lastScan: new Date().toISOString(),
       });
 
     case 'events':
       const limit = parseInt(req.query.limit as string) || 50;
       return res.json({
         events: securityEvents.slice(0, limit),
-        total: securityEvents.length
+        total: securityEvents.length,
       });
 
     case 'threats':
@@ -510,7 +514,7 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
           severity: t.severity,
           description: t.description,
           detectionCount: t.detectionCount,
-          lastDetected: t.lastDetected
+          lastDetected: t.lastDetected,
         })),
         cloudEdgeThreats: CLOUD_EDGE_THREATS.map(t => ({
           id: t.id,
@@ -518,7 +522,7 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
           severity: t.severity,
           description: t.description,
           detectionCount: t.detectionCount,
-          lastDetected: t.lastDetected
+          lastDetected: t.lastDetected,
         })),
         networkInfraThreats: NETWORK_INFRA_THREATS.map(t => ({
           id: t.id,
@@ -526,7 +530,7 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
           severity: t.severity,
           description: t.description,
           detectionCount: t.detectionCount,
-          lastDetected: t.lastDetected
+          lastDetected: t.lastDetected,
         })),
         postQuantumThreats: POST_QUANTUM_THREATS.map(t => ({
           id: t.id,
@@ -534,8 +538,8 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
           severity: t.severity,
           description: t.description,
           detectionCount: t.detectionCount,
-          lastDetected: t.lastDetected
-        }))
+          lastDetected: t.lastDetected,
+        })),
       });
 
     case 'update-intelligence':
@@ -543,7 +547,7 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
         res.json({
           updated: success,
           timestamp: new Date().toISOString(),
-          threatIntelligence
+          threatIntelligence,
         });
       });
       break;
@@ -554,12 +558,12 @@ export function zeroDayProtectionAdmin(req: Request, res: Response) {
         requestCount: Array.from(metrics.requestPattern.values()).reduce((a, b) => a + b, 0),
         uniquePaths: metrics.requestPattern.size,
         recentActivity: metrics.timePattern.length,
-        lastSeen: metrics.lastAnalysis
+        lastSeen: metrics.lastAnalysis,
       }));
 
       return res.json({
         totalClients: behavioralMetrics.size,
-        analysisData: analysisData.slice(0, 100) // Limit to 100 entries
+        analysisData: analysisData.slice(0, 100), // Limit to 100 entries
       });
 
     default:
@@ -572,8 +576,12 @@ export function initializeZeroDayProtection() {
   console.log('[ZERO-DAY-PROTECTION] Initializing zero-day vulnerability protection...');
   console.log(`[ZERO-DAY-PROTECTION] AI/ML threat patterns: ${AI_ML_THREATS.length}`);
   console.log(`[ZERO-DAY-PROTECTION] Cloud/Edge threat patterns: ${CLOUD_EDGE_THREATS.length}`);
-  console.log(`[ZERO-DAY-PROTECTION] Network Infrastructure threat patterns: ${NETWORK_INFRA_THREATS.length}`);
-  console.log(`[ZERO-DAY-PROTECTION] Post-Quantum Cryptography threat patterns: ${POST_QUANTUM_THREATS.length}`);
+  console.log(
+    `[ZERO-DAY-PROTECTION] Network Infrastructure threat patterns: ${NETWORK_INFRA_THREATS.length}`
+  );
+  console.log(
+    `[ZERO-DAY-PROTECTION] Post-Quantum Cryptography threat patterns: ${POST_QUANTUM_THREATS.length}`
+  );
   console.log(`[ZERO-DAY-PROTECTION] Total threat patterns: ${ALL_ZERO_DAY_THREATS.length}`);
   console.log('[ZERO-DAY-PROTECTION] Behavioral anomaly detection: ACTIVE');
   console.log('[ZERO-DAY-PROTECTION] Automated threat intelligence: ACTIVE');
@@ -590,5 +598,5 @@ export {
   NETWORK_INFRA_THREATS,
   POST_QUANTUM_THREATS,
   zeroDayStats,
-  securityEvents
+  securityEvents,
 };

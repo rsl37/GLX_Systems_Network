@@ -8,7 +8,13 @@
 
 import { Router } from 'express';
 import { AuthRequest, authenticateToken } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
+import {
+  sendSuccess,
+  sendError,
+  validateAuthUser,
+  StatusCodes,
+  ErrorMessages,
+} from '../utils/responseHelpers.js';
 import { crisisLimiter } from '../middleware/rateLimiter.js';
 import { validateCrisisAlert } from '../middleware/validation.js';
 import { db } from '../database.js';
@@ -16,47 +22,53 @@ import { db } from '../database.js';
 const router = Router();
 
 // Create crisis alert
-router.post('/', authenticateToken, crisisLimiter, validateCrisisAlert, async (req: AuthRequest, res) => {
-  try {
-    const userId = validateAuthUser(req.userId);
-    const { title, description, severity, latitude, longitude, radius } = req.body;
+router.post(
+  '/',
+  authenticateToken,
+  crisisLimiter,
+  validateCrisisAlert,
+  async (req: AuthRequest, res) => {
+    try {
+      const userId = validateAuthUser(req.userId);
+      const { title, description, severity, latitude, longitude, radius } = req.body;
 
-    console.log('🚨 Creating crisis alert:', {
-      title,
-      severity,
-      userId,
-    });
-
-    const alert = await db
-      .insertInto('crisis_alerts')
-      .values({
+      console.log('🚨 Creating crisis alert:', {
         title,
-        description,
         severity,
-        latitude,
-        longitude,
-        radius: radius || 1000,
-        created_by: userId,
-        status: 'active',
-      })
-      .returning('id')
-      .executeTakeFirst();
+        userId,
+      });
 
-    if (!alert) {
-      console.log('❌ Crisis alert creation failed');
-      return sendError(res, 'Failed to create crisis alert', StatusCodes.INTERNAL_ERROR);
-    }
+      const alert = await db
+        .insertInto('crisis_alerts')
+        .values({
+          title,
+          description,
+          severity,
+          latitude,
+          longitude,
+          radius: radius || 1000,
+          created_by: userId,
+          status: 'active',
+        })
+        .returning('id')
+        .executeTakeFirst();
 
-    console.log('✅ Crisis alert created:', alert.id);
-    sendSuccess(res, { id: alert.id });
-  } catch (error) {
-    console.error('❌ Crisis alert creation error:', error);
-    if (error.message === ErrorMessages.INVALID_TOKEN) {
-      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      if (!alert) {
+        console.log('❌ Crisis alert creation failed');
+        return sendError(res, 'Failed to create crisis alert', StatusCodes.INTERNAL_ERROR);
+      }
+
+      console.log('✅ Crisis alert created:', alert.id);
+      sendSuccess(res, { id: alert.id });
+    } catch (error) {
+      console.error('❌ Crisis alert creation error:', error);
+      if (error.message === ErrorMessages.INVALID_TOKEN) {
+        return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      }
+      throw error;
     }
-    throw error;
   }
-});
+);
 
 // Get crisis alerts
 router.get('/', authenticateToken, async (req: AuthRequest, res) => {

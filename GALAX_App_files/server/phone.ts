@@ -7,8 +7,8 @@
  */
 
 // Added 2025-01-11 17:01:45 UTC - Phone verification functionality
-import { db } from "./database.js";
-import { encryptPersonalData, decryptPersonalData } from "./encryption.js";
+import { db } from './database.js';
+import { encryptPersonalData, decryptPersonalData } from './encryption.js';
 
 /**
  * Generates a 6-digit verification code for phone verification
@@ -22,10 +22,10 @@ function generateVerificationCode(): string {
  */
 export async function generatePhoneVerificationToken(
   userId: number,
-  phone: string,
+  phone: string
 ): Promise<string | null> {
   try {
-    console.log("📱 Generating phone verification token for user:", userId);
+    console.log('📱 Generating phone verification token for user:', userId);
 
     // Encrypt the phone number for secure storage
     const encryptedPhone = encryptPersonalData(phone);
@@ -35,14 +35,11 @@ export async function generatePhoneVerificationToken(
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // Delete any existing tokens for this user
-    await db
-      .deleteFrom("phone_verification_tokens")
-      .where("user_id", "=", userId)
-      .execute();
+    await db.deleteFrom('phone_verification_tokens').where('user_id', '=', userId).execute();
 
     // Store token in database
     await db
-      .insertInto("phone_verification_tokens")
+      .insertInto('phone_verification_tokens')
       .values({
         user_id: userId,
         phone: encryptedPhone,
@@ -52,10 +49,10 @@ export async function generatePhoneVerificationToken(
       })
       .execute();
 
-    console.log("✅ Phone verification token generated successfully");
+    console.log('✅ Phone verification token generated successfully');
     return code;
   } catch (error) {
-    console.error("❌ Phone verification token generation failed:", error);
+    console.error('❌ Phone verification token generation failed:', error);
     return null;
   }
 }
@@ -66,21 +63,21 @@ export async function generatePhoneVerificationToken(
 export async function validatePhoneVerificationCode(
   userId: number,
   phone: string,
-  code: string,
+  code: string
 ): Promise<boolean> {
   try {
-    console.log("🔍 Validating phone verification code for user:", userId);
+    console.log('🔍 Validating phone verification code for user:', userId);
 
     const tokenRecord = await db
-      .selectFrom("phone_verification_tokens")
-      .select(["id", "phone", "code", "expires_at", "used_at", "attempts"])
-      .where("user_id", "=", userId)
-      .where("used_at", "is", null)
-      .orderBy("created_at", "desc")
+      .selectFrom('phone_verification_tokens')
+      .select(['id', 'phone', 'code', 'expires_at', 'used_at', 'attempts'])
+      .where('user_id', '=', userId)
+      .where('used_at', 'is', null)
+      .orderBy('created_at', 'desc')
       .executeTakeFirst();
 
     if (!tokenRecord) {
-      console.log("❌ No active verification token found");
+      console.log('❌ No active verification token found');
       return false;
     }
 
@@ -89,45 +86,45 @@ export async function validatePhoneVerificationCode(
     const expiresAt = new Date(tokenRecord.expires_at);
 
     if (now > expiresAt) {
-      console.log("❌ Verification token expired");
+      console.log('❌ Verification token expired');
       return false;
     }
 
     // Check attempt limit (max 5 attempts)
     if (tokenRecord.attempts >= 5) {
-      console.log("❌ Too many verification attempts");
+      console.log('❌ Too many verification attempts');
       return false;
     }
 
     // Increment attempt counter
     await db
-      .updateTable("phone_verification_tokens")
+      .updateTable('phone_verification_tokens')
       .set({ attempts: tokenRecord.attempts + 1 })
-      .where("id", "=", tokenRecord.id)
+      .where('id', '=', tokenRecord.id)
       .execute();
 
     // Verify the phone number matches (decrypt stored phone)
     try {
       const storedPhone = decryptPersonalData(tokenRecord.phone);
       if (storedPhone !== phone) {
-        console.log("❌ Phone number mismatch");
+        console.log('❌ Phone number mismatch');
         return false;
       }
     } catch (error) {
-      console.error("❌ Failed to decrypt stored phone number:", error);
+      console.error('❌ Failed to decrypt stored phone number:', error);
       return false;
     }
 
     // Verify the code
     if (tokenRecord.code !== code) {
-      console.log("❌ Invalid verification code");
+      console.log('❌ Invalid verification code');
       return false;
     }
 
-    console.log("✅ Phone verification code is valid");
+    console.log('✅ Phone verification code is valid');
     return true;
   } catch (error) {
-    console.error("❌ Phone verification code validation failed:", error);
+    console.error('❌ Phone verification code validation failed:', error);
     return false;
   }
 }
@@ -135,47 +132,42 @@ export async function validatePhoneVerificationCode(
 /**
  * Marks phone verification token as used
  */
-export async function markPhoneVerificationTokenAsUsed(
-  userId: number,
-): Promise<void> {
+export async function markPhoneVerificationTokenAsUsed(userId: number): Promise<void> {
   try {
     await db
-      .updateTable("phone_verification_tokens")
+      .updateTable('phone_verification_tokens')
       .set({ used_at: new Date().toISOString() })
-      .where("user_id", "=", userId)
-      .where("used_at", "is", null)
+      .where('user_id', '=', userId)
+      .where('used_at', 'is', null)
       .execute();
 
-    console.log("✅ Phone verification token marked as used");
+    console.log('✅ Phone verification token marked as used');
   } catch (error) {
-    console.error("❌ Failed to mark phone verification token as used:", error);
+    console.error('❌ Failed to mark phone verification token as used:', error);
   }
 }
 
 /**
  * Marks phone as verified in user profile
  */
-export async function markPhoneAsVerified(
-  userId: number,
-  phone: string,
-): Promise<void> {
+export async function markPhoneAsVerified(userId: number, phone: string): Promise<void> {
   try {
     // Encrypt the phone number for secure storage
     const encryptedPhone = encryptPersonalData(phone);
 
     await db
-      .updateTable("users")
+      .updateTable('users')
       .set({
         phone: encryptedPhone,
         phone_verified: 1,
         updated_at: new Date().toISOString(),
       })
-      .where("id", "=", userId)
+      .where('id', '=', userId)
       .execute();
 
-    console.log("✅ Phone marked as verified for user:", userId);
+    console.log('✅ Phone marked as verified for user:', userId);
   } catch (error) {
-    console.error("❌ Failed to mark phone as verified:", error);
+    console.error('❌ Failed to mark phone as verified:', error);
     throw error;
   }
 }
@@ -184,23 +176,17 @@ export async function markPhoneAsVerified(
  * Sends SMS verification code (mock implementation for testing)
  * In production, this would integrate with SMS service like Twilio
  */
-export async function sendPhoneVerification(
-  phone: string,
-  code: string,
-): Promise<boolean> {
+export async function sendPhoneVerification(phone: string, code: string): Promise<boolean> {
   try {
     // Safely log phone number with masking and sanitization
-    const sanitizedPhone = phone.replace(/[\n\r]/g, "");
-    const maskedPhone = sanitizedPhone.replace(
-      /(\d{3})\d{3}(\d{4})/,
-      "$1***$2",
-    );
-    console.log("📱 Sending SMS verification to:", maskedPhone);
+    const sanitizedPhone = phone.replace(/[\n\r]/g, '');
+    const maskedPhone = sanitizedPhone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2');
+    console.log('📱 Sending SMS verification to:', maskedPhone);
 
     // Mock SMS implementation for development
-    if (process.env.NODE_ENV === "development") {
-      console.log("🔧 Development mode - SMS verification code:", code);
-      console.log("🔧 Phone number (masked):", maskedPhone);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Development mode - SMS verification code:', code);
+      console.log('🔧 Phone number (masked):', maskedPhone);
       return true;
     }
 
@@ -216,10 +202,10 @@ export async function sendPhoneVerification(
     });
     */
 
-    console.log("✅ SMS verification sent successfully");
+    console.log('✅ SMS verification sent successfully');
     return true;
   } catch (error) {
-    console.error("❌ SMS verification failed:", error);
+    console.error('❌ SMS verification failed:', error);
     return false;
   }
 }
@@ -227,18 +213,15 @@ export async function sendPhoneVerification(
 /**
  * Resends phone verification code
  */
-export async function resendPhoneVerification(
-  userId: number,
-  phone: string,
-): Promise<boolean> {
+export async function resendPhoneVerification(userId: number, phone: string): Promise<boolean> {
   try {
-    console.log("🔄 Resending phone verification for user:", userId);
+    console.log('🔄 Resending phone verification for user:', userId);
 
     // Generate new verification token
     const code = await generatePhoneVerificationToken(userId, phone);
 
     if (!code) {
-      console.log("❌ Failed to generate verification code");
+      console.log('❌ Failed to generate verification code');
       return false;
     }
 
@@ -246,14 +229,14 @@ export async function resendPhoneVerification(
     const success = await sendPhoneVerification(phone, code);
 
     if (success) {
-      console.log("✅ Phone verification resent successfully");
+      console.log('✅ Phone verification resent successfully');
       return true;
     } else {
-      console.log("❌ Failed to send verification SMS");
+      console.log('❌ Failed to send verification SMS');
       return false;
     }
   } catch (error) {
-    console.error("❌ Phone verification resend failed:", error);
+    console.error('❌ Phone verification resend failed:', error);
     return false;
   }
 }
@@ -264,9 +247,9 @@ export async function resendPhoneVerification(
 export async function getUserPhone(userId: number): Promise<string | null> {
   try {
     const user = await db
-      .selectFrom("users")
-      .select(["phone"])
-      .where("id", "=", userId)
+      .selectFrom('users')
+      .select(['phone'])
+      .where('id', '=', userId)
       .executeTakeFirst();
 
     if (!user?.phone) {
@@ -276,7 +259,7 @@ export async function getUserPhone(userId: number): Promise<string | null> {
     // Decrypt the phone number
     return decryptPersonalData(user.phone);
   } catch (error) {
-    console.error("❌ Failed to get user phone:", error);
+    console.error('❌ Failed to get user phone:', error);
     return null;
   }
 }

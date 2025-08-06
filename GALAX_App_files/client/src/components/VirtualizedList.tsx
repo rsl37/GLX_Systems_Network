@@ -56,7 +56,7 @@ export function VirtualizedList<T>({
   estimatedItemSize,
   onScroll,
   maintainVisibleContentPosition = false,
-  getItemSize
+  getItemSize,
 }: VirtualizedListProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -76,7 +76,7 @@ export function VirtualizedList<T>({
       const height = getItemSize(i);
       positions.push({
         top: currentTop,
-        height
+        height,
       });
       currentTop += height;
     }
@@ -123,14 +123,17 @@ export function VirtualizedList<T>({
       let end = start;
       let currentTop = itemPositions[start]?.top || 0;
 
-      while (end < itemPositions.length && currentTop < scrollTop + containerHeight + (overscan * itemHeight)) {
+      while (
+        end < itemPositions.length &&
+        currentTop < scrollTop + containerHeight + overscan * itemHeight
+      ) {
         currentTop = itemPositions[end].top + itemPositions[end].height;
         end++;
       }
 
       return {
         start,
-        end: Math.min(items.length, end + overscan)
+        end: Math.min(items.length, end + overscan),
       };
     } else {
       // Fixed height calculation
@@ -145,36 +148,39 @@ export function VirtualizedList<T>({
   }, [scrollTop, containerHeight, itemHeight, items.length, overscan, itemPositions, getItemSize]);
 
   // Handle scroll events
-  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
-    const element = event.currentTarget;
-    const newScrollTop = element.scrollTop;
+  const handleScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const element = event.currentTarget;
+      const newScrollTop = element.scrollTop;
 
-    setScrollTop(newScrollTop);
-    setIsScrolling(true);
+      setScrollTop(newScrollTop);
+      setIsScrolling(true);
 
-    // Clear existing timeout
-    if (scrollingTimeoutRef.current) {
-      clearTimeout(scrollingTimeoutRef.current);
-    }
-
-    // Set scrolling to false after a delay
-    scrollingTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 150);
-
-    // Call external scroll handler
-    onScroll?.(newScrollTop);
-
-    // Check if we've reached the end
-    if (onEndReached && !loading) {
-      const scrollPercentage = (newScrollTop + containerHeight) / totalHeight;
-      if (scrollPercentage >= onEndReachedThreshold) {
-        onEndReached();
+      // Clear existing timeout
+      if (scrollingTimeoutRef.current) {
+        clearTimeout(scrollingTimeoutRef.current);
       }
-    }
 
-    lastScrollTop.current = newScrollTop;
-  }, [containerHeight, totalHeight, onEndReached, onEndReachedThreshold, loading, onScroll]);
+      // Set scrolling to false after a delay
+      scrollingTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+
+      // Call external scroll handler
+      onScroll?.(newScrollTop);
+
+      // Check if we've reached the end
+      if (onEndReached && !loading) {
+        const scrollPercentage = (newScrollTop + containerHeight) / totalHeight;
+        if (scrollPercentage >= onEndReachedThreshold) {
+          onEndReached();
+        }
+      }
+
+      lastScrollTop.current = newScrollTop;
+    },
+    [containerHeight, totalHeight, onEndReached, onEndReachedThreshold, loading, onScroll]
+  );
 
   // Render visible items
   const visibleItems = useMemo(() => {
@@ -197,7 +203,8 @@ export function VirtualizedList<T>({
         height = itemHeight;
       }
 
-      const isVisible = !isScrolling || (i >= visibleRange.start + overscan && i < visibleRange.end - overscan);
+      const isVisible =
+        !isScrolling || (i >= visibleRange.start + overscan && i < visibleRange.end - overscan);
 
       items_to_render.push(
         <motion.div
@@ -211,7 +218,7 @@ export function VirtualizedList<T>({
             top: top,
             height: height,
             width: '100%',
-            pointerEvents: isVisible ? 'auto' : 'none'
+            pointerEvents: isVisible ? 'auto' : 'none',
           }}
           className={isVisible ? '' : 'opacity-50'}
         >
@@ -231,7 +238,7 @@ export function VirtualizedList<T>({
     overscan,
     maintainVisibleContentPosition,
     getItemSize,
-    itemPositions
+    itemPositions,
   ]);
 
   // Cleanup scroll timeout on unmount
@@ -246,9 +253,9 @@ export function VirtualizedList<T>({
   if (error) {
     return (
       <div className={`flex items-center justify-center h-full ${className}`}>
-        <div className="text-center">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <p className="text-gray-600">{error}</p>
+        <div className='text-center'>
+          <AlertCircle className='h-12 w-12 text-red-500 mx-auto mb-4' />
+          <p className='text-gray-600'>{error}</p>
         </div>
       </div>
     );
@@ -258,8 +265,8 @@ export function VirtualizedList<T>({
     return (
       <div className={`flex items-center justify-center h-full ${className}`}>
         {emptyComponent || (
-          <div className="text-center">
-            <p className="text-gray-500">No items to display</p>
+          <div className='text-center'>
+            <p className='text-gray-500'>No items to display</p>
           </div>
         )}
       </div>
@@ -268,35 +275,26 @@ export function VirtualizedList<T>({
 
   return (
     <div className={`relative ${className}`}>
-      {headerComponent && (
-        <div className="sticky top-0 z-10 bg-white">
-          {headerComponent}
-        </div>
-      )}
+      {headerComponent && <div className='sticky top-0 z-10 bg-white'>{headerComponent}</div>}
 
       <div
         ref={scrollElementRef}
-        className="overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        className='overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
         style={{ height: containerHeight }}
         onScroll={handleScroll}
-        role="list"
-        aria-label="Virtualized list"
+        role='list'
+        aria-label='Virtualized list'
         tabIndex={0}
       >
-        <div
-          style={{ height: totalHeight, position: 'relative' }}
-          role="presentation"
-        >
-          <AnimatePresence mode="popLayout">
-            {visibleItems}
-          </AnimatePresence>
+        <div style={{ height: totalHeight, position: 'relative' }} role='presentation'>
+          <AnimatePresence mode='popLayout'>{visibleItems}</AnimatePresence>
         </div>
 
         {loading && (
-          <div className="flex items-center justify-center py-8">
+          <div className='flex items-center justify-center py-8'>
             {loadingIndicator || (
-              <div className="flex items-center gap-2 text-gray-600">
-                <Loader2 className="h-5 w-5 animate-spin" />
+              <div className='flex items-center gap-2 text-gray-600'>
+                <Loader2 className='h-5 w-5 animate-spin' />
                 <span>Loading more...</span>
               </div>
             )}
@@ -304,11 +302,7 @@ export function VirtualizedList<T>({
         )}
       </div>
 
-      {footerComponent && (
-        <div className="sticky bottom-0 z-10 bg-white">
-          {footerComponent}
-        </div>
-      )}
+      {footerComponent && <div className='sticky bottom-0 z-10 bg-white'>{footerComponent}</div>}
     </div>
   );
 }
@@ -329,21 +323,24 @@ export const useVirtualizedList = <T,>(
     setScrollTop(newScrollTop);
   }, []);
 
-  const handleLoadMore = useCallback(async (loadMoreFn: () => Promise<T[]>) => {
-    if (isLoading) return;
+  const handleLoadMore = useCallback(
+    async (loadMoreFn: () => Promise<T[]>) => {
+      if (isLoading) return;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const newItems = await loadMoreFn();
-      options?.onItemsChange?.(newItems);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load more items');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLoading, options]);
+      try {
+        const newItems = await loadMoreFn();
+        options?.onItemsChange?.(newItems);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load more items');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isLoading, options]
+  );
 
   const scrollToTop = useCallback(() => {
     setScrollTop(0);
@@ -362,7 +359,7 @@ export const useVirtualizedList = <T,>(
     handleLoadMore,
     scrollToTop,
     scrollToItem,
-    setError
+    setError,
   };
 };
 

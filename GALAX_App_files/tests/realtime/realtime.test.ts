@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
@@ -39,9 +38,7 @@ describe('Realtime Communication Tests (Vercel Compatible)', () => {
 
   describe('Health Check', () => {
     test('should return health status', async () => {
-      const response = await request(app)
-        .get('/api/realtime/health')
-        .expect(200);
+      const response = await request(app).get('/api/realtime/health').expect(200);
 
       expect(response.body).toHaveProperty('status', 'healthy');
       expect(response.body).toHaveProperty('activeConnections');

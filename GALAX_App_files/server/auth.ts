@@ -85,7 +85,11 @@ export interface AuthRequest extends Request {
   username?: string;
 }
 
-export async function authenticateToken(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+export async function authenticateToken(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 

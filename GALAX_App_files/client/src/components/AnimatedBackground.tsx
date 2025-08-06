@@ -15,35 +15,27 @@ const MotionDiv = React.lazy(() =>
 );
 
 // Memoized particle component for better performance
-const Particle = React.memo(({
-  x,
-  y,
-  delay,
-  duration
-}: {
-  x: number;
-  y: number;
-  delay: number;
-  duration: number;
-}) => (
-  <React.Suspense fallback={null}>
-    <MotionDiv
-      className="absolute w-1 h-1 bg-blue-400/20 rounded-full"
-      initial={{ x, y, opacity: 0 }}
-      animate={{
-        x: [x, x + 100, x - 50, x],
-        y: [y, y - 100, y + 50, y],
-        opacity: [0, 0.6, 0.3, 0]
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    />
-  </React.Suspense>
-));
+const Particle = React.memo(
+  ({ x, y, delay, duration }: { x: number; y: number; delay: number; duration: number }) => (
+    <React.Suspense fallback={null}>
+      <MotionDiv
+        className='absolute w-1 h-1 bg-blue-400/20 rounded-full'
+        initial={{ x, y, opacity: 0 }}
+        animate={{
+          x: [x, x + 100, x - 50, x],
+          y: [y, y - 100, y + 50, y],
+          opacity: [0, 0.6, 0.3, 0],
+        }}
+        transition={{
+          duration,
+          delay,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+    </React.Suspense>
+  )
+);
 
 Particle.displayName = 'Particle';
 
@@ -67,7 +59,7 @@ export const AnimatedBackground = React.memo(() => {
     const updateDimensions = () => {
       setDimensions({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       });
     };
 
@@ -106,17 +98,17 @@ export const AnimatedBackground = React.memo(() => {
   // Don't render if user prefers reduced motion
   if (isReduced) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/30 to-green-50/30 pointer-events-none -z-10" />
+      <div className='fixed inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/30 to-green-50/30 pointer-events-none -z-10' />
     );
   }
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div className='fixed inset-0 pointer-events-none overflow-hidden -z-10'>
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-blue-50/50 to-pink-50/50" />
+      <div className='absolute inset-0 bg-gradient-to-br from-purple-50/50 via-blue-50/50 to-pink-50/50' />
 
       {/* Animated Particles */}
-      {particles.map((particle) => (
+      {particles.map(particle => (
         <Particle
           key={particle.id}
           x={particle.x}

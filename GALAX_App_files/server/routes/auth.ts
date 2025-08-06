@@ -8,13 +8,14 @@
 
 import { Router } from 'express';
 import { AuthRequest } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
 import {
-  hashPassword,
-  comparePassword,
-  generateToken,
-  authenticateToken,
-} from '../auth.js';
+  sendSuccess,
+  sendError,
+  validateAuthUser,
+  StatusCodes,
+  ErrorMessages,
+} from '../utils/responseHelpers.js';
+import { hashPassword, comparePassword, generateToken, authenticateToken } from '../auth.js';
 import {
   generatePasswordResetToken,
   sendPasswordResetEmail,
@@ -34,13 +35,7 @@ import {
   markPhoneAsVerified,
   sendPhoneVerification,
 } from '../phone.js';
-import {
-  generate2FASecret,
-  enable2FA,
-  disable2FA,
-  verify2FACode,
-  get2FAStatus,
-} from '../twofa.js';
+import { generate2FASecret, enable2FA, disable2FA, verify2FACode, get2FAStatus } from '../twofa.js';
 import {
   authLimiter,
   emailLimiter,
@@ -668,12 +663,16 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 <<<<<<< HEAD
       .select(['id', 'email', 'phone', 'username', 'wallet_address'])
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       .selectAll()
 >>>>>>> origin/copilot/fix-253
 =======
 >>>>>>> origin/copilot/fix-386
       .where((eb) => {
+=======
+      .where(eb => {
+>>>>>>> origin/copilot/fix-488
         const conditions = [];
         if (email) conditions.push(eb('email', '=', email));
         if (phone) conditions.push(eb('phone', '=', phone));
@@ -709,17 +708,26 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 >>>>>>> origin/copilot/fix-271
       .executeTakeFirst();
 
-    let conflictField = null;
-    let conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
+    const conflictField = null;
+    const conflictMessage: string = ErrorMessages.REGISTRATION_USER_EXISTS;
 
     if (existingUser) {
       console.log('❌ Registration failed: User already exists', {
-        conflictField: email && existingUser.email === email ? 'email' :
-                      phone && existingUser.phone === phone ? 'phone' :
-                      existingUser.username === username ? 'username' : 'wallet',
+        conflictField:
+          email && existingUser.email === email
+            ? 'email'
+            : phone && existingUser.phone === phone
+              ? 'phone'
+              : existingUser.username === username
+                ? 'username'
+                : 'wallet',
         ip: req.ip,
       });
-      return sendError(res, 'User already exists with this email, phone, username, or wallet address', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'User already exists with this email, phone, username, or wallet address',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     const passwordHash = password ? await hashPassword(password) : null;
@@ -817,11 +825,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
 
     let user;
     if (email) {
-      user = await db
-        .selectFrom('users')
-        .selectAll()
-        .where('email', '=', email)
-        .executeTakeFirst();
+      user = await db.selectFrom('users').selectAll().where('email', '=', email).executeTakeFirst();
 
       if (!user) {
         user = await db
@@ -831,11 +835,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
           .executeTakeFirst();
       }
     } else if (phone) {
-      user = await db
-        .selectFrom('users')
-        .selectAll()
-        .where('phone', '=', phone)
-        .executeTakeFirst();
+      user = await db.selectFrom('users').selectAll().where('phone', '=', phone).executeTakeFirst();
     } else {
       user = await db
         .selectFrom('users')
@@ -969,62 +969,72 @@ router.post('/validate-reset-token', passwordResetLimiter, async (req, res) => {
 });
 
 // Reset password
-router.post('/reset-password', passwordResetLimiter, validatePasswordResetConfirm, async (req, res) => {
-  try {
-    const { token, password } = req.body;
+router.post(
+  '/reset-password',
+  passwordResetLimiter,
+  validatePasswordResetConfirm,
+  async (req, res) => {
+    try {
+      const { token, password } = req.body;
 
-    console.log('🔐 Password reset attempt');
+      console.log('🔐 Password reset attempt');
 
-    const userId = await validatePasswordResetToken(token);
+      const userId = await validatePasswordResetToken(token);
 
-    if (!userId) {
-      return sendError(res, 'Invalid or expired token', StatusCodes.BAD_REQUEST);
+      if (!userId) {
+        return sendError(res, 'Invalid or expired token', StatusCodes.BAD_REQUEST);
+      }
+
+      const passwordHash = await hashPassword(password);
+
+      await db
+        .updateTable('users')
+        .set({
+          password_hash: passwordHash,
+          updated_at: new Date().toISOString(),
+        })
+        .where('id', '=', userId)
+        .execute();
+
+      await markTokenAsUsed(token);
+
+      console.log('✅ Password reset successful for user:', userId);
+      sendSuccess(res, { message: 'Password reset successfully' });
+    } catch (error) {
+      console.error('❌ Password reset error:', error);
+      throw error;
     }
-
-    const passwordHash = await hashPassword(password);
-
-    await db
-      .updateTable('users')
-      .set({
-        password_hash: passwordHash,
-        updated_at: new Date().toISOString(),
-      })
-      .where('id', '=', userId)
-      .execute();
-
-    await markTokenAsUsed(token);
-
-    console.log('✅ Password reset successful for user:', userId);
-    sendSuccess(res, { message: 'Password reset successfully' });
-  } catch (error) {
-    console.error('❌ Password reset error:', error);
-    throw error;
   }
-});
+);
 
 // Email verification endpoints
-router.post('/send-email-verification', emailLimiter, authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    const userId = validateAuthUser(req.userId);
+router.post(
+  '/send-email-verification',
+  emailLimiter,
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      const userId = validateAuthUser(req.userId);
 
-    console.log('📧 Email verification request from user:', userId);
+      console.log('📧 Email verification request from user:', userId);
 
-    const success = await resendEmailVerification(userId);
+      const success = await resendEmailVerification(userId);
 
-    if (!success) {
-      return sendError(res, 'Failed to send verification email', StatusCodes.BAD_REQUEST);
+      if (!success) {
+        return sendError(res, 'Failed to send verification email', StatusCodes.BAD_REQUEST);
+      }
+
+      console.log('✅ Email verification sent successfully');
+      sendSuccess(res, { message: 'Verification email sent successfully' });
+    } catch (error) {
+      console.error('❌ Email verification send error:', error);
+      if (error.message === ErrorMessages.INVALID_TOKEN) {
+        return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      }
+      throw error;
     }
-
-    console.log('✅ Email verification sent successfully');
-    sendSuccess(res, { message: 'Verification email sent successfully' });
-  } catch (error) {
-    console.error('❌ Email verification send error:', error);
-    if (error.message === ErrorMessages.INVALID_TOKEN) {
-      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
-    }
-    throw error;
   }
-});
+);
 
 router.post('/verify-email', validateEmailVerification, async (req, res) => {
   try {
@@ -1050,65 +1060,77 @@ router.post('/verify-email', validateEmailVerification, async (req, res) => {
 });
 
 // Phone verification endpoints
-router.post('/send-phone-verification', phoneLimiter, authenticateToken, validatePhoneVerification, async (req: AuthRequest, res) => {
-  try {
-    const userId = validateAuthUser(req.userId);
-    const { phone } = req.body;
+router.post(
+  '/send-phone-verification',
+  phoneLimiter,
+  authenticateToken,
+  validatePhoneVerification,
+  async (req: AuthRequest, res) => {
+    try {
+      const userId = validateAuthUser(req.userId);
+      const { phone } = req.body;
 
-    console.log('📱 Phone verification request from user:', userId);
+      console.log('📱 Phone verification request from user:', userId);
 
-    const code = await generatePhoneVerificationToken(userId, phone);
+      const code = await generatePhoneVerificationToken(userId, phone);
 
-    if (!code) {
-      return sendError(res, 'Failed to generate verification code', StatusCodes.BAD_REQUEST);
+      if (!code) {
+        return sendError(res, 'Failed to generate verification code', StatusCodes.BAD_REQUEST);
+      }
+
+      const success = await sendPhoneVerification(phone, code);
+
+      if (!success) {
+        return sendError(res, 'Failed to send verification SMS', StatusCodes.INTERNAL_ERROR);
+      }
+
+      console.log('✅ Phone verification code sent successfully');
+      sendSuccess(res, {
+        message: 'Verification code sent to your phone',
+        expiresIn: '10 minutes',
+      });
+    } catch (error) {
+      console.error('❌ Phone verification send error:', error);
+      if (error.message === ErrorMessages.INVALID_TOKEN) {
+        return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      }
+      sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
     }
-
-    const success = await sendPhoneVerification(phone, code);
-
-    if (!success) {
-      return sendError(res, 'Failed to send verification SMS', StatusCodes.INTERNAL_ERROR);
-    }
-
-    console.log('✅ Phone verification code sent successfully');
-    sendSuccess(res, {
-      message: 'Verification code sent to your phone',
-      expiresIn: '10 minutes',
-    });
-  } catch (error) {
-    console.error('❌ Phone verification send error:', error);
-    if (error.message === ErrorMessages.INVALID_TOKEN) {
-      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
-    }
-    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
   }
-});
+);
 
-router.post('/verify-phone', phoneLimiter, authenticateToken, validatePhoneVerificationConfirm, async (req: AuthRequest, res) => {
-  try {
-    const userId = validateAuthUser(req.userId);
-    const { phone, code } = req.body;
+router.post(
+  '/verify-phone',
+  phoneLimiter,
+  authenticateToken,
+  validatePhoneVerificationConfirm,
+  async (req: AuthRequest, res) => {
+    try {
+      const userId = validateAuthUser(req.userId);
+      const { phone, code } = req.body;
 
-    console.log('🔍 Phone verification attempt for user:', userId);
+      console.log('🔍 Phone verification attempt for user:', userId);
 
-    const isValid = await validatePhoneVerificationCode(userId, phone, code);
+      const isValid = await validatePhoneVerificationCode(userId, phone, code);
 
-    if (!isValid) {
-      return sendError(res, 'Invalid or expired verification code', StatusCodes.BAD_REQUEST);
+      if (!isValid) {
+        return sendError(res, 'Invalid or expired verification code', StatusCodes.BAD_REQUEST);
+      }
+
+      await markPhoneAsVerified(userId, phone);
+      await markPhoneVerificationTokenAsUsed(userId);
+
+      console.log('✅ Phone verified successfully for user:', userId);
+      sendSuccess(res, { message: 'Phone verified successfully' });
+    } catch (error) {
+      console.error('❌ Phone verification error:', error);
+      if (error.message === ErrorMessages.INVALID_TOKEN) {
+        return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      }
+      sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
     }
-
-    await markPhoneAsVerified(userId, phone);
-    await markPhoneVerificationTokenAsUsed(userId);
-
-    console.log('✅ Phone verified successfully for user:', userId);
-    sendSuccess(res, { message: 'Phone verified successfully' });
-  } catch (error) {
-    console.error('❌ Phone verification error:', error);
-    if (error.message === ErrorMessages.INVALID_TOKEN) {
-      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
-    }
-    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
   }
-});
+);
 
 // 2FA endpoints
 router.post('/2fa/setup', authenticateToken, async (req: AuthRequest, res) => {
@@ -1162,7 +1184,11 @@ router.post('/2fa/enable', authenticateToken, async (req: AuthRequest, res) => {
     const success = await enable2FA(userId, code);
 
     if (!success) {
-      return sendError(res, 'Invalid verification code. Please try again.', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'Invalid verification code. Please try again.',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     console.log('✅ 2FA enabled successfully for user:', userId);
@@ -1190,7 +1216,11 @@ router.post('/2fa/disable', authenticateToken, async (req: AuthRequest, res) => 
     const success = await disable2FA(userId, code);
 
     if (!success) {
-      return sendError(res, 'Invalid verification code. Please try again.', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'Invalid verification code. Please try again.',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     console.log('✅ 2FA disabled successfully for user:', userId);
@@ -1212,7 +1242,11 @@ router.post('/2fa/verify', authenticateToken, async (req: AuthRequest, res) => {
     console.log('🔍 2FA verification request from user:', userId);
 
     if (!code || typeof code !== 'string' || code.length !== 6 || !/^\d{6}$/.test(code)) {
-      return sendError(res, 'Please provide a valid 6-digit numeric verification code', StatusCodes.BAD_REQUEST);
+      return sendError(
+        res,
+        'Please provide a valid 6-digit numeric verification code',
+        StatusCodes.BAD_REQUEST
+      );
     }
 
     const isValid = await verify2FACode(userId, code);

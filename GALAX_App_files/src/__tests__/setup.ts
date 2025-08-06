@@ -5,7 +5,6 @@
  * This project is unaffiliated with Tatsunoko Production or the original anime.
  */
 
-
 import { beforeAll, afterEach, afterAll } from 'vitest';
 import '@testing-library/jest-dom';
 

@@ -37,10 +37,14 @@ import { performDeploymentReadinessCheck } from '../server/deployment-validation
  */
 function getStatusEmoji(status: string) {
   switch (status) {
-    case 'ready': return '✅';
-    case 'warning': return '⚠️';
-    case 'not_ready': return '❌';
-    default: return '❓';
+    case 'ready':
+      return '✅';
+    case 'warning':
+      return '⚠️';
+    case 'not_ready':
+      return '❌';
+    default:
+      return '❓';
   }
 }
 
@@ -55,7 +59,9 @@ async function runDeploymentCheck() {
     // Print summary in expected format
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
-    console.log(`Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`);
+    console.log(
+      `Overall Status: ${getStatusEmoji(report.overall_status)} ${report.overall_status.toUpperCase()}`
+    );
     console.log(`Environment: ${report.environment}`);
     console.log(`Timestamp: ${report.timestamp}`);
 

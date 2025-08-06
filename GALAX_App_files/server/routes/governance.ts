@@ -8,7 +8,14 @@
 
 import { Router } from 'express';
 import { AuthRequest, authenticateToken } from '../auth.js';
-import { sendSuccess, sendError, validateAuthUser, validateNumericId, StatusCodes, ErrorMessages } from '../utils/responseHelpers.js';
+import {
+  sendSuccess,
+  sendError,
+  validateAuthUser,
+  validateNumericId,
+  StatusCodes,
+  ErrorMessages,
+} from '../utils/responseHelpers.js';
 import { votingLimiter } from '../middleware/rateLimiter.js';
 import { validateProposal, validateVote } from '../middleware/validation.js';
 import { db } from '../database.js';
@@ -69,10 +76,8 @@ router.get('/', authenticateToken, async (req: AuthRequest, res) => {
     let query = db
       .selectFrom('proposals')
       .innerJoin('users', 'users.id', 'proposals.created_by')
-      .leftJoin('votes', (join) =>
-        join
-          .onRef('votes.proposal_id', '=', 'proposals.id')
-          .on('votes.user_id', '=', userId)
+      .leftJoin('votes', join =>
+        join.onRef('votes.proposal_id', '=', 'proposals.id').on('votes.user_id', '=', userId)
       )
       .select([
         'proposals.id',
@@ -110,89 +115,96 @@ router.get('/', authenticateToken, async (req: AuthRequest, res) => {
 });
 
 // Vote on proposal
-router.post('/:id/vote', votingLimiter, authenticateToken, validateVote, async (req: AuthRequest, res) => {
-  try {
-    const proposalId = validateNumericId(req.params.id, 'proposal ID');
-    const { vote_type } = req.body;
-    const userId = validateAuthUser(req.userId);
+router.post(
+  '/:id/vote',
+  votingLimiter,
+  authenticateToken,
+  validateVote,
+  async (req: AuthRequest, res) => {
+    try {
+      const proposalId = validateNumericId(req.params.id, 'proposal ID');
+      const { vote_type } = req.body;
+      const userId = validateAuthUser(req.userId);
 
-    console.log('🗳️ Voting on proposal:', {
-      proposalId,
-      voteType: vote_type,
-      userId,
-    });
+      console.log('🗳️ Voting on proposal:', {
+        proposalId,
+        voteType: vote_type,
+        userId,
+      });
 
-    // Check if proposal exists and is active
-    const proposal = await db
-      .selectFrom('proposals')
-      .selectAll()
-      .where('id', '=', proposalId)
-      .executeTakeFirst();
-
-    if (!proposal) {
-      return sendError(res, 'Proposal not found', StatusCodes.NOT_FOUND);
-    }
-
-    if (proposal.status !== 'active' || new Date(proposal.deadline) < new Date()) {
-      return sendError(res, 'Voting period has ended', StatusCodes.BAD_REQUEST);
-    }
-
-    // Prevent users from voting on their own proposals
-    if (proposal.created_by === userId) {
-      return sendError(res, 'You cannot vote on your own proposal', StatusCodes.BAD_REQUEST);
-    }
-
-    // Check if user already voted
-    const existingVote = await db
-      .selectFrom('votes')
-      .selectAll()
-      .where('proposal_id', '=', proposalId)
-      .where('user_id', '=', userId)
-      .executeTakeFirst();
-
-    if (existingVote) {
-      return sendError(res, 'You have already voted on this proposal', StatusCodes.BAD_REQUEST);
-    }
-
-    // Insert vote
-    await db
-      .insertInto('votes')
-      .values({
-        proposal_id: proposalId,
-        user_id: userId,
-        vote_type,
-      })
-      .execute();
-
-    // Update proposal vote counts
-    if (vote_type === 'for') {
-      await db
-        .updateTable('proposals')
-        .set({ votes_for: proposal.votes_for + 1 })
+      // Check if proposal exists and is active
+      const proposal = await db
+        .selectFrom('proposals')
+        .selectAll()
         .where('id', '=', proposalId)
-        .execute();
-    } else {
-      await db
-        .updateTable('proposals')
-        .set({ votes_against: proposal.votes_against + 1 })
-        .where('id', '=', proposalId)
-        .execute();
-    }
+        .executeTakeFirst();
 
-    console.log('✅ Vote recorded successfully');
-    sendSuccess(res, { message: 'Vote recorded successfully' });
-  } catch (error) {
-    console.error('❌ Voting error:', error);
-    if (error.message === ErrorMessages.INVALID_TOKEN) {
-      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      if (!proposal) {
+        return sendError(res, 'Proposal not found', StatusCodes.NOT_FOUND);
+      }
+
+      if (proposal.status !== 'active' || new Date(proposal.deadline) < new Date()) {
+        return sendError(res, 'Voting period has ended', StatusCodes.BAD_REQUEST);
+      }
+
+      // Prevent users from voting on their own proposals
+      if (proposal.created_by === userId) {
+        return sendError(res, 'You cannot vote on your own proposal', StatusCodes.BAD_REQUEST);
+      }
+
+      // Check if user already voted
+      const existingVote = await db
+        .selectFrom('votes')
+        .selectAll()
+        .where('proposal_id', '=', proposalId)
+        .where('user_id', '=', userId)
+        .executeTakeFirst();
+
+      if (existingVote) {
+        return sendError(res, 'You have already voted on this proposal', StatusCodes.BAD_REQUEST);
+      }
+
+      // Insert vote
+      await db
+        .insertInto('votes')
+        .values({
+          proposal_id: proposalId,
+          user_id: userId,
+          vote_type,
+        })
+        .execute();
+
+      // Update proposal vote counts
+      if (vote_type === 'for') {
+        await db
+          .updateTable('proposals')
+          .set({ votes_for: proposal.votes_for + 1 })
+          .where('id', '=', proposalId)
+          .execute();
+      } else {
+        await db
+          .updateTable('proposals')
+          .set({ votes_against: proposal.votes_against + 1 })
+          .where('id', '=', proposalId)
+          .execute();
+      }
+
+      console.log('✅ Vote recorded successfully');
+      sendSuccess(res, { message: 'Vote recorded successfully' });
+    } catch (error) {
+      console.error('❌ Voting error:', error);
+      if (error.message === ErrorMessages.INVALID_TOKEN) {
+        return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+      }
+      if (error.message.includes('Invalid')) {
+        return sendError(res, error.message, StatusCodes.BAD_REQUEST);
+      }
+      throw error;
     }
-    if (error.message.includes('Invalid')) {
-      return sendError(res, error.message, StatusCodes.BAD_REQUEST);
-    }
-    throw error;
   }
-});
+);
 
+<<<<<<< HEAD
 export default router;/*
  * Copyright (c) 2025 GALAX Civic Networking App
  *
@@ -389,3 +401,6 @@ router.post('/:id/vote', votingLimiter, authenticateToken, validateVote, async (
 });
 
 export default router;
+=======
+export default router;
+>>>>>>> origin/copilot/fix-488

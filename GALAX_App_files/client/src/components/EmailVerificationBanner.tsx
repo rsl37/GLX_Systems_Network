@@ -45,7 +45,9 @@ export function EmailVerificationBanner() {
           // Non-JSON response, likely HTML error page
           const text = await response.text();
           if (text.includes('<html') || text.includes('<!DOCTYPE')) {
-            throw new Error('Server returned an error page instead of JSON. Please check your API routes.');
+            throw new Error(
+              'Server returned an error page instead of JSON. Please check your API routes.'
+            );
           }
           errorMessage = text || errorMessage;
         }
@@ -59,7 +61,10 @@ export function EmailVerificationBanner() {
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      throw new Error('Expected JSON response but got: ' + (text.substring(0, 100) + (text.length > 100 ? '...' : '')));
+      throw new Error(
+        'Expected JSON response but got: ' +
+          (text.substring(0, 100) + (text.length > 100 ? '...' : ''))
+      );
     }
 
     try {
@@ -87,7 +92,7 @@ export function EmailVerificationBanner() {
       const response = await fetch('/api/auth/send-email-verification', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -117,46 +122,40 @@ export function EmailVerificationBanner() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -50 }}
         transition={{ duration: 0.3 }}
-        className="fixed top-0 left-0 right-0 z-50 p-4"
+        className='fixed top-0 left-0 right-0 z-50 p-4'
       >
-        <Card className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200 shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-orange-100 rounded-full">
-                  <Mail className="h-5 w-5 text-orange-600" />
+        <Card className='bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200 shadow-lg'>
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <div className='p-2 bg-orange-100 rounded-full'>
+                  <Mail className='h-5 w-5 text-orange-600' />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-orange-800">
-                    Email Verification Required
-                  </h3>
-                  <p className="text-sm text-orange-700">
+                  <h3 className='font-semibold text-orange-800'>Email Verification Required</h3>
+                  <p className='text-sm text-orange-700'>
                     Please verify your email address to access all features.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className='flex items-center gap-2'>
                 <Button
                   onClick={resendVerification}
                   disabled={isResending}
-                  size="sm"
-                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                  size='sm'
+                  className='bg-orange-600 hover:bg-orange-700 text-white'
                 >
-                  {isResending ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                  ) : (
-                    'Resend Email'
-                  )}
+                  {isResending ? <RefreshCw className='h-4 w-4 animate-spin' /> : 'Resend Email'}
                 </Button>
 
                 <Button
                   onClick={() => setIsHidden(true)}
-                  variant="ghost"
-                  size="sm"
-                  className="text-orange-600 hover:text-orange-700"
+                  variant='ghost'
+                  size='sm'
+                  className='text-orange-600 hover:text-orange-700'
                 >
-                  <X className="h-4 w-4" />
+                  <X className='h-4 w-4' />
                 </Button>
               </div>
             </div>
@@ -166,10 +165,10 @@ export function EmailVerificationBanner() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 transition={{ duration: 0.3 }}
-                className="mt-3 flex items-center gap-2 text-green-700 bg-green-50 p-2 rounded-md"
+                className='mt-3 flex items-center gap-2 text-green-700 bg-green-50 p-2 rounded-md'
               >
-                <CheckCircle className="h-4 w-4" />
-                <span className="text-sm">Verification email sent successfully!</span>
+                <CheckCircle className='h-4 w-4' />
+                <span className='text-sm'>Verification email sent successfully!</span>
               </motion.div>
             )}
 
@@ -178,10 +177,10 @@ export function EmailVerificationBanner() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 transition={{ duration: 0.3 }}
-                className="mt-3 flex items-center gap-2 text-red-700 bg-red-50 p-2 rounded-md"
+                className='mt-3 flex items-center gap-2 text-red-700 bg-red-50 p-2 rounded-md'
               >
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm">{error}</span>
+                <AlertCircle className='h-4 w-4' />
+                <span className='text-sm'>{error}</span>
               </motion.div>
             )}
           </CardContent>

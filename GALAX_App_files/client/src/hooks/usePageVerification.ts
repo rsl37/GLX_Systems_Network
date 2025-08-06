@@ -90,7 +90,7 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Password',
         'Connect MetaMask',
         'Forgot your password',
-        'Sign up'
+        'Sign up',
       ];
 
       loginElements.forEach(text => {
@@ -106,7 +106,7 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Phone',
         'Password',
         'Join GALAX',
-        'Create your civic network account'
+        'Create your civic network account',
       ];
 
       registerElements.forEach(text => {

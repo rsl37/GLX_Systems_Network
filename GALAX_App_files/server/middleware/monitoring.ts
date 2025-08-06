@@ -6,8 +6,8 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-import { Request, Response, NextFunction } from "express";
-import { AuthRequest } from "../auth.js";
+import { Request, Response, NextFunction } from 'express';
+import { AuthRequest } from '../auth.js';
 
 // In-memory metrics store (in production, use Redis or similar)
 interface MetricsStore {
@@ -75,7 +75,7 @@ const metrics: MetricsStore = {
     active_sessions: new Set(),
     registrations_today: 0,
     logins_today: 0,
-    last_reset: new Date().toISOString().split("T")[0],
+    last_reset: new Date().toISOString().split('T')[0],
   },
   features: {
     help_requests_created: 0,
@@ -88,7 +88,7 @@ const metrics: MetricsStore = {
 
 // Reset daily metrics
 const resetDailyMetrics = () => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
   if (metrics.users.last_reset !== today) {
     metrics.users.registrations_today = 0;
     metrics.users.logins_today = 0;
@@ -100,7 +100,7 @@ const resetDailyMetrics = () => {
 export const collectMetrics = (
   req: Request & { startTime?: number },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   const startTime = Date.now();
   req.startTime = startTime;
@@ -113,33 +113,34 @@ export const collectMetrics = (
 
   // Sanitize endpoint to prevent property injection
   const rawEndpoint =
-    (typeof req.route?.path === "string" ? req.route.path :
-    (typeof req.path === "string" ? req.path : ""));
+    typeof req.route?.path === 'string'
+      ? req.route.path
+      : typeof req.path === 'string'
+        ? req.path
+        : '';
   const endpoint = rawEndpoint.slice(0, 100);
-  const sanitizedEndpoint = endpoint.replace(/[^a-zA-Z0-9\/\-_:.]/g, "");
+  const sanitizedEndpoint = endpoint.replace(/[^a-zA-Z0-9\/\-_:.]/g, '');
 
   // Sanitize HTTP method
   const method = req.method.slice(0, 10);
-  const sanitizedMethod = method.replace(/[^A-Z]/g, "");
+  const sanitizedMethod = method.replace(/[^A-Z]/g, '');
 
   metrics.requests.by_endpoint.set(
     sanitizedEndpoint,
-    (metrics.requests.by_endpoint.get(sanitizedEndpoint) || 0) + 1,
+    (metrics.requests.by_endpoint.get(sanitizedEndpoint) || 0) + 1
   );
   metrics.requests.by_method.set(
     sanitizedMethod,
-    (metrics.requests.by_method.get(sanitizedMethod) || 0) + 1,
+    (metrics.requests.by_method.get(sanitizedMethod) || 0) + 1
   );
 
   // Validate and sanitize API version
-  if (req.apiVersion && typeof req.apiVersion === "string") {
-    const sanitizedVersion = req.apiVersion
-      .slice(0, 10)
-      .replace(/[^a-zA-Z0-9.]/g, "");
+  if (req.apiVersion && typeof req.apiVersion === 'string') {
+    const sanitizedVersion = req.apiVersion.slice(0, 10).replace(/[^a-zA-Z0-9.]/g, '');
     if (sanitizedVersion) {
       metrics.requests.by_version.set(
         sanitizedVersion,
-        (metrics.requests.by_version.get(sanitizedVersion) || 0) + 1,
+        (metrics.requests.by_version.get(sanitizedVersion) || 0) + 1
       );
     }
   }
@@ -160,8 +161,7 @@ export const collectMetrics = (
 
     // Keep only last 1000 response times
     if (metrics.performance.response_times.length > 1000) {
-      metrics.performance.response_times =
-        metrics.performance.response_times.slice(-1000);
+      metrics.performance.response_times = metrics.performance.response_times.slice(-1000);
     }
 
     // Track slow requests (>2 seconds)
@@ -176,15 +176,14 @@ export const collectMetrics = (
 
       // Keep only last 100 slow requests
       if (metrics.performance.slow_requests.length > 100) {
-        metrics.performance.slow_requests =
-          metrics.performance.slow_requests.slice(-100);
+        metrics.performance.slow_requests = metrics.performance.slow_requests.slice(-100);
       }
     }
 
     // Track status codes
     metrics.requests.by_status.set(
       res.statusCode.toString(),
-      (metrics.requests.by_status.get(res.statusCode.toString()) || 0) + 1,
+      (metrics.requests.by_status.get(res.statusCode.toString()) || 0) + 1
     );
 
     return originalEnd.call(this, chunk, encoding);
@@ -194,26 +193,19 @@ export const collectMetrics = (
 };
 
 // Error tracking
-export const trackError = (
-  error: Error,
-  req: Request,
-  endpoint: string,
-): void => {
+export const trackError = (error: Error, req: Request, endpoint: string): void => {
   metrics.errors.total++;
 
   // Sanitize error name to prevent property injection
-  const errorName = error.name.slice(0, 50).replace(/[^a-zA-Z0-9_]/g, "");
-  metrics.errors.by_type.set(
-    errorName,
-    (metrics.errors.by_type.get(errorName) || 0) + 1,
-  );
+  const errorName = error.name.slice(0, 50).replace(/[^a-zA-Z0-9_]/g, '');
+  metrics.errors.by_type.set(errorName, (metrics.errors.by_type.get(errorName) || 0) + 1);
 
   metrics.errors.recent.push({
     timestamp: new Date().toISOString(),
     error: error.message,
     endpoint,
     userId: (req as AuthRequest).userId,
-    ip: req.ip || "unknown",
+    ip: req.ip || 'unknown',
   });
 
   // Keep only last 100 recent errors
@@ -224,23 +216,20 @@ export const trackError = (
 
 // Feature usage tracking
 export const trackFeatureUsage = (
-  feature: keyof MetricsStore["features"],
-  userId?: number,
+  feature: keyof MetricsStore['features'],
+  userId?: number
 ): void => {
   metrics.features[feature]++;
 
   // Could also track per-user feature usage here
-  console.log(`📊 Feature usage: ${feature} (User: ${userId || "anonymous"})`);
+  console.log(`📊 Feature usage: ${feature} (User: ${userId || 'anonymous'})`);
 };
 
 // User action tracking
-export const trackUserAction = (
-  action: "registration" | "login",
-  userId?: number,
-): void => {
-  if (action === "registration") {
+export const trackUserAction = (action: 'registration' | 'login', userId?: number): void => {
+  if (action === 'registration') {
     metrics.users.registrations_today++;
-  } else if (action === "login") {
+  } else if (action === 'login') {
     metrics.users.logins_today++;
     if (userId) {
       metrics.users.active_sessions.add(userId);
@@ -252,9 +241,7 @@ export const trackUserAction = (
 export const getSystemMetrics = (req: AuthRequest, res: Response): void => {
   const responseTime = metrics.performance.response_times;
   const avgResponseTime =
-    responseTime.length > 0
-      ? responseTime.reduce((a, b) => a + b, 0) / responseTime.length
-      : 0;
+    responseTime.length > 0 ? responseTime.reduce((a, b) => a + b, 0) / responseTime.length : 0;
 
   res.json({
     success: true,
@@ -272,10 +259,8 @@ export const getSystemMetrics = (req: AuthRequest, res: Response): void => {
         total: metrics.errors.total,
         error_rate:
           metrics.requests.total > 0
-            ? ((metrics.errors.total / metrics.requests.total) * 100).toFixed(
-                2,
-              ) + "%"
-            : "0%",
+            ? ((metrics.errors.total / metrics.requests.total) * 100).toFixed(2) + '%'
+            : '0%',
         by_type: metrics.errors.by_type,
         recent_count: metrics.errors.recent.length,
       },
@@ -300,10 +285,7 @@ export const getSystemMetrics = (req: AuthRequest, res: Response): void => {
   });
 };
 
-export const getPerformanceMetrics = (
-  req: AuthRequest,
-  res: Response,
-): void => {
+export const getPerformanceMetrics = (req: AuthRequest, res: Response): void => {
   const responseTime = metrics.performance.response_times;
 
   res.json({
@@ -313,9 +295,7 @@ export const getPerformanceMetrics = (
         count: responseTime.length,
         average:
           responseTime.length > 0
-            ? Math.round(
-                responseTime.reduce((a, b) => a + b, 0) / responseTime.length,
-              )
+            ? Math.round(responseTime.reduce((a, b) => a + b, 0) / responseTime.length)
             : 0,
         percentiles: calculatePercentiles(responseTime),
         recent: responseTime.slice(-100), // Last 100 response times
@@ -328,10 +308,8 @@ export const getPerformanceMetrics = (
       memory: {
         usage: process.memoryUsage(),
         heap_percentage:
-          (
-            (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) *
-            100
-          ).toFixed(2) + "%",
+          ((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100).toFixed(2) +
+          '%',
       },
       cpu: {
         uptime: process.uptime(),
@@ -347,20 +325,18 @@ export const getErrorMetrics = (req: AuthRequest, res: Response): void => {
       total_errors: metrics.errors.total,
       error_rate:
         metrics.requests.total > 0
-          ? ((metrics.errors.total / metrics.requests.total) * 100).toFixed(2) +
-            "%"
-          : "0%",
+          ? ((metrics.errors.total / metrics.requests.total) * 100).toFixed(2) + '%'
+          : '0%',
       errors_by_type: Object.entries(metrics.errors.by_type)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 10), // Top 10 error types
       recent_errors: metrics.errors.recent.slice(-50), // Last 50 errors
       error_trends: {
         last_hour: metrics.errors.recent.filter(
-          (e) => new Date(e.timestamp) > new Date(Date.now() - 60 * 60 * 1000),
+          e => new Date(e.timestamp) > new Date(Date.now() - 60 * 60 * 1000)
         ).length,
         last_24_hours: metrics.errors.recent.filter(
-          (e) =>
-            new Date(e.timestamp) > new Date(Date.now() - 24 * 60 * 60 * 1000),
+          e => new Date(e.timestamp) > new Date(Date.now() - 24 * 60 * 60 * 1000)
         ).length,
       },
     },
@@ -381,17 +357,14 @@ export const getUserMetrics = (req: AuthRequest, res: Response): void => {
       engagement: {
         help_requests_per_user:
           metrics.users.active_sessions.size > 0
-            ? (
-                metrics.features.help_requests_created /
-                metrics.users.active_sessions.size
-              ).toFixed(2)
-            : "0",
+            ? (metrics.features.help_requests_created / metrics.users.active_sessions.size).toFixed(
+                2
+              )
+            : '0',
         votes_per_user:
           metrics.users.active_sessions.size > 0
-            ? (
-                metrics.features.votes_cast / metrics.users.active_sessions.size
-              ).toFixed(2)
-            : "0",
+            ? (metrics.features.votes_cast / metrics.users.active_sessions.size).toFixed(2)
+            : '0',
       },
     },
   });
@@ -400,25 +373,18 @@ export const getUserMetrics = (req: AuthRequest, res: Response): void => {
 export const getHealthMetrics = (req: AuthRequest, res: Response): void => {
   const responseTime = metrics.performance.response_times;
   const avgResponseTime =
-    responseTime.length > 0
-      ? responseTime.reduce((a, b) => a + b, 0) / responseTime.length
-      : 0;
+    responseTime.length > 0 ? responseTime.reduce((a, b) => a + b, 0) / responseTime.length : 0;
 
-  const errorRate =
-    metrics.requests.total > 0
-      ? metrics.errors.total / metrics.requests.total
-      : 0;
+  const errorRate = metrics.requests.total > 0 ? metrics.errors.total / metrics.requests.total : 0;
 
   // Health score calculation (0-100)
   let healthScore = 100;
   if (avgResponseTime > 1000) healthScore -= 20; // Slow response time
   if (errorRate > 0.05) healthScore -= 30; // High error rate (>5%)
   if (metrics.performance.slow_requests.length > 10) healthScore -= 10; // Too many slow requests
-  if (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal > 0.9)
-    healthScore -= 20; // High memory usage
+  if (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal > 0.9) healthScore -= 20; // High memory usage
 
-  const status =
-    healthScore >= 80 ? "healthy" : healthScore >= 60 ? "warning" : "critical";
+  const status = healthScore >= 80 ? 'healthy' : healthScore >= 60 ? 'warning' : 'critical';
 
   res.json({
     success: true,
@@ -427,32 +393,28 @@ export const getHealthMetrics = (req: AuthRequest, res: Response): void => {
       health_score: Math.max(0, healthScore),
       checks: {
         response_time: {
-          status: avgResponseTime < 1000 ? "pass" : "fail",
+          status: avgResponseTime < 1000 ? 'pass' : 'fail',
           value: Math.round(avgResponseTime),
           threshold: 1000,
-          unit: "ms",
+          unit: 'ms',
         },
         error_rate: {
-          status: errorRate < 0.05 ? "pass" : "fail",
-          value: (errorRate * 100).toFixed(2) + "%",
-          threshold: "5%",
+          status: errorRate < 0.05 ? 'pass' : 'fail',
+          value: (errorRate * 100).toFixed(2) + '%',
+          threshold: '5%',
         },
         memory_usage: {
           status:
-            process.memoryUsage().heapUsed / process.memoryUsage().heapTotal <
-            0.9
-              ? "pass"
-              : "fail",
+            process.memoryUsage().heapUsed / process.memoryUsage().heapTotal < 0.9
+              ? 'pass'
+              : 'fail',
           value:
-            (
-              (process.memoryUsage().heapUsed /
-                process.memoryUsage().heapTotal) *
-              100
-            ).toFixed(2) + "%",
-          threshold: "90%",
+            ((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100).toFixed(2) +
+            '%',
+          threshold: '90%',
         },
         active_sessions: {
-          status: metrics.users.active_sessions.size >= 0 ? "pass" : "fail",
+          status: metrics.users.active_sessions.size >= 0 ? 'pass' : 'fail',
           value: metrics.users.active_sessions.size,
         },
       },

@@ -11,7 +11,12 @@
  * Main service orchestrating the algorithmic stablecoin functionality
  */
 
-import { StablecoinContract, StablecoinConfig, SupplyAdjustment, DEFAULT_STABLECOIN_CONFIG } from './StablecoinContract.js';
+import {
+  StablecoinContract,
+  StablecoinConfig,
+  SupplyAdjustment,
+  DEFAULT_STABLECOIN_CONFIG,
+} from './StablecoinContract.js';
 import { PriceOracle, OracleConfig, DEFAULT_ORACLE_CONFIG, PriceData } from './PriceOracle.js';
 import { db } from '../database.js';
 import { sql } from 'kysely';
@@ -153,9 +158,7 @@ export class StablecoinService {
       // Get total crowds_balance from all users
       const result = await db
         .selectFrom('users')
-        .select((eb) => [
-          eb.fn.sum('crowds_balance').as('total_supply')
-        ])
+        .select(eb => [eb.fn.sum('crowds_balance').as('total_supply')])
         .execute();
 
       const totalSupply = Number(result[0]?.total_supply || 0);
@@ -203,7 +206,9 @@ export class StablecoinService {
         // Save metrics
         await this.saveMetrics();
 
-        console.log(`Rebalance executed: ${adjustment.action} ${adjustment.amount.toFixed(2)} tokens`);
+        console.log(
+          `Rebalance executed: ${adjustment.action} ${adjustment.amount.toFixed(2)} tokens`
+        );
       }
 
       return adjustment;
@@ -252,7 +257,7 @@ export class StablecoinService {
           .updateTable('users')
           .set({
             crowds_balance: newBalance,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
           .where('id', '=', user.id)
           .execute();
@@ -264,7 +269,7 @@ export class StablecoinService {
           amount: adjustment.action === 'expand' ? userAdjustment : -userAdjustment,
           price_at_time: adjustment.currentPrice,
           gas_fee: 0,
-          status: 'completed'
+          status: 'completed',
         });
       }
     } catch (error) {
@@ -286,7 +291,7 @@ export class StablecoinService {
           target_price: adjustment.targetPrice,
           current_price: adjustment.currentPrice,
           new_supply: adjustment.newSupply,
-          timestamp: new Date(adjustment.timestamp).toISOString()
+          timestamp: new Date(adjustment.timestamp).toISOString(),
         })
         .execute();
     } catch (error) {
@@ -312,7 +317,7 @@ export class StablecoinService {
           target_price: metrics.targetPrice,
           deviation: metrics.deviation,
           volatility: metrics.volatility,
-          stability_score: metrics.stabilityScore
+          stability_score: metrics.stabilityScore,
         })
         .execute();
     } catch (error) {
@@ -335,7 +340,7 @@ export class StablecoinService {
           gas_fee: transaction.gas_fee,
           status: transaction.status,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .execute();
 
@@ -365,7 +370,7 @@ export class StablecoinService {
         user_id: userId,
         crowds_balance: user.crowds_balance,
         locked_balance: 0, // TODO: Implement locked balance for governance
-        last_rebalance_participation: null
+        last_rebalance_participation: null,
       };
     } catch (error) {
       console.error('Error getting user balance:', error);
@@ -391,7 +396,7 @@ export class StablecoinService {
       stability: stabilityMetrics,
       supply: supplyInfo,
       price: priceStats,
-      oracle: oracleHealth
+      oracle: oracleHealth,
     };
   }
 
@@ -412,7 +417,7 @@ export class StablecoinService {
       return results.map(row => ({
         ...row,
         transaction_type: row.transaction_type as 'mint' | 'burn' | 'transfer' | 'rebalance',
-        status: row.status as 'pending' | 'completed' | 'failed'
+        status: row.status as 'pending' | 'completed' | 'failed',
       }));
     } catch (error) {
       console.error('Error getting user transactions:', error);
@@ -439,7 +444,7 @@ export class StablecoinService {
         targetPrice: record.target_price,
         currentPrice: record.current_price,
         newSupply: record.new_supply,
-        timestamp: new Date(record.timestamp).getTime()
+        timestamp: new Date(record.timestamp).getTime(),
       }));
     } catch (error) {
       console.error('Error getting supply history:', error);
@@ -491,7 +496,7 @@ export class StablecoinService {
       isRunning: this.isRunning,
       contract: contractState,
       oracle: oracleHealth,
-      lastRebalance: new Date(contractState.lastRebalance).toISOString()
+      lastRebalance: new Date(contractState.lastRebalance).toISOString(),
     };
   }
 }

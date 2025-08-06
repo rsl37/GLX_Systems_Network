@@ -53,7 +53,10 @@ export function PhoneVerificationPage() {
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      throw new Error('Expected JSON response but got: ' + (text.substring(0, 100) + (text.length > 100 ? '...' : '')));
+      throw new Error(
+        'Expected JSON response but got: ' +
+          (text.substring(0, 100) + (text.length > 100 ? '...' : ''))
+      );
     }
 
     return await response.json();
@@ -74,7 +77,7 @@ export function PhoneVerificationPage() {
       const response = await fetch('/api/auth/send-phone-verification', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ phone }),
@@ -112,7 +115,7 @@ export function PhoneVerificationPage() {
       const response = await fetch('/api/auth/verify-phone', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ phone, code }),
@@ -150,73 +153,72 @@ export function PhoneVerificationPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className='w-full max-w-md'
       >
-        <Card className="galax-card">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4">
-              <Phone className="h-16 w-16 text-blue-500" />
+        <Card className='galax-card'>
+          <CardHeader className='text-center'>
+            <div className='mx-auto mb-4'>
+              <Phone className='h-16 w-16 text-blue-500' />
             </div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               {step === 'phone' ? 'Verify Your Phone' : 'Enter Verification Code'}
             </CardTitle>
             <CardDescription>
               {step === 'phone'
                 ? 'Add your phone number for enhanced security and notifications'
-                : `We've sent a 6-digit code to ${phone}`
-              }
+                : `We've sent a 6-digit code to ${phone}`}
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-4">
+          <CardContent className='space-y-4'>
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-red-700">
-                  <AlertCircle className="h-5 w-5" />
-                  <span className="font-medium">Error</span>
+              <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+                <div className='flex items-center gap-2 text-red-700'>
+                  <AlertCircle className='h-5 w-5' />
+                  <span className='font-medium'>Error</span>
                 </div>
-                <p className="text-red-600 text-sm mt-1">{error}</p>
+                <p className='text-red-600 text-sm mt-1'>{error}</p>
               </div>
             )}
 
             {success && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-green-700">
-                  <CheckCircle className="h-5 w-5" />
-                  <span className="font-medium">Success</span>
+              <div className='bg-green-50 border border-green-200 rounded-lg p-4'>
+                <div className='flex items-center gap-2 text-green-700'>
+                  <CheckCircle className='h-5 w-5' />
+                  <span className='font-medium'>Success</span>
                 </div>
-                <p className="text-green-600 text-sm mt-1">{success}</p>
+                <p className='text-green-600 text-sm mt-1'>{success}</p>
               </div>
             )}
 
             {step === 'phone' ? (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+              <div className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='phone'>Phone Number</Label>
                   <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+1 (555) 123-4567"
+                    id='phone'
+                    type='tel'
+                    placeholder='+1 (555) 123-4567'
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={e => setPhone(e.target.value)}
                     disabled={isSending}
                   />
-                  <p className="text-xs text-gray-500">
+                  <p className='text-xs text-gray-500'>
                     Include your country code (e.g., +1 for US)
                   </p>
                 </div>
 
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-700 mb-2">
-                    <Shield className="h-5 w-5" />
-                    <span className="font-medium">Why verify your phone?</span>
+                <div className='bg-blue-50 p-4 rounded-lg'>
+                  <div className='flex items-center gap-2 text-blue-700 mb-2'>
+                    <Shield className='h-5 w-5' />
+                    <span className='font-medium'>Why verify your phone?</span>
                   </div>
-                  <ul className="text-blue-600 text-sm space-y-1">
+                  <ul className='text-blue-600 text-sm space-y-1'>
                     <li>• Enhanced account security</li>
                     <li>• Receive urgent notifications</li>
                     <li>• Enable two-factor authentication</li>
@@ -227,11 +229,11 @@ export function PhoneVerificationPage() {
                 <Button
                   onClick={sendVerificationCode}
                   disabled={!phone || isSending}
-                  className="galax-button w-full"
+                  className='galax-button w-full'
                 >
                   {isSending ? (
-                    <div className="flex items-center gap-2">
-                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    <div className='flex items-center gap-2'>
+                      <RefreshCw className='h-4 w-4 animate-spin' />
                       Sending Code...
                     </div>
                   ) : (
@@ -240,33 +242,33 @@ export function PhoneVerificationPage() {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="code">Verification Code</Label>
+              <div className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='code'>Verification Code</Label>
                   <Input
-                    id="code"
-                    type="text"
-                    placeholder="123456"
+                    id='code'
+                    type='text'
+                    placeholder='123456'
                     value={code}
-                    onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     disabled={isVerifying}
                     maxLength={6}
-                    className="text-center text-2xl tracking-widest"
+                    className='text-center text-2xl tracking-widest'
                   />
-                  <p className="text-xs text-gray-500 text-center">
+                  <p className='text-xs text-gray-500 text-center'>
                     Enter the 6-digit code sent to your phone
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className='space-y-3'>
                   <Button
                     onClick={verifyCode}
                     disabled={code.length !== 6 || isVerifying}
-                    className="galax-button w-full"
+                    className='galax-button w-full'
                   >
                     {isVerifying ? (
-                      <div className="flex items-center gap-2">
-                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      <div className='flex items-center gap-2'>
+                        <RefreshCw className='h-4 w-4 animate-spin' />
                         Verifying...
                       </div>
                     ) : (
@@ -274,12 +276,12 @@ export function PhoneVerificationPage() {
                     )}
                   </Button>
 
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <Button
                       onClick={resendCode}
                       disabled={isSending}
-                      variant="outline"
-                      className="flex-1"
+                      variant='outline'
+                      className='flex-1'
                     >
                       Resend Code
                     </Button>
@@ -291,8 +293,8 @@ export function PhoneVerificationPage() {
                         setError('');
                         setSuccess('');
                       }}
-                      variant="ghost"
-                      className="flex-1"
+                      variant='ghost'
+                      className='flex-1'
                     >
                       Change Number
                     </Button>
@@ -301,23 +303,15 @@ export function PhoneVerificationPage() {
               </div>
             )}
 
-            <div className="text-center">
-              <Button
-                onClick={() => navigate('/dashboard')}
-                variant="ghost"
-                className="text-sm"
-              >
+            <div className='text-center'>
+              <Button onClick={() => navigate('/dashboard')} variant='ghost' className='text-sm'>
                 Skip for now
               </Button>
             </div>
 
-            <div className="text-center text-xs text-gray-500">
-              <p>
-                Your phone number is encrypted and stored securely.
-              </p>
-              <p className="mt-1">
-                Standard message rates may apply.
-              </p>
+            <div className='text-center text-xs text-gray-500'>
+              <p>Your phone number is encrypted and stored securely.</p>
+              <p className='mt-1'>Standard message rates may apply.</p>
             </div>
           </CardContent>
         </Card>

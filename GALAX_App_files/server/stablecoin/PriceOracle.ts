@@ -89,7 +89,7 @@ export class PriceOracle {
       price: this.currentPrice,
       timestamp: Date.now(),
       volume: this.simulateVolume(),
-      confidence: this.calculateConfidence()
+      confidence: this.calculateConfidence(),
     };
 
     // Add to history
@@ -130,7 +130,8 @@ export class PriceOracle {
     if (this.priceHistory.length > 10) {
       const recentPrices = this.priceHistory.slice(-10).map(p => p.price);
       const mean = recentPrices.reduce((sum, p) => sum + p, 0) / recentPrices.length;
-      const variance = recentPrices.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / recentPrices.length;
+      const variance =
+        recentPrices.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / recentPrices.length;
       const volatility = Math.sqrt(variance) / mean;
 
       confidence *= Math.max(0.5, 1 - volatility * 10);
@@ -177,7 +178,7 @@ export class PriceOracle {
         low: this.currentPrice,
         average: this.currentPrice,
         volatility: 0,
-        change24h: 0
+        change24h: 0,
       };
     }
 
@@ -192,8 +193,10 @@ export class PriceOracle {
     const volatility = Math.sqrt(variance);
 
     // Calculate 24h change
-    const change24h = periodPrices.length > 0 ?
-      ((current - periodPrices[0].price) / periodPrices[0].price) * 100 : 0;
+    const change24h =
+      periodPrices.length > 0
+        ? ((current - periodPrices[0].price) / periodPrices[0].price) * 100
+        : 0;
 
     return {
       current,
@@ -201,7 +204,7 @@ export class PriceOracle {
       low,
       average,
       volatility,
-      change24h
+      change24h,
     };
   }
 
@@ -245,7 +248,7 @@ export class PriceOracle {
       price: this.currentPrice,
       timestamp: Date.now(),
       volume,
-      confidence: this.calculateConfidence()
+      confidence: this.calculateConfidence(),
     };
 
     this.priceHistory.push(priceData);
@@ -272,8 +275,8 @@ export class PriceOracle {
     issues: string[];
   } {
     const now = Date.now();
-    const lastUpdate = this.priceHistory.length > 0 ?
-      this.priceHistory[this.priceHistory.length - 1].timestamp : 0;
+    const lastUpdate =
+      this.priceHistory.length > 0 ? this.priceHistory[this.priceHistory.length - 1].timestamp : 0;
 
     const issues: string[] = [];
     let isHealthy = true;
@@ -304,7 +307,7 @@ export class PriceOracle {
       activeSources: this.config.sources.filter(s => s.isActive).length,
       lastUpdate,
       confidence,
-      issues
+      issues,
     };
   }
 
@@ -330,23 +333,23 @@ export const DEFAULT_ORACLE_CONFIG: OracleConfig = {
       name: 'Primary DEX',
       weight: 0.4,
       lastUpdate: Date.now(),
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Secondary DEX',
       weight: 0.3,
       lastUpdate: Date.now(),
-      isActive: true
+      isActive: true,
     },
     {
       name: 'CEX Average',
       weight: 0.3,
       lastUpdate: Date.now(),
-      isActive: true
-    }
+      isActive: true,
+    },
   ],
   updateInterval: 30000, // 30 seconds
   maxPriceAge: 300000, // 5 minutes
   minConfidence: 0.7,
-  volatilityThreshold: 0.05 // 5%
+  volatilityThreshold: 0.05, // 5%
 };

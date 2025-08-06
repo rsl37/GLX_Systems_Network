@@ -17,7 +17,11 @@
       ],
       "fixAvailable": {
         "name": "@vercel/node",
+<<<<<<< HEAD
         "version": "4.0.0",
+=======
+        "version": "3.0.1",
+>>>>>>> origin/copilot/fix-488
         "isSemVerMajor": true
       }
     },
@@ -52,7 +56,11 @@
       ],
       "fixAvailable": {
         "name": "@vercel/node",
+<<<<<<< HEAD
         "version": "4.0.0",
+=======
+        "version": "3.0.1",
+>>>>>>> origin/copilot/fix-488
         "isSemVerMajor": true
       }
     },
@@ -87,7 +95,11 @@
       ],
       "fixAvailable": {
         "name": "@vercel/node",
+<<<<<<< HEAD
         "version": "4.0.0",
+=======
+        "version": "3.0.1",
+>>>>>>> origin/copilot/fix-488
         "isSemVerMajor": true
       }
     },
@@ -134,11 +146,19 @@
       ],
       "range": "<=5.28.5",
       "nodes": [
+<<<<<<< HEAD
         "node_modules/@vercel/node/node_modules/undici"
       ],
       "fixAvailable": {
         "name": "@vercel/node",
         "version": "4.0.0",
+=======
+        "node_modules/undici"
+      ],
+      "fixAvailable": {
+        "name": "@vercel/node",
+        "version": "3.0.1",
+>>>>>>> origin/copilot/fix-488
         "isSemVerMajor": true
       }
     }
@@ -154,11 +174,19 @@
     },
     "dependencies": {
       "prod": 473,
+<<<<<<< HEAD
       "dev": 549,
       "optional": 79,
       "peer": 8,
       "peerOptional": 0,
       "total": 1051
+=======
+      "dev": 712,
+      "optional": 79,
+      "peer": 8,
+      "peerOptional": 0,
+      "total": 1214
+>>>>>>> origin/copilot/fix-488
     }
   }
 }

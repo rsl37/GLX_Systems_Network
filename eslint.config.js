@@ -1,0 +1,78 @@
+export default [
+  {
+    files: ['*.js', '*.jsx'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-console': 'off',
+      'no-undef': 'off',
+    },
+  },
+  {
+    files: ['mcp-servers/*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-console': 'off',
+      'no-undef': 'off',
+    },
+  },
+  {
+    ignores: [
+      'node_modules/',
+      'GALAX_App_files/',
+      'external/',
+      'dist/',
+      'build/',
+      'coverage/',
+      'docs-backup/',
+      'license-compliance-reports/',
+      '*.log',
+      '*.json',
+      '*.ts',
+      '*.tsx',
+      'package-lock.json',
+      '.github/',
+      'screenshots/',
+      'api/',
+      'mcp-servers/*.json',
+    ],
+  },
+];

@@ -8,15 +8,16 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-
-
 /**
  * Test for the deployment validation functionality
  * This tests the deployment readiness endpoint functionality
  */
 
 import dotenv from 'dotenv';
-import { performDeploymentReadinessCheck, getDeploymentReadiness } from '../server/deployment-validation.ts';
+import {
+  performDeploymentReadinessCheck,
+  getDeploymentReadiness,
+} from '../server/deployment-validation.ts';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -58,7 +59,7 @@ async function testDeploymentValidation() {
       },
       json: (data: any) => {
         responseData = data;
-      }
+      },
     } as any;
 
     await getDeploymentReadiness(mockReq, mockRes);
@@ -87,9 +88,19 @@ async function testDeploymentValidation() {
 
     if (responseData.data.summary.failed > 0 && responseData.data.overall_status !== 'not_ready') {
       console.log('❌ Status logic error: Failed checks should result in not_ready status');
-    } else if (responseData.data.summary.failed === 0 && responseData.data.summary.warnings > 0 && responseData.data.overall_status !== 'warning') {
-      console.log('❌ Status logic error: Warnings without failures should result in warning status');
-    } else if (responseData.data.summary.failed === 0 && responseData.data.summary.warnings === 0 && responseData.data.overall_status !== 'ready') {
+    } else if (
+      responseData.data.summary.failed === 0 &&
+      responseData.data.summary.warnings > 0 &&
+      responseData.data.overall_status !== 'warning'
+    ) {
+      console.log(
+        '❌ Status logic error: Warnings without failures should result in warning status'
+      );
+    } else if (
+      responseData.data.summary.failed === 0 &&
+      responseData.data.summary.warnings === 0 &&
+      responseData.data.overall_status !== 'ready'
+    ) {
       console.log('❌ Status logic error: No failures or warnings should result in ready status');
     } else {
       console.log('✅ Status logic is correct');
@@ -105,13 +116,16 @@ async function testDeploymentValidation() {
 
     console.log(`📊 Environment variable checks: ${envChecks.length}`);
 
-    const requiredEnvPassed = envChecks.filter((check: any) =>
-      check.check.includes('NODE_ENV') ||
-      check.check.includes('PORT') ||
-      check.check.includes('DATA_DIRECTORY') ||
-      check.check.includes('JWT_SECRET') ||
-      check.check.includes('FRONTEND_URL')
-    ).every((check: any) => check.status === 'pass');
+    const requiredEnvPassed = envChecks
+      .filter(
+        (check: any) =>
+          check.check.includes('NODE_ENV') ||
+          check.check.includes('PORT') ||
+          check.check.includes('DATA_DIRECTORY') ||
+          check.check.includes('JWT_SECRET') ||
+          check.check.includes('FRONTEND_URL')
+      )
+      .every((check: any) => check.status === 'pass');
 
     if (requiredEnvPassed) {
       console.log('✅ All required environment variables are properly validated');
@@ -126,7 +140,6 @@ async function testDeploymentValidation() {
     console.log(`Deployment Ready: ${responseData.data.overall_status === 'ready' ? 'YES' : 'NO'}`);
 
     return true;
-
   } catch (error) {
     console.error('\n❌ Test failed:', error);
     return false;
@@ -135,7 +148,7 @@ async function testDeploymentValidation() {
 
 // Run the test
 testDeploymentValidation()
-  .then((success) => {
+  .then(success => {
     if (success) {
       console.log('\n✅ Deployment validation tests PASSED');
       process.exit(0);
@@ -144,7 +157,7 @@ testDeploymentValidation()
       process.exit(1);
     }
   })
-  .catch((error) => {
+  .catch(error => {
     console.error('\n💥 Test execution failed:', error);
     process.exit(1);
   });

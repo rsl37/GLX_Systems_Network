@@ -6,61 +6,61 @@
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-import nodemailer from "nodemailer";
-import { randomBytes } from "crypto";
-import { db } from "./database.js";
+import nodemailer from 'nodemailer';
+import { randomBytes } from 'crypto';
+import { db } from './database.js';
 
 // HTML escape function to prevent XSS
 function escapeHtml(text: string): string {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 // Security helper function to mask email addresses for logging
 function maskEmail(email: string): string {
-  if (!email || typeof email !== "string") {
-    return "[invalid-email]";
+  if (!email || typeof email !== 'string') {
+    return '[invalid-email]';
   }
 
-  const [localPart, domain] = email.split("@");
+  const [localPart, domain] = email.split('@');
   if (!localPart || !domain) {
-    return "[malformed-email]";
+    return '[malformed-email]';
   }
 
   // Mask local part: show first character and mask the rest
   const maskedLocal =
     localPart.length > 1
-      ? localPart[0] + "*".repeat(Math.max(localPart.length - 1, 3))
-      : localPart[0] + "***";
+      ? localPart[0] + '*'.repeat(Math.max(localPart.length - 1, 3))
+      : localPart[0] + '***';
 
   // Mask domain: show first character and last 3 characters (.com/.org/etc)
-  const domainParts = domain.split(".");
+  const domainParts = domain.split('.');
   if (domainParts.length > 1) {
     const mainDomain = domainParts[0];
-    const tld = domainParts.slice(1).join(".");
+    const tld = domainParts.slice(1).join('.');
     const maskedDomain =
       mainDomain.length > 1
-        ? mainDomain[0] + "*".repeat(Math.max(mainDomain.length - 1, 3))
-        : mainDomain[0] + "***";
+        ? mainDomain[0] + '*'.repeat(Math.max(mainDomain.length - 1, 3))
+        : mainDomain[0] + '***';
     return `${maskedLocal}@${maskedDomain}.${tld}`;
   } else {
     // Single part domain (unusual but handle it)
     const maskedDomain =
       domain.length > 1
-        ? domain[0] + "*".repeat(Math.max(domain.length - 1, 3))
-        : domain[0] + "***";
+        ? domain[0] + '*'.repeat(Math.max(domain.length - 1, 3))
+        : domain[0] + '***';
     return `${maskedLocal}@${maskedDomain}`;
   }
 }
 
 // Email configuration
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
   secure: false,
   auth: {
     user: process.env.SMTP_USER,
@@ -69,37 +69,32 @@ const transporter = nodemailer.createTransport({
 });
 
 // Password Reset Functions
-export async function generatePasswordResetToken(
-  email: string,
-): Promise<string | null> {
+export async function generatePasswordResetToken(email: string): Promise<string | null> {
   try {
-    console.log("🔐 Generating password reset token for:", maskEmail(email));
+    console.log('🔐 Generating password reset token for:', maskEmail(email));
 
     // Find user by email
     const user = await db
-      .selectFrom("users")
-      .select(["id", "username"])
-      .where("email", "=", email)
+      .selectFrom('users')
+      .select(['id', 'username'])
+      .where('email', '=', email)
       .executeTakeFirst();
 
     if (!user) {
-      console.log("❌ User not found for email:", maskEmail(email));
+      console.log('❌ User not found for email:', maskEmail(email));
       return null;
     }
 
     // Generate secure token
-    const token = randomBytes(32).toString("hex");
+    const token = randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     // Delete any existing tokens for this user
-    await db
-      .deleteFrom("password_reset_tokens")
-      .where("user_id", "=", user.id)
-      .execute();
+    await db.deleteFrom('password_reset_tokens').where('user_id', '=', user.id).execute();
 
     // Store token in database
     await db
-      .insertInto("password_reset_tokens")
+      .insertInto('password_reset_tokens')
       .values({
         user_id: user.id,
         token,
@@ -107,28 +102,24 @@ export async function generatePasswordResetToken(
       })
       .execute();
 
-    console.log("✅ Password reset token generated successfully");
+    console.log('✅ Password reset token generated successfully');
     return token;
   } catch (error) {
-    console.error("❌ Password reset token generation failed:", error);
+    console.error('❌ Password reset token generation failed:', error);
     return null;
   }
 }
 
-export async function sendPasswordResetEmail(
-  email: string,
-  token: string,
-): Promise<boolean> {
+export async function sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
   try {
-    console.log("📧 Sending password reset email to:", maskEmail(email));
+    console.log('📧 Sending password reset email to:', maskEmail(email));
 
-    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password?token=${token}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
 
     const mailOptions = {
-      from:
-        process.env.SMTP_FROM || "GALAX Support <noreply@galaxcivicnetwork.me>",
+      from: process.env.SMTP_FROM || 'GALAX Support <noreply@galaxcivicnetwork.me>',
       to: email,
-      subject: "Password Reset Request - GALAX",
+      subject: 'Password Reset Request - GALAX',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #B593EE, #92A8D1); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
@@ -175,39 +166,37 @@ export async function sendPasswordResetEmail(
       `,
     };
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("🔧 Development mode - Password reset link:", resetUrl);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Development mode - Password reset link:', resetUrl);
       return true;
     }
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ Password reset email sent successfully");
+    console.log('✅ Password reset email sent successfully');
     return true;
   } catch (error) {
-    console.error("❌ Password reset email failed:", error);
+    console.error('❌ Password reset email failed:', error);
     return false;
   }
 }
 
-export async function validatePasswordResetToken(
-  token: string,
-): Promise<number | null> {
+export async function validatePasswordResetToken(token: string): Promise<number | null> {
   try {
-    console.log("🔍 Validating password reset token");
+    console.log('🔍 Validating password reset token');
 
     const tokenRecord = await db
-      .selectFrom("password_reset_tokens")
-      .select(["user_id", "expires_at", "used_at"])
-      .where("token", "=", token)
+      .selectFrom('password_reset_tokens')
+      .select(['user_id', 'expires_at', 'used_at'])
+      .where('token', '=', token)
       .executeTakeFirst();
 
     if (!tokenRecord) {
-      console.log("❌ Invalid token");
+      console.log('❌ Invalid token');
       return null;
     }
 
     if (tokenRecord.used_at) {
-      console.log("❌ Token already used");
+      console.log('❌ Token already used');
       return null;
     }
 
@@ -215,14 +204,14 @@ export async function validatePasswordResetToken(
     const expiresAt = new Date(tokenRecord.expires_at);
 
     if (now > expiresAt) {
-      console.log("❌ Token expired");
+      console.log('❌ Token expired');
       return null;
     }
 
-    console.log("✅ Token is valid");
+    console.log('✅ Token is valid');
     return tokenRecord.user_id;
   } catch (error) {
-    console.error("❌ Token validation failed:", error);
+    console.error('❌ Token validation failed:', error);
     return null;
   }
 }
@@ -230,37 +219,32 @@ export async function validatePasswordResetToken(
 export async function markTokenAsUsed(token: string): Promise<void> {
   try {
     await db
-      .updateTable("password_reset_tokens")
+      .updateTable('password_reset_tokens')
       .set({ used_at: new Date().toISOString() })
-      .where("token", "=", token)
+      .where('token', '=', token)
       .execute();
 
-    console.log("✅ Token marked as used");
+    console.log('✅ Token marked as used');
   } catch (error) {
-    console.error("❌ Failed to mark token as used:", error);
+    console.error('❌ Failed to mark token as used:', error);
   }
 }
 
 // Email Verification Functions
-export async function generateEmailVerificationToken(
-  userId: number,
-): Promise<string | null> {
+export async function generateEmailVerificationToken(userId: number): Promise<string | null> {
   try {
-    console.log("📧 Generating email verification token for user:", userId);
+    console.log('📧 Generating email verification token for user:', userId);
 
     // Generate secure token
-    const token = randomBytes(32).toString("hex");
+    const token = randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     // Delete any existing tokens for this user
-    await db
-      .deleteFrom("email_verification_tokens")
-      .where("user_id", "=", userId)
-      .execute();
+    await db.deleteFrom('email_verification_tokens').where('user_id', '=', userId).execute();
 
     // Store token in database
     await db
-      .insertInto("email_verification_tokens")
+      .insertInto('email_verification_tokens')
       .values({
         user_id: userId,
         token,
@@ -268,10 +252,10 @@ export async function generateEmailVerificationToken(
       })
       .execute();
 
-    console.log("✅ Email verification token generated successfully");
+    console.log('✅ Email verification token generated successfully');
     return token;
   } catch (error) {
-    console.error("❌ Email verification token generation failed:", error);
+    console.error('❌ Email verification token generation failed:', error);
     return null;
   }
 }
@@ -279,21 +263,20 @@ export async function generateEmailVerificationToken(
 export async function sendEmailVerification(
   email: string,
   token: string,
-  username: string,
+  username: string
 ): Promise<boolean> {
   try {
-    console.log("📧 Sending email verification to:", maskEmail(email));
+    console.log('📧 Sending email verification to:', maskEmail(email));
 
     // Sanitize inputs to prevent XSS
     const safeUsername = escapeHtml(username);
     const safeToken = encodeURIComponent(token);
-    const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${safeToken}`;
+    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${safeToken}`;
 
     const mailOptions = {
-      from:
-        process.env.SMTP_FROM || "GALAX Support <noreply@galaxcivicnetwork.me>",
+      from: process.env.SMTP_FROM || 'GALAX Support <noreply@galaxcivicnetwork.me>',
       to: email,
-      subject: "Verify Your Email - GALAX",
+      subject: 'Verify Your Email - GALAX',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #B593EE, #92A8D1); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
@@ -351,42 +334,37 @@ export async function sendEmailVerification(
       `,
     };
 
-    if (process.env.NODE_ENV === "development") {
-      console.log(
-        "🔧 Development mode - Email verification link:",
-        verificationUrl,
-      );
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Development mode - Email verification link:', verificationUrl);
       return true;
     }
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ Email verification sent successfully");
+    console.log('✅ Email verification sent successfully');
     return true;
   } catch (error) {
-    console.error("❌ Email verification failed:", error);
+    console.error('❌ Email verification failed:', error);
     return false;
   }
 }
 
-export async function validateEmailVerificationToken(
-  token: string,
-): Promise<number | null> {
+export async function validateEmailVerificationToken(token: string): Promise<number | null> {
   try {
-    console.log("🔍 Validating email verification token");
+    console.log('🔍 Validating email verification token');
 
     const tokenRecord = await db
-      .selectFrom("email_verification_tokens")
-      .select(["user_id", "expires_at", "used_at"])
-      .where("token", "=", token)
+      .selectFrom('email_verification_tokens')
+      .select(['user_id', 'expires_at', 'used_at'])
+      .where('token', '=', token)
       .executeTakeFirst();
 
     if (!tokenRecord) {
-      console.log("❌ Invalid verification token");
+      console.log('❌ Invalid verification token');
       return null;
     }
 
     if (tokenRecord.used_at) {
-      console.log("❌ Token already used");
+      console.log('❌ Token already used');
       return null;
     }
 
@@ -394,102 +372,94 @@ export async function validateEmailVerificationToken(
     const expiresAt = new Date(tokenRecord.expires_at);
 
     if (now > expiresAt) {
-      console.log("❌ Token expired");
+      console.log('❌ Token expired');
       return null;
     }
 
-    console.log("✅ Email verification token is valid");
+    console.log('✅ Email verification token is valid');
     return tokenRecord.user_id;
   } catch (error) {
-    console.error("❌ Email verification token validation failed:", error);
+    console.error('❌ Email verification token validation failed:', error);
     return null;
   }
 }
 
-export async function markEmailVerificationTokenAsUsed(
-  token: string,
-): Promise<void> {
+export async function markEmailVerificationTokenAsUsed(token: string): Promise<void> {
   try {
     await db
-      .updateTable("email_verification_tokens")
+      .updateTable('email_verification_tokens')
       .set({ used_at: new Date().toISOString() })
-      .where("token", "=", token)
+      .where('token', '=', token)
       .execute();
 
-    console.log("✅ Email verification token marked as used");
+    console.log('✅ Email verification token marked as used');
   } catch (error) {
-    console.error("❌ Failed to mark email verification token as used:", error);
+    console.error('❌ Failed to mark email verification token as used:', error);
   }
 }
 
 export async function markEmailAsVerified(userId: number): Promise<void> {
   try {
     await db
-      .updateTable("users")
+      .updateTable('users')
       .set({
         email_verified: 1,
         updated_at: new Date().toISOString(),
       })
-      .where("id", "=", userId)
+      .where('id', '=', userId)
       .execute();
 
-    console.log("✅ Email marked as verified for user:", userId);
+    console.log('✅ Email marked as verified for user:', userId);
   } catch (error) {
-    console.error("❌ Failed to mark email as verified:", error);
+    console.error('❌ Failed to mark email as verified:', error);
     throw error;
   }
 }
 
-export async function resendEmailVerification(
-  userId: number,
-): Promise<boolean> {
+export async function resendEmailVerification(userId: number): Promise<boolean> {
   try {
-    console.log("🔄 Resending email verification for user:", userId);
+    console.log('🔄 Resending email verification for user:', userId);
 
     // Get user details
     const user = await db
-      .selectFrom("users")
-      .select(["email", "username", "email_verified"])
-      .where("id", "=", userId)
+      .selectFrom('users')
+      .select(['email', 'username', 'email_verified'])
+      .where('id', '=', userId)
       .executeTakeFirst();
 
     if (!user) {
-      console.log("❌ User not found");
+      console.log('❌ User not found');
       return false;
     }
 
     if (!user.email) {
-      console.log("❌ User has no email address");
+      console.log('❌ User has no email address');
       return false;
     }
 
     if (user.email_verified) {
-      console.log("❌ Email already verified");
+      console.log('❌ Email already verified');
       return false;
     }
 
     // Generate new token
     const token = await generateEmailVerificationToken(userId);
     if (!token) {
-      console.log("❌ Failed to generate verification token");
+      console.log('❌ Failed to generate verification token');
       return false;
     }
 
     // Send verification email
-    const emailSent = await sendEmailVerification(
-      user.email,
-      token,
-      user.username,
-    );
+    const emailSent = await sendEmailVerification(user.email, token, user.username);
     if (!emailSent) {
-      console.log("❌ Failed to send verification email");
+      console.log('❌ Failed to send verification email');
       return false;
     }
 
-    console.log("✅ Email verification resent successfully");
+    console.log('✅ Email verification resent successfully');
     return true;
   } catch (error) {
-    console.error("❌ Failed to resend email verification:", error);
+    console.error('❌ Failed to resend email verification:', error);
     return false;
   }
 }

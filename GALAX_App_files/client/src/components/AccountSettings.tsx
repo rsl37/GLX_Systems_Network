@@ -13,7 +13,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +34,7 @@ import {
   AlertCircle,
   Settings,
   Plus,
-  Edit
+  Edit,
 } from 'lucide-react';
 import { CountryCodeSelector } from '@/components/CountryCodeSelector';
 import { Country } from '@/data/countries';
@@ -48,17 +54,17 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
   // Form states for different tabs
   const [emailForm, setEmailForm] = useState({
     email: user?.email || '',
-    currentPassword: ''
+    currentPassword: '',
   });
 
   const [phoneForm, setPhoneForm] = useState({
     phone: user?.phone?.replace(/^\+\d+/, '') || '',
     countryCode: user?.phone?.match(/^\+\d+/)?.[0] || '+1',
-    currentPassword: ''
+    currentPassword: '',
   });
 
   const [walletForm, setWalletForm] = useState({
-    walletAddress: user?.wallet_address || ''
+    walletAddress: user?.wallet_address || '',
   });
 
   // Privacy settings state
@@ -66,13 +72,13 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
     showEmail: false,
     showPhone: false,
     showWallet: false,
-    walletDisplayMode: 'hidden' as 'hidden' | 'public' | 'tip-button'
+    walletDisplayMode: 'hidden' as 'hidden' | 'public' | 'tip-button',
   });
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const clearMessages = () => {
@@ -109,13 +115,13 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: emailForm.email,
-          currentPassword: emailForm.currentPassword
-        })
+          currentPassword: emailForm.currentPassword,
+        }),
       });
 
       if (response.ok) {
@@ -149,13 +155,13 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           phone: fullPhone,
-          currentPassword: phoneForm.currentPassword
-        })
+          currentPassword: phoneForm.currentPassword,
+        }),
       });
 
       if (response.ok) {
@@ -187,12 +193,12 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          wallet_address: walletForm.walletAddress
-        })
+          wallet_address: walletForm.walletAddress,
+        }),
       });
 
       if (response.ok) {
@@ -210,7 +216,11 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
   };
 
   const handleUpdatePassword = async () => {
-    if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+    if (
+      !passwordForm.currentPassword ||
+      !passwordForm.newPassword ||
+      !passwordForm.confirmPassword
+    ) {
       setError('All password fields are required');
       return;
     }
@@ -233,13 +243,13 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/change-password', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           currentPassword: passwordForm.currentPassword,
-          newPassword: passwordForm.newPassword
-        })
+          newPassword: passwordForm.newPassword,
+        }),
       });
 
       if (response.ok) {
@@ -265,10 +275,10 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/privacy-settings', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newSettings)
+        body: JSON.stringify(newSettings),
       });
 
       if (response.ok) {
@@ -300,10 +310,10 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: null })
+        body: JSON.stringify({ email: null }),
       });
 
       if (response.ok) {
@@ -335,10 +345,10 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phone: null })
+        body: JSON.stringify({ phone: null }),
       });
 
       if (response.ok) {
@@ -370,10 +380,10 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ wallet_address: null })
+        body: JSON.stringify({ wallet_address: null }),
       });
 
       if (response.ok) {
@@ -395,133 +405,127 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="outline" size="sm">
-            <Settings className="h-4 w-4 mr-2" />
+          <Button variant='outline' size='sm'>
+            <Settings className='h-4 w-4 mr-2' />
             Account Settings
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className='sm:max-w-4xl max-h-[90vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
+          <DialogTitle className='flex items-center gap-2'>
+            <Settings className='h-5 w-5' />
             Account Settings
           </DialogTitle>
         </DialogHeader>
 
         {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
+          <Alert variant='destructive'>
+            <AlertCircle className='h-4 w-4' />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
         {success && (
           <Alert>
-            <CheckCircle className="h-4 w-4" />
+            <CheckCircle className='h-4 w-4' />
             <AlertDescription>{success}</AlertDescription>
           </Alert>
         )}
 
-        <Tabs defaultValue="email" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="email" className="flex items-center gap-2">
-              <Mail className="h-4 w-4" />
+        <Tabs defaultValue='email' className='w-full'>
+          <TabsList className='grid w-full grid-cols-5'>
+            <TabsTrigger value='email' className='flex items-center gap-2'>
+              <Mail className='h-4 w-4' />
               Email
             </TabsTrigger>
-            <TabsTrigger value="phone" className="flex items-center gap-2">
-              <Phone className="h-4 w-4" />
+            <TabsTrigger value='phone' className='flex items-center gap-2'>
+              <Phone className='h-4 w-4' />
               Phone
             </TabsTrigger>
-            <TabsTrigger value="wallet" className="flex items-center gap-2">
-              <Wallet className="h-4 w-4" />
+            <TabsTrigger value='wallet' className='flex items-center gap-2'>
+              <Wallet className='h-4 w-4' />
               Wallet
             </TabsTrigger>
-            <TabsTrigger value="password" className="flex items-center gap-2">
-              <Key className="h-4 w-4" />
+            <TabsTrigger value='password' className='flex items-center gap-2'>
+              <Key className='h-4 w-4' />
               Password
             </TabsTrigger>
-            <TabsTrigger value="privacy" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
+            <TabsTrigger value='privacy' className='flex items-center gap-2'>
+              <Shield className='h-4 w-4' />
               Privacy
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="email" className="space-y-4">
+          <TabsContent value='email' className='space-y-4'>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Mail className='h-5 w-5' />
                   Email Address Management
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-sm font-medium">Current Status:</span>
+              <CardContent className='space-y-4'>
+                <div className='flex items-center gap-2 mb-4'>
+                  <span className='text-sm font-medium'>Current Status:</span>
                   {user?.email ? (
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{user.email}</Badge>
+                    <div className='flex items-center gap-2'>
+                      <Badge variant='outline'>{user.email}</Badge>
                       {user.email_verified ? (
-                        <Badge className="bg-green-100 text-green-800">
-                          <CheckCircle className="h-3 w-3 mr-1" />
+                        <Badge className='bg-green-100 text-green-800'>
+                          <CheckCircle className='h-3 w-3 mr-1' />
                           Verified
                         </Badge>
                       ) : (
-                        <Badge variant="destructive">
-                          <XCircle className="h-3 w-3 mr-1" />
+                        <Badge variant='destructive'>
+                          <XCircle className='h-3 w-3 mr-1' />
                           Not Verified
                         </Badge>
                       )}
                     </div>
                   ) : (
-                    <Badge variant="secondary">
-                      <Plus className="h-3 w-3 mr-1" />
+                    <Badge variant='secondary'>
+                      <Plus className='h-3 w-3 mr-1' />
                       No email address
                     </Badge>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">
+                <div className='space-y-2'>
+                  <Label htmlFor='email'>
                     {user?.email ? 'New Email Address' : 'Add Email Address'}
                   </Label>
                   <Input
-                    id="email"
-                    type="email"
+                    id='email'
+                    type='email'
                     value={emailForm.email}
-                    onChange={(e) => setEmailForm({ ...emailForm, email: e.target.value })}
-                    placeholder="Enter email address"
+                    onChange={e => setEmailForm({ ...emailForm, email: e.target.value })}
+                    placeholder='Enter email address'
                   />
                 </div>
 
                 {user?.email && (
-                  <div className="space-y-2">
-                    <Label htmlFor="email-password">Current Password (required)</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='email-password'>Current Password (required)</Label>
                     <Input
-                      id="email-password"
-                      type="password"
+                      id='email-password'
+                      type='password'
                       value={emailForm.currentPassword}
-                      onChange={(e) => setEmailForm({ ...emailForm, currentPassword: e.target.value })}
-                      placeholder="Enter current password"
+                      onChange={e =>
+                        setEmailForm({ ...emailForm, currentPassword: e.target.value })
+                      }
+                      placeholder='Enter current password'
                     />
                   </div>
                 )}
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleUpdateEmail}
-                    disabled={isLoading}
-                    className="flex-1"
-                  >
+                <div className='flex gap-2'>
+                  <Button onClick={handleUpdateEmail} disabled={isLoading} className='flex-1'>
                     {user?.email ? 'Update Email' : 'Add Email'}
                   </Button>
 
                   {user?.email && (
-                    <Button
-                      variant="destructive"
-                      onClick={handleRemoveEmail}
-                      disabled={isLoading}
-                    >
+                    <Button variant='destructive' onClick={handleRemoveEmail} disabled={isLoading}>
                       Remove Email
                     </Button>
                   )}
@@ -530,91 +534,85 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="phone" className="space-y-4">
+          <TabsContent value='phone' className='space-y-4'>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Phone className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Phone className='h-5 w-5' />
                   Phone Number Management
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-sm font-medium">Current Status:</span>
+              <CardContent className='space-y-4'>
+                <div className='flex items-center gap-2 mb-4'>
+                  <span className='text-sm font-medium'>Current Status:</span>
                   {user?.phone ? (
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{user.phone}</Badge>
+                    <div className='flex items-center gap-2'>
+                      <Badge variant='outline'>{user.phone}</Badge>
                       {user.phone_verified ? (
-                        <Badge className="bg-green-100 text-green-800">
-                          <CheckCircle className="h-3 w-3 mr-1" />
+                        <Badge className='bg-green-100 text-green-800'>
+                          <CheckCircle className='h-3 w-3 mr-1' />
                           Verified
                         </Badge>
                       ) : (
-                        <Badge variant="destructive">
-                          <XCircle className="h-3 w-3 mr-1" />
+                        <Badge variant='destructive'>
+                          <XCircle className='h-3 w-3 mr-1' />
                           Not Verified
                         </Badge>
                       )}
                     </div>
                   ) : (
-                    <Badge variant="secondary">
-                      <Plus className="h-3 w-3 mr-1" />
+                    <Badge variant='secondary'>
+                      <Plus className='h-3 w-3 mr-1' />
                       No phone number
                     </Badge>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">
+                <div className='space-y-2'>
+                  <Label htmlFor='phone'>
                     {user?.phone ? 'New Phone Number' : 'Add Phone Number'}
                   </Label>
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <CountryCodeSelector
                       value={phoneForm.countryCode}
                       onChange={(dialCode: string, country: Country) =>
                         setPhoneForm({ ...phoneForm, countryCode: dialCode })
                       }
-                      className="flex-shrink-0"
+                      className='flex-shrink-0'
                     />
                     <Input
-                      id="phone"
-                      type="tel"
+                      id='phone'
+                      type='tel'
                       value={phoneForm.phone}
-                      onChange={(e) => setPhoneForm({ ...phoneForm, phone: e.target.value })}
-                      placeholder="Enter phone number"
-                      className="flex-1"
+                      onChange={e => setPhoneForm({ ...phoneForm, phone: e.target.value })}
+                      placeholder='Enter phone number'
+                      className='flex-1'
                     />
                   </div>
                 </div>
 
                 {user?.phone && (
-                  <div className="space-y-2">
-                    <Label htmlFor="phone-password">Current Password (required)</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='phone-password'>Current Password (required)</Label>
                     <Input
-                      id="phone-password"
-                      type="password"
+                      id='phone-password'
+                      type='password'
                       value={phoneForm.currentPassword}
-                      onChange={(e) => setPhoneForm({ ...phoneForm, currentPassword: e.target.value })}
-                      placeholder="Enter current password"
+                      onChange={e =>
+                        setPhoneForm({ ...phoneForm, currentPassword: e.target.value })
+                      }
+                      placeholder='Enter current password'
                     />
                   </div>
                 )}
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleUpdatePhone}
-                    disabled={isLoading}
-                    className="flex-1"
-                  >
+                <div className='flex gap-2'>
+                  <Button onClick={handleUpdatePhone} disabled={isLoading} className='flex-1'>
                     {user?.phone ? 'Update Phone' : 'Add Phone'}
                   </Button>
 
                   {user?.phone && (
-                    <Button
-                      variant="destructive"
-                      onClick={handleRemovePhone}
-                      disabled={isLoading}
-                    >
+                    <Button variant='destructive' onClick={handleRemovePhone} disabled={isLoading}>
                       Remove Phone
                     </Button>
                   )}
@@ -623,67 +621,55 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="wallet" className="space-y-4">
+          <TabsContent value='wallet' className='space-y-4'>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wallet className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Wallet className='h-5 w-5' />
                   Wallet Address Management
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-sm font-medium">Current Status:</span>
+              <CardContent className='space-y-4'>
+                <div className='flex items-center gap-2 mb-4'>
+                  <span className='text-sm font-medium'>Current Status:</span>
                   {user?.wallet_address ? (
-                    <Badge variant="outline" className="font-mono text-xs">
+                    <Badge variant='outline' className='font-mono text-xs'>
                       {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
                     </Badge>
                   ) : (
-                    <Badge variant="secondary">
-                      <Plus className="h-3 w-3 mr-1" />
+                    <Badge variant='secondary'>
+                      <Plus className='h-3 w-3 mr-1' />
                       No wallet connected
                     </Badge>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="wallet">
+                <div className='space-y-2'>
+                  <Label htmlFor='wallet'>
                     {user?.wallet_address ? 'New Wallet Address' : 'Add Wallet Address'}
                   </Label>
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <Input
-                      id="wallet"
+                      id='wallet'
                       value={walletForm.walletAddress}
-                      onChange={(e) => setWalletForm({ walletAddress: e.target.value })}
-                      placeholder="Enter wallet address or connect MetaMask"
-                      className="flex-1 font-mono text-sm"
+                      onChange={e => setWalletForm({ walletAddress: e.target.value })}
+                      placeholder='Enter wallet address or connect MetaMask'
+                      className='flex-1 font-mono text-sm'
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={connectWallet}
-                    >
-                      <Wallet className="h-4 w-4 mr-2" />
+                    <Button type='button' variant='outline' onClick={connectWallet}>
+                      <Wallet className='h-4 w-4 mr-2' />
                       Connect
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleUpdateWallet}
-                    disabled={isLoading}
-                    className="flex-1"
-                  >
+                <div className='flex gap-2'>
+                  <Button onClick={handleUpdateWallet} disabled={isLoading} className='flex-1'>
                     {user?.wallet_address ? 'Update Wallet' : 'Add Wallet'}
                   </Button>
 
                   {user?.wallet_address && (
-                    <Button
-                      variant="destructive"
-                      onClick={handleRemoveWallet}
-                      disabled={isLoading}
-                    >
+                    <Button variant='destructive' onClick={handleRemoveWallet} disabled={isLoading}>
                       Remove Wallet
                     </Button>
                   )}
@@ -692,60 +678,62 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="password" className="space-y-4">
+          <TabsContent value='password' className='space-y-4'>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Key className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Key className='h-5 w-5' />
                   Password Management
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">Current Password</Label>
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='current-password'>Current Password</Label>
                   <Input
-                    id="current-password"
-                    type="password"
+                    id='current-password'
+                    type='password'
                     value={passwordForm.currentPassword}
-                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                    placeholder="Enter current password"
+                    onChange={e =>
+                      setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
+                    }
+                    placeholder='Enter current password'
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">New Password</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='new-password'>New Password</Label>
                   <Input
-                    id="new-password"
-                    type="password"
+                    id='new-password'
+                    type='password'
                     value={passwordForm.newPassword}
-                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                    placeholder="Enter new password (min 8 characters)"
+                    onChange={e =>
+                      setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+                    }
+                    placeholder='Enter new password (min 8 characters)'
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm New Password</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='confirm-password'>Confirm New Password</Label>
                   <Input
-                    id="confirm-password"
-                    type="password"
+                    id='confirm-password'
+                    type='password'
                     value={passwordForm.confirmPassword}
-                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                    placeholder="Confirm new password"
+                    onChange={e =>
+                      setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
+                    }
+                    placeholder='Confirm new password'
                   />
                 </div>
 
-                <Button
-                  onClick={handleUpdatePassword}
-                  disabled={isLoading}
-                  className="w-full"
-                >
+                <Button onClick={handleUpdatePassword} disabled={isLoading} className='w-full'>
                   Update Password
                 </Button>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="privacy" className="space-y-4">
+          <TabsContent value='privacy' className='space-y-4'>
             <PrivacySettings
               userPrivacySettings={privacySettings}
               onUpdatePrivacySettings={handleUpdatePrivacySettings}

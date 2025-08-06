@@ -16,7 +16,10 @@ import { encryptPersonalData, decryptPersonalData } from './encryption.js';
 /**
  * Generates a new TOTP secret for a user
  */
-export async function generate2FASecret(userId: number, username: string): Promise<{ secret: string; qrCode: string } | null> {
+export async function generate2FASecret(
+  userId: number,
+  username: string
+): Promise<{ secret: string; qrCode: string } | null> {
   try {
     console.log('🔐 Generating 2FA secret for user:', userId);
 
@@ -24,7 +27,7 @@ export async function generate2FASecret(userId: number, username: string): Promi
     const secret = speakeasy.generateSecret({
       name: `GALAX (${username})`,
       issuer: 'GALAX App',
-      length: 32
+      length: 32,
     });
 
     if (!secret.base32) {
@@ -39,7 +42,7 @@ export async function generate2FASecret(userId: number, username: string): Promi
       .updateTable('users')
       .set({
         two_factor_secret: encryptedSecret,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .where('id', '=', userId)
       .execute();
@@ -50,7 +53,7 @@ export async function generate2FASecret(userId: number, username: string): Promi
     console.log('✅ 2FA secret generated successfully');
     return {
       secret: secret.base32,
-      qrCode: qrCodeUrl
+      qrCode: qrCodeUrl,
     };
   } catch (error) {
     console.error('❌ 2FA secret generation failed:', error);
@@ -85,7 +88,7 @@ export async function enable2FA(userId: number, verificationCode: string): Promi
       secret,
       encoding: 'base32',
       token: verificationCode,
-      window: 2 // Allow 2 time steps before/after current time
+      window: 2, // Allow 2 time steps before/after current time
     });
 
     if (!verified) {
@@ -98,7 +101,7 @@ export async function enable2FA(userId: number, verificationCode: string): Promi
       .updateTable('users')
       .set({
         two_factor_enabled: 1,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .where('id', '=', userId)
       .execute();
@@ -132,7 +135,7 @@ export async function disable2FA(userId: number, verificationCode: string): Prom
       .set({
         two_factor_enabled: 0,
         two_factor_secret: null,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .where('id', '=', userId)
       .execute();
@@ -177,7 +180,7 @@ export async function verify2FACode(userId: number, verificationCode: string): P
       secret,
       encoding: 'base32',
       token: verificationCode,
-      window: 2 // Allow 2 time steps before/after current time
+      window: 2, // Allow 2 time steps before/after current time
     });
 
     if (verified) {
@@ -215,7 +218,7 @@ export async function generateBackupCodes(userId: number): Promise<string[] | nu
       .set({
         // Note: This requires adding a backup_codes field to the users table
         // backup_codes: encryptedCodes,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .where('id', '=', userId)
       .execute();
@@ -279,13 +282,13 @@ export async function get2FAStatus(userId: number): Promise<{
 
     return {
       enabled: user?.two_factor_enabled === 1,
-      hasSecret: !!user?.two_factor_secret
+      hasSecret: !!user?.two_factor_secret,
     };
   } catch (error) {
     console.error('❌ Failed to get 2FA status:', error);
     return {
       enabled: false,
-      hasSecret: false
+      hasSecret: false,
     };
   }
 }
