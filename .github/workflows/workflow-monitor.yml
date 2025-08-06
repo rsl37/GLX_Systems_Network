@@ -100,9 +100,7 @@ jobs:
           EOF
 
           # Parse the JSON results and add to report
-          echo '${{ steps.workflow-status.outputs.result }}' | jq -r '.[] | \
-            "| \(.name) | \(.status) | \(.successRate // "N/A")% | \(.recentFailures // "N/A") | \(.lastRun // "N/A") |"' \
-            >> workflow-health-report.md
+          echo '${{ steps.workflow-status.outputs.result }}' | jq -r '.[] | "| \(.name) | \(.status) | \(.successRate // "N/A")% | \(.recentFailures // "N/A") | \(.lastRun // "N/A") |"' >> workflow-health-report.md
 
           cat << 'EOF' >> workflow-health-report.md
 
@@ -115,17 +113,14 @@ jobs:
 
           ## 📈 Health Metrics
 
-          - **Overall System Health:** $([ $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length') -eq 0 ] && echo "🟢 Healthy" ||\
-          echo "🔴 Needs Attention")
+          - **Overall System Health:** $([ $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length') -eq 0 ] && echo "🟢 Healthy" || echo "🔴 Needs Attention")
           - **Critical Issues:** $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length')
-          - **Warnings:** $(echo '${{ steps.workflow-status.outputs.result }}' \
-            | jq '[.[] | select(.status | contains("🟡"))] | length')
+          - **Warnings:** $(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🟡"))] | length')
 
           EOF
 
           # Set output for notifications
-          CRITICAL_COUNT=$(echo '${{ steps.workflow-status.outputs.result }}' \
-            | jq '[.[] | select(.status | contains("🔴"))] | length')
+          CRITICAL_COUNT=$(echo '${{ steps.workflow-status.outputs.result }}' | jq '[.[] | select(.status | contains("🔴"))] | length')
           echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
 
       - name: Create or update workflow health issue

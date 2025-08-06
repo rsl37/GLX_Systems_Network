@@ -41,18 +41,25 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel Preview
-        uses: amondnet/vercel-action@v25
         if: env.VERCEL_TOKEN != ''
         id: vercel-deploy
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ${{ env.WORKING_DIRECTORY }}
-          scope: ${{ secrets.VERCEL_ORG_ID }}
-          alias-domains: |
-            galax-civic-pr-${{ github.event.pull_request.number }}.vercel.app
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          # Install Vercel CLI
+          npm install -g vercel@latest
+          
+          # Deploy to preview
+          vercel deploy \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=${{ secrets.VERCEL_ORG_ID }} \
+            --project-id=${{ secrets.VERCEL_PROJECT_ID }} \
+            --yes \
+            > deployment-url.txt
+          
+          # Extract preview URL
+          PREVIEW_URL=$(cat deployment-url.txt | tail -1)
+          echo "preview-url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "Preview deployed to: $PREVIEW_URL"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
