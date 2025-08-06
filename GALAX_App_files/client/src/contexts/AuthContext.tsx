@@ -213,7 +213,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+<<<<<<< HEAD
   const login = async (emailOrPhone: string, password: string, verificationToken?: string | null) => {
+=======
+  const login = async (emailOrPhone: string, password: string) => {
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
     try {
       // Determine if it's an email or phone number
       const isEmail = emailOrPhone.includes('@');
@@ -273,7 +277,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+<<<<<<< HEAD
   const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone', verificationToken?: string | null) => {
+=======
+  const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone') => {
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
     try {
       // Determine if it's an email or phone number
       const isEmail = signupMethod === 'email' || (!signupMethod && emailOrPhone.includes('@'));

@@ -45,6 +45,7 @@ export function RegisterPage() {
       }
 
       // Format phone number with country code if it's a phone signup
+<<<<<<< HEAD
       let identifier = email;
       if (signupMethod === 'phone') {
         // Clean the phone number: remove all non-digit characters except leading +
@@ -70,6 +71,10 @@ export function RegisterPage() {
       }
 
       await register(identifier, password, username, signupMethod, verificationToken);
+=======
+      const identifier = signupMethod === 'email' ? email : `${countryCode}${phone.replace(/^[\+\s0]+/, '').replace(/\s/g, '')}`;
+      await register(identifier, password, username, signupMethod);
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
       navigate('/dashboard');
     } catch (err) {
       // Provide more helpful error messages

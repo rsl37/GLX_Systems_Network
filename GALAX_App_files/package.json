@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "vite build && tsc --project tsconfig.server.json",
+<<<<<<< HEAD
     "build:production": "NODE_ENV=production npm run build",
     "start": "npx tsx watch scripts/dev.ts",
     "setup:env": "scripts/setup-env.sh",
@@ -27,6 +28,17 @@
 =======
 >>>>>>> origin/copilot/fix-175
     "deployment:check": "npx tsx scripts/deployment-check.ts",
+=======
+    "start": "tsx watch scripts/dev.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test && npm run test:e2e",
+    "test:env": "tsx scripts/test-env.ts",
+    "deployment:check": "tsx scripts/deployment-check.js",
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
     "deployment:test": "npx tsx scripts/test-deployment-validation.ts",
     "production:setup": "npx tsx scripts/production-setup.js",
     "production:check": "NODE_ENV=production npx tsx scripts/deployment-check.js",
@@ -118,7 +130,10 @@
     "tailwindcss-animate": "1.0.7"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@lhci/cli": "^0.15.1",
+=======
+>>>>>>> origin/copilot/fix-44b85367-7d0a-4ac9-b500-2003ed4cfaed
     "@playwright/test": "^1.54.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
