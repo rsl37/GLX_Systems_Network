@@ -141,6 +141,10 @@ const realtimeManager = new RealtimeManager();
 
 console.log('🔌 RealtimeManager initialized');
 
+// Initialize RealtimeManager for SSE connections
+const realtimeManager = new RealtimeManager();
+console.log('⚡ RealtimeManager initialized for real-time connections');
+
 const app = express();
 const server = createServer(app);
 
