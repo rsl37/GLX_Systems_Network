@@ -16,10 +16,14 @@ interface AISecurityConfig {
   enableAuditLogging: boolean;
   allowedModelVersions: string[];
 <<<<<<< HEAD
+<<<<<<< HEAD
   knownGoodHashes?: string[];
 =======
   allowedModelHashes: string[];
 >>>>>>> origin/copilot/fix-257
+=======
+  allowedModelHashes: string[];
+>>>>>>> origin/copilot/fix-271
   riskThreshold: number;
 }
 
@@ -491,6 +495,7 @@ export const defaultAISecurityConfig: AISecurityConfig = {
   ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   knownGoodHashes: [
 =======
   allowedModelHashes: [
@@ -504,6 +509,12 @@ export const defaultAISecurityConfig: AISecurityConfig = {
 =======
   allowedModelHashes: [
     // Empty array - in production these would be known good model hashes
+=======
+  allowedModelHashes: [
+    // These would be real hashes in a production system
+    'placeholder-hash-1',
+    'placeholder-hash-2'
+>>>>>>> origin/copilot/fix-271
   ],
   riskThreshold: 40
 >>>>>>> origin/copilot/fix-257

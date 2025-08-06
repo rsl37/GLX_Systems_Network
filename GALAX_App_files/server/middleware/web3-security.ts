@@ -460,6 +460,7 @@ export class Web3SecurityMiddleware {
     const MAX_VOTING_POWER = 100; // Maximum voting power cap
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const VOTING_POWER_MULTIPLIER = 2; // Multiplier for transaction-based voting power
 =======
     const VOTING_POWER_MULTIPLIER = 2; // Multiplier for transaction count
@@ -467,6 +468,9 @@ export class Web3SecurityMiddleware {
 =======
     const VOTING_POWER_MULTIPLIER = 5; // Multiplier for transaction count
 >>>>>>> origin/copilot/fix-257
+=======
+    const VOTING_POWER_MULTIPLIER = 5; // Multiplier for voting power calculation
+>>>>>>> origin/copilot/fix-271
     return Math.min(MAX_VOTING_POWER, recentTxs * VOTING_POWER_MULTIPLIER); // Cap at max voting power
   }
 
