@@ -1,11 +1,7 @@
 {
   "name": "glx-civic-networking-app",
-  "version": "0.2.0",
-<<<<<<< HEAD
-  "description": "GLX: Connect the World - Civic Networking Application - Root Project",
-=======
+  "version": "0.3.0",
   "description": "GLX Civic Network: Connect the World - Root Project",
->>>>>>> main
   "private": true,
   "type": "module",
   "license": "PolyForm-Shield-1.0.0",
@@ -52,9 +48,6 @@
     "quality:check": "npm run lint && npm run format:check && npm run lint:app && npm run format:app:check",
     "quality:fix": "npm run lint:fix && npm run format && npm run lint:app:fix && npm run format:app"
   },
-  "workspaces": [
-    "GLX_App_files"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/rsl37/GLX_Civic_Networking_App.git"
