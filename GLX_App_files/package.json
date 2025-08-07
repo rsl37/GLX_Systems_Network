@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "name": "glx-civic-platform",
-=======
   "name": "glx-civic-network",
->>>>>>> main
   "private": true,
   "version": "0.2.1",
   "type": "module",
