@@ -1,1 +1,11 @@
-
+# pnpm-workspace.yaml
+packages:
+  # Current main application
+  - 'GALAX_App_files'
+  # Future workspace packages (if needed)
+  - 'packages/*'
+  - 'apps/*'
+  # Exclude common directories
+  - '!**/node_modules/**'
+  - '!**/dist/**'
+  - '!**/build/**'
