@@ -169,10 +169,7 @@ export function DashboardPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'
         >
-          <Card className="glx-card">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -186,10 +183,7 @@ export function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="glx-card">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -206,10 +200,7 @@ export function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="glx-card">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -223,10 +214,7 @@ export function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="glx-card">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -283,14 +271,24 @@ export function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="glx-card">
-              <CardContent className="p-4 text-center">
-                <TrendingUp className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
-                <p className="text-2xl font-bold">{stats.votescast}</p>
-                <p className="text-sm text-gray-600">Votes Cast</p>
+            <Card className='glx-card'>
+              <CardContent className='p-4 text-center'>
+                <TrendingUp className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
+                <p className='text-2xl font-bold'>{stats.votescast}</p>
+                <p className='text-sm text-gray-600'>Votes Cast</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           className='grid grid-cols-1 lg:grid-cols-2 gap-6'
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <HandHeart className='h-5 w-5' />

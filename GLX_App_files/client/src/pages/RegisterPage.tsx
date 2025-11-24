@@ -145,7 +145,6 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 glx-holographic">
     <div className='min-h-screen flex items-center justify-center p-4 glx-holographic'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -153,8 +152,6 @@ export function RegisterPage() {
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-        <Card className="glx-card animate-pulse-glow">
-          <CardHeader className="text-center pb-8">
         <Card className='glx-card animate-pulse-glow'>
           <CardHeader className='text-center pb-8'>
             <motion.div
@@ -163,17 +160,12 @@ export function RegisterPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className='flex items-center justify-center gap-2 mb-4'
             >
-              <Zap className="h-8 w-8 text-purple-500" />
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Join GLX
               <Zap className='h-8 w-8 text-purple-500' />
               <CardTitle className='text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent'>
                 Join GLX
               </CardTitle>
               <Sparkles className='h-8 w-8 text-coral-500' />
             </motion.div>
-            <CardDescription className="text-lg text-gray-600">
-              Connect the World
             <CardDescription className='text-lg text-gray-600'>
               Create your civic network account
             </CardDescription>
@@ -232,8 +224,6 @@ export function RegisterPage() {
                   type='text'
                   placeholder='Choose a username'
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="glx-input"
                   onChange={e => setUsername(e.target.value)}
                   className='glx-input'
                   required
@@ -256,8 +246,6 @@ export function RegisterPage() {
                       type='tel'
                       placeholder='Enter your phone number'
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="glx-input flex-1"
                       onChange={e => setPhone(e.target.value)}
                       className='glx-input flex-1'
                       required
@@ -269,8 +257,6 @@ export function RegisterPage() {
                     type='email'
                     placeholder='Enter your email'
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="glx-input"
                     onChange={e => setEmail(e.target.value)}
                     className='glx-input'
                     required
@@ -285,8 +271,6 @@ export function RegisterPage() {
                   type='password'
                   placeholder='Create a password'
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="glx-input"
                   onChange={e => setPassword(e.target.value)}
                   className='glx-input'
                   required
@@ -341,16 +325,12 @@ export function RegisterPage() {
                 type='text'
                 placeholder='Choose a username'
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="glx-input"
                 onChange={e => setUsername(e.target.value)}
                 className='glx-input'
               />
             </div>
 
             <Button
-              variant="outline"
-              className="w-full glx-button-accent"
               variant='outline'
               className='w-full glx-button-accent'
               onClick={handleWalletRegister}

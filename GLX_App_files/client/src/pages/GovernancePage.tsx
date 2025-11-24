@@ -456,11 +456,6 @@ export function GovernancePage() {
           className='space-y-4'
         >
           {proposals.length === 0 ? (
-            <Card className="glx-card">
-              <CardContent className="p-12 text-center">
-                <Vote className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">No proposals found</h3>
-                <p className="text-gray-500">Be the first to create a proposal for your community!</p>
             <Card className='glx-card'>
               <CardContent className='p-12 text-center'>
                 <Vote className='h-16 w-16 mx-auto mb-4 text-gray-400' />
@@ -483,10 +478,6 @@ export function GovernancePage() {
               const isOwnProposal = proposal.created_by === user?.id;
 
               return (
-                <Card key={proposal.id} className="glx-card hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2 flex-1">
                 <Card key={proposal.id} className='glx-card hover:shadow-lg transition-shadow'>
                   <CardHeader className='pb-3'>
                     <div className='flex items-start justify-between'>
