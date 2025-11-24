@@ -34,7 +34,6 @@ class RealtimeManager {
     protocol: 'wss://',
     secure: true,
     upgradeHeaders: {
-<<<<<<< HEAD:GLX_App_files/server/realtimeManager.ts
       'Sec-WebSocket-Protocol': 'glx-secure',
       'Sec-WebSocket-Extensions': 'permessage-deflate'
     }

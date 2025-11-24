@@ -73,7 +73,6 @@ export function useRealtime(token: string | null) {
         protocol: secureProtocol,
         secure: isProduction,
         upgradeHeaders: {
-<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
           'Sec-WebSocket-Protocol': 'glx-secure',
           'Sec-WebSocket-Extensions': 'permessage-deflate'
         }
@@ -220,7 +219,6 @@ export function useRealtime(token: string | null) {
   }, []);
 
   // Join help request room
-<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
   const joinRoom = useCallback(async (helpRequestId: number): Promise<boolean> => {
     if (!connectionId.current || !token) {
       console.error('❌ No active connection to join room');
@@ -294,7 +292,6 @@ export function useRealtime(token: string | null) {
   );
 
   // Leave help request room
-<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
   const leaveRoom = useCallback(async (helpRequestId: number): Promise<boolean> => {
     if (!connectionId.current || !token) {
       console.error('❌ No active connection to leave room');
@@ -368,7 +365,6 @@ export function useRealtime(token: string | null) {
   );
 
   // Send message to help request
-<<<<<<< HEAD:GLX_App_files/client/src/hooks/useRealtime.ts
   const sendMessage = useCallback(async (helpRequestId: number, message: string): Promise<{ success: boolean; messageId?: number; error?: string }> => {
     if (!token) {
       return { success: false, error: 'Not authenticated' };

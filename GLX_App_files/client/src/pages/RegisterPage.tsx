@@ -145,7 +145,6 @@ export function RegisterPage() {
   };
 
   return (
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
     <div className="min-h-screen flex items-center justify-center p-4 glx-holographic">
     <div className='min-h-screen flex items-center justify-center p-4 galax-holographic'>
       <motion.div
@@ -154,7 +153,6 @@ export function RegisterPage() {
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
         <Card className="glx-card animate-pulse-glow">
           <CardHeader className="text-center pb-8">
         <Card className='galax-card animate-pulse-glow'>
@@ -165,7 +163,6 @@ export function RegisterPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className='flex items-center justify-center gap-2 mb-4'
             >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
               <Zap className="h-8 w-8 text-purple-500" />
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                 Join GLX
@@ -175,7 +172,6 @@ export function RegisterPage() {
               </CardTitle>
               <Sparkles className='h-8 w-8 text-coral-500' />
             </motion.div>
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
             <CardDescription className="text-lg text-gray-600">
               Connect the World
             <CardDescription className='text-lg text-gray-600'>
@@ -236,7 +232,6 @@ export function RegisterPage() {
                   type='text'
                   placeholder='Choose a username'
                   value={username}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                   onChange={(e) => setUsername(e.target.value)}
                   className="glx-input"
                   onChange={e => setUsername(e.target.value)}
@@ -261,7 +256,6 @@ export function RegisterPage() {
                       type='tel'
                       placeholder='Enter your phone number'
                       value={phone}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                       onChange={(e) => setPhone(e.target.value)}
                       className="glx-input flex-1"
                       onChange={e => setPhone(e.target.value)}
@@ -275,7 +269,6 @@ export function RegisterPage() {
                     type='email'
                     placeholder='Enter your email'
                     value={email}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
                     className="glx-input"
                     onChange={e => setEmail(e.target.value)}
@@ -292,7 +285,6 @@ export function RegisterPage() {
                   type='password'
                   placeholder='Create a password'
                   value={password}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                   onChange={(e) => setPassword(e.target.value)}
                   className="glx-input"
                   onChange={e => setPassword(e.target.value)}
@@ -313,7 +305,6 @@ export function RegisterPage() {
               )}
 
               <Button
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                 type="submit"
                 className="w-full glx-button"
                 disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
@@ -350,7 +341,6 @@ export function RegisterPage() {
                 type='text'
                 placeholder='Choose a username'
                 value={username}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
                 onChange={(e) => setUsername(e.target.value)}
                 className="glx-input"
                 onChange={e => setUsername(e.target.value)}
@@ -359,7 +349,6 @@ export function RegisterPage() {
             </div>
 
             <Button
-<<<<<<< HEAD:GLX_App_files/client/src/pages/RegisterPage.tsx
               variant="outline"
               className="w-full glx-button-accent"
               variant='outline'

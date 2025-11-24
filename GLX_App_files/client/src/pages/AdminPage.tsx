@@ -228,7 +228,6 @@ export function AdminPage() {
               Security Administration
             </h1>
           </div>
-<<<<<<< HEAD:GLX_App_files/client/src/pages/AdminPage.tsx
           <p className="text-gray-600 max-w-2xl mx-auto">
             Monitor and manage the comprehensive security protection for the GLX Civic Platform.
           <p className='text-gray-600 max-w-2xl mx-auto'>

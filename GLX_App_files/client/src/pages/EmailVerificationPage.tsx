@@ -173,13 +173,7 @@ export function EmailVerificationPage() {
           transition={{ duration: 0.5 }}
           className='w-full max-w-md'
         >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/EmailVerificationPage.tsx
-          <Card className="glx-card">
-            <CardContent className="p-8 text-center">
-              <div className="animate-spin mx-auto mb-4 h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full"></div>
-              <h2 className="text-xl font-semibold mb-2">Verifying Your Email</h2>
-              <p className="text-gray-600">Please wait while we verify your email address...</p>
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-8 text-center'>
               <div className='animate-spin mx-auto mb-4 h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full'></div>
               <h2 className='text-xl font-semibold mb-2'>Verifying Your Email</h2>
@@ -201,7 +195,6 @@ export function EmailVerificationPage() {
           transition={{ duration: 0.5 }}
           className='w-full max-w-md'
         >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/EmailVerificationPage.tsx
           <Card className="glx-card">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4">
@@ -229,7 +222,6 @@ export function EmailVerificationPage() {
 
               <p className='text-sm text-gray-600'>Redirecting to dashboard in a few seconds...</p>
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/EmailVerificationPage.tsx
               <Button
                 onClick={() => navigate('/dashboard')}
                 className="glx-button w-full"
@@ -253,7 +245,6 @@ export function EmailVerificationPage() {
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/EmailVerificationPage.tsx
         <Card className="glx-card">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4">
@@ -333,7 +324,6 @@ export function EmailVerificationPage() {
               </Button>
             </div>
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/EmailVerificationPage.tsx
             <div className="text-center text-xs text-gray-500">
               <p>
                 Didn't receive the email? Check your spam folder or try resending.

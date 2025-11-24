@@ -192,6 +192,5 @@ self.addEventListener('message', event => {
   }
 });
 
-<<<<<<< HEAD:GLX_App_files/client/public/sw.js
 console.log('🌟 GLX Civic Service Worker: Lean caching strategy active');
 console.log('🌟 GLX Civic Service Worker: Lean caching strategy active');

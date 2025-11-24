@@ -160,7 +160,6 @@ export function PhoneVerificationPage() {
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/PhoneVerificationPage.tsx
         <Card className="glx-card">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4">
@@ -234,7 +233,6 @@ export function PhoneVerificationPage() {
                 <Button
                   onClick={sendVerificationCode}
                   disabled={!phone || isSending}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/PhoneVerificationPage.tsx
                   className="glx-button w-full"
                   className='galax-button w-full'
                 >
@@ -271,7 +269,6 @@ export function PhoneVerificationPage() {
                   <Button
                     onClick={verifyCode}
                     disabled={code.length !== 6 || isVerifying}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/PhoneVerificationPage.tsx
                     className="glx-button w-full"
                     className='galax-button w-full'
                   >

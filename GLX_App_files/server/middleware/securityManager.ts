@@ -724,7 +724,6 @@ export const initializeSecuritySystems = async () => {
   }
 
   console.log('✅ Security Systems Status:');
-<<<<<<< HEAD:GLX_App_files/server/middleware/securityManager.ts
   console.log(`   🦠 Antimalware Protection: ${SECURITY_CONFIG.antimalware.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🔍 Antivirus Protection: ${SECURITY_CONFIG.antivirus.enabled ? 'ENABLED' : 'DISABLED'}`);
   console.log(`   🛡️ Anti-Hacking Protection: ${SECURITY_CONFIG.antiHacking.enabled ? 'ENABLED' : 'DISABLED'}`);

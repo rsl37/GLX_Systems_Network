@@ -1,7 +1,4 @@
 /*
-<<<<<<< HEAD
- * Copyright (c) 2025 GLX: Connect the World - Civic Networking App
-=======
  * Copyright (c) 2025 GLX Civic Networking App: Connect the World
  * GLX is a project focused on civic engagement and social impact.
  * This software is licensed under the PolyForm Shield License 1.0.0.
@@ -108,10 +105,6 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Email',
         'Phone',
         'Password',
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:GLX_App_files/client/src/hooks/usePageVerification.ts
->>>>>>> main
         'Join GLX',
         'Create your civic network account'
         'Join GLX',

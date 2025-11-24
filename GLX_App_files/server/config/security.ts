@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
- * Copyright (c) 2025 GLX: Connect the World - Civic Networking App
-=======
  * Copyright (c) 2025 GLX Civic Networking App
->>>>>>> main
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -76,11 +72,7 @@ function getWebSocketCorsOrigins(): string[] {
 export const DEFAULT_WEBSOCKET_CONFIG: WebSocketSecurityConfig = {
   protocol: 'wss', // Always use secure WebSocket connections
   enforceSSL: true,
-<<<<<<< HEAD
-  corsOrigins: ['https://localhost:3000', 'https://glx-civic-networking-app.vercel.app'],
-=======
   corsOrigins: getWebSocketCorsOrigins(),
->>>>>>> main
   maxConnections: 1000,
   heartbeatInterval: 30000,
 };

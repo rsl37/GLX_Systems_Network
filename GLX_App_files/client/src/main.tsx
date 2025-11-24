@@ -14,13 +14,11 @@ import './index.css';
 
 // Lazy load analytics for better initial load performance
 const AnalyticsWrapper = React.lazy(() =>
-const AnalyticsWrapper = React.lazy(() =>
   import('@vercel/analytics/react').then(module => ({
     default: () => <module.Analytics />,
   }))
 );
 
-const SpeedInsightsWrapper = React.lazy(() =>
 const SpeedInsightsWrapper = React.lazy(() =>
   import('@vercel/speed-insights/react').then(module => ({
     default: () => <module.SpeedInsights />,

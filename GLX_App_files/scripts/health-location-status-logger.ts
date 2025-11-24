@@ -526,7 +526,6 @@ class HealthLocationStatusLogger {
         message: 'Repository location tracked',
         details: {
           remote: remoteOrigin,
-<<<<<<< HEAD:GLX_App_files/scripts/health-location-status-logger.ts
           repository: 'rsl37/GLX_Civic_Networking_App'
         }
           repository: 'rsl37/GLX_Civic_Networking_App',

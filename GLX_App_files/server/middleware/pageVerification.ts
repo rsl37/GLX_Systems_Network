@@ -252,7 +252,6 @@ export function createAuthCorsConfig() {
         // Production origins - Supporting both domains
         ...(isProduction
           ? [
-<<<<<<< HEAD:GLX_App_files/server/middleware/pageVerification.ts
               "https://glx-civic-networking.vercel.app",
               "https://glxcivicnetwork.me",
               "https://www.glxcivicnetwork.me",

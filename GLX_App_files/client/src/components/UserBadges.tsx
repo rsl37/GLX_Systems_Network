@@ -101,7 +101,6 @@ export function UserBadges({ user, className = '' }: UserBadgesProps) {
       {
         id: 'account-creation',
         name: 'Account Creator',
-<<<<<<< HEAD:GLX_App_files/client/src/components/UserBadges.tsx
         description: 'Created a GLX account',
         icon: <User className="h-4 w-4" />,
         description: 'Created a GLX account',

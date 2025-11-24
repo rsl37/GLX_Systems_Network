@@ -1,5 +1,4 @@
 /*
-<<<<<<< HEAD:GLX_App_files/client/src/lib/civicUtils.ts
  * Copyright (c) 2025 GLX Civic Networking App
  * Copyright (c) 2025 GLX Civic Networking App
  *

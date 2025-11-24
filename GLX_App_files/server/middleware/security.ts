@@ -1,22 +1,13 @@
 /*
-<<<<<<< HEAD
- * Copyright (c) 2025 GALAX Civic Networking App
-=======
  * Copyright (c) 2025 GLX Civic Networking App
->>>>>>> main
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
  * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
-<<<<<<< HEAD
-import helmet from "helmet";
-import { Request, Response, NextFunction } from "express";
-=======
 import helmet from 'helmet';
 import { Request, Response, NextFunction } from 'express';
->>>>>>> main
 
 /**
  * Security Middleware Module
@@ -53,29 +44,12 @@ export const securityHeaders = helmet({
       styleSrc: [
         "'self'",
         "'unsafe-inline'", // Required for Tailwind CSS and inline styles
-<<<<<<< HEAD
-        "https://fonts.googleapis.com",
-=======
         'https://fonts.googleapis.com',
->>>>>>> main
       ],
       scriptSrc: [
         "'self'",
         // Add trusted script sources if needed
       ],
-<<<<<<< HEAD
-      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
-      imgSrc: [
-        "'self'",
-        "data:",
-        "https:", // Allow images from HTTPS sources
-        "blob:", // Allow blob URLs for uploaded images
-      ],
-      mediaSrc: [
-        "'self'",
-        "blob:", // Allow blob URLs for uploaded media
-        "data:",
-=======
       fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
       imgSrc: [
         "'self'",
@@ -87,30 +61,20 @@ export const securityHeaders = helmet({
         "'self'",
         'blob:', // Allow blob URLs for uploaded media
         'data:',
->>>>>>> main
       ],
       connectSrc: [
         "'self'",
         // WebSocket protocols removed - using SSE instead
         // "ws:", "wss:",
-<<<<<<< HEAD
-        "https://api.openstreetmap.org", // OpenStreetMap API
-        "https://tile.openstreetmap.org", // OpenStreetMap tiles
-=======
         'https://api.openstreetmap.org', // OpenStreetMap API
         'https://tile.openstreetmap.org', // OpenStreetMap tiles
->>>>>>> main
       ],
       objectSrc: ["'none'"],
       frameSrc: ["'none'"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
     },
-<<<<<<< HEAD
-    reportOnly: process.env.NODE_ENV === "development", // Only report in development
-=======
     reportOnly: process.env.NODE_ENV === 'development', // Only report in development
->>>>>>> main
   },
 
   // HTTP Strict Transport Security
@@ -121,11 +85,7 @@ export const securityHeaders = helmet({
   },
 
   // Prevent clickjacking
-<<<<<<< HEAD
-  frameguard: { action: "deny" },
-=======
   frameguard: { action: 'deny' },
->>>>>>> main
 
   // Prevent MIME type sniffing
   noSniff: true,
@@ -149,21 +109,6 @@ export const securityHeaders = helmet({
 });
 
 // Request sanitization middleware
-<<<<<<< HEAD
-export const sanitizeInput = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  // HTML entity escape function
-  const escapeHtml = (str: string): string => {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#x27;");
-=======
 export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
   // HTML entity escape function
   const escapeHtml = (str: string): string => {
@@ -173,16 +118,11 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#x27;');
->>>>>>> main
   };
 
   // Recursively sanitize object properties
   const sanitizeObject = (obj: any): any => {
-<<<<<<< HEAD
-    if (typeof obj === "string") {
-=======
     if (typeof obj === 'string') {
->>>>>>> main
       // Use more secure approach - escape HTML instead of regex filtering
       return escapeHtml(obj.trim());
     }
@@ -191,11 +131,7 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
       return obj.map(sanitizeObject);
     }
 
-<<<<<<< HEAD
-    if (obj !== null && typeof obj === "object") {
-=======
     if (obj !== null && typeof obj === 'object') {
->>>>>>> main
       const sanitized: any = {};
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -228,22 +164,14 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
       const original = JSON.stringify(req.query);
       const sanitizedStr = JSON.stringify(sanitized);
       if (original !== sanitizedStr) {
-<<<<<<< HEAD
-        console.warn("⚠️ Query parameters required sanitization:", {
-=======
         console.warn('⚠️ Query parameters required sanitization:', {
->>>>>>> main
           original: req.query,
           sanitized: sanitized,
           ip: req.ip,
         });
       }
     } catch (error) {
-<<<<<<< HEAD
-      console.error("❌ Query sanitization error:", error);
-=======
       console.error('❌ Query sanitization error:', error);
->>>>>>> main
     }
   }
 
@@ -254,22 +182,14 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
       const original = JSON.stringify(req.params);
       const sanitizedStr = JSON.stringify(sanitized);
       if (original !== sanitizedStr) {
-<<<<<<< HEAD
-        console.warn("⚠️ Route parameters required sanitization:", {
-=======
         console.warn('⚠️ Route parameters required sanitization:', {
->>>>>>> main
           original: req.params,
           sanitized: sanitized,
           ip: req.ip,
         });
       }
     } catch (error) {
-<<<<<<< HEAD
-      console.error("❌ Route params sanitization error:", error);
-=======
       console.error('❌ Route params sanitization error:', error);
->>>>>>> main
     }
   }
 
@@ -277,25 +197,12 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
 };
 
 // IP validation middleware
-<<<<<<< HEAD
-export const validateIP = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  const clientIP = req.ip || req.socket.remoteAddress || "unknown";
-
-  // Log suspicious activity
-  if (clientIP === "unknown") {
-    console.warn("⚠️ Request from unknown IP address");
-=======
 export const validateIP = (req: Request, res: Response, next: NextFunction): void => {
   const clientIP = req.ip || req.socket.remoteAddress || 'unknown';
 
   // Log suspicious activity
   if (clientIP === 'unknown') {
     console.warn('⚠️ Request from unknown IP address');
->>>>>>> main
   }
 
   // Block known malicious IP patterns (implement as needed)
@@ -309,11 +216,7 @@ export const validateIP = (req: Request, res: Response, next: NextFunction): voi
       res.status(403).json({
         success: false,
         error: {
-<<<<<<< HEAD
-          message: "Access denied",
-=======
           message: 'Access denied',
->>>>>>> main
           statusCode: 403,
         },
         timestamp: new Date().toISOString(),
@@ -325,17 +228,6 @@ export const validateIP = (req: Request, res: Response, next: NextFunction): voi
   next();
 };
 
-<<<<<<< HEAD
-// Advanced CORS security configuration for production
-export const corsConfig = {
-  origin: (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
-  ) => {
-    const isDevelopment = process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined;
-    const isProduction = process.env.NODE_ENV === "production";
-    const isTest = process.env.NODE_ENV === "test";
-=======
 /**
  * Get CORS allowed origins from environment variables
  * Provides a configurable system for managing CORS origins across different environments
@@ -431,22 +323,11 @@ export const corsConfig = {
     const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
     const isProduction = process.env.NODE_ENV === 'production';
     const isTest = process.env.NODE_ENV === 'test';
->>>>>>> main
 
     const allowedOrigins = [
       // Development origins
       ...(isDevelopment
         ? [
-<<<<<<< HEAD
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "http://localhost:3002",
-            "http://localhost:5173",
-            "http://127.0.0.1:3000",
-            "http://127.0.0.1:3001",
-            "http://127.0.0.1:3002",
-            "http://127.0.0.1:5173",
-=======
             'http://localhost:3000',
             'http://localhost:3001',
             'http://localhost:3002',
@@ -455,18 +336,12 @@ export const corsConfig = {
             'http://127.0.0.1:3001',
             'http://127.0.0.1:3002',
             'http://127.0.0.1:5173',
->>>>>>> main
           ]
         : []),
 
       // Test origins - allow test URLs
       ...(isTest
         ? [
-<<<<<<< HEAD
-            "https://galax-civic-networking.vercel.app",
-            "https://galax-civic-networking-abc123.vercel.app",
-            "https://galaxcivicnetwork.me",
-=======
             'https://galax-civic-networking.vercel.app',
             'https://galax-civic-networking-abc123.vercel.app',
             'https://galaxcivicnetwork.me',
@@ -483,7 +358,6 @@ export const corsConfig = {
             "https://glx-civic-networking.vercel.app",
             "https://glx-civic-networking-abc123.vercel.app",
             "https://glxcivicnetwork.me",
->>>>>>> main
             "http://localhost:3000",
             "http://localhost:5173",
             "http://127.0.0.1:3000",
@@ -494,12 +368,6 @@ export const corsConfig = {
       // Production origins - Supporting both domains
       ...(isProduction
         ? [
-<<<<<<< HEAD
-            "https://galax-civic-networking.vercel.app",
-            "https://galaxcivicnetwork.me",
-            "https://www.galaxcivicnetwork.me",
-            "https://staging.galaxcivicnetwork.me",
-=======
             "https://glx-civic-networking.vercel.app",
             "https://glxcivicnetwork.me",
             "https://www.glxcivicnetwork.me",
@@ -508,7 +376,6 @@ export const corsConfig = {
             'https://galaxcivicnetwork.me',
             'https://www.galaxcivicnetwork.me',
             'https://staging.galaxcivicnetwork.me',
->>>>>>> main
           ]
         : []),
 
@@ -520,11 +387,7 @@ export const corsConfig = {
 
       // Additional trusted origins from environment
       ...(process.env.TRUSTED_ORIGINS
-<<<<<<< HEAD
-        ? process.env.TRUSTED_ORIGINS.split(",").map(o => o.trim())
-=======
         ? process.env.TRUSTED_ORIGINS.split(',').map(o => o.trim())
->>>>>>> main
         : []),
     ].filter(Boolean); // Remove undefined/null values
 
@@ -535,34 +398,6 @@ export const corsConfig = {
 
     // Security: In production, be more strict about origins
     if (isProduction && !origin) {
-<<<<<<< HEAD
-      if (process.env.ALLOW_NO_ORIGIN_IN_PRODUCTION === "true") {
-        console.warn(
-          "⚠️ CORS: Allowed request with no origin in production due to configuration",
-        );
-        return callback(null, true);
-      }
-      console.warn("🚨 CORS: Blocked request with no origin in production");
-      return callback(new Error("Origin required in production"));
-    }
-
-    // Check against allowed origins (with pattern matching for Vercel domains)
-    if (origin) {
-      let isAllowed = allowedOrigins.includes(origin);
-
-      // If not in explicit list, check Vercel deployment patterns in production or test
-      if (!isAllowed && (isProduction || isTest)) {
-        const vercelPatterns = [
-          /^https:\/\/galax-civic-networking-.*\.vercel\.app$/,
-          /^https:\/\/galax-.*\.vercel\.app$/,
-          /^https:\/\/.*galax.*\.vercel\.app$/,
-        ];
-
-        isAllowed = vercelPatterns.some(pattern => pattern.test(origin));
-
-        if (isAllowed) {
-          console.log(`✅ CORS: Allowed Vercel deployment pattern: ${origin}`);
-=======
       if (process.env.ALLOW_NO_ORIGIN_IN_PRODUCTION === 'true') {
         console.warn('⚠️ CORS: Allowed request with no origin in production due to configuration');
         return callback(null, true);
@@ -598,7 +433,6 @@ export const corsConfig = {
 
         if (isAllowed) {
           console.log(`✅ CORS: Allowed deployment pattern match: ${origin}`);
->>>>>>> main
         }
       }
 
@@ -608,11 +442,6 @@ export const corsConfig = {
         console.warn(`🚨 CORS blocked origin: ${origin}`, {
           allowedOrigins: allowedOrigins.length,
           configuredOrigins: {
-<<<<<<< HEAD
-            CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? "[set]" : "[unset]",
-            FRONTEND_URL: process.env.FRONTEND_URL ? "[set]" : "[unset]",
-            TRUSTED_ORIGINS: process.env.TRUSTED_ORIGINS ? "[set]" : "[unset]",
-=======
             CORS_ALLOWED_ORIGINS: process.env.CORS_ALLOWED_ORIGINS ? '[set]' : '[unset]',
             CLIENT_ORIGIN: process.env.CLIENT_ORIGIN ? '[set]' : '[unset]',
             FRONTEND_URL: process.env.FRONTEND_URL ? '[set]' : '[unset]',
@@ -620,7 +449,6 @@ export const corsConfig = {
             CORS_DEVELOPMENT_ORIGINS: process.env.CORS_DEVELOPMENT_ORIGINS ? '[set]' : '[unset]',
             CORS_PRODUCTION_ORIGINS: process.env.CORS_PRODUCTION_ORIGINS ? '[set]' : '[unset]',
             CORS_TEST_ORIGINS: process.env.CORS_TEST_ORIGINS ? '[set]' : '[unset]',
->>>>>>> main
           },
           isProduction,
           isTest,
@@ -630,29 +458,17 @@ export const corsConfig = {
         if (isTest) {
           return callback(null, true);
         }
-<<<<<<< HEAD
-        callback(new Error("Not allowed by CORS"));
-=======
         callback(new Error('Not allowed by CORS'));
->>>>>>> main
       }
     } else {
       // Explicitly handle missing `origin` headers in non-development environments
       if (!isTest) {
-<<<<<<< HEAD
-        console.warn("🚨 CORS: Missing origin header in non-development environment", {
-=======
         console.warn('🚨 CORS: Missing origin header in non-development environment', {
->>>>>>> main
           isProduction,
           isTest,
           timestamp: new Date().toISOString(),
         });
-<<<<<<< HEAD
-        callback(new Error("Origin header missing"));
-=======
         callback(new Error('Origin header missing'));
->>>>>>> main
       } else {
         // Allow missing origin in test environment
         callback(null, true);
@@ -663,26 +479,6 @@ export const corsConfig = {
   credentials: true,
 
   // Allowed HTTP methods
-<<<<<<< HEAD
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
-
-  // Allowed request headers
-  allowedHeaders: [
-    "Origin",
-    "X-Requested-With",
-    "Content-Type",
-    "Accept",
-    "Authorization",
-    "Cache-Control",
-    "X-CSRF-Token",
-    "X-Request-ID",
-    "X-API-Version",
-    "X-Client-Version",
-    "X-Platform",
-    "X-Device-ID",
-    "If-None-Match",
-    "If-Modified-Since",
-=======
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
 
   // Allowed request headers
@@ -701,27 +497,10 @@ export const corsConfig = {
     'X-Device-ID',
     'If-None-Match',
     'If-Modified-Since',
->>>>>>> main
   ],
 
   // Headers exposed to the client
   exposedHeaders: [
-<<<<<<< HEAD
-    "X-Total-Count",
-    "X-Page-Count",
-    "X-Has-Next-Page",
-    "X-Has-Previous-Page",
-    "X-Current-Page",
-    "X-Per-Page",
-    "X-Rate-Limit-Remaining",
-    "X-Rate-Limit-Reset",
-    "X-Request-ID",
-    "X-Response-Time",
-    "X-API-Version",
-    "Link",
-    "ETag",
-    "Last-Modified",
-=======
     'X-Total-Count',
     'X-Page-Count',
     'X-Has-Next-Page',
@@ -736,7 +515,6 @@ export const corsConfig = {
     'Link',
     'ETag',
     'Last-Modified',
->>>>>>> main
   ],
 
   // Preflight cache duration (24 hours)
@@ -748,36 +526,6 @@ export const corsConfig = {
 };
 
 // Request logging middleware
-<<<<<<< HEAD
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const start = Date.now();
-
-  // Sanitize user-controlled data to prevent format string injection
-  const safeMethod = req.method.slice(0, 10).replace(/[^A-Z]/g, "");
-  const safePath = req.path
-    .slice(0, 100)
-    // Remove all non-path-safe characters, including all line breaks and control chars
-    .replace(/[\r\n\u2028\u2029\t\f\0\x0B\x1B\x7F-\u009F]/g, "")
-    .replace(/[^\w\/\-_?.=&]/g, "");
-
-  // Log request details
-  console.log("📝 Request:", safeMethod, safePath, {
-    ip: req.ip,
-    userAgent: req.get("User-Agent"),
-    timestamp: new Date().toISOString(),
-    contentLength: req.get("Content-Length") || "0",
-    origin: req.get("Origin") || "no-origin",
-  });
-
-  // Log response when request finishes
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    const logLevel = res.statusCode >= 400 ? "❌" : "✅";
-=======
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
 
@@ -802,16 +550,11 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
   res.on('finish', () => {
     const duration = Date.now() - start;
     const logLevel = res.statusCode >= 400 ? '❌' : '✅';
->>>>>>> main
 
     console.log(`${logLevel} ${req.method} ${req.path}`, {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
-<<<<<<< HEAD
-      contentLength: res.get("Content-Length") || "0",
-=======
       contentLength: res.get('Content-Length') || '0',
->>>>>>> main
     });
   });
 
@@ -819,15 +562,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
 };
 
 // File upload security middleware
-<<<<<<< HEAD
-export const fileUploadSecurity = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-=======
 export const fileUploadSecurity = (req: Request, res: Response, next: NextFunction) => {
->>>>>>> main
   if (!req.file) {
     return next();
   }
@@ -836,17 +571,6 @@ export const fileUploadSecurity = (req: Request, res: Response, next: NextFuncti
   const file = req.file;
 
   // Check file extension matches MIME type
-<<<<<<< HEAD
-  const ext = file.originalname.split(".").pop()?.toLowerCase();
-  const mimeTypeMap: { [key: string]: string[] } = {
-    "image/jpeg": ["jpg", "jpeg"],
-    "image/png": ["png"],
-    "image/gif": ["gif"],
-    "video/mp4": ["mp4"],
-    "video/quicktime": ["mov"],
-    "audio/mpeg": ["mp3"],
-    "audio/wav": ["wav"],
-=======
   const ext = file.originalname.split('.').pop()?.toLowerCase();
   const mimeTypeMap: { [key: string]: string[] } = {
     'image/jpeg': ['jpg', 'jpeg'],
@@ -856,7 +580,6 @@ export const fileUploadSecurity = (req: Request, res: Response, next: NextFuncti
     'video/quicktime': ['mov'],
     'audio/mpeg': ['mp3'],
     'audio/wav': ['wav'],
->>>>>>> main
   };
 
   const allowedExtensions = mimeTypeMap[file.mimetype];
@@ -864,11 +587,7 @@ export const fileUploadSecurity = (req: Request, res: Response, next: NextFuncti
     return res.status(400).json({
       success: false,
       error: {
-<<<<<<< HEAD
-        message: "File extension does not match MIME type",
-=======
         message: 'File extension does not match MIME type',
->>>>>>> main
         statusCode: 400,
       },
       timestamp: new Date().toISOString(),
@@ -876,11 +595,7 @@ export const fileUploadSecurity = (req: Request, res: Response, next: NextFuncti
   }
 
   // Log file upload for monitoring
-<<<<<<< HEAD
-  console.log("📎 File uploaded:", {
-=======
   console.log('📎 File uploaded:', {
->>>>>>> main
     filename: file.filename,
     originalname: file.originalname,
     mimetype: file.mimetype,

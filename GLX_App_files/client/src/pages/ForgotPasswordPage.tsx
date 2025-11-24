@@ -58,7 +58,6 @@ export function ForgotPasswordPage() {
           transition={{ duration: 0.5 }}
           className='w-full max-w-md'
         >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
           <Card className="glx-card">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4">
@@ -115,7 +114,6 @@ export function ForgotPasswordPage() {
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
         <Card className="glx-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -139,7 +137,6 @@ export function ForgotPasswordPage() {
                     type='email'
                     placeholder='Enter your email'
                     value={email}
-<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
                     onChange={(e) => setEmail(e.target.value)}
                     className="glx-input pl-10"
                     onChange={e => setEmail(e.target.value)}
@@ -151,7 +148,6 @@ export function ForgotPasswordPage() {
 
               {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/ForgotPasswordPage.tsx
               <Button
                 type="submit"
                 disabled={isLoading}

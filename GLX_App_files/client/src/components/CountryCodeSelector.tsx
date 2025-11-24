@@ -69,7 +69,6 @@ export function CountryCodeSelector({
 
   return (
     <Select value={value} onValueChange={handleCountrySelect} disabled={disabled}>
-<<<<<<< HEAD:GLX_App_files/client/src/components/CountryCodeSelector.tsx
       <SelectTrigger
         className={cn(
           "w-[120px] gap-2 glx-input",

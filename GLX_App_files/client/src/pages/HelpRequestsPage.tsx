@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
- * Copyright (c) 2025 GALAX Civic Networking App
-=======
  * Copyright (c) 2025 GLX Civic Networking App
->>>>>>> main
  *
  * This software is licensed under the PolyForm Shield License 1.0.0.
  * For the full license text, see LICENSE file in the root directory
@@ -19,10 +15,6 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-<<<<<<< HEAD
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-=======
 import {
   Select,
   SelectContent,
@@ -37,7 +29,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
->>>>>>> main
 import { Textarea } from '@/components/ui/textarea';
 import VirtualizedList, { useVirtualizedList } from '../components/VirtualizedList';
 import {
@@ -58,12 +49,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-<<<<<<< HEAD
-  ChevronsRight
-=======
   ChevronsRight,
   ChevronUp,
->>>>>>> main
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -119,11 +106,7 @@ export function HelpRequestsPage() {
     status: '',
     search: '',
     sortBy: 'created_at',
-<<<<<<< HEAD
-    sortOrder: 'desc'
-=======
     sortOrder: 'desc',
->>>>>>> main
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -134,45 +117,21 @@ export function HelpRequestsPage() {
     description: '',
     category: '',
     urgency: '',
-<<<<<<< HEAD
-    location: ''
-=======
     location: '',
->>>>>>> main
   });
 
   // Use virtualized list hook
   const {
     isLoading: listLoading,
     handleLoadMore,
-<<<<<<< HEAD
-    scrollToTop
-  } = useVirtualizedList(helpRequests, {
-    onItemsChange: setHelpRequests
-=======
     scrollToTop,
   } = useVirtualizedList(helpRequests, {
     onItemsChange: setHelpRequests,
->>>>>>> main
   });
 
   // Debounced search
   const [searchDebounceTimer, setSearchDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
-<<<<<<< HEAD
-  const debouncedSearch = useCallback((searchTerm: string) => {
-    if (searchDebounceTimer) {
-      clearTimeout(searchDebounceTimer);
-    }
-
-    const timer = setTimeout(() => {
-      setFilter(prev => ({ ...prev, search: searchTerm }));
-      setCurrentPage(1);
-    }, 300);
-
-    setSearchDebounceTimer(timer);
-  }, [searchDebounceTimer]);
-=======
   const debouncedSearch = useCallback(
     (searchTerm: string) => {
       if (searchDebounceTimer) {
@@ -188,7 +147,6 @@ export function HelpRequestsPage() {
     },
     [searchDebounceTimer]
   );
->>>>>>> main
 
   useEffect(() => {
     fetchHelpRequests();
@@ -222,15 +180,9 @@ export function HelpRequestsPage() {
 
       const response = await fetch(`/api/help-requests?${params}`, {
         headers: {
-<<<<<<< HEAD
-          'Authorization': `Bearer ${token}`,
-          'API-Version': 'v1'
-        }
-=======
           Authorization: `Bearer ${token}`,
           'API-Version': 'v1',
         },
->>>>>>> main
       });
 
       if (response.ok) {
@@ -269,17 +221,10 @@ export function HelpRequestsPage() {
       const response = await fetch('/api/help-requests', {
         method: 'POST',
         headers: {
-<<<<<<< HEAD
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newRequest)
-=======
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newRequest),
->>>>>>> main
       });
 
       if (response.ok) {
@@ -289,11 +234,7 @@ export function HelpRequestsPage() {
           description: '',
           category: '',
           urgency: '',
-<<<<<<< HEAD
-          location: ''
-=======
           location: '',
->>>>>>> main
         });
         fetchHelpRequests();
       }
@@ -307,11 +248,7 @@ export function HelpRequestsPage() {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/help-requests/${helpRequestId}/offer-help`, {
         method: 'POST',
-<<<<<<< HEAD
-        headers: { 'Authorization': `Bearer ${token}` }
-=======
         headers: { Authorization: `Bearer ${token}` },
->>>>>>> main
       });
 
       if (response.ok) {
@@ -324,13 +261,6 @@ export function HelpRequestsPage() {
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-<<<<<<< HEAD
-      case 'critical': return 'bg-red-500 text-white';
-      case 'high': return 'bg-orange-500 text-white';
-      case 'medium': return 'bg-yellow-500 text-white';
-      case 'low': return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
-=======
       case 'critical':
         return 'bg-red-500 text-white';
       case 'high':
@@ -341,19 +271,11 @@ export function HelpRequestsPage() {
         return 'bg-green-500 text-white';
       default:
         return 'bg-gray-500 text-white';
->>>>>>> main
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-<<<<<<< HEAD
-      case 'posted': return 'bg-blue-500 text-white';
-      case 'matched': return 'bg-purple-500 text-white';
-      case 'in_progress': return 'bg-yellow-500 text-white';
-      case 'completed': return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
-=======
       case 'posted':
         return 'bg-blue-500 text-white';
       case 'matched':
@@ -364,22 +286,11 @@ export function HelpRequestsPage() {
         return 'bg-green-500 text-white';
       default:
         return 'bg-gray-500 text-white';
->>>>>>> main
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-<<<<<<< HEAD
-      case 'emergency': return <AlertTriangle className="h-4 w-4" />;
-      case 'transportation': return <Car className="h-4 w-4" />;
-      case 'food': return <Utensils className="h-4 w-4" />;
-      case 'housing': return <Home className="h-4 w-4" />;
-      case 'healthcare': return <Heart className="h-4 w-4" />;
-      case 'education': return <GraduationCap className="h-4 w-4" />;
-      case 'technology': return <Wrench className="h-4 w-4" />;
-      default: return <HandHeart className="h-4 w-4" />;
-=======
       case 'emergency':
         return <AlertTriangle className='h-4 w-4' />;
       case 'transportation':
@@ -396,7 +307,6 @@ export function HelpRequestsPage() {
         return <Wrench className='h-4 w-4' />;
       default:
         return <HandHeart className='h-4 w-4' />;
->>>>>>> main
     }
   };
 
@@ -414,57 +324,6 @@ export function HelpRequestsPage() {
   };
 
   // Memoized help request card component
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
->>>>>>> main
-  const HelpRequestCard = React.memo(({ request, index, isVisible }: {
-    request: HelpRequest;
-    index: number;
-    isVisible: boolean;
-  }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: isVisible ? 1 : 0.7, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-      className={`w-full ${viewMode === 'grid' ? 'px-3' : 'px-0'}`}
-    >
-      <Card
-<<<<<<< HEAD
-        className="galax-card hover:shadow-lg transition-shadow h-full"
-        role="article"
-        aria-labelledby={`request-title-${request.id}`}
-        aria-describedby={`request-desc-${request.id}`}
-      >
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div aria-hidden="true">{getCategoryIcon(request.category)}</div>
-              <CardTitle
-                id={`request-title-${request.id}`}
-                className="text-lg line-clamp-1"
-              >
-                {request.title}
-              </CardTitle>
-            </div>
-            <div className="flex gap-1 flex-shrink-0">
-              <Badge
-                className={getUrgencyColor(request.urgency)}
-                aria-label={`Urgency: ${request.urgency}`}
-              >
-                {request.urgency}
-              </Badge>
-              <Badge
-                className={getStatusColor(request.status)}
-                aria-label={`Status: ${request.status}`}
-              >
-                {request.status}
-              </Badge>
-            </div>
-          </div>
-        </CardHeader>
-
-=======
         className="glx-card hover:shadow-lg transition-shadow h-full"
         role="article"
         aria-labelledby={`request-title-${request.id}`}
@@ -539,8 +398,6 @@ export function HelpRequestsPage() {
               </div>
             </div>
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
->>>>>>> main
         <CardContent className="space-y-4">
           <p
             id={`request-desc-${request.id}`}
@@ -584,11 +441,7 @@ export function HelpRequestsPage() {
             {request.status === 'posted' && (
               <Button
                 onClick={() => handleOfferHelp(request.id)}
-<<<<<<< HEAD
-                className="galax-button w-full"
-=======
                 className="glx-button w-full"
->>>>>>> main
                 disabled={request.requester_username === user?.username}
                 aria-label={`Offer help for: ${request.title}`}
               >
@@ -600,24 +453,6 @@ export function HelpRequestsPage() {
             {request.status === 'matched' && (
               <div className="text-center text-sm text-gray-600">
                 Helper: <span className="font-medium">{request.helper_username}</span>
-<<<<<<< HEAD
-              </div>
-            )}
-
-            {request.status === 'completed' && (
-              <div
-                className="text-center text-sm text-green-600 font-medium"
-                aria-label="Request completed"
-              >
-                ✅ Completed
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  ));
-=======
             {request.latitude && request.longitude && (
               <div className='flex items-center gap-1 text-sm text-gray-500'>
                 <MapPin className='h-3 w-3' aria-hidden='true' />
@@ -667,7 +502,6 @@ export function HelpRequestsPage() {
       </motion.div>
     )
   );
->>>>>>> main
 
   HelpRequestCard.displayName = 'HelpRequestCard';
 
@@ -676,62 +510,6 @@ export function HelpRequestsPage() {
     if (!pagination || pagination.total_pages <= 1) return null;
 
     return (
-<<<<<<< HEAD
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-        <div className="flex justify-between items-center sm:hidden">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage(pagination.previous_page || 1)}
-            disabled={!pagination.has_previous_page}
-            aria-label="Previous page"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="text-sm text-gray-700">
-            Page {pagination.current_page} of {pagination.total_pages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage(pagination.next_page || pagination.total_pages)}
-            disabled={!pagination.has_next_page}
-            aria-label="Next page"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-700">
-              Showing{' '}
-              <span className="font-medium">{pagination.first_item}</span> to{' '}
-              <span className="font-medium">{pagination.last_item}</span> of{' '}
-              <span className="font-medium">{pagination.total_items}</span> results
-            </p>
-          </div>
-          <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={!pagination.has_previous_page}
-                className="rounded-l-md"
-                aria-label="First page"
-              >
-                <ChevronsLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(pagination.previous_page || 1)}
-                disabled={!pagination.has_previous_page}
-                aria-label="Previous page"
-              >
-                <ChevronLeft className="h-4 w-4" />
-=======
       <div className='flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6'>
         <div className='flex justify-between items-center sm:hidden'>
           <Button
@@ -788,7 +566,6 @@ export function HelpRequestsPage() {
                 aria-label='Previous page'
               >
                 <ChevronLeft className='h-4 w-4' />
->>>>>>> main
               </Button>
 
               {/* Page numbers */}
@@ -799,19 +576,11 @@ export function HelpRequestsPage() {
                 return (
                   <Button
                     key={pageNum}
-<<<<<<< HEAD
-                    variant={pageNum === pagination.current_page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNum)}
-                    aria-label={`Page ${pageNum}`}
-                    aria-current={pageNum === pagination.current_page ? "page" : undefined}
-=======
                     variant={pageNum === pagination.current_page ? 'default' : 'outline'}
                     size='sm'
                     onClick={() => setCurrentPage(pageNum)}
                     aria-label={`Page ${pageNum}`}
                     aria-current={pageNum === pagination.current_page ? 'page' : undefined}
->>>>>>> main
                   >
                     {pageNum}
                   </Button>
@@ -819,25 +588,6 @@ export function HelpRequestsPage() {
               })}
 
               <Button
-<<<<<<< HEAD
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(pagination.next_page || pagination.total_pages)}
-                disabled={!pagination.has_next_page}
-                aria-label="Next page"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(pagination.total_pages)}
-                disabled={!pagination.has_next_page}
-                className="rounded-r-md"
-                aria-label="Last page"
-              >
-                <ChevronsRight className="h-4 w-4" />
-=======
                 variant='outline'
                 size='sm'
                 onClick={() => setCurrentPage(pagination.next_page || pagination.total_pages)}
@@ -855,7 +605,6 @@ export function HelpRequestsPage() {
                 aria-label='Last page'
               >
                 <ChevronsRight className='h-4 w-4' />
->>>>>>> main
               </Button>
             </nav>
           </div>
@@ -868,15 +617,6 @@ export function HelpRequestsPage() {
 
   if (isLoading) {
     return (
-<<<<<<< HEAD
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-48 bg-gray-200 rounded-lg"></div>
-=======
       <div className='min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
         <div className='max-w-7xl mx-auto'>
           <div className='animate-pulse space-y-6'>
@@ -884,7 +624,6 @@ export function HelpRequestsPage() {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
               {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className='h-48 bg-gray-200 rounded-lg'></div>
->>>>>>> main
               ))}
             </div>
           </div>
@@ -894,27 +633,13 @@ export function HelpRequestsPage() {
   }
 
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-=======
     <div className='min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 p-4'>
       <div className='max-w-7xl mx-auto space-y-6'>
->>>>>>> main
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-<<<<<<< HEAD
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-        >
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Help Requests
-            </h1>
-            <p className="text-gray-600">Connect with your community</p>
-=======
           className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'
         >
           <div>
@@ -922,31 +647,10 @@ export function HelpRequestsPage() {
               Help Requests
             </h1>
             <p className='text-gray-600'>Connect with your community</p>
->>>>>>> main
           </div>
 
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
-<<<<<<< HEAD
-              <Button className="galax-button">
-                <Plus className="h-4 w-4 mr-2" />
-                Request Help
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Create Help Request</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    value={newRequest.title}
-                    onChange={(e) => setNewRequest({...newRequest, title: e.target.value})}
-                    placeholder="Brief description of what you need"
-=======
-<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
               <Button className="glx-button">
                 <Plus className="h-4 w-4 mr-2" />
               <Button className='galax-button'>
@@ -966,48 +670,20 @@ export function HelpRequestsPage() {
                     value={newRequest.title}
                     onChange={e => setNewRequest({ ...newRequest, title: e.target.value })}
                     placeholder='Brief description of what you need'
->>>>>>> main
                   />
                 </div>
 
                 <div>
-<<<<<<< HEAD
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={newRequest.description}
-                    onChange={(e) => setNewRequest({...newRequest, description: e.target.value})}
-                    placeholder="Detailed description of your request"
-=======
                   <Label htmlFor='description'>Description</Label>
                   <Textarea
                     id='description'
                     value={newRequest.description}
                     onChange={e => setNewRequest({ ...newRequest, description: e.target.value })}
                     placeholder='Detailed description of your request'
->>>>>>> main
                     rows={3}
                   />
                 </div>
 
-<<<<<<< HEAD
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Select value={newRequest.category} onValueChange={(value) => setNewRequest({...newRequest, category: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="emergency">Emergency</SelectItem>
-                        <SelectItem value="transportation">Transportation</SelectItem>
-                        <SelectItem value="food">Food</SelectItem>
-                        <SelectItem value="housing">Housing</SelectItem>
-                        <SelectItem value="healthcare">Healthcare</SelectItem>
-                        <SelectItem value="education">Education</SelectItem>
-                        <SelectItem value="technology">Technology</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-=======
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
                     <Label htmlFor='category'>Category</Label>
@@ -1027,24 +703,11 @@ export function HelpRequestsPage() {
                         <SelectItem value='education'>Education</SelectItem>
                         <SelectItem value='technology'>Technology</SelectItem>
                         <SelectItem value='other'>Other</SelectItem>
->>>>>>> main
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-<<<<<<< HEAD
-                    <Label htmlFor="urgency">Urgency</Label>
-                    <Select value={newRequest.urgency} onValueChange={(value) => setNewRequest({...newRequest, urgency: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select urgency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="critical">Critical</SelectItem>
-=======
                     <Label htmlFor='urgency'>Urgency</Label>
                     <Select
                       value={newRequest.urgency}
@@ -1058,19 +721,12 @@ export function HelpRequestsPage() {
                         <SelectItem value='medium'>Medium</SelectItem>
                         <SelectItem value='high'>High</SelectItem>
                         <SelectItem value='critical'>Critical</SelectItem>
->>>>>>> main
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
-<<<<<<< HEAD
-                <Button onClick={handleCreateRequest} className="galax-button w-full">
-=======
-<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
-                <Button onClick={handleCreateRequest} className="glx-button w-full">
                 <Button onClick={handleCreateRequest} className='galax-button w-full'>
->>>>>>> main
                   Create Request
                 </Button>
               </div>
@@ -1084,30 +740,12 @@ export function HelpRequestsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-<<<<<<< HEAD
-          <Card className="galax-card">
-=======
-<<<<<<< HEAD:GLX_App_files/client/src/pages/HelpRequestsPage.tsx
           <Card className="glx-card">
->>>>>>> main
             <CardContent className="p-4">
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">Filters:</span>
-<<<<<<< HEAD
-                </div>
-
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" aria-hidden="true" />
-                    <Input
-                      placeholder="Search help requests..."
-                      className="pl-10"
-                      value={filter.search}
-                      onChange={(e) => debouncedSearch(e.target.value)}
-                      aria-label="Search help requests by title, description, or username"
-=======
           <Card className='galax-card'>
             <CardContent className='p-4'>
               <div className='flex flex-wrap gap-4 items-center'>
@@ -1128,53 +766,10 @@ export function HelpRequestsPage() {
                       value={filter.search}
                       onChange={e => debouncedSearch(e.target.value)}
                       aria-label='Search help requests by title, description, or username'
->>>>>>> main
                     />
                   </div>
                 </div>
 
-<<<<<<< HEAD
-                <Select value={filter.category} onValueChange={(value) => setFilter({...filter, category: value})}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
-                    <SelectItem value="emergency">Emergency</SelectItem>
-                    <SelectItem value="transportation">Transportation</SelectItem>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="housing">Housing</SelectItem>
-                    <SelectItem value="healthcare">Healthcare</SelectItem>
-                    <SelectItem value="education">Education</SelectItem>
-                    <SelectItem value="technology">Technology</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={filter.urgency} onValueChange={(value) => setFilter({...filter, urgency: value})}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Urgency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Urgency</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={filter.status} onValueChange={(value) => setFilter({...filter, status: value})}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
-                    <SelectItem value="posted">Posted</SelectItem>
-                    <SelectItem value="matched">Matched</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-=======
                 <Select
                   value={filter.category}
                   onValueChange={value => setFilter({ ...filter, category: value })}
@@ -1224,7 +819,6 @@ export function HelpRequestsPage() {
                     <SelectItem value='matched'>Matched</SelectItem>
                     <SelectItem value='in_progress'>In Progress</SelectItem>
                     <SelectItem value='completed'>Completed</SelectItem>
->>>>>>> main
                   </SelectContent>
                 </Select>
               </div>
@@ -1237,21 +831,6 @@ export function HelpRequestsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-<<<<<<< HEAD
-          className="bg-white rounded-lg shadow-sm border overflow-hidden"
-        >
-          {/* View Mode Controls */}
-          <div className="border-b border-gray-200 p-4 flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700">
-                {pagination ? `${pagination.total_items} results` : `${helpRequests.length} results`}
-              </span>
-              <div className="flex items-center gap-2">
-                <label htmlFor="pageSize" className="text-sm text-gray-600">Show:</label>
-                <Select
-                  value={pageSize.toString()}
-                  onValueChange={(value) => {
-=======
           className='bg-white rounded-lg shadow-sm border overflow-hidden'
         >
           {/* View Mode Controls */}
@@ -1269,21 +848,10 @@ export function HelpRequestsPage() {
                 <Select
                   value={pageSize.toString()}
                   onValueChange={value => {
->>>>>>> main
                     setPageSize(parseInt(value));
                     setCurrentPage(1);
                   }}
                 >
-<<<<<<< HEAD
-                  <SelectTrigger className="w-20">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
-=======
                   <SelectTrigger className='w-20'>
                     <SelectValue />
                   </SelectTrigger>
@@ -1292,28 +860,11 @@ export function HelpRequestsPage() {
                     <SelectItem value='20'>20</SelectItem>
                     <SelectItem value='50'>50</SelectItem>
                     <SelectItem value='100'>100</SelectItem>
->>>>>>> main
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-<<<<<<< HEAD
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Sort by:</label>
-              <Select
-                value={filter.sortBy}
-                onValueChange={(value) => setFilter(prev => ({ ...prev, sortBy: value }))}
-              >
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="created_at">Date</SelectItem>
-                  <SelectItem value="urgency">Urgency</SelectItem>
-                  <SelectItem value="status">Status</SelectItem>
-                  <SelectItem value="title">Title</SelectItem>
-=======
             <div className='flex items-center gap-2'>
               <label className='text-sm text-gray-600'>Sort by:</label>
               <Select
@@ -1328,21 +879,10 @@ export function HelpRequestsPage() {
                   <SelectItem value='urgency'>Urgency</SelectItem>
                   <SelectItem value='status'>Status</SelectItem>
                   <SelectItem value='title'>Title</SelectItem>
->>>>>>> main
                 </SelectContent>
               </Select>
               <Select
                 value={filter.sortOrder}
-<<<<<<< HEAD
-                onValueChange={(value) => setFilter(prev => ({ ...prev, sortOrder: value }))}
-              >
-                <SelectTrigger className="w-20">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="desc">↓</SelectItem>
-                  <SelectItem value="asc">↑</SelectItem>
-=======
                 onValueChange={value => setFilter(prev => ({ ...prev, sortOrder: value }))}
               >
                 <SelectTrigger className='w-20'>
@@ -1351,24 +891,16 @@ export function HelpRequestsPage() {
                 <SelectContent>
                   <SelectItem value='desc'>↓</SelectItem>
                   <SelectItem value='asc'>↑</SelectItem>
->>>>>>> main
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           {helpRequests.length === 0 && !isLoading ? (
-<<<<<<< HEAD
-            <div className="text-center py-12">
-              <HandHeart className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">No help requests found</h3>
-              <p className="text-gray-500">Try adjusting your filters or create a new request</p>
-=======
             <div className='text-center py-12'>
               <HandHeart className='h-16 w-16 mx-auto mb-4 text-gray-400' />
               <h3 className='text-lg font-semibold text-gray-600 mb-2'>No help requests found</h3>
               <p className='text-gray-500'>Try adjusting your filters or create a new request</p>
->>>>>>> main
             </div>
           ) : (
             <VirtualizedList
@@ -1376,32 +908,13 @@ export function HelpRequestsPage() {
               itemHeight={viewMode === 'grid' ? 280 : 200}
               containerHeight={600}
               renderItem={(request, index, isVisible) => (
-<<<<<<< HEAD
-                <HelpRequestCard
-                  request={request}
-                  index={index}
-                  isVisible={isVisible}
-                />
-              )}
-              keyExtractor={(request) => request.id.toString()}
-=======
                 <HelpRequestCard request={request} index={index} isVisible={isVisible} />
               )}
               keyExtractor={request => request.id.toString()}
->>>>>>> main
               loading={isLoading}
               onEndReached={pagination?.has_next_page ? loadMoreItems : undefined}
               onEndReachedThreshold={0.8}
               emptyComponent={
-<<<<<<< HEAD
-                <div className="text-center py-12">
-                  <HandHeart className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">No help requests found</h3>
-                  <p className="text-gray-500">Try adjusting your filters or create a new request</p>
-                </div>
-              }
-              className="px-4"
-=======
                 <div className='text-center py-12'>
                   <HandHeart className='h-16 w-16 mx-auto mb-4 text-gray-400' />
                   <h3 className='text-lg font-semibold text-gray-600 mb-2'>
@@ -1413,14 +926,11 @@ export function HelpRequestsPage() {
                 </div>
               }
               className='px-4'
->>>>>>> main
             />
           )}
 
           {/* Pagination Controls */}
           <PaginationControls />
-<<<<<<< HEAD
-=======
 
           {/* Scroll to Top Button */}
           {helpRequests.length > 0 && (
@@ -1434,7 +944,6 @@ export function HelpRequestsPage() {
               </Button>
             </div>
           )}
->>>>>>> main
         </motion.div>
       </div>
     </div>

@@ -557,7 +557,6 @@ export const antivirusFileScanner = async (req: Request, res: Response, next: Ne
 // Real-time protection middleware (for ongoing monitoring)
 export const realTimeProtection = (req: Request, res: Response, next: NextFunction) => {
   // Add real-time protection headers
-<<<<<<< HEAD:GLX_App_files/server/middleware/antivirus.ts
   res.setHeader("X-Antivirus-Protection", "enabled");
   res.setHeader("X-Virus-Definitions", globalScanStats.lastUpdate);
   res.setHeader("X-Scan-Engine", "GLX-AV-v1.0");
@@ -727,7 +726,6 @@ export const antivirusAdmin = {
 
 // Initialize antivirus system
 export const initializeAntivirus = () => {
-<<<<<<< HEAD:GLX_App_files/server/middleware/antivirus.ts
   console.log("🛡️ Initializing GLX Antivirus Protection System...");
   console.log('🛡️ Initializing GLX Antivirus Protection System...');
   scheduleVirusUpdates();

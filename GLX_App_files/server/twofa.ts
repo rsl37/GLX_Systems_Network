@@ -25,7 +25,6 @@ export async function generate2FASecret(
 
     // Generate a secure secret
     const secret = speakeasy.generateSecret({
-<<<<<<< HEAD:GLX_App_files/server/twofa.ts
       name: `GLX (${username})`,
       issuer: 'GLX App',
       length: 32

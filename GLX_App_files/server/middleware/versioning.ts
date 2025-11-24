@@ -244,7 +244,6 @@ export const getApiVersionInfo = (req: Request, res: Response): void => {
       versioning_methods: [
         'URL path: /api/v1/endpoint',
         'Header: API-Version: v1',
-<<<<<<< HEAD:GLX_App_files/server/middleware/versioning.ts
         'Accept header: application/vnd.glx.v1+json',
         'Query parameter: ?api_version=v1'
       ]

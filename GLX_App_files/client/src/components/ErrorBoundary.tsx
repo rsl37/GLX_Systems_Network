@@ -206,7 +206,6 @@ class ErrorBoundary extends Component<Props, State> {
                   Copy Error Details
                 </button>
                 <a
-<<<<<<< HEAD:GLX_App_files/client/src/components/ErrorBoundary.tsx
                   href={`mailto:support@glxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
                   className="text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
                   aria-label="Email support"

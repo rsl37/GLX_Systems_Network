@@ -346,16 +346,9 @@ if (DATABASE_URL) {
     connectionTimeoutMillis: 2000, // How long to try connecting before timing out
   });
 } else {
-<<<<<<< HEAD:GLX_App_files/server/database.ts
-  console.log("🗄️ SQLite database initialization...");
-  console.log("📊 Using SQLite for development/lightweight operations");
-  console.log("🔗 Database file:", path.join(dataDir, 'glx.db'));
-<<<<<<< HEAD
-=======
   console.log('🗄️ SQLite database initialization...');
   console.log('📊 Using SQLite for development/lightweight operations');
   console.log('🔗 Database file:', path.join(dataDir, 'galax.db'));
->>>>>>> main
 }
 
 // Create database instances

@@ -250,7 +250,6 @@ class DomainChecker {
   async runCheck(): Promise<void> {
     console.log('🌐 GLX Domain & SSL Configuration Check\n');
 
-<<<<<<< HEAD:GLX_App_files/scripts/domain-check.ts
     const domains = [
       'glxcivicnetwork.me',
       'glx-civic-networking-app.vercel.app'

@@ -16,9 +16,6 @@ export const vitePort = 3000;
 // Asset inline limit - 4KB for production builds
 const ASSET_INLINE_LIMIT_BYTES = 4096;
 
-// Asset inline limit - 4KB for production builds
-const ASSET_INLINE_LIMIT_BYTES = 4096;
-
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   const isDevelopment = mode === 'development';
@@ -117,9 +114,6 @@ export default defineConfig(({ mode }) => {
             icons: ['lucide-react'], // Separate icons chunk
             maps: ['@googlemaps/js-api-loader', 'leaflet'],
             animation: ['framer-motion'],
-            analytics: ['@vercel/analytics', '@vercel/speed-insights'] // Vercel monitoring tools
-          }
-        }
             analytics: ['@vercel/analytics', '@vercel/speed-insights'], // Vercel monitoring tools
           },
         },
@@ -151,7 +145,6 @@ export default defineConfig(({ mode }) => {
       devSourcemap: !isProduction,
     },
     // Optimize build with better tree-shaking and production settings
-    // Optimize build with better tree-shaking and production settings
     esbuild: {
       sourcemap: !isProduction,
       drop: isProduction ? ['console', 'debugger'] : [], // Remove console logs in production
@@ -163,7 +156,6 @@ export default defineConfig(({ mode }) => {
     // Optimize dependencies
     optimizeDeps: {
       include: [
-        'react',
         'react',
         'react-dom',
         'react-router-dom', // Pre-bundle router since it's critical

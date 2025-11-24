@@ -372,7 +372,6 @@ export function CrisisPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className='grid grid-cols-2 md:grid-cols-4 gap-4'
         >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
           <Card className="glx-card">
             <CardContent className="p-4 text-center">
               <Siren className="h-8 w-8 mx-auto mb-2 text-red-600" />
@@ -387,7 +386,6 @@ export function CrisisPage() {
             </CardContent>
           </Card>
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
           <Card className="glx-card">
             <CardContent className="p-4 text-center">
               <Flame className="h-8 w-8 mx-auto mb-2 text-orange-600" />
@@ -402,7 +400,6 @@ export function CrisisPage() {
             </CardContent>
           </Card>
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
           <Card className="glx-card">
             <CardContent className="p-4 text-center">
               <CloudRain className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
@@ -417,7 +414,6 @@ export function CrisisPage() {
             </CardContent>
           </Card>
 
-<<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
           <Card className="glx-card">
             <CardContent className="p-4 text-center">
               <Radio className="h-8 w-8 mx-auto mb-2 text-green-600" />
@@ -443,7 +439,6 @@ export function CrisisPage() {
           <h2 className='text-xl font-semibold text-gray-800'>Active Crisis Alerts</h2>
 
           {crisisAlerts.length === 0 ? (
-<<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
             <Card className="glx-card">
               <CardContent className="p-12 text-center">
                 <Shield className="h-16 w-16 mx-auto mb-4 text-gray-400" />
@@ -536,8 +531,6 @@ export function CrisisPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-<<<<<<< HEAD:GLX_App_files/client/src/pages/CrisisPage.tsx
-          <Card className="glx-card">
           <Card className='galax-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>

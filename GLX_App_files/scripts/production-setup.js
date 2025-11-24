@@ -27,7 +27,6 @@ function generateSecureKey(length = 32) {
 // Check if we're in the right directory
 const packageJsonPath = join(process.cwd(), 'package.json');
 if (!existsSync(packageJsonPath)) {
-<<<<<<< HEAD:GLX_App_files/scripts/production-setup.js
   console.error('❌ Error: package.json not found. Please run this script from the GLX_App_files directory.');
   console.error(
     '❌ Error: package.json not found. Please run this script from the GLX_App_files directory.'
@@ -148,6 +147,5 @@ console.log('- Store secrets securely in your deployment environment');
 console.log('- Regularly rotate your JWT and encryption keys');
 console.log('- Monitor your application for security issues');
 
-<<<<<<< HEAD:GLX_App_files/scripts/production-setup.js
 console.log('\n🎉 GLX is ready for production deployment!');
 console.log('\n🎉 GLX is ready for production deployment!');
