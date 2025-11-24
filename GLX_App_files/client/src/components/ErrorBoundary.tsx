@@ -207,9 +207,6 @@ class ErrorBoundary extends Component<Props, State> {
                 </button>
                 <a
                   href={`mailto:support@glxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1"
-                  aria-label="Email support"
-                  href={`mailto:support@galaxcivicnetwork.me?subject=Error Report&body=Error ID: ${this.state.errorId}`}
                   className='text-sm text-blue-600 hover:text-blue-800 underline flex items-center gap-1'
                   aria-label='Email support'
                 >

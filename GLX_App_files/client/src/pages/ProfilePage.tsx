@@ -288,7 +288,7 @@ export function ProfilePage() {
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <div className="relative">
                   <Avatar className="h-24 w-24">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex flex-col md:flex-row items-center md:items-start gap-6'>
                 <div className='relative'>
@@ -429,7 +429,7 @@ export function ProfilePage() {
                             placeholder='Describe your skills and expertise'
                           />
                         </div>
-                        <Button onClick={handleUpdateProfile} className='galax-button w-full'>
+                        <Button onClick={handleUpdateProfile} className='glx-button w-full'>
                           Save Changes
                         </Button>
                       </div>
@@ -460,7 +460,7 @@ export function ProfilePage() {
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -477,7 +477,7 @@ export function ProfilePage() {
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -494,7 +494,7 @@ export function ProfilePage() {
           <Card className="glx-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -516,7 +516,7 @@ export function ProfilePage() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className='grid grid-cols-1 md:grid-cols-2 gap-6'
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Activity className='h-5 w-5' />
@@ -556,7 +556,7 @@ export function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <DollarSign className='h-5 w-5' />
@@ -603,7 +603,7 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Shield className='h-5 w-5' />
@@ -707,7 +707,7 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <UserBadges user={user} className='galax-card' />
+          <UserBadges user={user} className='glx-card' />
         </motion.div>
       </div>
     </div>

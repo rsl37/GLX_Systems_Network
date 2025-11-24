@@ -172,7 +172,7 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -189,7 +189,7 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -209,7 +209,7 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -226,7 +226,7 @@ export function DashboardPage() {
           <Card className="glx-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-6'>
               <div className='flex items-center justify-between'>
                 <div>
@@ -290,7 +290,7 @@ export function DashboardPage() {
                 <p className="text-sm text-gray-600">Votes Cast</p>
           className='grid grid-cols-1 lg:grid-cols-2 gap-6'
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <HandHeart className='h-5 w-5' />
@@ -332,7 +332,7 @@ export function DashboardPage() {
           </Card>
 
           {/* Quick Actions */}
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Plus className='h-5 w-5' />
@@ -356,19 +356,19 @@ export function DashboardPage() {
               <Button className="glx-button w-full justify-start">
                 <Users className="h-4 w-4 mr-2" />
             <CardContent className='space-y-4'>
-              <Button className='galax-button w-full justify-start'>
+              <Button className='glx-button w-full justify-start'>
                 <HandHeart className='h-4 w-4 mr-2' />
                 Request Help
               </Button>
-              <Button className='galax-button w-full justify-start'>
+              <Button className='glx-button w-full justify-start'>
                 <AlertTriangle className='h-4 w-4 mr-2' />
                 Report Crisis
               </Button>
-              <Button className='galax-button w-full justify-start'>
+              <Button className='glx-button w-full justify-start'>
                 <Vote className='h-4 w-4 mr-2' />
                 Create Proposal
               </Button>
-              <Button className='galax-button w-full justify-start'>
+              <Button className='glx-button w-full justify-start'>
                 <Users className='h-4 w-4 mr-2' />
                 Browse Help Requests
               </Button>
@@ -382,7 +382,7 @@ export function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <TrendingUp className='h-5 w-5' />

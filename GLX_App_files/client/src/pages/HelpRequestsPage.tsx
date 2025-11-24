@@ -345,7 +345,7 @@ export function HelpRequestsPage() {
         className={`w-full ${viewMode === 'grid' ? 'px-3' : 'px-0'}`}
       >
         <Card
-          className='galax-card hover:shadow-lg transition-shadow h-full'
+          className='glx-card hover:shadow-lg transition-shadow h-full'
           role='article'
           aria-labelledby={`request-title-${request.id}`}
           aria-describedby={`request-desc-${request.id}`}
@@ -473,7 +473,7 @@ export function HelpRequestsPage() {
               {request.status === 'posted' && (
                 <Button
                   onClick={() => handleOfferHelp(request.id)}
-                  className='galax-button w-full'
+                  className='glx-button w-full'
                   disabled={request.requester_username === user?.username}
                   aria-label={`Offer help for: ${request.title}`}
                 >
@@ -653,7 +653,7 @@ export function HelpRequestsPage() {
             <DialogTrigger asChild>
               <Button className="glx-button">
                 <Plus className="h-4 w-4 mr-2" />
-              <Button className='galax-button'>
+              <Button className='glx-button'>
                 <Plus className='h-4 w-4 mr-2' />
                 Request Help
               </Button>
@@ -726,7 +726,7 @@ export function HelpRequestsPage() {
                   </div>
                 </div>
 
-                <Button onClick={handleCreateRequest} className='galax-button w-full'>
+                <Button onClick={handleCreateRequest} className='glx-button w-full'>
                   Create Request
                 </Button>
               </div>
@@ -746,7 +746,7 @@ export function HelpRequestsPage() {
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">Filters:</span>
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex flex-wrap gap-4 items-center'>
                 <div className='flex items-center gap-2'>
