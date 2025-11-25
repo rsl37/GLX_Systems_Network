@@ -76,7 +76,7 @@ export function useRealtime(token: string | null) {
           'Sec-WebSocket-Protocol': 'glx-secure',
           'Sec-WebSocket-Extensions': 'permessage-deflate'
         }
-          'Sec-WebSocket-Protocol': 'galax-secure',
+          'Sec-WebSocket-Protocol': 'glx-secure',
           'Sec-WebSocket-Extensions': 'permessage-deflate',
         },
       };
