@@ -105,9 +105,6 @@ export function usePageVerification(pageType: 'login' | 'register') {
         'Email',
         'Phone',
         'Password',
-=======
-        'Join GLX',
-        'Create your civic network account'
         'Join GLX',
         'Create your civic network account',
       ];

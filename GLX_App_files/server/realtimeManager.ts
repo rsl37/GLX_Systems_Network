@@ -35,9 +35,6 @@ class RealtimeManager {
     secure: true,
     upgradeHeaders: {
       'Sec-WebSocket-Protocol': 'glx-secure',
-      'Sec-WebSocket-Extensions': 'permessage-deflate'
-    }
-      'Sec-WebSocket-Protocol': 'galax-secure',
       'Sec-WebSocket-Extensions': 'permessage-deflate',
     },
   };
