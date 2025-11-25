@@ -148,4 +148,3 @@ console.log('- Regularly rotate your JWT and encryption keys');
 console.log('- Monitor your application for security issues');
 
 console.log('\n🎉 GLX is ready for production deployment!');
-console.log('\n🎉 GLX is ready for production deployment!');
