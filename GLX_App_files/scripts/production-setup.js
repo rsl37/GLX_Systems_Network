@@ -150,4 +150,3 @@ console.log('- Monitor your application for security issues');
 
 <<<<<<< HEAD:GLX_App_files/scripts/production-setup.js
 console.log('\n🎉 GLX is ready for production deployment!');
-console.log('\n🎉 GLX is ready for production deployment!');
