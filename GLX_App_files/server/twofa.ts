@@ -27,9 +27,6 @@ export async function generate2FASecret(
     const secret = speakeasy.generateSecret({
       name: `GLX (${username})`,
       issuer: 'GLX App',
-      length: 32
-      name: `GLX (${username})`,
-      issuer: 'GLX App',
       length: 32,
     });
 

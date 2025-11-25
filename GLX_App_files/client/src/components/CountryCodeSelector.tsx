@@ -69,15 +69,7 @@ export function CountryCodeSelector({
 
   return (
     <Select value={value} onValueChange={handleCountrySelect} disabled={disabled}>
-      <SelectTrigger
-        className={cn(
-          "w-[120px] gap-2 glx-input",
-          className
-        )}
-      >
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-lg flex-shrink-0" role="img" aria-label={selectedCountry.name}>
-      <SelectTrigger className={cn('w-[120px] gap-2 galax-input', className)}>
+      <SelectTrigger className={cn('w-[120px] gap-2 glx-input', className)}>
         <div className='flex items-center gap-2 min-w-0'>
           <span className='text-lg flex-shrink-0' role='img' aria-label={selectedCountry.name}>
             {selectedCountry.flag}

@@ -439,6 +439,51 @@ export function ProfilePage() {
           className='grid grid-cols-1 md:grid-cols-3 gap-4'
         >
           <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <Coins className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
+              <p className='text-2xl font-bold text-yellow-600'>
+                {user.crowds_balance || 0}
+              </p>
+              <p className='text-sm text-gray-600'>Crowds Tokens</p>
+            </CardContent>
+          </Card>
+
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <DollarSign className='h-8 w-8 mx-auto mb-2 text-green-600' />
+              <p className='text-2xl font-bold text-green-600'>
+                {user.impact_balance || 0}
+              </p>
+              <p className='text-sm text-gray-600'>Impact Points</p>
+            </CardContent>
+          </Card>
+
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <Award className='h-8 w-8 mx-auto mb-2 text-purple-600' />
+              <p className='text-2xl font-bold text-purple-600'>
+                {user.gov_balance || 0}
+              </p>
+              <p className='text-sm text-gray-600'>Governance</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Recent Transactions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <Card className='glx-card'>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <DollarSign className='h-5 w-5' />
+                Recent Transactions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {transactions.length === 0 ? (
                 <div className='text-center py-8 text-gray-500'>
                   <DollarSign className='h-12 w-12 mx-auto mb-4 opacity-50' />
                   <p>No recent transactions</p>
@@ -477,6 +522,26 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
+          <Card className='glx-card'>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <Shield className='h-5 w-5' />
+                Security & Verification
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='space-y-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Mail className='h-5 w-5 text-gray-500' />
+                    <div>
+                      <p className='font-medium'>Email Verification</p>
+                      <p className='text-sm text-gray-600'>
+                        {user.email_verified ? 'Verified' : 'Not verified'}
+                      </p>
+                    </div>
+                  </div>
+                  {user.email_verified ? (
                     <CheckCircle className='h-5 w-5 text-green-500' />
                   ) : (
                     <XCircle className='h-5 w-5 text-red-500' />

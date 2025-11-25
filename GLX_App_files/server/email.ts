@@ -118,10 +118,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
     const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
 
     const mailOptions = {
-        process.env.SMTP_FROM || "GLX Support <noreply@glxcivicnetwork.me>",
-      to: email,
-      subject: "Password Reset Request - GLX",
-      from: process.env.SMTP_FROM || 'GLX Support <noreply@galaxcivicnetwork.me>',
+      from: process.env.SMTP_FROM || 'GLX Support <noreply@glxcivicnetwork.me>',
       to: email,
       subject: 'Password Reset Request - GLX',
       html: `
@@ -278,10 +275,7 @@ export async function sendEmailVerification(
     const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${safeToken}`;
 
     const mailOptions = {
-        process.env.SMTP_FROM || "GLX Support <noreply@glxcivicnetwork.me>",
-      to: email,
-      subject: "Verify Your Email - GLX",
-      from: process.env.SMTP_FROM || 'GLX Support <noreply@galaxcivicnetwork.me>',
+      from: process.env.SMTP_FROM || 'GLX Support <noreply@glxcivicnetwork.me>',
       to: email,
       subject: 'Verify Your Email - GLX',
       html: `

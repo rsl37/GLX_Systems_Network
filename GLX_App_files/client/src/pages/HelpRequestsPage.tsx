@@ -592,6 +592,27 @@ export function HelpRequestsPage() {
 
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
+              <Button className='glx-button'>
+                <Plus className='h-4 w-4 mr-2' />
+                Request Help
+              </Button>
+            </DialogTrigger>
+            <DialogContent className='sm:max-w-md'>
+              <DialogHeader>
+                <DialogTitle>Create Help Request</DialogTitle>
+              </DialogHeader>
+              <div className='space-y-4'>
+                <div>
+                  <Label htmlFor='title'>Title</Label>
+                  <Input
+                    id='title'
+                    value={newRequest.title}
+                    onChange={e => setNewRequest({ ...newRequest, title: e.target.value })}
+                    placeholder='Brief description of what you need'
+                  />
+                </div>
+
+                <div>
                   <Label htmlFor='description'>Description</Label>
                   <Textarea
                     id='description'
@@ -644,6 +665,20 @@ export function HelpRequestsPage() {
                   </div>
                 </div>
 
+                <Button onClick={handleCreateRequest} className='glx-button w-full'>
+                  Create Request
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </motion.div>
+
+        {/* Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex flex-wrap gap-4 items-center'>

@@ -481,16 +481,12 @@ export const defaultAISecurityConfig: AISecurityConfig = {
     'civic-ai-v1',
     'copilot-civic'
   ],
-  knownGoodHashes: [
   allowedModelHashes: [
     // Known good model hashes for verification
     '5dbbe3869b484fc6a9e44a8d0697d458c8413332294039d65f1f3a0a862ccb3a', // mock model data hash for tests
     'd2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2', // civic-ai-v1
     'a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1', // additional test model
   ],
-  riskThreshold: 25  // Lowered from 40 to 25 to properly detect security threats
-  ],
-  riskThreshold: 40
   riskThreshold: 25, // Lowered from 40 to 25 to properly detect security threats
 };
 

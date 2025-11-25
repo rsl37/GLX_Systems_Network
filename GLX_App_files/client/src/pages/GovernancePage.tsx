@@ -387,12 +387,6 @@ export function GovernancePage() {
             </CardContent>
           </Card>
 
-          <Card className="glx-card">
-            <CardContent className="p-4 text-center">
-              <TrendingUp className="h-8 w-8 mx-auto mb-2 text-orange-600" />
-              <p className="text-2xl font-bold text-orange-600">
-                {user?.gov_balance || 0}
-              </p>
           <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <TrendingUp className='h-8 w-8 mx-auto mb-2 text-orange-600' />

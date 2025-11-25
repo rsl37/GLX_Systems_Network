@@ -139,11 +139,6 @@ export function ForgotPasswordPage() {
 
               {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="glx-button w-full"
-              >
               <Button type='submit' disabled={isLoading} className='glx-button w-full'>
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </Button>
