@@ -21,7 +21,7 @@ export default defineConfig({
     exclude: ['server/stablecoin/tests/**/*'],
     testTimeout: 30000,
     hookTimeout: 30000,
-    setupFiles: ['./src/__tests__/setup.ts'],
+    setupFiles: ['./tests/setup.ts'],
     outputFile: {
       json: './test-results/results.json',
       junit: './test-results/junit.xml',
@@ -32,7 +32,7 @@ export default defineConfig({
       reportsDirectory: './coverage',
       exclude: [
         'node_modules/',
-        'src/__tests__/setup.ts',
+        'tests/setup.ts',
         'dist/',
         'coverage/',
         '**/*.d.ts'
