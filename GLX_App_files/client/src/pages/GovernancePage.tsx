@@ -278,7 +278,7 @@ export function GovernancePage() {
 
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
-              <Button className='galax-button'>
+              <Button className='glx-button'>
                 <Plus className='h-4 w-4 mr-2' />
                 Create Proposal
               </Button>
@@ -342,7 +342,7 @@ export function GovernancePage() {
                   </div>
                 </div>
 
-                <Button onClick={handleCreateProposal} className='galax-button w-full'>
+                <Button onClick={handleCreateProposal} className='glx-button w-full'>
                   Create Proposal
                 </Button>
               </div>
@@ -367,7 +367,7 @@ export function GovernancePage() {
             </CardContent>
           </Card>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <CheckCircle className='h-8 w-8 mx-auto mb-2 text-green-600' />
               <p className='text-2xl font-bold text-green-600'>
@@ -377,7 +377,7 @@ export function GovernancePage() {
             </CardContent>
           </Card>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <Users className='h-8 w-8 mx-auto mb-2 text-purple-600' />
               <p className='text-2xl font-bold text-purple-600'>
@@ -393,7 +393,7 @@ export function GovernancePage() {
               <p className="text-2xl font-bold text-orange-600">
                 {user?.gov_balance || 0}
               </p>
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <TrendingUp className='h-8 w-8 mx-auto mb-2 text-orange-600' />
               <p className='text-2xl font-bold text-orange-600'>{user?.gov_balance || 0}</p>
@@ -408,7 +408,7 @@ export function GovernancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex flex-wrap gap-4 items-center'>
                 <div className='flex items-center gap-2'>
@@ -462,7 +462,7 @@ export function GovernancePage() {
           className='space-y-4'
         >
           {proposals.length === 0 ? (
-            <Card className='galax-card'>
+            <Card className='glx-card'>
               <CardContent className='p-12 text-center'>
                 <Vote className='h-16 w-16 mx-auto mb-4 text-gray-400' />
                 <h3 className='text-lg font-semibold text-gray-600 mb-2'>No proposals found</h3>
@@ -484,7 +484,7 @@ export function GovernancePage() {
               const isOwnProposal = proposal.created_by === user?.id;
 
               return (
-                <Card key={proposal.id} className='galax-card hover:shadow-lg transition-shadow'>
+                <Card key={proposal.id} className='glx-card hover:shadow-lg transition-shadow'>
                   <CardHeader className='pb-3'>
                     <div className='flex items-start justify-between'>
                       <div className='flex items-center gap-2 flex-1'>
@@ -596,7 +596,7 @@ export function GovernancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Heart className='h-5 w-5 text-red-500' />
