@@ -235,7 +235,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (emailOrPhone: string, password: string, verificationToken?: string | null) => {
   const login = async (
     emailOrPhone: string,
     password: string,
@@ -312,7 +311,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (emailOrPhone: string, password: string, username: string, signupMethod?: 'email' | 'phone', verificationToken?: string | null) => {
   const register = async (
     emailOrPhone: string,
     password: string,
