@@ -289,9 +289,6 @@ export function RegisterPage() {
               )}
 
               <Button
-                type="submit"
-                className="w-full glx-button"
-                disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
                 type='submit'
                 className='w-full glx-button'
                 disabled={
