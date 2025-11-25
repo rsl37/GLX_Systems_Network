@@ -387,8 +387,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: `Recommended Environment Variable: ${envVar}`,
         status: 'warning',
         message: `Recommended environment variable ${envVar} is not set`,
-        details: { variable: envVar, required: false, category: 'recommended' }
-        details: { variable: envVar, recommended: true },
+        details: { variable: envVar, required: false, category: 'recommended' },
       });
     } else {
       results.push({
@@ -464,9 +463,7 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         check: `Optional Environment Variable: ${envVar}`,
         status: 'pass',
         message: `Optional environment variable ${envVar} is properly set`,
-        details: { variable: envVar, length: value.length, category: 'optional' }
-        message: `Environment variable ${envVar} is properly set`,
-        details: { variable: envVar, length: value.length },
+        details: { variable: envVar, length: value.length, category: 'optional' },
       });
     }
   }

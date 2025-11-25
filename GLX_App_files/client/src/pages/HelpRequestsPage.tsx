@@ -608,9 +608,10 @@ export function HelpRequestsPage() {
                     id='title'
                     value={newRequest.title}
                     onChange={e => setNewRequest({ ...newRequest, title: e.target.value })}
-                    placeholder='Brief description of your need'
+                    placeholder='Brief description of what you need'
                   />
                 </div>
+
                 <div>
                   <Label htmlFor='description'>Description</Label>
                   <Textarea
@@ -665,7 +666,7 @@ export function HelpRequestsPage() {
                 </div>
 
                 <Button onClick={handleCreateRequest} className='glx-button w-full'>
-                  Submit Request
+                  Create Request
                 </Button>
               </div>
             </DialogContent>

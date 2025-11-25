@@ -79,6 +79,7 @@ export function ProfilePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [privacySettings, setPrivacySettings] = useState({
     showEmail: false,
     showPhone: false,
@@ -145,6 +146,7 @@ export function ProfilePage() {
   };
 
   const handleUpdateProfile = async () => {
+    setIsUpdating(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/user/profile', {
@@ -162,6 +164,8 @@ export function ProfilePage() {
       }
     } catch (error) {
       console.error('Profile update error:', error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -418,8 +422,8 @@ export function ProfilePage() {
                           <Button variant='outline' onClick={() => setIsEditing(false)}>
                             Cancel
                           </Button>
-                          <Button onClick={handleUpdateProfile}>
-                            Save Changes
+                          <Button onClick={handleUpdateProfile} disabled={isUpdating}>
+                            {isUpdating ? 'Saving...' : 'Save Changes'}
                           </Button>
                         </div>
                       </div>
@@ -436,6 +440,43 @@ export function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <Coins className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
+              <p className='text-2xl font-bold text-yellow-600'>
+                {user.crowds_balance || 0}
+              </p>
+              <p className='text-sm text-gray-600'>Crowds Tokens</p>
+            </CardContent>
+          </Card>
+
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <DollarSign className='h-8 w-8 mx-auto mb-2 text-green-600' />
+              <p className='text-2xl font-bold text-green-600'>
+                {user.impact_balance || 0}
+              </p>
+              <p className='text-sm text-gray-600'>Impact Points</p>
+            </CardContent>
+          </Card>
+
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <Award className='h-8 w-8 mx-auto mb-2 text-purple-600' />
+              <p className='text-2xl font-bold text-purple-600'>
+                {user.gov_balance || 0}
+              </p>
+              <p className='text-sm text-gray-600'>Governance</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Recent Transactions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
         >
           <Card className='glx-card'>
             <CardHeader>
@@ -491,8 +532,8 @@ export function ProfilePage() {
                 Security & Verification
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className='space-y-3'>
+            <CardContent className='space-y-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
                   <div className='flex items-center gap-3'>
                     <Mail className='h-5 w-5 text-gray-500' />

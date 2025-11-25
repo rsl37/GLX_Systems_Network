@@ -423,11 +423,6 @@ async function initializeDatabase() {
 
     console.log('✅ Hybrid database schema initialized successfully');
   } catch (error) {
-    console.error('❌ Failed to initialize database schema:', error);
-
-
-    console.log("✅ Hybrid database schema initialized successfully");
-  } catch (error) {
     console.error("❌ Failed to initialize database schema:", error);
 
     // Try fallback database if primary fails
@@ -713,8 +708,6 @@ async function healthCheck() {
     }
 
     return {
-
-    return {
       primary: primaryStatus,
       fallback: fallbackStatus,
       strategy: strategy,
@@ -726,13 +719,6 @@ async function healthCheck() {
         status: 'unhealthy',
         db: strategy.primary,
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      primary: {
-        status: 'unhealthy',
-        db: strategy.primary,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString() 
-        timestamp: new Date().toISOString()
         timestamp: new Date().toISOString(),
       },
       fallback: null,
@@ -772,13 +758,6 @@ function getInitializationPromise() {
 }
 
 // Export the database instance and utility functions
-export {
-  db,
-  dbSelector,
-  postgresPool,
-  sqliteDb,
-  healthCheck,
-  closeDatabase,
 export {
   db,
   dbSelector,
