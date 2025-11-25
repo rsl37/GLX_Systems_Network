@@ -53,7 +53,7 @@ jobs:
       needs_dependency_review: ${{ steps.changes.outputs.dependencies }}
       needs_security_scan: ${{ steps.changes.outputs.security }}
       needs_full_scan: ${{ steps.changes.outputs.full_scan }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -88,8 +88,8 @@ jobs:
     name: Dependency Review
     runs-on: ubuntu-latest
     if: |
-      github.event_name == 'pull_request' && 
-      (needs.detect-security-changes.outputs.needs_dependency_review == 'true' || 
+      github.event_name == 'pull_request' &&
+      (needs.detect-security-changes.outputs.needs_dependency_review == 'true' ||
        github.event.inputs.force_run == 'true')
     needs: detect-security-changes
     timeout-minutes: 10
@@ -115,7 +115,7 @@ jobs:
           echo "⚠️  Dependency Review is not available - using npm audit as alternative"
           echo "   To enable full dependency review, enable GitHub Advanced Security"
           echo "   Repository settings: https://github.com/${{ github.repository }}/settings/security_analysis"
-          
+
           # Run npm audit as alternative
           cd GLX_App_files
           if [ -f "package-lock.json" ]; then
@@ -132,7 +132,7 @@ jobs:
     timeout-minutes: 20
     needs: detect-security-changes
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-security-changes.outputs.needs_full_scan == 'true'
     permissions:
@@ -194,9 +194,9 @@ jobs:
         run: |
           echo "⚠️  CodeQL analysis is not available - using alternative static analysis"
           echo "   To enable CodeQL, enable Code Scanning in repository settings"
-          
+
           cd GLX_App_files
-          
+
           # Try to run ESLint if available
           if npm list eslint > /dev/null 2>&1; then
             echo "Running ESLint static analysis..."
@@ -229,7 +229,7 @@ jobs:
     timeout-minutes: 15
     needs: detect-security-changes
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-security-changes.outputs.needs_full_scan == 'true'
 
@@ -279,7 +279,7 @@ jobs:
     timeout-minutes: 10
     needs: detect-security-changes
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-security-changes.outputs.needs_dependency_review == 'true' ||
       needs.detect-security-changes.outputs.needs_security_scan == 'true'
@@ -316,19 +316,19 @@ jobs:
           # Filter out known false positives from @vercel/node bundled dependencies
           if [ -s audit-results.json ]; then
             echo "Audit findings detected, processing results..."
-            
+
             # Check if all vulnerabilities are from @vercel/node bundled dependencies
             TOTAL_VULNS=$(jq -r '.vulnerabilities | length' audit-results.json 2>/dev/null || echo "0")
             VERCEL_RELATED=$(jq -r '.vulnerabilities | to_entries[] | select(.key == "@vercel/node" or .value.effects[]? == "@vercel/node" or (.value.nodes[]? | contains("@vercel/node"))) | .key' audit-results.json 2>/dev/null | sort -u | wc -l)
-            
+
             echo "Total vulnerabilities: $TOTAL_VULNS"
             echo "Vercel-related vulnerabilities: $VERCEL_RELATED"
-            
+
             if [ "$TOTAL_VULNS" -eq "$VERCEL_RELATED" ] && [ "$TOTAL_VULNS" -gt "0" ]; then
               echo "✅ All $TOTAL_VULNS vulnerabilities are from @vercel/node bundled dependencies"
               echo "✅ These are deployment-only tools, mitigated by Vercel's security controls"
               echo "✅ Application dependencies are secure"
-              echo "Vulnerabilities found:" 
+              echo "Vulnerabilities found:"
               jq -r '.vulnerabilities | keys[]' audit-results.json
               exit 0
             elif [ "$TOTAL_VULNS" -eq "0" ]; then
@@ -357,7 +357,7 @@ jobs:
     timeout-minutes: 10
     needs: detect-security-changes
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-security-changes.outputs.needs_security_scan == 'true'
 
@@ -438,7 +438,7 @@ jobs:
             for (const job of jobs) {
               let state = 'pending';
               let description = `${job.name}: ${job.result}`;
-              
+
               // Map all possible job results to proper GitHub status states
               switch (job.result) {
                 case 'success':
@@ -459,9 +459,9 @@ jobs:
                   state = 'error';
                   description = `${job.name}: ${job.result || 'unknown'}`;
               }
-              
+
               console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

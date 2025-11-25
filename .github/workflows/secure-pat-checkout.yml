@@ -212,7 +212,6 @@ jobs:
 
             console.log(`PAT Security Status: ${status}`);
             console.log(`Description: ${description}`);
-
             if (status === 'failure') {
               core.setFailed(description);
             }

@@ -372,7 +372,7 @@ jobs:
             for (const job of jobs) {
               let state = 'pending';
               let description = `${job.name}: ${job.result}`;
-              
+
               // Map all possible job results to proper GitHub status states
               switch (job.result) {
                 case 'success':
@@ -393,9 +393,9 @@ jobs:
                   state = 'error';
                   description = `${job.name}: ${job.result || 'unknown'}`;
               }
-              
+
               console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
-              
+
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

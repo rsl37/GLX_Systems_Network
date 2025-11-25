@@ -47,7 +47,7 @@ jobs:
       has_frontend_changes: ${{ steps.changes.outputs.frontend }}
       has_backend_changes: ${{ steps.changes.outputs.backend }}
       has_config_changes: ${{ steps.changes.outputs.config }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -199,10 +199,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package.json
-      - name: Ensure cache directories exist
-        run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
-          cache-dependency-path: './package-lock.json'
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
       - name: Ensure cache directories exist
         run: mkdir -p ${{ env.WORKING_DIRECTORY }}/node_modules
       - name: Install dependencies
@@ -218,7 +215,6 @@ jobs:
             fi
           done
 
-
       - name: Build application
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -232,7 +228,6 @@ jobs:
             fi
           done
 
-
       - name: Run tests
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
@@ -245,7 +240,6 @@ jobs:
               sleep 5
             fi
           done
-
 
       - name: Upload coverage (Node 20 only)
         if: matrix.node-version == 20
@@ -371,7 +365,7 @@ jobs:
     timeout-minutes: 10
     needs: [detect-changes, code-quality, security-checks, continuous-integration]
     if: |
-      always() && 
+      always() &&
       (needs.detect-changes.outputs.has_code_changes == 'true' || github.event.inputs.force_run == 'true') &&
       !cancelled() &&
       !contains(needs.*.result, 'failure')
@@ -437,7 +431,6 @@ jobs:
 
           # Wait for app to start
           sleep 15
-
 
           # Basic health check (default port 3000)
           if curl -f -s http://localhost:3000 >/dev/null 2>&1; then

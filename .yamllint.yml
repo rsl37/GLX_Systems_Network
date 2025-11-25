@@ -1,21 +1,25 @@
-# YAML Lint Configuration for PAT Workflows
-# This configuration allows for longer lines in GitHub Actions workflows
-# where necessary for readability and functionality
+# YAML Lint Configuration for GitHub Actions Workflows
+# This configuration accommodates longer lines in workflows for table formatting
+# and complex expressions commonly used in GitHub Actions
 
 extends: default
 
 rules:
   line-length:
-    max: 120  # Increased from default 80 for GitHub Actions compatibility
+    max: 250  # Increased for GitHub Actions STEP_SUMMARY tables
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
-  
+
   truthy:
     allowed-values: ['true', 'false', 'on', 'off', 'yes', 'no']
     check-keys: false
-  
+
   comments:
     min-spaces-from-content: 1
-  
+
   trailing-spaces: enable
   new-line-at-end-of-file: enable
+  empty-lines:
+    max: 1
+    max-end: 1
+    max-start: 0

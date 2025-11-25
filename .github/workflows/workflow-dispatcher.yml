@@ -54,14 +54,12 @@ jobs:
               - '!GLX_App_files/src/server/**'
               - '!GLX_App_files/server/**'
 
-              
             backend:
               - 'GLX_App_files/server/**'
               - 'GLX_App_files/api/**'
               - 'GLX_App_files/tsconfig.server.json'
               - 'GLX_App_files/src/server/**'
 
-              
             web3:
               - '**/*web3*'
               - '**/*crypto*'
@@ -93,7 +91,6 @@ jobs:
               - 'npm-shrinkwrap.json'
               - 'GLX_App_files/npm-shrinkwrap.json'
 
-              
             config:
               - 'tsconfig.json'
               - 'GLX_App_files/tsconfig.json'
@@ -104,7 +101,6 @@ jobs:
               - '.lighthouserc.json'
               - 'GLX_App_files/.lighthouserc.json'
 
-              
             docs_only:
               - '**/*.md'
               - 'docs/**'
@@ -157,7 +153,20 @@ jobs:
           echo "  Workflows: $WORKFLOWS_CHANGED"
           echo "  Dependencies: $DEPS_CHANGED"
           echo "  Config: $CONFIG_CHANGED"
-          echo "  Docs Only: $(if [[ "$DOCS_CHANGED" == "true" ]] && [[ "$FRONTEND_CHANGED" == "false" ]] && [[ "$BACKEND_CHANGED" == "false" ]] && [[ "$WEB3_CHANGED" == "false" ]] && [[ "$SECURITY_CHANGED" == "false" ]] && [[ "$WORKFLOWS_CHANGED" == "false" ]] && [[ "$DEPS_CHANGED" == "false" ]] && [[ "$CONFIG_CHANGED" == "false" ]]; then echo "true"; else echo "false"; fi)"
+
+          # Determine if this is a docs-only change
+          IS_DOCS_ONLY="false"
+          if [[ "$DOCS_CHANGED" == "true" ]] && \
+             [[ "$FRONTEND_CHANGED" == "false" ]] && \
+             [[ "$BACKEND_CHANGED" == "false" ]] && \
+             [[ "$WEB3_CHANGED" == "false" ]] && \
+             [[ "$SECURITY_CHANGED" == "false" ]] && \
+             [[ "$WORKFLOWS_CHANGED" == "false" ]] && \
+             [[ "$DEPS_CHANGED" == "false" ]] && \
+             [[ "$CONFIG_CHANGED" == "false" ]]; then
+            IS_DOCS_ONLY="true"
+          fi
+          echo "  Docs Only: $IS_DOCS_ONLY"
 
   trigger-comprehensive-checks:
     name: Trigger Comprehensive Checks

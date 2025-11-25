@@ -27,30 +27,6 @@ name: Web3 Functionality & Integration Tests
       - 'package.json'
       - '.github/workflows/web3-checks.yml'
   schedule:
-    # Run web3 checks daily at 3 AM UTC
-    - cron: '0 3 * * *'
-  workflow_dispatch:
-    inputs:
-      force_run:
-        description: 'Force run all Web3 checks'
-        required: false
-        default: 'false'
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-    paths:
-      - '**/*web3*'
-      - '**/*crypto*'
-      - '**/*blockchain*'
-      - '**/*defi*'
-      - 'GLX_App_files/server/middleware/web3-security.ts'
-      - 'mcp-config.json'
-      - 'GLX_App_files/package.json'
-      - 'package.json'
-      - '.github/workflows/web3-checks.yml'
-  schedule:
-    # Run web3 checks daily at 3 AM UTC
     - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
@@ -78,7 +54,7 @@ jobs:
       has_web3_changes: ${{ steps.changes.outputs.web3 }}
       has_crypto_changes: ${{ steps.changes.outputs.crypto }}
       has_config_changes: ${{ steps.changes.outputs.config }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -111,7 +87,7 @@ jobs:
     timeout-minutes: 15
     needs: detect-web3-changes
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true' ||
@@ -139,18 +115,12 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🌐 Checking Web3 dependencies..."
-
-
-          # Check for Web3 libraries in package.json
           if grep -q "web3\|ethers\|@web3js\|viem" package.json; then
             echo "✅ Web3 libraries found in dependencies"
             grep -E "web3|ethers|@web3js|viem" package.json
           else
             echo "⚠️ No standard Web3 libraries detected"
           fi
-
-
-          # Check for blockchain-related dependencies
           if grep -q "blockchain\|ethereum\|polygon\|solana" package.json; then
             echo "✅ Blockchain-related dependencies found"
             grep -E "blockchain|ethereum|polygon|solana" package.json
@@ -162,57 +132,31 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔧 Validating Web3 configuration..."
-
-
-          # Check for Web3 provider configuration
           if [ -f "src/config/web3.ts" ] || [ -f "src/config/web3.js" ]; then
             echo "✅ Web3 configuration file found"
           else
             echo "⚠️ No dedicated Web3 configuration file found"
           fi
-
-
-          # Check for wallet integration
-          if grep -r "wallet\|metamask\|connect" src/ --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" 2>/dev/null; then
+          if grep -r "wallet\|metamask\|connect" src/ \
+             --include="*.ts" --include="*.js" --include="*.tsx" \
+             --include="*.jsx" 2>/dev/null; then
             echo "✅ Wallet integration code detected"
           else
             echo "⚠️ No wallet integration detected"
-          fi
-
-
-          # Check for smart contract interfaces
-          if find . -name "*.abi" -o -name "*contract*" -name "*.ts" -o -name "*contract*" -name "*.js" | grep -v node_modules; then
-            echo "✅ Smart contract interfaces found"
-          else
-            echo "⚠️ No smart contract interfaces detected"
           fi
 
       - name: Test Web3 Provider Connection
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔗 Testing Web3 provider connectivity..."
-
-          # Create a simple Web3 connection test
           cat > test-web3-connection.js << 'EOF'
           const https = require('https');
-
-
-          # Create a simple Web3 connection test
-          cat > test-web3-connection.js << 'EOF'
-          const https = require('https');
-
-          // Test connection to common Web3 providers
           const providers = [
             'eth-mainnet.alchemyapi.io',
             'mainnet.infura.io',
             'ethereum.publicnode.com'
           ];
-
           console.log('Testing Web3 provider connectivity...');
-
-
-          console.log('Testing Web3 provider connectivity...');
-
           providers.forEach(provider => {
             const options = {
               hostname: provider,
@@ -221,42 +165,22 @@ jobs:
               method: 'HEAD',
               timeout: 5000
             };
-
             const req = https.request(options, (res) => {
               console.log(`✅ ${provider}: Reachable (${res.statusCode})`);
             });
-
             req.on('error', (err) => {
               console.log(`⚠️ ${provider}: Not reachable (${err.message})`);
             });
-
-            const req = https.request(options, (res) => {
-              console.log(`✅ ${provider}: Reachable (${res.statusCode})`);
-            });
-
-            req.on('error', (err) => {
-              console.log(`⚠️ ${provider}: Not reachable (${err.message})`);
-            });
-            
-
             req.on('timeout', () => {
               console.log(`⚠️ ${provider}: Timeout`);
               req.destroy();
             });
-
             req.end();
           });
-
-
-            req.end();
-          });
-
           setTimeout(() => {
             console.log('Web3 provider connectivity test completed');
           }, 10000);
           EOF
-
-
           node test-web3-connection.js
           rm test-web3-connection.js
 
@@ -264,48 +188,22 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔮 Validating post-quantum cryptography implementation..."
-
-
-          # Check for post-quantum libraries
           if grep -q "@noble/post-quantum\|crystals-kyber\|dilithium" package.json; then
-            echo "✅ Post-quantum cryptography libraries found in package.json"
+            echo "✅ Post-quantum cryptography libraries found"
             grep -E "@noble/post-quantum|crystals-kyber|dilithium" package.json
           else
-            echo "⚠️ No post-quantum cryptography libraries in package.json"
-          fi
-
-
-          # Check for quantum-resistant algorithms in code
-          if grep -r "kyber\|dilithium\|sphincs\|rainbow" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
-            echo "✅ Post-quantum algorithm usage detected in code"
-          else
-            echo "⚠️ No post-quantum algorithm usage detected"
+            echo "⚠️ No post-quantum cryptography libraries found"
           fi
 
       - name: Test Web3 Security Middleware
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🛡️ Testing Web3 security middleware..."
-
           if [ -f "server/middleware/web3-security.ts" ]; then
             echo "✅ Web3 security middleware found"
-
-
-          if [ -f "server/middleware/web3-security.ts" ]; then
-            echo "✅ Web3 security middleware found"
-
-            # Basic syntax check
             npx tsc --noEmit server/middleware/web3-security.ts 2>/dev/null && \
               echo "✅ Web3 security middleware compiles successfully" || \
               echo "⚠️ Web3 security middleware has compilation issues"
-
-
-            # Check for security patterns
-            if grep -q "rate.limit\|validate\|sanitize" server/middleware/web3-security.ts; then
-              echo "✅ Security patterns detected in Web3 middleware"
-            else
-              echo "⚠️ Limited security patterns in Web3 middleware"
-            fi
           else
             echo "❌ Web3 security middleware not found"
             exit 1
@@ -315,33 +213,18 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🧪 Running Web3 unit tests..."
-
-          # Check for Web3-specific test files
-          WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" -o -name "*crypto*.test.*" | grep -v node_modules)
-
+          WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" \
+            -o -name "*crypto*.test.*" | grep -v node_modules)
           if [ -n "$WEB3_TESTS" ]; then
             echo "✅ Web3 test files found:"
             echo "$WEB3_TESTS"
-
-          # Check for Web3-specific test files
-          WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" -o -name "*crypto*.test.*" | grep -v node_modules)
-
-          if [ -n "$WEB3_TESTS" ]; then
-            echo "✅ Web3 test files found:"
-            echo "$WEB3_TESTS"
-            
-
-            # Run Web3 tests if npm script exists
             if grep -q '"test:web3"' package.json; then
-              echo "Running Web3-specific tests..."
               npm run test:web3 || echo "Web3 tests completed with warnings"
             else
-              echo "Running general tests (may include Web3 tests)..."
               npm test -- --grep "web3|blockchain|crypto" || echo "Tests completed"
             fi
           else
             echo "⚠️ No dedicated Web3 test files found"
-            echo "Running general test suite..."
             npm test || echo "Tests completed"
           fi
 
@@ -351,7 +234,7 @@ jobs:
     timeout-minutes: 20
     needs: [detect-web3-changes, web3-functionality]
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true'
 
@@ -381,9 +264,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔗 Testing Web3 MCP integration..."
-
-
-          # Check if MCP config includes Web3
           if [ -f "../mcp-config.json" ]; then
             echo "✅ MCP configuration found"
             if grep -q "web3\|blockchain" ../mcp-config.json; then
@@ -400,19 +280,10 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "💰 Testing DeFi functionality..."
-
-          # Check for DeFi-related code
-          if grep -r "defi\|swap\|liquidity\|yield\|staking" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
+          if grep -r "defi\|swap\|liquidity\|yield\|staking" src/ \
+             --include="*.ts" --include="*.js" 2>/dev/null; then
             echo "✅ DeFi functionality detected"
-
-
-          # Check for DeFi-related code
-          if grep -r "defi\|swap\|liquidity\|yield\|staking" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
-            echo "✅ DeFi functionality detected"
-
-            # Run DeFi tests if available
             if grep -q '"test:defi"' package.json; then
-              echo "Running DeFi tests..."
               npm run test:defi || echo "DeFi tests completed with warnings"
             else
               echo "⚠️ No dedicated DeFi test script found"
@@ -425,19 +296,15 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🌐 Checking blockchain network compatibility..."
-
-
-          # Check for multi-chain support
-          if grep -r "ethereum\|polygon\|bsc\|avalanche\|arbitrum\|optimism" src/ --include="*.ts" --include="*.js" 2>/dev/null; then
+          if grep -r "ethereum\|polygon\|bsc\|avalanche\|arbitrum\|optimism" src/ \
+             --include="*.ts" --include="*.js" 2>/dev/null; then
             echo "✅ Multi-chain support detected"
-            grep -r "ethereum\|polygon\|bsc\|avalanche\|arbitrum\|optimism" src/ --include="*.ts" --include="*.js" | head -5
           else
             echo "⚠️ Limited blockchain network support"
           fi
-
-
-          # Check for testnet configurations
-          if grep -r "testnet\|goerli\|sepolia\|mumbai" . --include="*.ts" --include="*.js" --include="*.json" | grep -v node_modules; then
+          if grep -r "testnet\|goerli\|sepolia\|mumbai" . \
+             --include="*.ts" --include="*.js" --include="*.json" | \
+             grep -v node_modules; then
             echo "✅ Testnet configurations found"
           else
             echo "⚠️ No testnet configurations detected"
@@ -449,7 +316,7 @@ jobs:
     timeout-minutes: 10
     needs: [detect-web3-changes, web3-functionality]
     if: |
-      github.event_name == 'schedule' || 
+      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true'
@@ -476,26 +343,20 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔒 Validating Web3 security patterns..."
-
-
-          # Check for reentrancy protection patterns
-          if grep -r "nonReentrant\|mutex\|guard" . --include="*.ts" --include="*.js" | grep -v node_modules; then
+          if grep -r "nonReentrant\|mutex\|guard" . \
+             --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "✅ Reentrancy protection patterns found"
           else
             echo "⚠️ No reentrancy protection patterns detected"
           fi
-
-
-          # Check for input validation
-          if grep -r "validate.*address\|isValidAddress\|checksum" . --include="*.ts" --include="*.js" | grep -v node_modules; then
+          if grep -r "validate.*address\|isValidAddress\|checksum" . \
+             --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "✅ Address validation patterns found"
           else
             echo "⚠️ Limited address validation detected"
           fi
-
-
-          # Check for amount/value validation
-          if grep -r "validate.*amount\|isValidAmount\|BigNumber" . --include="*.ts" --include="*.js" | grep -v node_modules; then
+          if grep -r "validate.*amount\|isValidAmount\|BigNumber" . \
+             --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "✅ Amount validation patterns found"
           else
             echo "⚠️ Limited amount validation detected"
@@ -505,45 +366,38 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🕵️ Checking for common Web3 vulnerabilities..."
-
-          # Check for unsafe practices
           UNSAFE_PATTERNS=0
-
-
-          # Check for unsafe practices
-          UNSAFE_PATTERNS=0
-
-          if grep -r "eval\|Function\|setTimeout.*string" . --include="*.ts" --include="*.js" | grep -v node_modules | grep -v test; then
+          if grep -r "eval\|Function\|setTimeout.*string" . \
+             --include="*.ts" --include="*.js" | \
+             grep -v node_modules | grep -v test; then
             echo "⚠️ Potentially unsafe dynamic code execution detected"
             UNSAFE_PATTERNS=$((UNSAFE_PATTERNS + 1))
           fi
-
-
-          if grep -r "localStorage.*private\|sessionStorage.*key" . --include="*.ts" --include="*.js" | grep -v node_modules; then
-            echo "⚠️ Potential private key storage in browser storage detected"
+          if grep -r "localStorage.*private\|sessionStorage.*key" . \
+             --include="*.ts" --include="*.js" | grep -v node_modules; then
+            echo "⚠️ Potential private key storage in browser storage"
             UNSAFE_PATTERNS=$((UNSAFE_PATTERNS + 1))
           fi
-
-
-          if grep -r "http://.*web3\|http://.*rpc" . --include="*.ts" --include="*.js" | grep -v node_modules; then
+          if grep -r "http://.*web3\|http://.*rpc" . \
+             --include="*.ts" --include="*.js" | grep -v node_modules; then
             echo "⚠️ Insecure HTTP connections to Web3 providers detected"
             UNSAFE_PATTERNS=$((UNSAFE_PATTERNS + 1))
           fi
-
-
           if [ $UNSAFE_PATTERNS -eq 0 ]; then
             echo "✅ No obvious Web3 security vulnerabilities detected"
           else
-            echo "❌ $UNSAFE_PATTERNS potential security issues found - review required"
+            echo "❌ $UNSAFE_PATTERNS potential security issues found"
             exit 1
           fi
 
   web3-summary:
     name: Web3 Tests Summary
     runs-on: ubuntu-latest
-    needs: [detect-web3-changes, web3-functionality, web3-integration, web3-security-validation]
-    if: always() && needs.detect-web3-changes.result != 'skipped'
-    needs: [detect-web3-changes, web3-functionality, web3-integration, web3-security-validation]
+    needs:
+      - detect-web3-changes
+      - web3-functionality
+      - web3-integration
+      - web3-security-validation
     if: always() && needs.detect-web3-changes.result != 'skipped'
     timeout-minutes: 5
 
@@ -557,9 +411,6 @@ jobs:
           echo "🔗 Web3 Integration: ${{ needs.web3-integration.result }}"
           echo "🔒 Web3 Security: ${{ needs.web3-security-validation.result }}"
           echo ""
-
-
-          # Check if any critical tests failed
           if [[ "${{ needs.web3-functionality.result }}" == "failure" ]] || \
              [[ "${{ needs.web3-security-validation.result }}" == "failure" ]]; then
             echo "❌ CRITICAL WEB3 ISSUES DETECTED - Review required"
@@ -579,6 +430,4 @@ jobs:
           path: |
             ./GLX_App_files/web3-test-results/
             ./GLX_App_files/coverage/
-          retention-days: 7
-          retention-days: 7
           retention-days: 7

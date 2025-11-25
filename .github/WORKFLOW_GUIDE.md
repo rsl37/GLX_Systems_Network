@@ -2,7 +2,15 @@
 
 ## Overview
 
-This repository uses a comprehensive GitHub Actions workflow system designed for enterprise-grade CI/CD, security, and quality assurance. The workflow system has been optimized for efficiency while maintaining comprehensive coverage of all critical development processes.
+This repository uses a comprehensive GitHub Actions workflow system designed for enterprise-grade CI/CD, security, and quality assurance. The workflow system has been **refactored and optimized** for efficiency while maintaining comprehensive coverage of all critical development processes.
+
+## Recent Refactoring
+
+The workflow system was recently refactored to:
+- Remove 27 disabled duplicate workflow files
+- Fix syntax issues (duplicate triggers, steps, and formatting)
+- Standardize YAML formatting across all workflows
+- Improve documentation and maintainability
 
 ## Core Workflows
 
