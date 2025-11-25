@@ -372,7 +372,7 @@ export function CrisisPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className='grid grid-cols-2 md:grid-cols-4 gap-4'
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <Siren className='h-8 w-8 mx-auto mb-2 text-red-600' />
               <p className='text-2xl font-bold text-red-600'>
@@ -382,7 +382,7 @@ export function CrisisPage() {
             </CardContent>
           </Card>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <Flame className='h-8 w-8 mx-auto mb-2 text-orange-600' />
               <p className='text-2xl font-bold text-orange-600'>
@@ -392,7 +392,7 @@ export function CrisisPage() {
             </CardContent>
           </Card>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <CloudRain className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
               <p className='text-2xl font-bold text-yellow-600'>
@@ -402,7 +402,7 @@ export function CrisisPage() {
             </CardContent>
           </Card>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4 text-center'>
               <Radio className='h-8 w-8 mx-auto mb-2 text-green-600' />
               <p className='text-2xl font-bold text-green-600'>
@@ -436,7 +436,7 @@ export function CrisisPage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
-            <Card className='galax-card'>
+            <Card className='glx-card'>
               <CardContent className='p-12 text-center'>
                 <Shield className='h-16 w-16 mx-auto mb-4 text-gray-400' />
                 <h3 className='text-lg font-semibold text-gray-600 mb-2'>
@@ -450,7 +450,7 @@ export function CrisisPage() {
               {crisisAlerts.map(alert => (
                 <Card
                   key={alert.id}
-                  className='galax-card border-l-4 border-red-500 hover:shadow-lg transition-shadow'
+                  className='glx-card border-l-4 border-red-500 hover:shadow-lg transition-shadow'
                 >
                   <CardHeader className='pb-3'>
                     <div className='flex items-start justify-between'>
@@ -514,7 +514,7 @@ export function CrisisPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Shield className='h-5 w-5 text-blue-600' />
