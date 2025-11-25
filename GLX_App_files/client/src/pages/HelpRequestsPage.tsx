@@ -341,7 +341,7 @@ export function HelpRequestsPage() {
         className={`w-full ${viewMode === 'grid' ? 'px-3' : 'px-0'}`}
       >
         <Card
-          className='galax-card hover:shadow-lg transition-shadow h-full'
+          className='glx-card hover:shadow-lg transition-shadow h-full'
           role='article'
           aria-labelledby={`request-title-${request.id}`}
           aria-describedby={`request-desc-${request.id}`}
@@ -414,7 +414,7 @@ export function HelpRequestsPage() {
               {request.status === 'posted' && (
                 <Button
                   onClick={() => handleOfferHelp(request.id)}
-                  className='galax-button w-full'
+                  className='glx-button w-full'
                   disabled={request.requester_username === user?.username}
                   aria-label={`Offer help for: ${request.title}`}
                 >
@@ -644,7 +644,7 @@ export function HelpRequestsPage() {
                   </div>
                 </div>
 
-          <Card className='galax-card'>
+          <Card className='glx-card'>
             <CardContent className='p-4'>
               <div className='flex flex-wrap gap-4 items-center'>
                 <div className='flex items-center gap-2'>
