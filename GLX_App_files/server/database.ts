@@ -289,29 +289,6 @@ function getDatabaseStrategy(): DatabaseStrategy {
 
 const strategy = getDatabaseStrategy();
 
-  if (isProduction && hasPostgresURL) {
-    return {
-      primary: 'postgresql',
-      fallback: 'sqlite',
-      useCase: 'production-scale'
-    };
-  } else if (hasPostgresURL) {
-    return {
-      primary: 'postgresql',
-      fallback: 'sqlite',
-      useCase: 'development-with-postgres'
-    };
-  } else {
-    return {
-      primary: 'sqlite',
-      fallback: 'postgresql',
-      useCase: 'development-lightweight'
-    };
-  }
-}
-
-const strategy = getDatabaseStrategy();
-
 // SQLite Configuration - Best for: Local development, file-based data, lightweight operations, offline support
 const dataDir = process.env.DATA_DIRECTORY || './data';
 if (!fs.existsSync(dataDir)) {

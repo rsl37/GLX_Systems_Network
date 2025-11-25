@@ -245,10 +245,6 @@ export const getApiVersionInfo = (req: Request, res: Response): void => {
         'URL path: /api/v1/endpoint',
         'Header: API-Version: v1',
         'Accept header: application/vnd.glx.v1+json',
-        'Query parameter: ?api_version=v1'
-      ]
-    }
-        'Accept header: application/vnd.galax.v1+json',
         'Query parameter: ?api_version=v1',
       ],
     },

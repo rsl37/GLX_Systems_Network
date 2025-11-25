@@ -502,10 +502,6 @@ export function KYCVerificationPage() {
         </ul>
       </div>
 
-        <Button
-          onClick={() => navigate('/dashboard')}
-          className="glx-button w-full"
-        >
       <div className='space-y-3'>
         <Button onClick={() => navigate('/dashboard')} className='glx-button w-full'>
           Continue to Dashboard

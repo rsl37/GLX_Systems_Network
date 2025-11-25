@@ -418,8 +418,8 @@ export function ProfilePage() {
                           <Button variant='outline' onClick={() => setIsEditing(false)}>
                             Cancel
                           </Button>
-                          <Button onClick={handleEditProfile} disabled={isUpdating}>
-                            {isUpdating ? 'Saving...' : 'Save Changes'}
+                          <Button onClick={handleUpdateProfile}>
+                            Save Changes
                           </Button>
                         </div>
                       </div>
@@ -431,14 +431,21 @@ export function ProfilePage() {
           </Card>
         </motion.div>
 
-        {/* Token Balances */}
+        {/* Recent Transactions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className='grid grid-cols-1 md:grid-cols-3 gap-4'
         >
           <Card className='glx-card'>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <DollarSign className='h-5 w-5' />
+                Recent Transactions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {transactions.length === 0 ? (
                 <div className='text-center py-8 text-gray-500'>
                   <DollarSign className='h-12 w-12 mx-auto mb-4 opacity-50' />
                   <p>No recent transactions</p>
@@ -477,6 +484,26 @@ export function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
+          <Card className='glx-card'>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <Shield className='h-5 w-5' />
+                Security & Verification
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='space-y-3'>
+                <div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+                  <div className='flex items-center gap-3'>
+                    <Mail className='h-5 w-5 text-gray-500' />
+                    <div>
+                      <p className='font-medium'>Email Verification</p>
+                      <p className='text-sm text-gray-600'>
+                        {user.email_verified ? 'Verified' : 'Not verified'}
+                      </p>
+                    </div>
+                  </div>
+                  {user.email_verified ? (
                     <CheckCircle className='h-5 w-5 text-green-500' />
                   ) : (
                     <XCircle className='h-5 w-5 text-red-500' />

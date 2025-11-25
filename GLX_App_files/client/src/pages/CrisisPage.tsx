@@ -423,19 +423,6 @@ export function CrisisPage() {
           <h2 className='text-xl font-semibold text-gray-800'>Active Crisis Alerts</h2>
 
           {crisisAlerts.length === 0 ? (
-            <Card className="glx-card">
-              <CardContent className="p-12 text-center">
-                <Shield className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">No active crisis alerts</h3>
-                <p className="text-gray-500">Your community is currently safe. Stay vigilant!</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {crisisAlerts.map((alert) => (
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
             <Card className='glx-card'>
               <CardContent className='p-12 text-center'>
                 <Shield className='h-16 w-16 mx-auto mb-4 text-gray-400' />

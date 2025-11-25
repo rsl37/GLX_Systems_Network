@@ -220,8 +220,6 @@ export function ResetPasswordPage() {
 
               {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
 
-              <Button
-                type="submit"
               <Button type='submit' disabled={isLoading} className='glx-button w-full'>
                 {isLoading ? 'Updating...' : 'Update Password'}
               </Button>

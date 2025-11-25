@@ -170,70 +170,37 @@ export function DashboardPage() {
           className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'
         >
           <Card className='glx-card'>
-              <CardContent className="p-4 text-center">
-                <Users className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                <p className="text-2xl font-bold">{stats.helpOffered}</p>
-                <p className="text-sm text-gray-600">Help Offered</p>
-              </CardContent>
-            </Card>
+            <CardContent className='p-4 text-center'>
+              <HandHeart className='h-8 w-8 mx-auto mb-2 text-purple-600' />
+              <p className='text-2xl font-bold'>{stats?.helpRequestsCreated || 0}</p>
+              <p className='text-sm text-gray-600'>Help Requested</p>
+            </CardContent>
+          </Card>
 
-            <Card className="glx-card">
-              <CardContent className="p-4 text-center">
-                <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-red-600" />
-                <p className="text-2xl font-bold">{stats.crisisReported}</p>
-                <p className="text-sm text-gray-600">Crisis Reported</p>
-              </CardContent>
-            </Card>
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <Users className='h-8 w-8 mx-auto mb-2 text-blue-600' />
+              <p className='text-2xl font-bold'>{stats?.helpOffered || 0}</p>
+              <p className='text-sm text-gray-600'>Help Offered</p>
+            </CardContent>
+          </Card>
 
-            <Card className="glx-card">
-              <CardContent className="p-4 text-center">
-                <Vote className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                <p className="text-2xl font-bold">{stats.proposalsCreated}</p>
-                <p className="text-sm text-gray-600">Proposals Created</p>
-              </CardContent>
-            </Card>
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <AlertTriangle className='h-8 w-8 mx-auto mb-2 text-red-600' />
+              <p className='text-2xl font-bold'>{stats?.crisisReported || 0}</p>
+              <p className='text-sm text-gray-600'>Crisis Reported</p>
+            </CardContent>
+          </Card>
 
-                <TrendingUp className="h-8 w-8 mx-auto mb-2 text-yellow-600" />
-            <Card className='glx-card'>
-              <CardContent className='p-4 text-center'>
-                <HandHeart className='h-8 w-8 mx-auto mb-2 text-purple-600' />
-                <p className='text-2xl font-bold'>{stats.helpRequestsCreated}</p>
-                <p className='text-sm text-gray-600'>Help Requested</p>
-              </CardContent>
-            </Card>
-
-            <Card className='glx-card'>
-              <CardContent className='p-4 text-center'>
-                <Users className='h-8 w-8 mx-auto mb-2 text-blue-600' />
-                <p className='text-2xl font-bold'>{stats.helpOffered}</p>
-                <p className='text-sm text-gray-600'>Help Offered</p>
-              </CardContent>
-            </Card>
-
-            <Card className='glx-card'>
-              <CardContent className='p-4 text-center'>
-                <AlertTriangle className='h-8 w-8 mx-auto mb-2 text-red-600' />
-                <p className='text-2xl font-bold'>{stats.crisisReported}</p>
-                <p className='text-sm text-gray-600'>Crisis Reported</p>
-              </CardContent>
-            </Card>
-
-            <Card className='glx-card'>
-              <CardContent className='p-4 text-center'>
-                <Vote className='h-8 w-8 mx-auto mb-2 text-green-600' />
-                <p className='text-2xl font-bold'>{stats.proposalsCreated}</p>
-                <p className='text-sm text-gray-600'>Proposals Created</p>
-              </CardContent>
-            </Card>
-
-            <Card className='glx-card'>
-              <CardContent className='p-4 text-center'>
-                <TrendingUp className='h-8 w-8 mx-auto mb-2 text-yellow-600' />
-                <p className='text-2xl font-bold'>{stats.votescast}</p>
-                <p className='text-sm text-gray-600'>Votes Cast</p>
-              </CardContent>
-            </Card>
-          </motion.div>
+          <Card className='glx-card'>
+            <CardContent className='p-4 text-center'>
+              <Vote className='h-8 w-8 mx-auto mb-2 text-green-600' />
+              <p className='text-2xl font-bold'>{stats?.proposalsCreated || 0}</p>
+              <p className='text-sm text-gray-600'>Proposals Created</p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Recent Help Requests */}
         <motion.div

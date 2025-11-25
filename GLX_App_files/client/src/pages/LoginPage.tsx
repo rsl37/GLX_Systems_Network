@@ -129,14 +129,12 @@ export function LoginPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className='flex items-center justify-center gap-2 mb-4'
             >
-                GLX
               <Zap className='h-8 w-8 text-purple-500' />
               <CardTitle className='text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent'>
                 GLX
               </CardTitle>
               <Sparkles className='h-8 w-8 text-coral-500' />
             </motion.div>
-              Connect the World
             <CardDescription className='text-lg text-gray-600'>
               Civic Network Platform
             </CardDescription>
