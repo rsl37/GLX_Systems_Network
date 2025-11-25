@@ -114,14 +114,14 @@ export function LoginPage() {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-4 galax-holographic'>
+    <div className='min-h-screen flex items-center justify-center p-4 glx-holographic'>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-        <Card className='galax-card animate-pulse-glow'>
+        <Card className='glx-card animate-pulse-glow'>
           <CardHeader className='text-center pb-8'>
             <motion.div
               initial={{ scale: 0.8 }}
@@ -205,7 +205,7 @@ export function LoginPage() {
                       placeholder='Enter your phone number'
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
-                      className='galax-input flex-1'
+                      className='glx-input flex-1'
                       required
                     />
                   </div>
@@ -216,7 +216,7 @@ export function LoginPage() {
                     placeholder='Enter your email'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className='galax-input'
+                    className='glx-input'
                     required
                   />
                 )}
@@ -230,7 +230,7 @@ export function LoginPage() {
                   placeholder='Enter your password'
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className='galax-input'
+                  className='glx-input'
                   required
                 />
               </div>
@@ -248,7 +248,7 @@ export function LoginPage() {
 
               <Button
                 type='submit'
-                className='w-full galax-button'
+                className='w-full glx-button'
                 disabled={
                   isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)
                 }
@@ -284,7 +284,7 @@ export function LoginPage() {
 
             <Button
               variant='outline'
-              className='w-full galax-button-accent'
+              className='w-full glx-button-accent'
               onClick={handleWalletLogin}
               disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
             >
