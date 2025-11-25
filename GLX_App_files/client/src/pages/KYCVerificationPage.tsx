@@ -331,7 +331,7 @@ export function KYCVerificationPage() {
           <Button
             onClick={() => setStep('upload')}
             disabled={isLoading}
-            className='galax-button w-full'
+            className='glx-button w-full'
           >
             <div className='flex items-center gap-2'>
               <Upload className='h-4 w-4' />
@@ -457,7 +457,7 @@ export function KYCVerificationPage() {
         <Button
           onClick={submitKYCDocuments}
           disabled={!selectedDocumentType || !documentNumber || !documentFile || isLoading}
-          className='galax-button w-full'
+          className='glx-button w-full'
         >
           {isLoading ? (
             <div className='flex items-center gap-2'>
@@ -507,7 +507,7 @@ export function KYCVerificationPage() {
           className="glx-button w-full"
         >
       <div className='space-y-3'>
-        <Button onClick={() => navigate('/dashboard')} className='galax-button w-full'>
+        <Button onClick={() => navigate('/dashboard')} className='glx-button w-full'>
           Continue to Dashboard
         </Button>
 
@@ -533,7 +533,7 @@ export function KYCVerificationPage() {
         transition={{ duration: 0.5 }}
         className='w-full max-w-md'
       >
-        <Card className='galax-card'>
+        <Card className='glx-card'>
           <CardHeader className='text-center'>
             <CardTitle className='text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'>
               KYC Verification
