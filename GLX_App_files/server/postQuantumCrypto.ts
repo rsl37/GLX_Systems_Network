@@ -281,4 +281,3 @@ export const getPostQuantumStatus = () => {
 export const testPostQuantumOperations = async () => {
   return postQuantumCrypto.testOperations();
 };
-}

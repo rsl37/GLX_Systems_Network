@@ -782,7 +782,6 @@ function getInitializationPromise() {
 
 // Export the database instance and utility functions
 export {
-export {
   db,
   dbSelector,
   postgresPool,
