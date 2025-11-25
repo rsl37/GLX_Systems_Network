@@ -37,10 +37,6 @@ export default defineConfig({
         'coverage/',
         '**/*.d.ts'
       ]
-    }
-  }
-})
-      exclude: ['node_modules/', 'src/__tests__/setup.ts', 'dist/', 'coverage/', '**/*.d.ts'],
     },
   },
 });
