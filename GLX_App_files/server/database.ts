@@ -361,13 +361,6 @@ const dbSelector = {
   // Primary database (auto-selected based on environment and configuration)
   primary: db,
 
-  // Use PostgreSQL for: Production, complex queries, concurrent operations, scalable data
-  postgres: postgresKysely,
-
-  // Primary database (auto-selected based on environment and configuration)
-  primary: db,
-  
-
   // Get optimal database for specific operations
   getOptimalDB: (operation: 'read' | 'write' | 'complex' | 'lightweight') => {
     switch (operation) {
@@ -388,11 +381,6 @@ const dbSelector = {
   isPostgresAvailable: () => !!postgresKysely,
   isSqliteAvailable: () => !!sqliteKysely,
 
-
-  // Check if specific database is available
-  isPostgresAvailable: () => !!postgresKysely,
-  isSqliteAvailable: () => !!sqliteKysely,
-
   // Get database info
   getStrategy: () => strategy,
 };
@@ -402,11 +390,6 @@ const dbSelector = {
  */
 async function initializeDatabase() {
   console.log(`🔧 Initializing ${strategy.primary.toUpperCase()} database schema...`);
-
-  try {
-    // Initialize primary database
-    await initializeDatabaseSchema(db, strategy.primary);
-
 
   try {
     // Initialize primary database

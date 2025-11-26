@@ -264,6 +264,57 @@ class PostQuantumCryptoService {
     const results: Record<string, boolean> = {};
     const errors: string[] = [];
 
+    try {
+      // Test ML-KEM key encapsulation
+      const testData = new Uint8Array(Buffer.from('test-data-for-encryption'));
+      const encrypted = await this.encapsulateKey(testData);
+      results['mlkem-encapsulation'] = encrypted.ciphertext.length > 0;
+    } catch (error) {
+      results['mlkem-encapsulation'] = false;
+      errors.push(`ML-KEM encapsulation failed: ${error}`);
+    }
+
+    try {
+      // Test ML-DSA signature
+      const testMessage = new Uint8Array(Buffer.from('test-message-for-signing'));
+      const signature = await this.signData(testMessage);
+      results['mldsa-signature'] = signature.signature.length > 0;
+    } catch (error) {
+      results['mldsa-signature'] = false;
+      errors.push(`ML-DSA signature failed: ${error}`);
+    }
+
+    try {
+      // Test zero-knowledge proof generation
+      const secretData = new Uint8Array(Buffer.from('secret'));
+      const publicInputs = new Uint8Array(Buffer.from('public'));
+      const zkProof = await this.generateZKProof(secretData, publicInputs);
+      results['zk-proof'] = zkProof.proof.length > 0;
+    } catch (error) {
+      results['zk-proof'] = false;
+      errors.push(`ZK proof generation failed: ${error}`);
+    }
+
+    try {
+      // Test hybrid encryption
+      const testData = new Uint8Array(Buffer.from('test-hybrid-data'));
+      const hybridResult = await this.hybridEncrypt(testData);
+      results['hybrid-encryption'] = hybridResult.combinedSecurity;
+    } catch (error) {
+      results['hybrid-encryption'] = false;
+      errors.push(`Hybrid encryption failed: ${error}`);
+    }
+
+    const success = Object.values(results).every(r => r === true);
+
+    return {
+      success,
+      results,
+      errors
+    };
+  }
+}
+
 // Export singleton instance
 export const postQuantumCrypto = new PostQuantumCryptoService();
 

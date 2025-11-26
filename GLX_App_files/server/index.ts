@@ -131,16 +131,7 @@ const pusher = new Pusher({
 
 // Initialize realtime manager
 const realtimeManager = new RealtimeManager();
-
 console.log('🔌 RealtimeManager initialized');
-
-// Initialize RealtimeManager for SSE connections
-const realtimeManager = new RealtimeManager();
-console.log('⚡ RealtimeManager initialized for real-time connections');
-
-// Initialize RealtimeManager
-const realtimeManager = new RealtimeManager(pusher);
-console.log('🔗 RealtimeManager initialized');
 
 const app = express();
 const server = createServer(app);
@@ -1032,10 +1023,11 @@ export async function startServer(port: number) {
 
     // Initialize Post-Quantum Cryptography Security Baseline
     try {
-      const pqSecurityStatus = postQuantumSecurity.initializeSecurity();
+      await postQuantumCrypto.initialize();
+      const pqStatus = postQuantumCrypto.getStatus();
       console.log("🔐 Post-Quantum Security Baseline initialized successfully");
-      console.log(`   • Security Level: ${pqSecurityStatus.securityLevel} (256-bit equivalent)`);
-      console.log(`   • Algorithms: ${pqSecurityStatus.algorithms.join(', ')}`);
+      console.log(`   • Security Level: 5 (256-bit equivalent)`);
+      console.log(`   • Algorithms: ML-KEM-1024, ML-DSA-87, SLH-DSA-SHAKE-256s`);
 
       logSecurityEvent({
         type: 'system',
@@ -1043,8 +1035,8 @@ export async function startServer(port: number) {
         ip: 'system',
         details: {
           event: "Post-Quantum Security initialized",
-          securityLevel: pqSecurityStatus.securityLevel,
-          algorithms: pqSecurityStatus.algorithms
+          initialized: pqStatus.initialized,
+          algorithms: Object.keys(pqStatus.algorithms)
         },
         action: 'Post-quantum cryptography baseline enabled',
         status: 'allowed',
