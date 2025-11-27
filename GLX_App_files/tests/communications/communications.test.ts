@@ -323,15 +323,15 @@ describe('Hybrid Communication System Tests', () => {
   });
 
   describe('Webhooks', () => {
-    test('should accept Twilio webhook', async () => {
+    test('should accept Vonage webhook', async () => {
       const response = await request(app)
-        .post('/api/communications/webhooks/twilio')
+        .post('/api/communications/webhooks/vonage')
         .send({
-          MessageSid: 'SM123',
-          MessageStatus: 'delivered',
+          message_uuid: 'msg-123',
+          status: 'delivered',
         });
 
-      // Returns 200 with TwiML response
+      // Returns 200 with JSON response
       expect(response.status).toBe(200);
     });
   });

@@ -7,7 +7,7 @@
  */
 
 /**
- * Twilio Integration Module
+ * Vonage Integration Module
  *
  * Provides SMS and voice escalation for critical incidents and account events.
  * Used for immediate, critical alerts and reaching users outside the platform.
@@ -15,7 +15,7 @@
 
 import type {
   IEscalationProvider,
-  TwilioConfig,
+  VonageConfig,
   SMSMessage,
   SMSResult,
   VoiceCallRequest,
@@ -27,56 +27,54 @@ import type {
 } from './types.js';
 
 // ============================================================================
-// Twilio API Types
+// Vonage API Types
 // ============================================================================
 
-interface TwilioMessageResponse {
-  sid: string;
-  status: string;
-  error_code?: number;
-  error_message?: string;
+interface VonageMessageResponse {
+  message_uuid: string;
+  status?: string;
+  error_text?: string;
 }
 
-interface TwilioCallResponse {
-  sid: string;
+interface VonageCallResponse {
+  uuid: string;
   status: string;
-  error_code?: number;
-  error_message?: string;
+  error_text?: string;
 }
 
 // ============================================================================
 // Status Mapping
 // ============================================================================
 
-const TWILIO_STATUS_MAP: Record<string, DeliveryStatus> = {
-  queued: 'queued',
-  sending: 'queued',
-  sent: 'sent',
+const VONAGE_STATUS_MAP: Record<string, DeliveryStatus> = {
+  submitted: 'queued',
   delivered: 'delivered',
-  undelivered: 'undelivered',
+  expired: 'undelivered',
   failed: 'failed',
+  rejected: 'failed',
+  accepted: 'sent',
 };
 
 // ============================================================================
-// Twilio Provider Implementation
+// Vonage Provider Implementation
 // ============================================================================
 
-export class TwilioProvider implements IEscalationProvider {
-  readonly name = 'twilio' as const;
+export class VonageProvider implements IEscalationProvider {
+  readonly name = 'vonage' as const;
 
-  private config: TwilioConfig | null = null;
+  private config: VonageConfig | null = null;
   private escalationConfig: EscalationConfig | null = null;
   private connected = false;
   private lastHealthCheck: Date = new Date();
   private healthError: string | undefined;
 
-  // Twilio client (dynamically loaded)
-  private twilioClient: any = null;
+  // Vonage client (dynamically loaded)
+  private vonageClient: any = null;
 
   /**
-   * Initialize the Twilio provider with configuration
+   * Initialize the Vonage provider with configuration
    */
-  initialize(config: TwilioConfig, escalationConfig?: EscalationConfig): void {
+  initialize(config: VonageConfig, escalationConfig?: EscalationConfig): void {
     this.config = config;
     this.escalationConfig = escalationConfig || {
       enableSMS: true,
@@ -85,7 +83,7 @@ export class TwilioProvider implements IEscalationProvider {
       retryAttempts: 3,
       retryDelayMs: 5000,
     };
-    console.log('📱 Twilio provider initialized');
+    console.log('📱 Vonage provider initialized');
   }
 
   /**
@@ -96,27 +94,32 @@ export class TwilioProvider implements IEscalationProvider {
   }
 
   /**
-   * Connect to Twilio API
+   * Connect to Vonage API
    */
   async connect(): Promise<void> {
     if (!this.config) {
-      throw new Error('Twilio provider not initialized. Call initialize() first.');
+      throw new Error('Vonage provider not initialized. Call initialize() first.');
     }
 
     try {
-      // Attempt to load Twilio SDK if available
-      // The twilio package may not be present in all environments
+      // Attempt to load Vonage SDK if available
+      // The @vonage/server-sdk package may not be present in all environments
       // Falls back to HTTP API if not installed
       try {
-        // Check if twilio module is available by attempting to require.resolve
-        // This is safe as we're just checking existence, not executing untrusted code
-        const twilioPath = 'twilio';
-        const twilioModule = await eval(`import('${twilioPath}')`);
-        this.twilioClient = twilioModule.default(this.config.accountSid, this.config.authToken);
+        // Use dynamic import to avoid TypeScript errors
+        const vonagePath = '@vonage/server-sdk';
+        const vonageModule = await eval(`import('${vonagePath}')`);
+        const { Vonage } = vonageModule;
+        this.vonageClient = new Vonage({
+          apiKey: this.config.apiKey,
+          apiSecret: this.config.apiSecret,
+          applicationId: this.config.applicationId,
+          privateKey: this.config.privateKey,
+        });
       } catch (importError) {
-        // Twilio SDK not installed - use HTTP API directly
-        console.log('📱 Twilio SDK not found, using HTTP API fallback');
-        this.twilioClient = null;
+        // Vonage SDK not installed - use HTTP API directly
+        console.log('📱 Vonage SDK not found, using HTTP API fallback');
+        this.vonageClient = null;
       }
 
       // Verify credentials by checking account
@@ -124,22 +127,22 @@ export class TwilioProvider implements IEscalationProvider {
 
       this.connected = true;
       this.healthError = undefined;
-      console.log('✅ Connected to Twilio API');
+      console.log('✅ Connected to Vonage API');
     } catch (error) {
       this.connected = false;
       this.healthError = error instanceof Error ? error.message : 'Connection failed';
-      console.error('❌ Failed to connect to Twilio:', this.healthError);
+      console.error('❌ Failed to connect to Vonage:', this.healthError);
       throw error;
     }
   }
 
   /**
-   * Disconnect from Twilio API
+   * Disconnect from Vonage API
    */
   async disconnect(): Promise<void> {
     this.connected = false;
-    this.twilioClient = null;
-    console.log('📱 Disconnected from Twilio API');
+    this.vonageClient = null;
+    console.log('📱 Disconnected from Vonage API');
   }
 
   /**
@@ -147,12 +150,12 @@ export class TwilioProvider implements IEscalationProvider {
    */
   getHealthStatus(): ProviderHealthStatus {
     return {
-      provider: 'twilio',
+      provider: 'vonage',
       connected: this.connected,
       lastCheck: this.lastHealthCheck,
       error: this.healthError,
       details: {
-        phoneNumber: this.config?.phoneNumber,
+        phoneNumber: this.config?.fromNumber,
         smsEnabled: this.escalationConfig?.enableSMS,
         voiceEnabled: this.escalationConfig?.enableVoice,
         priorityThreshold: this.escalationConfig?.priorityThreshold,
@@ -248,17 +251,12 @@ export class TwilioProvider implements IEscalationProvider {
     this.ensureConnected();
 
     try {
-      if (this.twilioClient) {
-        const message = await this.twilioClient.messages(messageId).fetch();
-        return TWILIO_STATUS_MAP[message.status] || 'queued';
-      } else {
-        // HTTP API fallback
-        const response = await this.makeHttpRequest<TwilioMessageResponse>(
-          `/Messages/${messageId}.json`,
-          'GET'
-        );
-        return TWILIO_STATUS_MAP[response.status] || 'queued';
-      }
+      // Use HTTP API to check status
+      const response = await this.makeHttpRequest<{ status: string }>(
+        `/messages/${messageId}`,
+        'GET'
+      );
+      return VONAGE_STATUS_MAP[response.status] || 'queued';
     } catch (error) {
       console.error('❌ Failed to get delivery status:', error);
       return 'failed';
@@ -329,7 +327,7 @@ export class TwilioProvider implements IEscalationProvider {
 
   private ensureConnected(): void {
     if (!this.isConnected()) {
-      throw new Error('Twilio provider not connected. Call connect() first.');
+      throw new Error('Vonage provider not connected. Call connect() first.');
     }
   }
 
@@ -349,34 +347,39 @@ export class TwilioProvider implements IEscalationProvider {
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        let response: TwilioMessageResponse;
+        let response: VonageMessageResponse;
 
-        if (this.twilioClient) {
-          // Use Twilio SDK
-          response = await this.twilioClient.messages.create({
-            body: message.body,
-            from: this.config!.phoneNumber,
+        if (this.vonageClient) {
+          // Use Vonage SDK
+          const result = await this.vonageClient.sms.send({
             to: message.to,
-            messagingServiceSid: this.config!.messagingServiceSid,
+            from: this.config!.fromNumber,
+            text: message.body,
           });
+          response = {
+            message_uuid: result.messages?.[0]?.['message-id'] || result['message-id'] || '',
+            status: result.messages?.[0]?.status || 'submitted',
+          };
         } else {
           // Use HTTP API
-          response = await this.makeHttpRequest<TwilioMessageResponse>('/Messages.json', 'POST', {
-            Body: message.body,
-            From: this.config!.phoneNumber,
-            To: message.to,
+          response = await this.makeHttpRequest<VonageMessageResponse>('/sms/json', 'POST', {
+            api_key: this.config!.apiKey,
+            api_secret: this.config!.apiSecret,
+            to: message.to,
+            from: this.config!.fromNumber,
+            text: message.body,
           });
         }
 
-        if (response.error_code) {
-          throw new Error(response.error_message || `Error code: ${response.error_code}`);
+        if (response.error_text) {
+          throw new Error(response.error_text);
         }
 
-        console.log(`📤 SMS sent to ${this.maskPhoneNumber(message.to)} (SID: ${response.sid})`);
+        console.log(`📤 SMS sent to ${this.maskPhoneNumber(message.to)} (UUID: ${response.message_uuid})`);
         return {
           success: true,
-          messageId: response.sid,
-          deliveryStatus: TWILIO_STATUS_MAP[response.status] || 'queued',
+          messageId: response.message_uuid,
+          deliveryStatus: VONAGE_STATUS_MAP[response.status || 'submitted'] || 'queued',
         };
       } catch (error) {
         console.warn(`⚠️ SMS attempt ${attempt}/${maxAttempts} failed:`, error);
@@ -394,38 +397,48 @@ export class TwilioProvider implements IEscalationProvider {
   }
 
   private async makeVoiceCall(request: VoiceCallRequest): Promise<VoiceCallResult> {
-    // Create TwiML for the voice message
-    const twiml = `<Response><Say voice="alice">${this.escapeXml(request.message)}</Say></Response>`;
+    // Create NCCO (Nexmo Call Control Object) for the voice message
+    const ncco = [
+      {
+        action: 'talk',
+        text: request.message,
+        voiceName: 'Amy', // Vonage voice
+      },
+    ];
 
     try {
-      let response: TwilioCallResponse;
+      let response: VonageCallResponse;
 
-      if (this.twilioClient) {
-        // Use Twilio SDK
-        response = await this.twilioClient.calls.create({
-          twiml: twiml,
-          from: this.config!.phoneNumber,
-          to: request.to,
-          statusCallback: request.callbackUrl,
+      if (this.vonageClient) {
+        // Use Vonage SDK
+        const result = await this.vonageClient.voice.createOutboundCall({
+          to: [{ type: 'phone', number: request.to }],
+          from: { type: 'phone', number: this.config!.fromNumber },
+          ncco: ncco,
+          event_url: request.callbackUrl ? [request.callbackUrl] : undefined,
         });
+        response = {
+          uuid: result.uuid,
+          status: result.status || 'started',
+        };
       } else {
         // Use HTTP API
-        response = await this.makeHttpRequest<TwilioCallResponse>('/Calls.json', 'POST', {
-          Twiml: twiml,
-          From: this.config!.phoneNumber,
-          To: request.to,
-          StatusCallback: request.callbackUrl,
+        response = await this.makeHttpRequest<VonageCallResponse>('/calls', 'POST', {
+          to: [{ type: 'phone', number: request.to }],
+          from: { type: 'phone', number: this.config!.fromNumber },
+          ncco: ncco,
+          event_url: request.callbackUrl ? [request.callbackUrl] : undefined,
         });
       }
 
-      if (response.error_code) {
-        throw new Error(response.error_message || `Error code: ${response.error_code}`);
+      if (response.error_text) {
+        throw new Error(response.error_text);
       }
 
-      console.log(`📞 Voice call initiated to ${this.maskPhoneNumber(request.to)} (SID: ${response.sid})`);
+      console.log(`📞 Voice call initiated to ${this.maskPhoneNumber(request.to)} (UUID: ${response.uuid})`);
       return {
         success: true,
-        callId: response.sid,
+        callId: response.uuid,
         status: response.status,
       };
     } catch (error) {
@@ -435,48 +448,47 @@ export class TwilioProvider implements IEscalationProvider {
   }
 
   private async verifyCredentials(): Promise<void> {
-    if (this.twilioClient) {
-      // Use SDK to verify
-      await this.twilioClient.api.accounts(this.config!.accountSid).fetch();
-    } else {
-      // Use HTTP API
-      await this.makeHttpRequest<{ status: string }>('/Accounts.json', 'GET');
-    }
+    // Verify by checking account balance (simple API call)
+    await this.makeHttpRequest<{ value: number }>('/account/get-balance', 'GET', {
+      api_key: this.config!.apiKey,
+      api_secret: this.config!.apiSecret,
+    });
     this.lastHealthCheck = new Date();
   }
 
   private async makeHttpRequest<T>(
     endpoint: string,
     method: 'GET' | 'POST',
-    body?: Record<string, string | undefined>
+    body?: Record<string, unknown>
   ): Promise<T> {
     if (!this.config) {
       throw new Error('Provider not configured');
     }
 
-    const baseUrl = `https://api.twilio.com/2010-04-01/Accounts/${this.config.accountSid}`;
+    const baseUrl = 'https://rest.nexmo.com';
     const url = `${baseUrl}${endpoint}`;
 
-    const auth = Buffer.from(`${this.config.accountSid}:${this.config.authToken}`).toString(
-      'base64'
-    );
-
     const headers: Record<string, string> = {
-      Authorization: `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
     };
+
+    // Add basic auth if using API key/secret
+    if (this.config.apiKey && this.config.apiSecret) {
+      const auth = Buffer.from(`${this.config.apiKey}:${this.config.apiSecret}`).toString('base64');
+      headers['Authorization'] = `Basic ${auth}`;
+    }
 
     const response = await fetch(url, {
       method,
       headers,
-      body: body ? new URLSearchParams(body as Record<string, string>).toString() : undefined,
+      body: body ? JSON.stringify(body) : undefined,
     });
 
     this.lastHealthCheck = new Date();
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Twilio API error: ${response.status} - ${errorText}`);
+      throw new Error(`Vonage API error: ${response.status} - ${errorText}`);
     }
 
     return response.json() as Promise<T>;
@@ -487,21 +499,12 @@ export class TwilioProvider implements IEscalationProvider {
     return phone.slice(0, 3) + '***' + phone.slice(-4);
   }
 
-  private escapeXml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
-  }
-
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 
 // Export singleton instance
-export const twilioProvider = new TwilioProvider();
+export const vonageProvider = new VonageProvider();
 
-export default twilioProvider;
+export default vonageProvider;

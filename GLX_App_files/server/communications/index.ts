@@ -10,8 +10,8 @@
  * Communication Factory
  *
  * Provides a unified interface for managing hybrid communication providers.
- * Supports modular switching between Pusher, Socket.io, Ably, Firebase,
- * Resgrid, and Twilio based on configuration.
+ * Supports modular switching between Pusher, Socket.io, Ably,
+ * Resgrid, and Vonage based on configuration.
  */
 
 import type {
@@ -39,8 +39,8 @@ import type {
 
 import { ResgridProvider, resgridProvider } from './resgrid.js';
 import { SocketIOProvider, socketIOProvider } from './socketio.js';
-import { AblyProvider, FirebaseProvider, ablyProvider, firebaseProvider } from './globalMessaging.js';
-import { TwilioProvider, twilioProvider } from './twilio.js';
+import { AblyProvider, ablyProvider } from './globalMessaging.js';
+import { VonageProvider, vonageProvider } from './vonage.js';
 
 // ============================================================================
 // Communication Manager
@@ -106,8 +106,8 @@ export class CommunicationManager {
       await this.initializeDispatchProvider();
     }
 
-    // Initialize escalation provider (Twilio)
-    if (this.config.twilio) {
+    // Initialize escalation provider (Vonage)
+    if (this.config.vonage) {
       await this.initializeEscalationProvider();
     }
   }
@@ -130,15 +130,6 @@ export class CommunicationManager {
           await ablyProvider.connect();
           this.realtimeProvider = ablyProvider;
           console.log('📡 Using Ably for real-time messaging');
-        }
-        break;
-
-      case 'firebase':
-        if (this.config.firebase) {
-          firebaseProvider.initialize(this.config.firebase);
-          await firebaseProvider.connect();
-          this.realtimeProvider = firebaseProvider;
-          console.log('📡 Using Firebase for real-time messaging');
         }
         break;
 
@@ -165,16 +156,16 @@ export class CommunicationManager {
   }
 
   private async initializeEscalationProvider(): Promise<void> {
-    if (!this.config?.twilio) return;
+    if (!this.config?.vonage) return;
 
-    twilioProvider.initialize(this.config.twilio, this.config.escalation);
+    vonageProvider.initialize(this.config.vonage, this.config.escalation);
 
     try {
-      await twilioProvider.connect();
-      this.escalationProvider = twilioProvider;
-      console.log('📱 Twilio escalation provider connected');
+      await vonageProvider.connect();
+      this.escalationProvider = vonageProvider;
+      console.log('📱 Vonage escalation provider connected');
     } catch (error) {
-      console.warn('⚠️ Twilio connection failed, SMS/voice escalation limited:', error);
+      console.warn('⚠️ Vonage connection failed, SMS/voice escalation limited:', error);
     }
   }
 
@@ -379,7 +370,7 @@ export class CommunicationManager {
 
     const result = await this.escalationProvider.sendSMS(message);
     if (result.success) {
-      this.emitEvent('escalation:sms_sent', 'twilio', { message, result });
+      this.emitEvent('escalation:sms_sent', 'vonage', { message, result });
     }
     return result;
   }
@@ -405,7 +396,7 @@ export class CommunicationManager {
 
     const result = await this.escalationProvider.initiateVoiceCall(request);
     if (result.success) {
-      this.emitEvent('escalation:call_initiated', 'twilio', { request, result });
+      this.emitEvent('escalation:call_initiated', 'vonage', { request, result });
     }
     return result;
   }
@@ -560,25 +551,13 @@ export function loadConfigFromEnv(): HybridCommunicationConfig {
         }
       : undefined,
 
-    firebase: process.env.FIREBASE_PROJECT_ID
+    vonage: process.env.VONAGE_API_KEY
       ? {
-          projectId: process.env.FIREBASE_PROJECT_ID,
-          apiKey: process.env.FIREBASE_API_KEY || '',
-          authDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
-          databaseUrl: process.env.FIREBASE_DATABASE_URL,
-          storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-          messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-          appId: process.env.FIREBASE_APP_ID,
-        }
-      : undefined,
-
-    twilio: process.env.TWILIO_SID
-      ? {
-          accountSid: process.env.TWILIO_SID,
-          authToken: process.env.TWILIO_AUTH_TOKEN || '',
-          phoneNumber: process.env.TWILIO_PHONE_NUMBER || '',
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
-          voiceUrl: process.env.TWILIO_VOICE_URL,
+          apiKey: process.env.VONAGE_API_KEY,
+          apiSecret: process.env.VONAGE_API_SECRET || '',
+          fromNumber: process.env.VONAGE_FROM_NUMBER || '',
+          applicationId: process.env.VONAGE_APPLICATION_ID,
+          privateKey: process.env.VONAGE_PRIVATE_KEY,
         }
       : undefined,
 
@@ -606,8 +585,7 @@ export {
   resgridProvider,
   socketIOProvider,
   ablyProvider,
-  firebaseProvider,
-  twilioProvider,
+  vonageProvider,
 };
 
 export default communicationManager;

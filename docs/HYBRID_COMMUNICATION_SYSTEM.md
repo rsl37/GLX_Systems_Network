@@ -13,8 +13,8 @@ This document outlines the recommended hybrid system for real-time chat, notific
 | Communication Types & Interfaces | ✅ Complete | `server/communications/types.ts` |
 | Resgrid Integration | ✅ Complete | `server/communications/resgrid.ts` |
 | Socket.io Provider | ✅ Complete | `server/communications/socketio.ts` |
-| Ably/Firebase Scaffold | ✅ Complete | `server/communications/globalMessaging.ts` |
-| Twilio SMS/Voice | ✅ Complete | `server/communications/twilio.ts` |
+| Ably Global Messaging | ✅ Complete | `server/communications/globalMessaging.ts` |
+| Vonage SMS/Voice | ✅ Complete | `server/communications/vonage.ts` |
 | Communication Manager | ✅ Complete | `server/communications/index.ts` |
 | API Routes | ✅ Complete | `server/routes/communications.ts` |
 | Tests | ✅ Complete | `tests/communications/` |
@@ -28,10 +28,10 @@ This document outlines the recommended hybrid system for real-time chat, notific
 
 - **Real-time Chat & Notifications (General Purpose):**  
   Use **Socket.io** for low-latency, custom chat, notifications, feeds, volunteer comms, and general in-app messaging.  
-  For broader/global reach or heavier scale, integrate **Ably** or **Firebase**.
+  For broader/global reach or heavier scale, integrate **Ably**.
 
 - **SMS/Voice Escalation:**  
-  Use **Twilio** or **Vonage** for immediate, critical alerts via SMS/voice calls—used for escalation, backup channels, or reaching users outside the platform.
+  Use **Vonage** for immediate, critical alerts via SMS/voice calls—used for escalation, backup channels, or reaching users outside the platform.
 
 ---
 
@@ -49,10 +49,9 @@ This document outlines the recommended hybrid system for real-time chat, notific
 │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
 │         │                 │                 │                   │
 │  ┌──────┴───────┐  ┌──────┴───────┐  ┌──────┴───────┐          │
-│  │  Pusher      │  │   Resgrid    │  │    Twilio    │          │
+│  │  Pusher      │  │   Resgrid    │  │    Vonage    │          │
 │  │  Socket.io   │  │              │  │              │          │
 │  │  Ably        │  │              │  │              │          │
-│  │  Firebase    │  │              │  │              │          │
 │  └──────────────┘  └──────────────┘  └──────────────┘          │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
@@ -64,7 +63,7 @@ This document outlines the recommended hybrid system for real-time chat, notific
 
 - **Flexibility:** Customizable features for civic networking, volunteering, community updates, and messaging.
 - **Low Cost:** Start with open-source (Socket.io); add managed/global services only when needed.
-- **Scalability:** Seamlessly expand from local use to national/global deployments with Ably/Firebase and Resgrid.
+- **Scalability:** Seamlessly expand from local use to national/global deployments with Ably and Resgrid.
 - **Granular Integration:** Plug in custom business logic, roles, permissions, workflows for both crisis response and everyday networking.
 - **Turnkey Dispatch:** Resgrid accelerates emergency response, minimizing engineering effort for critical workflows.
 - **Multi-purpose Communication:** Each component covers its niche, preventing lock-in and maximizing adaptability.
@@ -90,10 +89,14 @@ RESGRID_DEPARTMENT_ID=your-dept-id
 SOCKETIO_ENABLED=false
 SOCKETIO_PATH=/socket.io
 
-# Twilio (SMS/Voice)
-TWILIO_SID=your-account-sid
-TWILIO_AUTH_TOKEN=your-auth-token
-TWILIO_PHONE_NUMBER=+1234567890
+# Ably (Global Real-time Messaging)
+ABLY_API_KEY=your-ably-api-key
+ABLY_CLIENT_ID=glx-server
+
+# Vonage (SMS/Voice)
+VONAGE_API_KEY=your-api-key
+VONAGE_API_SECRET=your-api-secret
+VONAGE_FROM_NUMBER=+1234567890
 
 # Escalation Settings
 ESCALATION_ENABLE_SMS=true
@@ -171,9 +174,9 @@ const response = await fetch('/api/communications/escalate/sms', {
 | --------------------------------- | ----------------------- | -------------------------------------- |
 | Incident/crisis dispatch          | Resgrid                 | Emergencies, public safety, coordination |
 | Chat/volunteer messaging          | Socket.io               | In-app chat, volunteer groups, quick comms |
-| Notifications/feeds/updates       | Socket.io/Ably/Firebase | Activity feeds, system notifications   |
-| Global real-time scaling          | Ably/Firebase           | Large populations, global users        |
-| SMS/voice alerts & escalation     | Twilio/Vonage           | Urgent messages, off-platform outreach |
+| Notifications/feeds/updates       | Socket.io/Ably          | Activity feeds, system notifications   |
+| Global real-time scaling          | Ably                    | Large populations, global users        |
+| SMS/voice alerts & escalation     | Vonage                  | Urgent messages, off-platform outreach |
 
 ---
 
@@ -192,10 +195,6 @@ SOCKETIO_ENABLED=true
 # Use Ably (scaffold - implement when needed)
 COMM_DEFAULT_PROVIDER=ably
 ABLY_API_KEY=your-api-key
-
-# Use Firebase (scaffold - implement when needed)
-COMM_DEFAULT_PROVIDER=firebase
-FIREBASE_PROJECT_ID=your-project-id
 ```
 
 ---

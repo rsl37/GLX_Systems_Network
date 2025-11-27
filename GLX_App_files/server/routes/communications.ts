@@ -11,7 +11,7 @@
  *
  * API endpoints for the hybrid communication system including:
  * - Incident/dispatch management (Resgrid)
- * - SMS/Voice escalation (Twilio)
+ * - SMS/Voice escalation (Vonage)
  * - Communication health status
  */
 
@@ -87,8 +87,7 @@ router.get('/config', authenticateToken, async (req: AuthRequest, res) => {
       resgridEnabled: !!config?.resgrid,
       socketioEnabled: config?.socketio?.enabled,
       ablyEnabled: !!config?.ably,
-      firebaseEnabled: !!config?.firebase,
-      twilioEnabled: !!config?.twilio,
+      vonageEnabled: !!config?.vonage,
       escalation: {
         smsEnabled: config?.escalation?.enableSMS,
         voiceEnabled: config?.escalation?.enableVoice,
@@ -359,7 +358,7 @@ router.patch('/units/:id/status', authenticateToken, async (req: AuthRequest, re
 });
 
 // ============================================================================
-// Escalation Endpoints (Twilio)
+// Escalation Endpoints (Vonage)
 // ============================================================================
 
 /**
@@ -546,27 +545,28 @@ router.post('/webhooks/resgrid', async (req, res) => {
 });
 
 /**
- * POST /api/communications/webhooks/twilio
- * Handle Twilio webhook events (delivery status, etc.)
+ * POST /api/communications/webhooks/vonage
+ * Handle Vonage webhook events (delivery status, etc.)
  */
-router.post('/webhooks/twilio', async (req, res) => {
+router.post('/webhooks/vonage', async (req, res) => {
   try {
-    const { MessageSid, MessageStatus, CallSid, CallStatus } = req.body;
+    const { message_uuid, status, to, from, timestamp, uuid, call_uuid } = req.body;
 
-    console.log('📨 Received Twilio webhook:', {
-      messageSid: MessageSid,
-      messageStatus: MessageStatus,
-      callSid: CallSid,
-      callStatus: CallStatus,
+    console.log('📨 Received Vonage webhook:', {
+      messageUuid: message_uuid,
+      status: status,
+      to: to,
+      from: from,
+      callUuid: call_uuid || uuid,
     });
 
     // Process status updates
     // Could update database records, emit events, etc.
 
-    res.status(200).send('<Response></Response>');
+    res.status(200).json({ received: true });
   } catch (error) {
-    console.error('❌ Twilio webhook error:', error);
-    res.status(500).send('<Response></Response>');
+    console.error('❌ Vonage webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
   }
 });
 

@@ -24,9 +24,8 @@ export type CommunicationProvider =
   | 'pusher' // Current default provider
   | 'socketio' // Socket.io for low-latency chat
   | 'ably' // Ably for global real-time messaging
-  | 'firebase' // Firebase as alternative to Ably
   | 'resgrid' // Resgrid for incident/dispatch
-  | 'twilio'; // Twilio for SMS/voice escalation
+  | 'vonage'; // Vonage for SMS/voice escalation
 
 /**
  * Message priority levels for escalation
@@ -177,7 +176,7 @@ export interface DispatchRequest {
 }
 
 // ============================================================================
-// SMS/Voice Types (Twilio)
+// SMS/Voice Types (Vonage)
 // ============================================================================
 
 /**
@@ -250,27 +249,14 @@ export interface AblyConfig {
 }
 
 /**
- * Firebase configuration
+ * Vonage configuration
  */
-export interface FirebaseConfig {
-  projectId: string;
+export interface VonageConfig {
   apiKey: string;
-  authDomain: string;
-  databaseUrl?: string;
-  storageBucket?: string;
-  messagingSenderId?: string;
-  appId?: string;
-}
-
-/**
- * Twilio configuration
- */
-export interface TwilioConfig {
-  accountSid: string;
-  authToken: string;
-  phoneNumber: string;
-  messagingServiceSid?: string;
-  voiceUrl?: string;
+  apiSecret: string;
+  fromNumber: string;
+  applicationId?: string;
+  privateKey?: string;
 }
 
 /**
@@ -281,8 +267,7 @@ export interface HybridCommunicationConfig {
   resgrid?: ResgridConfig;
   socketio?: SocketIOConfig;
   ably?: AblyConfig;
-  firebase?: FirebaseConfig;
-  twilio?: TwilioConfig;
+  vonage?: VonageConfig;
   escalation: EscalationConfig;
 }
 
@@ -327,7 +312,7 @@ export interface IDispatchProvider extends ICommunicationProvider {
 }
 
 /**
- * SMS/Voice provider interface (Twilio)
+ * SMS/Voice provider interface (Vonage)
  */
 export interface IEscalationProvider extends ICommunicationProvider {
   sendSMS(message: SMSMessage): Promise<SMSResult>;

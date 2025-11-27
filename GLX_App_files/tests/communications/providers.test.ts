@@ -8,8 +8,8 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { ResgridProvider } from '../../server/communications/resgrid.js';
 import { SocketIOProvider } from '../../server/communications/socketio.js';
-import { AblyProvider, FirebaseProvider } from '../../server/communications/globalMessaging.js';
-import { TwilioProvider } from '../../server/communications/twilio.js';
+import { AblyProvider } from '../../server/communications/globalMessaging.js';
+import { VonageProvider } from '../../server/communications/vonage.js';
 import { CommunicationManager, loadConfigFromEnv } from '../../server/communications/index.js';
 
 describe('Communication Providers Unit Tests', () => {
@@ -178,15 +178,15 @@ describe('Communication Providers Unit Tests', () => {
     });
   });
 
-  describe('FirebaseProvider (Scaffold)', () => {
-    let provider: FirebaseProvider;
+  describe('VonageProvider', () => {
+    let provider: VonageProvider;
 
     beforeEach(() => {
-      provider = new FirebaseProvider();
+      provider = new VonageProvider();
     });
 
     test('should have correct name', () => {
-      expect(provider.name).toBe('firebase');
+      expect(provider.name).toBe('vonage');
     });
 
     test('should not be connected before initialization', () => {
@@ -195,55 +195,9 @@ describe('Communication Providers Unit Tests', () => {
 
     test('should initialize with config', () => {
       provider.initialize({
-        projectId: 'test-project',
         apiKey: 'test-key',
-        authDomain: 'test.firebaseapp.com',
-      });
-
-      // Should not throw
-      expect(provider.isConnected()).toBe(false);
-    });
-
-    test('should connect in scaffold mode', async () => {
-      provider.initialize({
-        projectId: 'test-project',
-        apiKey: 'test-key',
-        authDomain: 'test.firebaseapp.com',
-      });
-
-      await provider.connect();
-
-      expect(provider.isConnected()).toBe(true);
-    });
-
-    test('should return health status with scaffold mode', () => {
-      const status = provider.getHealthStatus();
-
-      expect(status.provider).toBe('firebase');
-      expect(status.details?.mode).toBe('scaffold');
-    });
-  });
-
-  describe('TwilioProvider', () => {
-    let provider: TwilioProvider;
-
-    beforeEach(() => {
-      provider = new TwilioProvider();
-    });
-
-    test('should have correct name', () => {
-      expect(provider.name).toBe('twilio');
-    });
-
-    test('should not be connected before initialization', () => {
-      expect(provider.isConnected()).toBe(false);
-    });
-
-    test('should initialize with config', () => {
-      provider.initialize({
-        accountSid: 'AC123',
-        authToken: 'test-token',
-        phoneNumber: '+1234567890',
+        apiSecret: 'test-secret',
+        fromNumber: '+1234567890',
       });
 
       // Should not throw
@@ -252,14 +206,14 @@ describe('Communication Providers Unit Tests', () => {
 
     test('should return health status', () => {
       provider.initialize({
-        accountSid: 'AC123',
-        authToken: 'test-token',
-        phoneNumber: '+1234567890',
+        apiKey: 'test-key',
+        apiSecret: 'test-secret',
+        fromNumber: '+1234567890',
       });
 
       const status = provider.getHealthStatus();
 
-      expect(status.provider).toBe('twilio');
+      expect(status.provider).toBe('vonage');
       expect(status.connected).toBe(false);
       expect(status.details?.phoneNumber).toBe('+1234567890');
     });
