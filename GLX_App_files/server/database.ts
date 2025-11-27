@@ -249,6 +249,14 @@ export interface DatabaseSchema {
     created_at: string;
     updated_at: string;
   };
+  token_blacklist: {
+    id: number;
+    token: string;
+    user_id: number;
+    reason: string;
+    expires_at: string;
+    created_at: string;
+  };
 }
 
 // Hybrid Database Configuration - SQLite for development/lightweight, PostgreSQL for production/heavy operations
@@ -645,6 +653,23 @@ async function createAdditionalTables(
     .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade'))
     .addColumn('vote_type', 'varchar(10)', col => col.notNull())
     .addColumn('delegate_id', 'integer', col => col.references('users.id').onDelete('set null'))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .execute();
+
+  // Token blacklist table for logout/token revocation
+  await database.schema
+    .createTable('token_blacklist')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', col => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('token', 'text', col => col.notNull())
+    .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade'))
+    .addColumn('reason', 'varchar(50)', col => col.defaultTo('logout'))
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime', col => col.notNull())
     .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
       col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
     )
