@@ -15,6 +15,7 @@
  * Documentation: https://resgrid.com/api
  */
 
+import crypto from 'crypto';
 import type {
   IDispatchProvider,
   ResgridConfig,
@@ -448,9 +449,7 @@ export class ResgridProvider implements IDispatchProvider {
       return false;
     }
 
-    // In production, implement proper HMAC verification
-    // For now, we'll use a simple comparison (PLACEHOLDER)
-    const crypto = require('crypto');
+    // Implement proper HMAC verification
     const expectedSignature = crypto
       .createHmac('sha256', this.config.webhookSecret)
       .update(payload)

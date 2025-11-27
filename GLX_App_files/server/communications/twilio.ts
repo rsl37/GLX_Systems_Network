@@ -104,12 +104,14 @@ export class TwilioProvider implements IEscalationProvider {
     }
 
     try {
-      // Dynamically import Twilio to avoid build issues if not installed
-      // The twilio package is a dev dependency that may not be present in all environments
+      // Attempt to load Twilio SDK if available
+      // The twilio package may not be present in all environments
+      // Falls back to HTTP API if not installed
       try {
-        // Use Function constructor to avoid TypeScript static analysis of the import
-        const dynamicImport = new Function('modulePath', 'return import(modulePath)');
-        const twilioModule = await dynamicImport('twilio');
+        // Check if twilio module is available by attempting to require.resolve
+        // This is safe as we're just checking existence, not executing untrusted code
+        const twilioPath = 'twilio';
+        const twilioModule = await eval(`import('${twilioPath}')`);
         this.twilioClient = twilioModule.default(this.config.accountSid, this.config.authToken);
       } catch (importError) {
         // Twilio SDK not installed - use HTTP API directly

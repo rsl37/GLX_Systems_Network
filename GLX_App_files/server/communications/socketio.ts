@@ -454,9 +454,21 @@ export class SocketIOProvider implements IRealtimeProvider {
         // User is already in their personal channel from connection
       });
 
+      // Periodic heartbeat - store reference for cleanup
+      const heartbeatInterval = setInterval(() => {
+        if (socket.connected) {
+          socket.emit('heartbeat', Date.now());
+        } else {
+          clearInterval(heartbeatInterval);
+        }
+      }, 30000);
+
       // Handle disconnect
       socket.on('disconnect', reason => {
         console.log(`🔌 Client disconnected: ${socket.id} (reason: ${reason})`);
+
+        // Clean up heartbeat interval to prevent memory leaks
+        clearInterval(heartbeatInterval);
 
         // Remove from connected clients
         const userSockets = this.connectedClients.get(userId);
@@ -473,15 +485,6 @@ export class SocketIOProvider implements IRealtimeProvider {
           this.emitPresenceUpdate(roomId);
         });
       });
-
-      // Periodic heartbeat
-      const heartbeatInterval = setInterval(() => {
-        if (socket.connected) {
-          socket.emit('heartbeat', Date.now());
-        } else {
-          clearInterval(heartbeatInterval);
-        }
-      }, 30000);
     });
 
     // Handle server-level errors
