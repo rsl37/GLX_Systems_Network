@@ -5,21 +5,12 @@
 name: Quality Gate
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'GLX_App_files/src/**'
-      - 'GLX_App_files/client/**'
-      - 'GLX_App_files/e2e/**'
   pull_request:
     branches: [main]
     paths:
       - 'GLX_App_files/src/**'
       - 'GLX_App_files/client/**'
       - 'GLX_App_files/e2e/**'
-  schedule:
-    # Weekly performance baseline on Sundays at 4 AM UTC
-    - cron: '0 4 * * 0'
   workflow_dispatch:
 
 permissions:
