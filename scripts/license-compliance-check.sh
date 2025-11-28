@@ -58,8 +58,6 @@ INCOMPATIBLE_LICENSES=(
     "LGPL-3.0"
     "EPL-1.0"
     "EPL-2.0"
-    "MPL-1.1"
-    "MPL-2.0"
     "CDDL-1.0"
     "CDDL-1.1"
     "EUPL-1.1"
@@ -69,12 +67,17 @@ INCOMPATIBLE_LICENSES=(
     "RSCPL"
 )
 
+# Note: MPL-1.1 and MPL-2.0 moved to REVIEW_REQUIRED as they are weak copyleft licenses
+# that only require modifications to MPL-licensed files to be shared, making them
+# compatible for use as dependencies in proprietary projects (e.g., @vercel/analytics)
 REVIEW_REQUIRED_LICENSES=(
     "Apache-1.1"
     "BSD-4-Clause"
     "CC-BY-4.0"
     "CC-BY-SA-4.0"
     "LPPL-1.3c"
+    "MPL-1.1"
+    "MPL-2.0"
     "MS-PL"
     "MS-RL"
     "OFL-1.1"

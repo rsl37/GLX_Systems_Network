@@ -5,22 +5,12 @@
 name: Security Scan
 
 on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'GLX_App_files/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/security-scan.yml'
   pull_request:
     branches: [main]
     paths:
       - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
-  schedule:
-    # Deep security scan daily at 2 AM UTC
-    - cron: '0 2 * * *'
   workflow_dispatch:
 
 permissions:
