@@ -149,7 +149,7 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🔗 Testing Web3 provider connectivity..."
-          cat > test-web3-connection.js << 'EOF'
+          cat > test-web3-connection.cjs << 'EOF'
           const https = require('https');
           const providers = [
             'eth-mainnet.alchemyapi.io',
@@ -181,8 +181,8 @@ jobs:
             console.log('Web3 provider connectivity test completed');
           }, 10000);
           EOF
-          node test-web3-connection.js
-          rm test-web3-connection.js
+          node test-web3-connection.cjs
+          rm test-web3-connection.cjs
 
       - name: Validate Post-Quantum Cryptography
         working-directory: ${{ env.WORKING_DIRECTORY }}
