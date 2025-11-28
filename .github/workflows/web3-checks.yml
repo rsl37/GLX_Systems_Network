@@ -2,18 +2,6 @@
 name: Web3 Functionality & Integration Tests
 
 'on':
-  push:
-    branches: [main, develop]
-    paths:
-      - '**/*web3*'
-      - '**/*crypto*'
-      - '**/*blockchain*'
-      - '**/*defi*'
-      - 'GLX_App_files/server/middleware/web3-security.ts'
-      - 'mcp-config.json'
-      - 'GLX_App_files/package.json'
-      - 'package.json'
-      - '.github/workflows/web3-checks.yml'
   pull_request:
     branches: [main]
     paths:
@@ -26,8 +14,6 @@ name: Web3 Functionality & Integration Tests
       - 'GLX_App_files/package.json'
       - 'package.json'
       - '.github/workflows/web3-checks.yml'
-  schedule:
-    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       force_run:
@@ -49,7 +35,6 @@ jobs:
     name: Detect Web3 Changes
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: github.event_name != 'schedule'
     outputs:
       has_web3_changes: ${{ steps.changes.outputs.web3 }}
       has_crypto_changes: ${{ steps.changes.outputs.crypto }}
@@ -87,7 +72,6 @@ jobs:
     timeout-minutes: 15
     needs: detect-web3-changes
     if: |
-      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true' ||
@@ -234,7 +218,6 @@ jobs:
     timeout-minutes: 20
     needs: [detect-web3-changes, web3-functionality]
     if: |
-      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true'
 
@@ -316,7 +299,6 @@ jobs:
     timeout-minutes: 10
     needs: [detect-web3-changes, web3-functionality]
     if: |
-      github.event_name == 'schedule' ||
       github.event.inputs.force_run == 'true' ||
       needs.detect-web3-changes.outputs.has_web3_changes == 'true' ||
       needs.detect-web3-changes.outputs.has_crypto_changes == 'true'
