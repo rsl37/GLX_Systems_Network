@@ -27,6 +27,7 @@ import crisisRoutes from './routes/crisis.js';
 import miscRoutes from './routes/misc.js';
 import createHelpRequestRoutes from './routes/helpRequests.js';
 import createRealtimeRoutes from './routes/realtime.js';
+import communicationsRoutes from './routes/communications.js';
 
 // Import KYC functions (keeping legacy for now)
 import {
@@ -411,6 +412,9 @@ app.post('/api/monitoring/errors', async (req, res): Promise<void> => {
 
 // Stablecoin API routes
 app.use('/api/stablecoin', stablecoinRoutes);
+
+// Hybrid Communication System routes
+app.use('/api/communications', communicationsRoutes);
 
 // Mount modular routes with enhanced auth security
 app.use('/api/auth', cors(createAuthCorsConfig()), requirePageVerification, authRoutes);
