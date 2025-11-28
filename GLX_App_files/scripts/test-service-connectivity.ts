@@ -13,9 +13,11 @@
  *
  * This script tests the connectivity and configuration of essential services:
  * - SMTP (Email)
- * - Twilio (SMS)
- * - Pusher (Real-time messaging)
+ * - Vonage (SMS/Voice - replaces Twilio)
+ * - Ably (Real-time messaging - replaces Pusher)
+ * - Socket.io (Real-time messaging - replaces Pusher)
  * - MetaMask/Web3 (Blockchain connectivity)
+ * - Resgrid (Emergency dispatch)
  */
 
 import dotenv from "dotenv";
@@ -185,22 +187,22 @@ async function testVonageConfig(): Promise<void> {
   }
 }
 
-// Test Socket.io with Ably Configuration (replaces Pusher for real-time messaging)
-async function testSocketioAblyConfig(): Promise<void> {
-  console.log("🔄 Testing Socket.io with Ably Configuration...");
+// Test Ably Configuration (replaces Pusher for real-time messaging)
+async function testAblyConfig(): Promise<void> {
+  console.log("🔄 Testing Ably Configuration...");
 
   const ablyApiKey = process.env.ABLY_API_KEY;
 
   // Check if Ably API key is set
   if (!ablyApiKey) {
-    addResult("Socket.io/Ably", "❌ FAIL", "Missing required environment variables", 
+    addResult("Ably", "❌ FAIL", "Missing required environment variables", 
       "Missing: ABLY_API_KEY");
     return;
   }
 
   // Validate Ably API key format (should contain a colon separating key name and secret)
   if (!ablyApiKey.includes(":") && !ablyApiKey.includes(".")) {
-    addResult("Socket.io/Ably", "⚠️ WARNING", "Ably API key format may be invalid",
+    addResult("Ably", "⚠️ WARNING", "Ably API key format may be invalid",
       "Ably API keys typically contain ':' or '.' separator");
   }
 
@@ -211,7 +213,7 @@ async function testSocketioAblyConfig(): Promise<void> {
   );
 
   if (hasPlaceholders) {
-    addResult("Socket.io/Ably", "⚠️ WARNING", "Ably configuration appears to use placeholder values",
+    addResult("Ably", "⚠️ WARNING", "Ably configuration appears to use placeholder values",
       "Please configure with real Ably credentials");
     return;
   }
@@ -220,12 +222,71 @@ async function testSocketioAblyConfig(): Promise<void> {
   try {
     const isReachable = await testHttpsConnectivity("rest.ably.io");
     if (isReachable) {
-      addResult("Socket.io/Ably", "✅ PASS", "Socket.io with Ably configuration valid and API reachable");
+      addResult("Ably", "✅ PASS", "Ably configuration valid and API reachable");
     } else {
-      addResult("Socket.io/Ably", "⚠️ WARNING", "Ably configuration valid but API connectivity test failed");
+      addResult("Ably", "⚠️ WARNING", "Ably configuration valid but API connectivity test failed");
     }
   } catch (error) {
-    addResult("Socket.io/Ably", "⚠️ WARNING", "Ably configuration valid but connectivity test failed");
+    addResult("Ably", "⚠️ WARNING", "Ably configuration valid but connectivity test failed");
+  }
+}
+
+// Test Socket.io Configuration (replaces Pusher for real-time messaging)
+async function testSocketIoConfig(): Promise<void> {
+  console.log("🔌 Testing Socket.io Configuration...");
+
+  const socketIoUrl = process.env.SOCKET_IO_URL;
+
+  // Check for Web3/Socket.io dependencies in package.json
+  try {
+    const packageJsonPath = new URL("../package.json", import.meta.url);
+    const packageJson = await import(packageJsonPath.href);
+    const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
+
+    const socketIoLibs = ["socket.io", "socket.io-client"];
+    const foundLibs = socketIoLibs.filter(lib => 
+      Object.keys(deps).some(dep => dep.includes(lib))
+    );
+
+    if (foundLibs.length === 0) {
+      addResult("Socket.io", "⚠️ WARNING", "No Socket.io libraries detected in dependencies",
+        "Consider adding socket.io and socket.io-client for real-time functionality");
+      return;
+    }
+
+    // If SOCKET_IO_URL is configured, test connectivity
+    if (socketIoUrl) {
+      // Check for placeholder values
+      const placeholders = ["your-", "example", "placeholder", "change-this"];
+      const hasPlaceholders = placeholders.some(p => 
+        socketIoUrl.toLowerCase().includes(p)
+      );
+
+      if (hasPlaceholders) {
+        addResult("Socket.io", "⚠️ WARNING", "Socket.io configuration appears to use placeholder values",
+          "Please configure with real Socket.io server URL");
+        return;
+      }
+
+      try {
+        const socketHostname = new URL(socketIoUrl).hostname;
+        const isReachable = await testHttpsConnectivity(socketHostname);
+        if (isReachable) {
+          addResult("Socket.io", "✅ PASS", `Socket.io configuration valid with libraries: ${foundLibs.join(", ")}`,
+            `Server URL: ${socketIoUrl}`);
+        } else {
+          addResult("Socket.io", "⚠️ WARNING", "Socket.io libraries found but server connectivity test failed");
+        }
+      } catch (error) {
+        addResult("Socket.io", "⚠️ WARNING", "Socket.io libraries found but URL parsing or connectivity test failed");
+      }
+    } else {
+      addResult("Socket.io", "✅ PASS", `Socket.io libraries detected: ${foundLibs.join(", ")}`,
+        "SOCKET_IO_URL not configured - using default local configuration");
+    }
+
+  } catch (error) {
+    addResult("Socket.io", "⚠️ WARNING", "Could not analyze Socket.io dependencies");
   }
 }
 
@@ -341,7 +402,8 @@ async function runServiceTests(): Promise<void> {
     await testSMTPConfig();
     await testResgridConfig();  // Essential for emergency dispatch
     await testVonageConfig();   // Replaces Twilio
-    await testSocketioAblyConfig();  // Replaces Pusher
+    await testAblyConfig();     // Replaces Pusher for real-time messaging
+    await testSocketIoConfig(); // Replaces Pusher for real-time messaging
     await testWeb3Config();
 
     console.log("\n📊 Test Results Summary:");
@@ -388,6 +450,7 @@ export {
   testSMTPConfig, 
   testResgridConfig,
   testVonageConfig,
-  testSocketioAblyConfig,
+  testAblyConfig,
+  testSocketIoConfig,
   testWeb3Config 
 };

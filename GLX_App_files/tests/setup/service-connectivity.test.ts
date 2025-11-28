@@ -20,15 +20,24 @@ describe('Service Connectivity Tests', () => {
     });
   });
 
-  describe('Twilio Configuration', () => {
-    test('should validate Twilio configuration', async () => {
-      await expect(testTwilioConfig()).resolves.not.toThrow();
+  describe('Vonage Configuration', () => {
+    test('should validate Vonage configuration', async () => {
+      // Vonage replaces Twilio for SMS/Voice services
+      await expect(testVonageConfig()).resolves.not.toThrow();
     });
   });
 
-  describe('Pusher Configuration', () => {
-    test('should validate Pusher configuration', async () => {
-      await expect(testPusherConfig()).resolves.not.toThrow();
+  describe('Ably Configuration', () => {
+    test('should validate Ably configuration', async () => {
+      // Ably replaces Pusher for real-time messaging
+      await expect(testAblyConfig()).resolves.not.toThrow();
+    });
+  });
+
+  describe('Socket.io Configuration', () => {
+    test('should validate Socket.io configuration', async () => {
+      // Socket.io replaces Pusher for real-time messaging
+      await expect(testSocketIoConfig()).resolves.not.toThrow();
     });
   });
 
@@ -47,8 +56,8 @@ describe('Service Connectivity Tests', () => {
       // Check for email service
       expect(deps).toHaveProperty('nodemailer');
 
-      // Check for real-time messaging
-      expect(deps).toHaveProperty('pusher');
+      // Check for real-time messaging (Socket.io replaces Pusher)
+      expect(deps).toHaveProperty('socket.io');
 
       // Check for post-quantum cryptography (Web3 related)
       expect(deps).toHaveProperty('@noble/post-quantum');
