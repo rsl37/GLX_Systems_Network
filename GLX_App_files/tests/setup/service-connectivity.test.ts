@@ -27,10 +27,17 @@ describe('Service Connectivity Tests', () => {
     });
   });
 
-  describe('Socket.io/Ably Configuration', () => {
-    test('should validate Socket.io/Ably configuration', async () => {
-      // Socket.io with Ably replaces Pusher for real-time messaging
-      await expect(testSocketioAblyConfig()).resolves.not.toThrow();
+  describe('Ably Configuration', () => {
+    test('should validate Ably configuration', async () => {
+      // Ably replaces Pusher for real-time messaging
+      await expect(testAblyConfig()).resolves.not.toThrow();
+    });
+  });
+
+  describe('Socket.io Configuration', () => {
+    test('should validate Socket.io configuration', async () => {
+      // Socket.io replaces Pusher for real-time messaging
+      await expect(testSocketIoConfig()).resolves.not.toThrow();
     });
   });
 
