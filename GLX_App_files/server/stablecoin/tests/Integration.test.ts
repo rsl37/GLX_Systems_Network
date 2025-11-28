@@ -97,18 +97,6 @@ describe('StablecoinService Integration', () => {
     expect(newPrice).toBeGreaterThan(0);
   });
 
-  test('should update configuration', async () => {
-    await service.start();
-
-    service = new StablecoinService(testConfig, testOracleConfig);
-  });
-
-  afterEach(() => {
-    if (service) {
-      service.stop();
-    }
-  });
-
   test('should start service successfully', async () => {
     await service.start();
 

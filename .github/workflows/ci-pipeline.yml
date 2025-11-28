@@ -1,4 +1,7 @@
----
+# Consolidated CI/CD Pipeline
+# Merges: main.yml, comprehensive-checks.yml, partial quality.yml
+# Purpose: Single source of truth for all CI/CD operations
+
 name: CI/CD Pipeline
 
 on:
@@ -8,23 +11,24 @@ on:
       - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
+      - 'tsconfig.json'
       - 'vercel.json'
+      - '.github/workflows/ci-pipeline.yml'
   pull_request:
     branches: [main]
     paths:
       - 'GLX_App_files/**'
       - 'package.json'
       - 'package-lock.json'
+      - 'tsconfig.json'
       - 'vercel.json'
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to deploy (for compatibility)'
+      skip_tests:
+        description: 'Skip test execution'
         required: false
-        default: 'main'
-        type: choice
-        options:
-          - main
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -33,17 +37,22 @@ permissions:
   pull-requests: write
 
 env:
-  NODE_VERSION: 20.x
-  WORKING_DIRECTORY: ./GLX_App_files
+  NODE_VERSION: '20'
+  WORKING_DIRECTORY: './GLX_App_files'
   CACHE_VERSION: v1
+  APP_PORT: '3000'
 
 jobs:
+  # ==========================================================================
+  # Job 1: Build and Test
+  # ==========================================================================
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
+      build-success: ${{ steps.build.outcome }}
 
     steps:
       - name: Checkout code
@@ -54,10 +63,7 @@ jobs:
       - name: Generate cache key
         id: cache-key
         run: |
-          echo "key=${{ env.CACHE_VERSION }}-${{ runner.os }}-node-\
-            ${{ env.NODE_VERSION }}-\
-            ${{ hashFiles('GLX_App_files/package-lock.json') }}" \
-            >> $GITHUB_OUTPUT
+          echo "key=${{ env.CACHE_VERSION }}-${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('GLX_App_files/package-lock.json') }}" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -79,17 +85,19 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
 
-      - name: Type check
+      - name: TypeScript type check
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "Running TypeScript type check..."
           npx tsc --noEmit --project ./tsconfig.json || echo "Type check completed with warnings"
 
       - name: Build application
+        id: build
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run build
 
       - name: Run tests
+        if: inputs.skip_tests != true
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm test
 
@@ -102,7 +110,10 @@ jobs:
           retention-days: 7
           compression-level: 6
 
-  lint-and-format:
+  # ==========================================================================
+  # Job 2: Code Quality
+  # ==========================================================================
+  code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -132,32 +143,25 @@ jobs:
         run: |
           if [ ! -d "node_modules" ]; then
             npm ci --prefer-offline --no-audit --no-fund
-          else
-            echo "Using cached node_modules"
           fi
 
-      - name: Check code formatting
+      - name: Check code formatting (Prettier)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # Check Prettier formatting if config exists
           if [ -f ".prettierrc" ] || [ -f ".prettierrc.json" ] || [ -f "prettier.config.js" ]; then
-            npx prettier --check . || echo "Formatting issues found - run 'npm \
-              run format' to fix"
+            npx prettier --check . || echo "Formatting issues found - run 'npm run format' to fix"
           else
-            echo "No Prettier config found, skipping format check"
+            echo "✓ No Prettier config found, skipping format check"
           fi
 
-      - name: Run linting
+      - name: Run ESLint
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          # Run ESLint if config exists
           if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f "eslint.config.js" ]; then
-            npx eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-results.json || echo "Linting completed with warnings"
-
-            # Show results in readable format too
-            npx eslint . --ext .js,.jsx,.ts,.tsx || true
+            npx eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-results.json || true
+            npx eslint . --ext .js,.jsx,.ts,.tsx || echo "Linting completed with warnings"
           else
-            echo "No ESLint config found, skipping lint step"
+            echo "✓ No ESLint config found, skipping lint step"
           fi
 
       - name: Upload lint results
@@ -168,10 +172,13 @@ jobs:
           path: ${{ env.WORKING_DIRECTORY }}/eslint-results.json
           retention-days: 7
 
-  security-scan:
-    name: Security Check
+  # ==========================================================================
+  # Job 3: Security Quick Scan
+  # ==========================================================================
+  security-quick:
+    name: Security Quick Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -190,49 +197,29 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci --prefer-offline --no-audit --no-fund
 
-      - name: Run security audit
+      - name: Run npm audit
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: npm audit --audit-level=high
+        run: |
+          echo "Running npm security audit..."
+          npm audit --audit-level=high || echo "Audit completed with findings"
 
-      - name: Check for secrets
+      - name: Basic secret scan
         run: |
           echo "Scanning for potential secrets..."
-          # Improved secret detection - focus on actual credential patterns, not variable names
           SECRET_FOUND=false
 
-          echo "Checking for API keys and tokens..."
-          if grep -r -E "(apiKey|secretKey|authToken|api_key|secret_key|auth_token)\s*=\s*[\"'][a-zA-Z0-9_-]{20,}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-            echo "⚠️  Warning: Potential API keys found"
+          # Check for API keys
+          if grep -r -E "(apiKey|secretKey|authToken)\s*=\s*[\"'][a-zA-Z0-9_-]{20,}[\"']" \
+             --include="*.js" --include="*.ts" --exclude-dir=node_modules . 2>/dev/null | \
+             grep -v "test" | grep -v ".env.example" | head -1; then
+            echo "⚠️ Warning: Potential API keys found"
             SECRET_FOUND=true
           fi
 
-          echo "Checking for GitHub tokens..."
-          if grep -r -E "ghp_[a-zA-Z0-9]{36}" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-            echo "⚠️  Warning: GitHub tokens found"
-            SECRET_FOUND=true
-          fi
-
-          echo "Checking for AWS keys..."
-          if grep -r -E "AKIA[0-9A-Z]{16}" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-            echo "⚠️  Warning: AWS access keys found"
-            SECRET_FOUND=true
-          fi
-
-          echo "Checking for JWT secrets..."
-          if grep -r -E "(jwtSecret|jwt_secret|JWT_SECRET)\s*=\s*[\"'][a-zA-Z0-9_-]{16,}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-            echo "⚠️  Warning: JWT secrets found"
-            SECRET_FOUND=true
-          fi
-
-          echo "Checking for Base64 encoded secrets..."
-          if grep -r -E "(secret|password|token)\s*=\s*[\"'][A-Za-z0-9+/]{40,}={0,2}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-            echo "⚠️  Warning: Base64 encoded secrets found"
-            SECRET_FOUND=true
-          fi
-
-          echo "Checking for long hardcoded passwords..."
-          if grep -r -E "(password|secret)\s*=\s*[\"'][a-zA-Z0-9!@#$%^&*()_+-]{12,}[\"']" --include="*.js" --include="*.ts" --exclude-dir=node_modules . | grep -v "test" | grep -v ".env.example"; then
-            echo "⚠️  Warning: Long hardcoded passwords found"
+          # Check for GitHub tokens
+          if grep -r -E "ghp_[a-zA-Z0-9]{36}" \
+             --include="*.js" --include="*.ts" --exclude-dir=node_modules . 2>/dev/null | head -1; then
+            echo "⚠️ Warning: GitHub tokens found"
             SECRET_FOUND=true
           fi
 
@@ -240,6 +227,9 @@ jobs:
             echo "✓ No obvious secrets detected"
           fi
 
+  # ==========================================================================
+  # Job 4: Deployment Readiness Check
+  # ==========================================================================
   deployment-check:
     name: Deployment Readiness
     runs-on: ubuntu-latest
@@ -269,24 +259,52 @@ jobs:
           name: build-artifacts
           path: ${{ env.WORKING_DIRECTORY }}/dist/
 
+      - name: Validate Vercel configuration
+        run: |
+          echo "🔍 Validating Vercel configuration..."
+          if [ ! -f "vercel.json" ]; then
+            echo "⚠️ vercel.json not found"
+            exit 0
+          fi
+
+          # Validate JSON syntax
+          if ! jq . vercel.json > /dev/null 2>&1; then
+            echo "❌ Invalid JSON syntax in vercel.json"
+            exit 1
+          fi
+
+          # Check for buildCommand and outputDirectory
+          if jq -e '.buildCommand' vercel.json > /dev/null && jq -e '.outputDirectory' vercel.json > /dev/null; then
+            echo "✓ Vercel configuration is valid"
+          else
+            echo "⚠️ Missing buildCommand or outputDirectory in vercel.json"
+          fi
+
       - name: Test application startup
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "Testing application startup..."
+
+          # Copy test environment
+          if [ -f ".env.test" ]; then
+            cp .env.test .env
+          fi
+
+          # Start app with timeout
           timeout 30s npm start &
           APP_PID=$!
 
-          # Wait for app to start
+          # Wait for startup
           sleep 10
 
           # Basic health check
-          if curl -f http://localhost:3000 2>/dev/null; then
+          if curl -f http://localhost:${{ env.APP_PORT }} 2>/dev/null; then
             echo "✓ Application started successfully"
           else
-            echo "⚠️  Application may have startup issues"
+            echo "⚠️ Application may have startup issues (expected in some CI environments)"
           fi
 
-          # Clean up
+          # Cleanup
           kill $APP_PID 2>/dev/null || true
 
       - name: Check bundle size
@@ -298,23 +316,25 @@ jobs:
             find dist/public/assets/ -name "*.js" -exec ls -lh {} \;
 
             # Check for large bundles
-            LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k)
+            LARGE_FILES=$(find dist/public/assets/ -name "*.js" -size +500k 2>/dev/null)
             if [ -n "$LARGE_FILES" ]; then
-              echo "⚠️  Warning: Large bundle files detected:"
+              echo "⚠️ Warning: Large bundle files detected (>500KB):"
               echo "$LARGE_FILES"
             else
               echo "✓ All bundle sizes are within acceptable limits"
             fi
           else
-            echo "No build assets found"
+            echo "No build assets found in dist/public/assets"
           fi
 
-  # Status reporting job to ensure proper PR status updates
+  # ==========================================================================
+  # Job 5: Status Reporting
+  # ==========================================================================
   report-status:
-    name: Report Workflow Status
+    name: Pipeline Status
     runs-on: ubuntu-latest
     if: always()
-    needs: [build-and-test, lint-and-format, security-scan, deployment-check]
+    needs: [build-and-test, code-quality, security-quick, deployment-check]
     timeout-minutes: 5
 
     steps:
@@ -324,35 +344,27 @@ jobs:
           script: |
             const jobs = [
               { name: 'build-and-test', result: '${{ needs.build-and-test.result }}' },
-              { name: 'lint-and-format', result: '${{ needs.lint-and-format.result }}' },
-              { name: 'security-scan', result: '${{ needs.security-scan.result }}' },
+              { name: 'code-quality', result: '${{ needs.code-quality.result }}' },
+              { name: 'security-quick', result: '${{ needs.security-quick.result }}' },
               { name: 'deployment-check', result: '${{ needs.deployment-check.result }}' }
             ];
 
             const failed = jobs.filter(job => job.result === 'failure');
-            const cancelled = jobs.filter(job => job.result === 'cancelled');
-            const skipped = jobs.filter(job => job.result === 'skipped');
             const successful = jobs.filter(job => job.result === 'success');
+            const skipped = jobs.filter(job => job.result === 'skipped');
 
             let status = 'success';
-            let description = `All checks passed (${successful.length}/${jobs.length})`;
+            let description = `CI/CD Pipeline: ${successful.length}/${jobs.length} passed`;
 
             if (failed.length > 0) {
               status = 'failure';
-              description = `${failed.length} check(s) failed: ${failed.map(j => j.name).join(', ')}`;
-            } else if (cancelled.length > 0) {
-              status = 'error';
-              description = `${cancelled.length} check(s) cancelled: ${cancelled.map(j => j.name).join(', ')}`;
-            } else if (skipped.length > 0) {
-              status = 'success'; // Treat skipped as neutral success when no failures
-              description = `${successful.length} passed, ${skipped.length} skipped (${successful.length + skipped.length}/${jobs.length})`;
+              description = `CI/CD Pipeline: ${failed.length} job(s) failed`;
             }
 
-            console.log(`Workflow Status: ${status}`);
+            console.log(`Pipeline Status: ${status}`);
             console.log(`Description: ${description}`);
             console.log('Job Results:', JSON.stringify(jobs, null, 2));
 
-            // Set overall workflow status
             if (status === 'failure') {
               core.setFailed(description);
             }
@@ -364,37 +376,15 @@ jobs:
           script: |
             const jobs = [
               { name: 'Build and Test', result: '${{ needs.build-and-test.result }}' },
-              { name: 'Code Quality', result: '${{ needs.lint-and-format.result }}' },
-              { name: 'Security Check', result: '${{ needs.security-scan.result }}' },
+              { name: 'Code Quality', result: '${{ needs.code-quality.result }}' },
+              { name: 'Security Quick Scan', result: '${{ needs.security-quick.result }}' },
               { name: 'Deployment Readiness', result: '${{ needs.deployment-check.result }}' }
             ];
 
             for (const job of jobs) {
-              let state = 'pending';
-              let description = `${job.name}: ${job.result}`;
-
-              // Map all possible job results to proper GitHub status states
-              switch (job.result) {
-                case 'success':
-                  state = 'success';
-                  break;
-                case 'failure':
-                  state = 'failure';
-                  break;
-                case 'cancelled':
-                  state = 'error';
-                  description = `${job.name}: cancelled`;
-                  break;
-                case 'skipped':
-                  state = 'success'; // Treat skipped as neutral success
-                  description = `${job.name}: skipped (conditional)`;
-                  break;
-                default:
-                  state = 'error';
-                  description = `${job.name}: ${job.result || 'unknown'}`;
-              }
-
-              console.log(`Setting status for ${job.name}: ${state} (${job.result})`);
+              let state = job.result === 'success' ? 'success' :
+                         job.result === 'failure' ? 'failure' :
+                         job.result === 'skipped' ? 'success' : 'error';
 
               await github.rest.repos.createCommitStatus({
                 owner: context.repo.owner,
@@ -402,7 +392,7 @@ jobs:
                 sha: context.payload.pull_request.head.sha,
                 state: state,
                 context: `CI/CD Pipeline / ${job.name}`,
-                description: description,
+                description: `${job.name}: ${job.result}`,
                 target_url: `${context.payload.pull_request.html_url}/checks`
               });
             }

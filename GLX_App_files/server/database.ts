@@ -249,6 +249,14 @@ export interface DatabaseSchema {
     created_at: string;
     updated_at: string;
   };
+  token_blacklist: {
+    id: number;
+    token: string;
+    user_id: number;
+    reason: string;
+    expires_at: string;
+    created_at: string;
+  };
 }
 
 // Hybrid Database Configuration - SQLite for development/lightweight, PostgreSQL for production/heavy operations
@@ -289,45 +297,43 @@ function getDatabaseStrategy(): DatabaseStrategy {
 
 const strategy = getDatabaseStrategy();
 
-  if (isProduction && hasPostgresURL) {
-    return {
-      primary: 'postgresql',
-      fallback: 'sqlite',
-      useCase: 'production-scale'
-    };
-  } else if (hasPostgresURL) {
-    return {
-      primary: 'postgresql',
-      fallback: 'sqlite',
-      useCase: 'development-with-postgres'
-    };
-  } else {
-    return {
-      primary: 'sqlite',
-      fallback: 'postgresql',
-      useCase: 'development-lightweight'
-    };
-  }
-}
-
-const strategy = getDatabaseStrategy();
-
 // SQLite Configuration - Best for: Local development, file-based data, lightweight operations, offline support
-const dataDir = process.env.DATA_DIRECTORY || './data';
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
+// In serverless environments (Vercel), use /tmp for writable storage or skip SQLite if PostgreSQL is available
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY === 'true';
+const hasPostgres = !!(process.env.DATABASE_URL || process.env.POSTGRES_URL);
 
+// Skip SQLite initialization in serverless production if PostgreSQL is available
+const skipSqlite = isServerless && hasPostgres && process.env.NODE_ENV === 'production';
+
+let dataDir = process.env.DATA_DIRECTORY || './data';
 let sqliteDb: Database | null = null;
-try {
-  sqliteDb = new Database(path.join(dataDir, 'glx.db'), {
-    verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
-  });
-  console.log('✅ SQLite database initialized successfully.');
-} catch (error) {
-  console.error('❌ Failed to initialize SQLite database:', error.message);
-  console.error('💡 Ensure the data directory is writable and the database file is not corrupted.');
-  process.exit(1); // Exit the application with a failure code
+
+if (!skipSqlite) {
+  // Use /tmp in serverless environments since it's the only writable directory
+  if (isServerless && !process.env.DATA_DIRECTORY) {
+    dataDir = '/tmp/data';
+  }
+
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    sqliteDb = new Database(path.join(dataDir, 'glx.db'), {
+      verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
+    });
+    console.log('✅ SQLite database initialized successfully.');
+  } catch (error) {
+    // In serverless with PostgreSQL available, SQLite failure is non-fatal
+    if (isServerless && hasPostgres) {
+      console.warn('⚠️ SQLite initialization skipped in serverless environment (using PostgreSQL).');
+    } else {
+      console.error('❌ Failed to initialize SQLite database:', (error as Error).message);
+      console.error('💡 Ensure the data directory is writable and the database file is not corrupted.');
+      process.exit(1); // Exit the application with a failure code
+    }
+  }
+} else {
+  console.log('ℹ️ SQLite skipped in serverless production (using PostgreSQL as primary).');
 }
 
 // PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data
@@ -384,13 +390,6 @@ const dbSelector = {
   // Primary database (auto-selected based on environment and configuration)
   primary: db,
 
-  // Use PostgreSQL for: Production, complex queries, concurrent operations, scalable data
-  postgres: postgresKysely,
-
-  // Primary database (auto-selected based on environment and configuration)
-  primary: db,
-  
-
   // Get optimal database for specific operations
   getOptimalDB: (operation: 'read' | 'write' | 'complex' | 'lightweight') => {
     switch (operation) {
@@ -411,11 +410,6 @@ const dbSelector = {
   isPostgresAvailable: () => !!postgresKysely,
   isSqliteAvailable: () => !!sqliteKysely,
 
-
-  // Check if specific database is available
-  isPostgresAvailable: () => !!postgresKysely,
-  isSqliteAvailable: () => !!sqliteKysely,
-
   // Get database info
   getStrategy: () => strategy,
 };
@@ -425,11 +419,6 @@ const dbSelector = {
  */
 async function initializeDatabase() {
   console.log(`🔧 Initializing ${strategy.primary.toUpperCase()} database schema...`);
-
-  try {
-    // Initialize primary database
-    await initializeDatabaseSchema(db, strategy.primary);
-
 
   try {
     // Initialize primary database
@@ -685,6 +674,23 @@ async function createAdditionalTables(
     .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade'))
     .addColumn('vote_type', 'varchar(10)', col => col.notNull())
     .addColumn('delegate_id', 'integer', col => col.references('users.id').onDelete('set null'))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .execute();
+
+  // Token blacklist table for logout/token revocation
+  await database.schema
+    .createTable('token_blacklist')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', col => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('token', 'text', col => col.notNull())
+    .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade'))
+    .addColumn('reason', 'varchar(50)', col => col.defaultTo('logout'))
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime', col => col.notNull())
     .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
       col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
     )

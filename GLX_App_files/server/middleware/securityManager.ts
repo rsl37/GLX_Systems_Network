@@ -282,7 +282,10 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     if (SECURITY_CONFIG.antiHacking.csrfProtection) protectionScore += 5;
     
     // Add post-quantum bonus protection (30 points for quantum-safe level)
-    if (pqStatus.initialized) protectionScore += 30;
+    if (postQuantumStatus.initialized) protectionScore += 30;
+
+    // Calculate display score (cap at 100 for display purposes)
+    const displayScore = Math.min(100, protectionScore);
 
     // Determine security level including zero-day-protected level
     let securityLevel:
@@ -305,9 +308,6 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
     } else {
       securityLevel = 'low';
     }
-    
-    // Get post-quantum security status
-    const pqStatus = postQuantumSecurity.getSecurityStatus();
     
     return {
       antimalware: {
@@ -354,8 +354,8 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
       },
       postQuantum: {
         enabled: SECURITY_CONFIG.postQuantum.enabled,
-        algorithms: pqStatus.algorithms,
-        securityLevel: pqStatus.securityLevel,
+        algorithms: Object.values(postQuantumStatus.algorithms).map(a => a.algorithm),
+        securityLevel: 5,
         quantumResistant: SECURITY_CONFIG.postQuantum.quantumResistant,
         hybridCrypto: SECURITY_CONFIG.postQuantum.hybridCrypto,
         lastTest: new Date().toISOString()
@@ -366,7 +366,6 @@ export const getSecurityStatus = async (): Promise<SecuritySystemStatus> => {
         lastUpdate: new Date().toISOString(),
       },
     };
-    return status;
   } catch (error) {
     console.error('Error getting security status:', error);
     return {
@@ -780,6 +779,12 @@ export const initializeSecuritySystems = async () => {
   console.log('🚀 GLX App Security Systems are FULLY OPERATIONAL with ZERO-DAY PROTECTION');
 };
 
+// Post-quantum security admin endpoints
+export const postQuantumAdmin = {
+  getStatus: securityDashboardAdmin.getPostQuantumStatus,
+  testOperations: securityDashboardAdmin.testPostQuantumOperations,
+};
+
 // Export all admin endpoints
 export const securityAdminEndpoints = {
   dashboard: securityDashboardAdmin,
@@ -788,7 +793,7 @@ export const securityAdminEndpoints = {
   antiHacking: antiHackingAdmin,
   zeroDayProtection: zeroDayProtectionAdmin,
   sandboxing: sandboxAdmin,
-  postQuantum: postQuantumSecurityAdmin,
+  postQuantum: postQuantumAdmin,
 };
 
 // Export security configuration for external use

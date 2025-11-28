@@ -243,11 +243,6 @@ export function TwoFactorSetupPage() {
 
       <div className='space-y-3'>
         {!status.enabled ? (
-          <Button
-            onClick={startSetup}
-            disabled={isLoading}
-            className="glx-button w-full"
-          >
           <Button onClick={startSetup} disabled={isLoading} className='glx-button w-full'>
             {isLoading ? (
               <div className='flex items-center gap-2'>
@@ -321,10 +316,6 @@ export function TwoFactorSetupPage() {
         </div>
       </div>
 
-      <Button
-        onClick={() => setStep('verify')}
-        className="glx-button w-full"
-      >
       <Button onClick={() => setStep('verify')} className='glx-button w-full'>
         <div className='flex items-center gap-2'>
           <Smartphone className='h-4 w-4' />
@@ -419,10 +410,6 @@ export function TwoFactorSetupPage() {
         </ul>
       </div>
 
-        <Button
-          onClick={() => navigate('/dashboard')}
-          className="glx-button w-full"
-        >
       <div className='space-y-3'>
         <Button onClick={() => navigate('/dashboard')} className='glx-button w-full'>
           Continue to Dashboard

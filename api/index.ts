@@ -129,6 +129,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // Dynamically import the Express app
+    // @ts-expect-error - Dynamic import resolved at runtime after build
     const { createExpressApp } = await import('../GLX_App_files/dist/server/index.js');
     const app = createExpressApp();
     

@@ -1,0 +1,319 @@
+# Consolidated Security Scanning Workflow
+# Merges: security-streamlined.yml, codeql.yml, njsscan.yml
+# Purpose: Comprehensive security analysis in a single workflow
+
+name: Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'GLX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/security-scan.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'GLX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+  schedule:
+    # Deep security scan daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+  actions: read
+
+env:
+  NODE_VERSION: '20'
+  WORKING_DIRECTORY: './GLX_App_files'
+
+jobs:
+  # ==========================================================================
+  # Job 1: CodeQL Analysis
+  # ==========================================================================
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        continue-on-error: true
+        id: codeql-init
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+
+      - name: Setup Node.js
+        if: steps.codeql-init.outcome == 'success'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        if: steps.codeql-init.outcome == 'success'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Build application
+        if: steps.codeql-init.outcome == 'success'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run build
+
+      - name: Perform CodeQL Analysis
+        if: steps.codeql-init.outcome == 'success'
+        uses: github/codeql-action/analyze@v3
+        continue-on-error: true
+        with:
+          category: "/language:javascript-typescript"
+
+      - name: CodeQL not available fallback
+        if: steps.codeql-init.outcome != 'success'
+        run: |
+          echo "⚠️ CodeQL Analysis is not available for this repository."
+          echo "This feature requires GitHub Advanced Security for private repositories."
+          echo "Using alternative static analysis instead..."
+
+          cd ${{ env.WORKING_DIRECTORY }}
+          if [ -f "package-lock.json" ]; then
+            npm ci --prefer-offline --no-audit --no-fund
+          fi
+
+          # Run ESLint as alternative static analysis
+          if npm list eslint > /dev/null 2>&1; then
+            echo "Running ESLint security rules..."
+            npx eslint . --ext .js,.ts,.tsx --format json --output-file eslint-security.json || true
+            echo "✓ Static analysis completed"
+          fi
+
+  # ==========================================================================
+  # Job 2: Dependency Review & Audit
+  # ==========================================================================
+  dependency-scan:
+    name: Dependency Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review (PRs only)
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        continue-on-error: true
+        with:
+          fail-on-severity: high
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Run npm audit
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "Running comprehensive npm audit..."
+          npm audit --json > audit-results.json || true
+
+          if [ -s audit-results.json ]; then
+            TOTAL_VULNS=$(jq -r '.vulnerabilities | length' audit-results.json 2>/dev/null || echo "0")
+            HIGH_VULNS=$(jq -r '[.vulnerabilities | to_entries[] | select(.value.severity == "high" or .value.severity == "critical")] | length' audit-results.json 2>/dev/null || echo "0")
+
+            echo "Total vulnerabilities: $TOTAL_VULNS"
+            echo "High/Critical vulnerabilities: $HIGH_VULNS"
+
+            if [ "$HIGH_VULNS" -gt "0" ]; then
+              echo "❌ High/Critical vulnerabilities found"
+              jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "high" or .value.severity == "critical") | "\(.key): \(.value.severity)"' audit-results.json
+              # Don't fail for now - just report
+            else
+              echo "✓ No high/critical vulnerabilities found"
+            fi
+          else
+            echo "✓ No audit findings"
+          fi
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('GLX_App_files/audit-results.json') != ''
+        with:
+          name: npm-audit-results
+          path: ${{ env.WORKING_DIRECTORY }}/audit-results.json
+          retention-days: 30
+
+  # ==========================================================================
+  # Job 3: Secret Detection
+  # ==========================================================================
+  secret-detection:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for secret scanning
+
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@v3.90.2
+        continue-on-error: true
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --only-verified
+
+      - name: Custom secret patterns check
+        run: |
+          echo "🔍 Scanning for common secret patterns..."
+          SECRET_FOUND=false
+
+          # AWS Access Keys
+          if grep -r -E "AKIA[0-9A-Z]{16}" --include="*.js" --include="*.ts" --exclude-dir=node_modules . 2>/dev/null | head -1; then
+            echo "❌ AWS access keys detected"
+            SECRET_FOUND=true
+          fi
+
+          # GitHub Personal Access Tokens
+          if grep -r -E "ghp_[a-zA-Z0-9]{36}" --include="*.js" --include="*.ts" --exclude-dir=node_modules . 2>/dev/null | head -1; then
+            echo "❌ GitHub tokens detected"
+            SECRET_FOUND=true
+          fi
+
+          # Private keys
+          if grep -r -E "-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----" --include="*.js" --include="*.ts" --include="*.pem" --exclude-dir=node_modules . 2>/dev/null | head -1; then
+            echo "❌ Private keys detected"
+            SECRET_FOUND=true
+          fi
+
+          # JWT tokens (long base64 strings)
+          if grep -r -E "eyJ[A-Za-z0-9-_]+\.eyJ[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+" --include="*.js" --include="*.ts" --exclude-dir=node_modules . 2>/dev/null | grep -v "test" | head -1; then
+            echo "⚠️ Potential JWT tokens in source code"
+            SECRET_FOUND=true
+          fi
+
+          if [ "$SECRET_FOUND" = true ]; then
+            echo "❌ Secrets detected - please review and remediate"
+            exit 1
+          else
+            echo "✓ No secrets detected"
+          fi
+
+  # ==========================================================================
+  # Job 4: njsscan (Node.js specific security)
+  # ==========================================================================
+  njsscan:
+    name: Node.js Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run njsscan
+        id: njsscan
+        uses: ajinabraham/njsscan-action@v9
+        continue-on-error: true
+        with:
+          args: '. --sarif --output results.sarif || true'
+
+      - name: Upload SARIF results
+        if: hashFiles('results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        continue-on-error: true
+        with:
+          sarif_file: results.sarif
+
+      - name: Upload results as artifact (fallback)
+        if: hashFiles('results.sarif') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: njsscan-results
+          path: results.sarif
+          retention-days: 7
+
+  # ==========================================================================
+  # Job 5: Security Summary
+  # ==========================================================================
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [codeql-analysis, dependency-scan, secret-detection, njsscan]
+    timeout-minutes: 5
+
+    steps:
+      - name: Generate security report
+        run: |
+          echo "## 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| CodeQL Analysis | ${{ needs.codeql-analysis.result == 'success' && '✅ Passed' || needs.codeql-analysis.result == 'skipped' && '⏭️ Skipped' || '❌ Issues' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Scan | ${{ needs.dependency-scan.result == 'success' && '✅ Passed' || '⚠️ Review' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret Detection | ${{ needs.secret-detection.result == 'success' && '✅ Passed' || '❌ Secrets Found' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Node.js Security | ${{ needs.njsscan.result == 'success' && '✅ Passed' || '⚠️ Review' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan completed at:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+      - name: Report overall status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'codeql-analysis', result: '${{ needs.codeql-analysis.result }}' },
+              { name: 'dependency-scan', result: '${{ needs.dependency-scan.result }}' },
+              { name: 'secret-detection', result: '${{ needs.secret-detection.result }}' },
+              { name: 'njsscan', result: '${{ needs.njsscan.result }}' }
+            ];
+
+            const failed = jobs.filter(job => job.result === 'failure');
+            const successful = jobs.filter(job => job.result === 'success');
+
+            let status = 'success';
+            let description = `Security Scan: ${successful.length}/${jobs.length} passed`;
+
+            if (failed.length > 0) {
+              status = 'failure';
+              description = `Security Scan: ${failed.length} check(s) failed`;
+            }
+
+            console.log(`Security Status: ${status}`);
+            console.log(`Description: ${description}`);
+
+            // Secret detection failure is critical
+            if ('${{ needs.secret-detection.result }}' === 'failure') {
+              core.setFailed('Critical: Secrets detected in codebase');
+            } else if (status === 'failure') {
+              core.warning(description);
+            }

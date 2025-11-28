@@ -226,13 +226,17 @@ export const trackFeatureUsage = (
 };
 
 // User action tracking
-export const trackUserAction = (action: 'registration' | 'login', userId?: number): void => {
+export const trackUserAction = (action: 'registration' | 'login' | 'logout', userId?: number): void => {
   if (action === 'registration') {
     metrics.users.registrations_today++;
   } else if (action === 'login') {
     metrics.users.logins_today++;
     if (userId) {
       metrics.users.active_sessions.add(userId);
+    }
+  } else if (action === 'logout') {
+    if (userId) {
+      metrics.users.active_sessions.delete(userId);
     }
   }
 };

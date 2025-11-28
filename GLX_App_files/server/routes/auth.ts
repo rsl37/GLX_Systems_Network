@@ -15,7 +15,7 @@ import {
   StatusCodes,
   ErrorMessages,
 } from '../utils/responseHelpers.js';
-import { hashPassword, comparePassword, generateToken, authenticateToken } from '../auth.js';
+import { hashPassword, comparePassword, generateToken, authenticateToken, blacklistToken } from '../auth.js';
 import {
   generatePasswordResetToken,
   sendPasswordResetEmail,
@@ -237,6 +237,39 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
     });
   } catch (error) {
     console.error('❌ Login error:', error);
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Logout endpoint - invalidates the current token
+router.post('/logout', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      return sendError(res, 'No token provided', StatusCodes.BAD_REQUEST);
+    }
+
+    console.log('🚪 Logout request from user:', userId);
+
+    // Blacklist the current access token
+    const success = await blacklistToken(token, userId, 'logout');
+
+    if (!success) {
+      console.log('⚠️ Failed to blacklist token, but proceeding with logout');
+    }
+
+    trackUserAction('logout', userId);
+
+    console.log('✅ Logout successful for user:', userId);
+    sendSuccess(res, { message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('❌ Logout error:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
     sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
   }
 });

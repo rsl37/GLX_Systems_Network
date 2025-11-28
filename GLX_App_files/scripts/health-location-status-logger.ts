@@ -526,8 +526,6 @@ class HealthLocationStatusLogger {
         message: 'Repository location tracked',
         details: {
           remote: remoteOrigin,
-          repository: 'rsl37/GLX_Civic_Networking_App'
-        }
           repository: 'rsl37/GLX_Civic_Networking_App',
         },
       });
