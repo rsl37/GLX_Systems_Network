@@ -1,0 +1,400 @@
+# Consolidated Deployment Workflow
+# Merges: release.yml, preview-deploy.yml, vercel-integration-check.yml
+# Purpose: All deployment operations in a single workflow
+
+name: Deploy
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'GLX_App_files/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vercel.json'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+      release_type:
+        description: 'Release type (for production only)'
+        required: false
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  statuses: write
+
+env:
+  NODE_VERSION: '20.x'
+  WORKING_DIRECTORY: './GLX_App_files'
+
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ==========================================================================
+  # Job 1: Detect Changes
+  # ==========================================================================
+  detect-changes:
+    name: Detect Deployment Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      needs_deployment: ${{ steps.changes.outputs.app_changes }}
+      is_docs_only: ${{ steps.changes.outputs.docs_only }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for deployment-relevant changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app_changes:
+              - 'GLX_App_files/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'vercel.json'
+              - '!**/*.md'
+            docs_only:
+              - '**/*.md'
+              - 'docs/**'
+
+  # ==========================================================================
+  # Job 2: Build for Deployment
+  # ==========================================================================
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.needs_deployment == 'true' ||
+      github.event.inputs.environment != ''
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Run tests
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm test
+
+      - name: Build application
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm run build
+
+      - name: Validate Vercel configuration
+        run: |
+          echo "🔍 Validating Vercel configuration..."
+          if [ -f "vercel.json" ]; then
+            jq . vercel.json > /dev/null || { echo "❌ Invalid JSON"; exit 1; }
+            echo "✓ Vercel configuration is valid"
+          else
+            echo "⚠️ No vercel.json found"
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: ${{ env.WORKING_DIRECTORY }}/dist/
+          retention-days: 7
+
+  # ==========================================================================
+  # Job 3: Preview Deployment (PRs)
+  # ==========================================================================
+  preview-deploy:
+    name: Preview Deployment
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: ${{ env.WORKING_DIRECTORY }}/dist/
+
+      - name: Check Vercel secrets
+        id: check-secrets
+        run: |
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "secrets_available=true" >> $GITHUB_OUTPUT
+          else
+            echo "secrets_available=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy to Vercel Preview
+        if: steps.check-secrets.outputs.secrets_available == 'true'
+        id: vercel-deploy
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install -g vercel@latest
+          PREVIEW_URL=$(vercel deploy \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --yes 2>&1 | tail -1)
+          echo "preview-url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "Preview deployed to: $PREVIEW_URL"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Health check preview
+        if: steps.vercel-deploy.outputs.preview-url != ''
+        run: |
+          echo "🏥 Running health check on preview..."
+          sleep 30  # Wait for deployment to stabilize
+          PREVIEW_URL="${{ steps.vercel-deploy.outputs.preview-url }}"
+          if curl -f -s "$PREVIEW_URL" > /dev/null 2>&1; then
+            echo "✓ Preview deployment is healthy"
+          else
+            echo "⚠️ Preview may have issues (could be warming up)"
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const previewUrl = '${{ steps.vercel-deploy.outputs.preview-url }}';
+            const secretsAvailable = '${{ steps.check-secrets.outputs.secrets_available }}' === 'true';
+            const commitSha = context.sha.substring(0, 7);
+
+            let body;
+            if (secretsAvailable && previewUrl) {
+              body = `🚀 **Preview Deployment**
+
+            ✅ Preview deployed successfully!
+
+            **🔗 Preview URL:** ${previewUrl}
+            **📝 Commit:** ${commitSha}
+            **🌿 Branch:** \`${{ github.head_ref }}\`
+
+            ---
+            This preview updates automatically with new commits.`;
+            } else {
+              body = `📦 **Build Status**
+
+            ✅ Build completed successfully!
+
+            **📝 Commit:** ${commitSha}
+            **🌿 Branch:** \`${{ github.head_ref }}\`
+
+            ---
+            *Configure Vercel secrets to enable preview deployments.*`;
+            }
+
+            // Find existing bot comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Preview Deployment')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+  # ==========================================================================
+  # Job 4: Production Deployment (Manual)
+  # ==========================================================================
+  production-deploy:
+    name: Production Deployment
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: build
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'production'
+
+    environment:
+      name: production
+      url: https://glxcivicnetwork.me
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: ${{ env.WORKING_DIRECTORY }}/dist/
+
+      - name: Update version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm version ${{ github.event.inputs.release_type }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "## Changes in v${{ env.NEW_VERSION }}" > CHANGELOG_TEMP.md
+          echo "" >> CHANGELOG_TEMP.md
+
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --reverse >> CHANGELOG_TEMP.md
+          else
+            git log -20 --pretty=format:"- %s (%h)" --reverse >> CHANGELOG_TEMP.md
+          fi
+
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat CHANGELOG_TEMP.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Vercel Production
+        if: env.VERCEL_TOKEN != ''
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          npm install -g vercel@latest
+          vercel deploy --prod \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --yes
+          echo "✓ Production deployment complete"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ${{ env.WORKING_DIRECTORY }}/package.json
+          git commit -m "chore: bump version to ${{ env.NEW_VERSION }}"
+          git tag "v${{ env.NEW_VERSION }}"
+          git push origin main --tags
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.NEW_VERSION }}
+          name: Release v${{ env.NEW_VERSION }}
+          body: |
+            # Release v${{ env.NEW_VERSION }}
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ## Deployment
+
+            ✅ Deployed to production: https://glxcivicnetwork.me
+          draft: false
+          prerelease: false
+
+      - name: Production health check
+        run: |
+          echo "🏥 Running production health check..."
+          sleep 30
+          if curl -f -s https://glxcivicnetwork.me > /dev/null 2>&1; then
+            echo "✓ Production is healthy"
+          else
+            echo "⚠️ Production may need attention"
+          fi
+
+  # ==========================================================================
+  # Job 5: Docs-Only Notification
+  # ==========================================================================
+  docs-only-skip:
+    name: Documentation-Only Change
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: |
+      github.event_name == 'pull_request' &&
+      needs.detect-changes.outputs.needs_deployment == 'false' &&
+      needs.detect-changes.outputs.is_docs_only == 'true'
+    timeout-minutes: 2
+
+    steps:
+      - name: Notify docs-only change
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commitSha = context.sha.substring(0, 7);
+
+            const body = `📝 **Documentation-Only Change**
+
+            ✅ Only documentation files were modified.
+
+            **📝 Commit:** ${commitSha}
+            **🌿 Branch:** \`${{ github.head_ref }}\`
+
+            ---
+            🚀 Deployment skipped - no application code changes.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });

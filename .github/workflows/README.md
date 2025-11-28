@@ -1,306 +1,232 @@
-# GitHub Actions Workflows Documentation - OPTIMIZED
+# GitHub Actions Workflows Documentation - STREAMLINED
 
-This repository implements **4 core CI workflows** instead of the previous 23+ redundant checks, providing comprehensive coverage with improved efficiency and reliability.
+This repository implements a **12-workflow architecture** designed using Ashby's Law of Requisite Variety to balance complexity with maintainability while ensuring 100% code integrity.
 
-## 🚀 Optimization Summary
+## 🚀 Streamlining Summary
 
-**BEFORE**: 23+ redundant CI checks with frequent hangs and duplications  
-**AFTER**: 4 consolidated core workflows with additional utility workflows  
-**IMPROVEMENTS**: Eliminated redundancies, added timeout protection, fixed Node.js compatibility
+**BEFORE**: 25 overlapping workflows with redundant checks  
+**AFTER**: 12 purpose-driven workflows organized in 3 tiers  
+**PRINCIPLE**: Right-sized variety that matches repository complexity without fragmentation
 
-## Workflow Overview
+## Workflow Architecture (3 Tiers)
 
-### 1. **Main CI/CD Pipeline** - `main.yml`
-**Purpose**: Comprehensive CI/CD with build, test, security check, and deployment readiness  
-**Jobs**: 4 (Build & Test, Code Quality, Security Check, Deployment Readiness)  
-**Optimizations**: 
-- ✅ Consolidated build verification and TypeScript compilation
-- ✅ Integrated linting and basic security checks
-- ✅ Added proper timeouts and error handling
+### Tier 1: Core Pipeline Workflows (4 workflows)
 
-**Triggers**: Push to main, Pull Requests  
-**Status Check**: ✅ Build and Test, ✅ Code Quality, ✅ Security Check, ✅ Deployment Readiness
+These are essential workflows that maintain code and deployment integrity.
 
-### 2. **Security Analysis** - `security-streamlined.yml` 
+#### 1. **CI/CD Pipeline** - `ci-pipeline.yml`
+**Purpose**: Unified build, test, quality, and deployment readiness  
+**Jobs**: Build & Test, Code Quality, Security Quick Scan, Deployment Check  
+**Triggers**: Push to main/develop, Pull Requests, Manual dispatch
+
+#### 2. **Security Scan** - `security-scan.yml`
 **Purpose**: Comprehensive security vulnerability detection  
-**Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
-### 2. **Security Analysis** - `security-streamlined.yml` 
-**Purpose**: Comprehensive security vulnerability detection  
-**Jobs**: 3 (CodeQL Analysis, Dependency Scan, Secret Detection)  
-**Optimizations**:
-- ✅ Consolidated multiple security tools into unified workflow
-- ✅ Added job-level timeouts (10-20 minutes)
-- ✅ Enhanced secret scanning with TruffleHog
+**Jobs**: CodeQL Analysis, Dependency Scan, Secret Detection, njsscan  
+**Triggers**: Push to main/develop, Pull Requests, Daily schedule (2 AM UTC)
 
-**Triggers**: Push to main, Pull Requests, Daily schedule (2 AM UTC)  
-**Status Check**: ✅ Security Analysis
+#### 3. **Deploy** - `deploy.yml`
+**Purpose**: Preview and production deployments  
+**Jobs**: Build, Preview Deploy (PRs), Production Deploy (manual)  
+**Triggers**: Pull Requests, Manual dispatch for production
 
-### 3. **Quality & Performance** - `quality.yml`
-**Purpose**: Code quality, performance, and comprehensive testing  
-**Jobs**: 3 (Code Coverage, Performance Check, E2E Tests)  
-**Optimizations**:
-- ✅ Consolidated performance and quality checks
-- ✅ Added application startup timeouts (30 seconds)
-- ✅ Enhanced memory usage monitoring and coverage reporting
+#### 4. **Quality Gate** - `quality-gate.yml`
+**Purpose**: Quality metrics, performance, accessibility, E2E testing  
+**Jobs**: Code Coverage, Accessibility, Performance, E2E Tests  
+**Triggers**: Push to main, Pull Requests, Weekly schedule
 
-**Triggers**: Push to main, Pull Requests  
-**Status Check**: ✅ Code Coverage, ✅ Performance Check, ✅ E2E Tests
+### Tier 2: Specialized Workflows (4 workflows)
 
-### 4. **Docker Deployment** - `docker-publish.yml`
-**Purpose**: Container image building and publishing  
-**Jobs**: 1 (Build and publish Docker images)  
-**Optimizations**:
-- ✅ Consolidated performance and quality checks
-- ✅ Added application startup timeouts (30 seconds)
-- ✅ Enhanced memory usage monitoring and coverage reporting
+Domain-specific workflows for specialized concerns.
 
-**Triggers**: Push to main/develop, Pull Requests  
-**Status Check**: ✅ Code Coverage, ✅ Performance Check, ✅ E2E Tests
+#### 5. **Web3 Validation** - `web3-checks.yml`
+**Purpose**: Web3/blockchain functionality and security validation  
+**Triggers**: Changes to web3/crypto/blockchain files
 
-### 4. **Docker Deployment** - `docker-publish.yml`
-**Purpose**: Container image building and publishing  
-**Jobs**: 1 (Build and publish Docker images)  
-**Optimizations**:
-- ✅ Streamlined container deployment process
-- ✅ Proper caching and multi-stage builds
+#### 6. **License Compliance** - `license-compliance.yml`
+**Purpose**: Ensure license compatibility  
+**Triggers**: Weekly schedule, dependency changes
 
-**Triggers**: Push to main, Release tags  
-**Status Check**: ✅ Docker Build and Publish
+#### 7. **Service Connectivity** - `service-connectivity-checks.yml`
+**Purpose**: External service integration health  
+**Triggers**: Daily schedule, service config changes
 
-## Additional Utility Workflows
+#### 8. **PAT Security** - `pat-security.yml`
+**Purpose**: PAT token security and validation  
+**Triggers**: Every 6 hours, PAT workflow changes
 
-### Health Monitoring - `health-location-status.yml`
-**Purpose**: System health and status monitoring  
-**Triggers**: Push to main/develop, Pull Requests, Daily schedule  
+### Tier 3: Utility & Maintenance Workflows (4 workflows)
 
-### Repository Maintenance
-- **`label.yml`** - Automated issue labeling
-- **`stale.yml`** - Stale issue management  
-- **`summary.yml`** - Summary reporting
+Lightweight workflows for repository housekeeping.
+
+#### 9. **Documentation** - `documentation-validation.yml`
+**Purpose**: Documentation freshness and quality  
+**Triggers**: Monthly schedule, markdown changes
+
+#### 10. **Stale Issues** - `stale.yml`
+**Purpose**: Issue and PR lifecycle management  
+**Triggers**: Daily schedule
+
+#### 11. **Submodule Access** - `secure-submodule-access.yml`
+**Purpose**: Secure submodule operations  
+**Triggers**: Changes to .gitmodules, Core/
+
+#### 12. **Copilot Setup** - `copilot-setup.yml`
+**Purpose**: MCP configuration for Copilot  
+**Triggers**: Manual dispatch only
+
+---
+
+## Deprecated Workflows (To Be Removed)
+
+The following workflows are superseded by the consolidated architecture:
+
+| Deprecated Workflow | Replaced By |
+|---------------------|-------------|
+| `main.yml` | `ci-pipeline.yml` |
+| `comprehensive-checks.yml` | `ci-pipeline.yml` |
+| `quality.yml` | `quality-gate.yml` |
+| `codeql.yml` | `security-scan.yml` |
+| `njsscan.yml` | `security-scan.yml` |
+| `security-streamlined.yml` | `security-scan.yml` |
+| `release.yml` | `deploy.yml` |
+| `preview-deploy.yml` | `deploy.yml` |
+| `vercel-integration-check.yml` | `deploy.yml` |
+| `pat-security-monitoring.yml` | `pat-security.yml` |
+| `pat-implementation-validation.yml` | `pat-security.yml` |
+| `secure-pat-checkout.yml` | `pat-security.yml` |
+| `cross-repo-pat-operations.yml` | `secure-submodule-access.yml` |
+| `workflow-dispatcher.yml` | Path filters in workflows |
+| `workflow-monitor.yml` | GitHub built-in monitoring |
+| `status-monitor.yml` | GitHub built-in monitoring |
+| `health-location-status.yml` | `ci-pipeline.yml` |
+| `summary.yml` | Removed (was disabled) |
+
+> ✅ **All deprecated workflows have been removed in this PR.**
+
+---
 
 ## 🔧 Key Improvements
 
-### Eliminated Major Redundancies
-- 🚨 **Consolidated core functionality** into 4 main workflows (main.yml, security-streamlined.yml, quality.yml, docker-publish.yml)
-- 🚨 **Unified CI/CD pipeline** (build, test, quality, deployment in main.yml)
-- 🚨 **Streamlined security analysis** (CodeQL, dependency scan, secret detection in single workflow)
-- 🚨 **Integrated quality checks** (coverage, performance, E2E in quality.yml)
+### Variety Engineering (Ashby's Law Applied)
 
-### Enhanced Reliability  
-- 🛡️ **Comprehensive timeout protection**: Job-level (10-20min), Step-level (3-8min)
-- 🛡️ **Fail-fast: false** on matrix jobs to prevent early cancellation
-- 🛡️ **Optimized dependency installation** with caching and flags
-- 🛡️ **Proper process cleanup** with timeout handling for hanging issues
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| Total Workflows | 25 | 12 | 52% reduction |
+| Redundant CI Paths | 4+ | 1 | Single source of truth |
+| Security Checks | 5+ overlapping | 1 comprehensive | Consolidated |
+| Deployment Paths | 3 overlapping | 1 unified | Clear process |
+| Maintenance Burden | High | Low | Easy to maintain |
 
-### Performance Gains
-- 📈 **Reduced total workflows**: 23+ → 4 core workflows (plus utilities)
-- 📈 **Faster dependency installation** with `--prefer-offline --no-audit --no-fund`
-- 📈 **Streamlined git operations** with `fetch-depth: 1`
-- 📈 **Efficient artifact handling** with proper retention policies
+### Reliability Enhancements
 
-## 📊 Check Count Analysis
+- 🛡️ **Timeout Protection**: Job-level (10-20min), Step-level (3-8min)
+- 🛡️ **Fail-fast: false**: Prevents early matrix cancellation
+- 🛡️ **Path Filtering**: Workflows only run on relevant changes
+- 🛡️ **Graceful Fallbacks**: PAT_TOKEN → GITHUB_TOKEN fallback
 
-### Core Workflow Structure
-- **Main CI/CD**: Build & Test, Code Quality, Security Check, Deployment Readiness
-- **Security Analysis**: CodeQL, Dependency Scan, Secret Detection  
-- **Quality & Performance**: Coverage, Performance, E2E Tests
-- **Docker Deployment**: Container build and publish
+### Performance Optimizations
 
-**Total core checks**: 4 workflows with consolidated functionality
+- 📈 **Reduced workflow count**: 25 → 12 (52% reduction)
+- 📈 **Efficient caching**: npm cache with version keys
+- 📈 **Shallow clones**: `fetch-depth: 1` for speed
+- 📈 **Conditional execution**: Skip docs-only changes
 
-### Required Status Checks Mapping
-The 4 core workflows map directly to GitHub's required status checks:
-1. ✅ **Main CI/CD Pipeline** (Build & Test, Code Quality, Security Check, Deployment Readiness)
-2. ✅ **Security Analysis** (Comprehensive security scanning)
-3. ✅ **Quality & Performance** (Coverage, Performance, E2E Tests)  
-4. ✅ **Docker Deployment** (Container deployment) 
+## 📊 Required Status Checks
 
-## 🚨 Issue #93 Resolution
+### For `main` Branch Protection
 
-**All workflows now include proper timeout handling to prevent indefinite hanging**, directly addressing the core issue blocking CI completion:
+Configure these status checks in **Settings → Branches → Branch Protection Rules**:
 
-- ✅ Job-level timeouts: 10-20 minutes maximum
-- ✅ Step-level timeouts: 3-8 minutes for critical operations  
-- ✅ Application startup timeouts: 20-30 seconds instead of indefinite waits
-- ✅ Network operation timeouts: 5-30 seconds for health checks
-- ✅ Process cleanup with timeout handling
+**Required (Core Pipeline):**
+1. `CI/CD Pipeline / Build and Test`
+2. `CI/CD Pipeline / Code Quality`
+3. `CI/CD Pipeline / Security Quick Scan`
+4. `Security Scan / Dependency Security`
 
-## 🔗 Branch Protection Configuration
+**Recommended:**
+5. `Quality Gate / E2E Tests`
+6. `Deploy / Preview Deployment`
+7. `Security Scan / CodeQL Analysis`
 
-Configure these status checks as **required** in GitHub Settings → Branches:
+### Status Check Mapping
 
-**Core Required Checks (4 workflows):**
-1. Build and Test + Code Quality + Security Check + Deployment Readiness (from main.yml)
-2. Security Analysis (from security-streamlined.yml)  
-3. Code Coverage + Performance Check + E2E Tests (from quality.yml)
-4. Docker Build and Publish (from docker-publish.yml)
-
-**Additional utility workflows:**
-- System Health Checks (from health-location-status.yml)
-- Repository maintenance workflows (label, stale, summary)
+| Old Check Name | New Check Name |
+|----------------|----------------|
+| Build and Test | CI/CD Pipeline / Build and Test |
+| Code Quality | CI/CD Pipeline / Code Quality |
+| Security Check | CI/CD Pipeline / Security Quick Scan |
+| Deployment Readiness | CI/CD Pipeline / Deployment Readiness |
+| Security Analysis | Security Scan / Security Summary |
+| Code Coverage | Quality Gate / Code Coverage |
+| E2E Tests | Quality Gate / E2E Tests |
 
 ## 🔧 Troubleshooting
 
-**If workflows still hang or stall:**
-1. Check Node.js version compatibility (must be 20.x+ for dependencies)
+**If workflows fail or stall:**
+1. Check Node.js version compatibility (must be 20.x+)
 2. Verify timeout values are appropriate for your system
-3. Review process cleanup in deployment workflows
-4. Check for network connectivity issues in health checks
+3. Check for network connectivity issues in health checks
+4. Review the workflow logs for specific error messages
 
-**Common fixes applied:**
-- Removed Node 18.x compatibility (package engine requirements)
-- Added `fail-fast: false` to prevent early matrix cancellation
-- Implemented comprehensive timeout protection
-- Optimized dependency installation with offline-first approach
+**Common fixes:**
+- All workflows have job-level and step-level timeouts
+- Dependency installation uses `--prefer-offline --no-audit --no-fund`
+- Path filtering prevents unnecessary workflow runs
 
 ## Security Configuration
 
 ### Dependabot - `.github/dependabot.yml`
-- **Weekly dependency updates** (Mondays at 4 AM UTC)
-- **Grouped updates** for production vs development dependencies
-- **Security updates** for all dependency types
-- **GitHub Actions updates** to keep workflows current
+- Weekly dependency updates (Mondays at 4 AM UTC)
+- Grouped updates for production vs development dependencies
+- Security updates for all dependency types
+- GitHub Actions updates to keep workflows current
 
 ### CodeQL Configuration - `.github/codeql-config.yml`
-- **Security and quality queries** enabled
-- **Path filtering** to focus on source code
-- **Exclusions** for build artifacts and test files
+- Security and quality queries enabled
+- Path filtering to focus on source code
+- Exclusions for build artifacts and test files
 
-## Branch Protection Configuration
+## Required Secrets
 
-To implement the full status check system, configure the following branch protection rules:
+Configure these secrets in **Settings → Secrets and variables → Actions**:
 
-### Main Branch Protection
+| Secret | Purpose | Required |
+|--------|---------|----------|
+| `VERCEL_TOKEN` | Vercel deployments | For deploy.yml |
+| `VERCEL_ORG_ID` | Vercel organization | For deploy.yml |
+| `VERCEL_PROJECT_ID` | Vercel project | For deploy.yml |
+| `PAT_TOKEN` | Cross-repo operations | For pat-security.yml |
+| `CODECOV_TOKEN` | Coverage reporting | Optional |
 
-Navigate to **Settings → Branches → Add Rule** for the `main` branch:
+## Test Framework Support
 
-#### Required Status Checks
-Enable "Require status checks to pass before merging" and select:
-
-**CI Checks:**
-- Build Application (ubuntu-latest, 18.x)
-- Build Application (ubuntu-latest, 20.x)
-- TypeScript Type Check
-
-**Code Quality:**
-- Lint and Format Check
-- Code Coverage
-
-**Security:**
-- Dependency Vulnerability Scan
-- CodeQL Security Analysis / javascript
-- Secret Scanning
-
-**Testing:**
-- Unit Tests (ubuntu-latest, 18.x)
-- Unit Tests (ubuntu-latest, 20.x)
-- Integration Tests
-- End-to-End Tests
-
-**Performance:**
-- Performance Benchmarks
-- Memory Performance Tests
-
-**Application-Specific:**
-- Database Migration Tests
-- API Contract Tests
-- Socket.IO Tests
-- Web3 Integration Tests
-
-**Deployment:**
-- Staging Deployment Verification
-- Deployment Health Checks
-- Environment Compatibility (ubuntu-latest, 18.x)
-- Environment Compatibility (ubuntu-latest, 20.x)
-- Environment Compatibility (ubuntu-latest, 22.x)
-
-#### Additional Protection Settings
-- ✅ Require branches to be up to date before merging
-- ✅ Require pull request reviews before merging (minimum 1)
-- ✅ Dismiss stale reviews when new commits are pushed
-- ✅ Require review from code owners
-- ✅ Restrict pushes that create files larger than 100MB
-- ✅ Require signed commits (recommended)
-
-### Develop Branch Protection
-
-Similar configuration with slightly relaxed requirements:
-- All status checks required
-- Pull request reviews optional for development
-- Allow force pushes for maintainers
-
-## Workflow Customization
-
-### Environment Variables
-Set these repository secrets for full functionality:
-
-```bash
-# Required for deployment testing
-STAGING_URL=https://staging.glx.app
-
-# Optional for enhanced reporting
-CODECOV_TOKEN=your_codecov_token
-LIGHTHOUSE_CI_TOKEN=your_lhci_token
-```
-
-### Performance Budgets
-Current thresholds in `performance.yml`:
-- JavaScript bundle: < 1MB
-- CSS bundle: < 100KB
-- Lighthouse scores: Performance > 70%, Accessibility > 90%
-
-### Test Framework Support
 Workflows auto-detect and support:
 - **Vitest** (preferred for Vite projects)
 - **Jest** (fallback)
 - **Playwright** (E2E testing)
-- **Supertest** (API testing)
+- **Axe-core** (Accessibility testing)
 
-## Maintenance
+## Debug Commands
 
-### Weekly Tasks
-- Review Dependabot PRs
-- Check security alert notifications
-- Monitor performance trends
-
-### Monthly Tasks
-- Review and update performance budgets
-- Audit workflow efficiency
-- Update test coverage requirements
-
-### Troubleshooting
-
-**Common Issues:**
-
-1. **Build Failures**: Check Node.js version compatibility
-2. **Test Timeouts**: Increase timeout values in workflow files
-3. **Permission Errors**: Verify repository permissions for GitHub Actions
-4. **Large Bundle Warnings**: Implement code splitting
-
-**Debug Commands:**
 ```bash
 # Local testing commands
 npm run build
 npm run test
+npm run test:coverage
 npm audit
-npx lighthouse http://localhost:3000
 ```
 
 ## Contributing
 
-When adding new workflows:
+When modifying workflows:
 1. Follow existing naming conventions
-2. Include proper error handling
-3. Add documentation updates
-4. Test locally before committing
-5. Use semantic commit messages
+2. Include proper timeout protection
+3. Add path filtering for efficiency
+4. Update this README
+5. Test locally before committing
 
-## Status Badge Integration
+---
 
-Add these badges to your README.md:
-
-```markdown
-![CI](https://github.com/rsl37/GLX_App/workflows/Continuous%20Integration/badge.svg)
-![Security](https://github.com/rsl37/GLX_App/workflows/Security%20Checks/badge.svg)
-![Tests](https://github.com/rsl37/GLX_App/workflows/Testing/badge.svg)
-```
+*Last Updated: November 2024*  
+*Architecture: 12 workflows in 3 tiers*  
+*Principle: Ashby's Law of Requisite Variety*

@@ -72,7 +72,8 @@ export default [
       '.github/',
       'screenshots/',
       'api/',
-      'mcp-servers/*.json',
+      'mcp-servers/',
+      'priority-matrix-app/',
     ],
   },
 ];

@@ -76,8 +76,11 @@ vite.config.js.timestamp-*
 *.sqlite-shm
 *.sqlite-wal
 *.backup
+*.db
 data/uploads/*
 !data/uploads/.gitkeep
+data/*.db
+GLX_App_files/data/*.db
 
 # Additional runtime
 stats.html

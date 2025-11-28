@@ -36,33 +36,6 @@ const RECOMMENDED_ENV_VARS = [
 
 // Essential environment variables for core features
 const ESSENTIAL_ENV_VARS = [
-  'PUSHER_APP_ID', // Real-time features - ESSENTIAL
-  'PUSHER_KEY', // Real-time features - ESSENTIAL
-  'PUSHER_SECRET', // Real-time features - ESSENTIAL
-  'PUSHER_CLUSTER', // Real-time features - ESSENTIAL
-  'SMTP_HOST', // Email verification, password reset - ESSENTIAL
-  'SMTP_PORT', // Email verification, password reset - ESSENTIAL
-  'SMTP_USER', // Email verification, password reset - ESSENTIAL
-  'SMTP_PASS', // Email verification, password reset - ESSENTIAL
-  'SMTP_FROM', // Email verification, password reset - ESSENTIAL
-  'TWILIO_SID', // Phone verification, password reset - ESSENTIAL
-  'TWILIO_AUTH_TOKEN', // Phone verification, password reset - ESSENTIAL
-  'TWILIO_PHONE_NUMBER', // Phone verification, password reset - ESSENTIAL
-];
-
-const OPTIONAL_ENV_VARS = [
-  'SMTP_HOST',
-  'SMTP_PORT', 
-  'SMTP_USER',
-  'SMTP_PASS',
-  'SMTP_FROM',
-  'TWILIO_SID',
-  'TWILIO_AUTH_TOKEN',
-  'TWILIO_PHONE_NUMBER'
-];
-
-// Essential environment variables for core features
-const ESSENTIAL_ENV_VARS = [
   'PUSHER_APP_ID',    // Real-time features - ESSENTIAL
   'PUSHER_KEY',       // Real-time features - ESSENTIAL
   'PUSHER_SECRET',    // Real-time features - ESSENTIAL
@@ -395,75 +368,6 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         status: 'pass',
         message: `Recommended environment variable ${envVar} is properly set`,
         details: { variable: envVar, length: value.length, category: 'recommended' }
-      });
-    }
-  }
-
-  // Check essential environment variables (required for core features)
-  // In test/CI/development environments, treat missing essential vars as warnings, not failures
-  const isNonProduction = process.env.NODE_ENV === 'test' || 
-                          process.env.NODE_ENV === 'development' || 
-                          process.env.CI === 'true';
-
-  for (const envVar of ESSENTIAL_ENV_VARS) {
-    const value = process.env[envVar];
-    if (!value) {
-      const status = isNonProduction ? 'warning' : 'fail';
-      const message = isNonProduction
-        ? `Essential environment variable ${envVar} is not set - some features may be limited in ${process.env.NODE_ENV} environment`
-        : `Essential environment variable ${envVar} is not set - core features will not work`;
-
-      results.push({
-        check: `Essential Environment Variable: ${envVar}`,
-        status: status,
-        message: message,
-        details: { variable: envVar, required: !isNonProduction, category: 'essential', environment: process.env.NODE_ENV }
-      });
-    } else {
-      // Check for placeholder values that indicate incomplete configuration
-      const placeholderValues = ['dev-', 'your-', 'example', 'localhost', 'test-', 'REQUIRED-'];
-      const isPlaceholder = placeholderValues.some(placeholder => value.toLowerCase().includes(placeholder.toLowerCase()));
-
-      if (isPlaceholder) {
-        // In development/test environments, treat placeholder values as warnings, not failures
-        const status = isNonProduction ? 'warning' : 'fail';
-        const message = isNonProduction
-          ? `Essential environment variable ${envVar} contains placeholder value - configure with real credentials for production`
-          : `Essential environment variable ${envVar} contains placeholder value - must be configured with real service credentials`;
-
-        results.push({
-          check: `Essential Environment Variable: ${envVar}`,
-          status: status,
-          message: message,
-          details: { variable: envVar, value_type: 'placeholder', category: 'essential', environment: process.env.NODE_ENV }
-        });
-      } else {
-        results.push({
-          check: `Essential Environment Variable: ${envVar}`,
-          status: 'pass',
-          message: `Essential environment variable ${envVar} is properly configured`,
-          details: { variable: envVar, length: value.length, category: 'essential' }
-        });
-      }
-    }
-  }
-
-  // Check optional environment variables (nice to have)
-  for (const envVar of OPTIONAL_ENV_VARS) {
-    const value = process.env[envVar];
-    if (!value) {
-      results.push({
-        check: `Optional Environment Variable: ${envVar}`,
-        status: 'warning',
-        message: `Optional environment variable ${envVar} is not set - some features may be unavailable`,
-        details: { variable: envVar, required: false, category: 'optional' }
-      });
-    } else {
-      results.push({
-        check: `Optional Environment Variable: ${envVar}`,
-        status: 'pass',
-        message: `Optional environment variable ${envVar} is properly set`,
-        details: { variable: envVar, length: value.length, category: 'optional' },
       });
     }
   }

@@ -14,6 +14,8 @@ echo "Ensuring test artifact directories exist..."
 mkdir -p "$APP_DIR/coverage"
 mkdir -p "$APP_DIR/test-results"
 mkdir -p "$APP_DIR/playwright-report"
+mkdir -p "$APP_DIR/data/logs"
+mkdir -p "$APP_DIR/data/uploads"
 
 # Create placeholder files to ensure directories aren't empty
 echo '{"message": "Coverage reports will be generated here"}' > "$APP_DIR/coverage/.gitkeep"

@@ -80,9 +80,85 @@ export function generateToken(userId: number): string {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
 }
 
+export function generateRefreshToken(userId: number): string {
+  return jwt.sign({ userId, type: 'refresh' }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+}
+
 export interface AuthRequest extends Request {
   userId?: number;
   username?: string;
+}
+
+/**
+ * Blacklist a token for immediate revocation
+ */
+export async function blacklistToken(token: string, userId: number, reason: string = 'logout'): Promise<boolean> {
+  try {
+    // Decode token to get expiry time
+    const decoded = jwt.decode(token) as { exp?: number } | null;
+    if (!decoded || !decoded.exp) {
+      console.log('❌ Cannot blacklist token: Invalid token format');
+      return false;
+    }
+
+    const expiresAt = new Date(decoded.exp * 1000).toISOString();
+
+    await db
+      .insertInto('token_blacklist')
+      .values({
+        token,
+        user_id: userId,
+        reason,
+        expires_at: expiresAt,
+      })
+      .execute();
+
+    console.log('✅ Token blacklisted successfully for user:', userId);
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to blacklist token:', error);
+    return false;
+  }
+}
+
+/**
+ * Check if a token is blacklisted
+ */
+export async function isTokenBlacklisted(token: string): Promise<boolean> {
+  try {
+    const blacklistedToken = await db
+      .selectFrom('token_blacklist')
+      .select('id')
+      .where('token', '=', token)
+      .where('expires_at', '>', new Date().toISOString())
+      .executeTakeFirst();
+
+    return !!blacklistedToken;
+  } catch (error) {
+    console.error('❌ Error checking token blacklist:', error);
+    return false;
+  }
+}
+
+/**
+ * Clean up expired blacklisted tokens (should be run periodically)
+ */
+export async function cleanupExpiredBlacklistedTokens(): Promise<number> {
+  try {
+    const result = await db
+      .deleteFrom('token_blacklist')
+      .where('expires_at', '<', new Date().toISOString())
+      .execute();
+
+    const deletedCount = result.reduce((acc, r) => acc + Number(r.numDeletedRows || 0), 0);
+    if (deletedCount > 0) {
+      console.log(`🧹 Cleaned up ${deletedCount} expired blacklisted tokens`);
+    }
+    return deletedCount;
+  } catch (error) {
+    console.error('❌ Error cleaning up expired blacklisted tokens:', error);
+    return 0;
+  }
 }
 
 export async function authenticateToken(
@@ -99,6 +175,13 @@ export async function authenticateToken(
   }
 
   try {
+    // Check if token is blacklisted
+    const blacklisted = await isTokenBlacklisted(token);
+    if (blacklisted) {
+      res.status(403).json({ error: 'Token has been revoked' });
+      return;
+    }
+
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     req.userId = decoded.userId;
 

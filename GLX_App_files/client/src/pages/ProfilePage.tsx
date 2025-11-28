@@ -79,6 +79,7 @@ export function ProfilePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [privacySettings, setPrivacySettings] = useState({
     showEmail: false,
     showPhone: false,
@@ -145,6 +146,7 @@ export function ProfilePage() {
   };
 
   const handleUpdateProfile = async () => {
+    setIsUpdating(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/user/profile', {
@@ -162,6 +164,8 @@ export function ProfilePage() {
       }
     } catch (error) {
       console.error('Profile update error:', error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -418,7 +422,7 @@ export function ProfilePage() {
                           <Button variant='outline' onClick={() => setIsEditing(false)}>
                             Cancel
                           </Button>
-                          <Button onClick={handleEditProfile} disabled={isUpdating}>
+                          <Button onClick={handleUpdateProfile} disabled={isUpdating}>
                             {isUpdating ? 'Saving...' : 'Save Changes'}
                           </Button>
                         </div>
@@ -431,12 +435,11 @@ export function ProfilePage() {
           </Card>
         </motion.div>
 
-        {/* Token Balances */}
+        {/* Recent Transactions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className='grid grid-cols-1 md:grid-cols-3 gap-4'
         >
           <Card className='glx-card'>
             <CardContent className='p-4 text-center'>

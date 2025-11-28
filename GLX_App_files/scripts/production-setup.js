@@ -27,7 +27,6 @@ function generateSecureKey(length = 32) {
 // Check if we're in the right directory
 const packageJsonPath = join(process.cwd(), 'package.json');
 if (!existsSync(packageJsonPath)) {
-  console.error('❌ Error: package.json not found. Please run this script from the GLX_App_files directory.');
   console.error(
     '❌ Error: package.json not found. Please run this script from the GLX_App_files directory.'
   );

@@ -44,14 +44,6 @@ async function runDeploymentCheck() {
 
     console.log('DEBUG: Got report:', report.overall_status);
 
-  console.log('DEBUG: About to call performDeploymentReadinessCheck...');
-
-  try {
-    const report = await performDeploymentReadinessCheck();
-
-    console.log('DEBUG: Got report:', report.overall_status);
-    
-
     // Print summary
     console.log(`\n📊 DEPLOYMENT READINESS SUMMARY`);
     console.log(`==============================`);
