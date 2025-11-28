@@ -4,7 +4,7 @@
  */
 
 import { describe, test, expect, beforeAll } from 'vitest';
-import { testSMTPConfig, testVonageConfig, testAblyConfig, testSocketIoConfig, testWeb3Config } from '../../scripts/test-service-connectivity.js';
+import { testSMTPConfig, testVonageConfig, testSocketioAblyConfig, testWeb3Config } from '../../scripts/test-service-connectivity.js';
 
 describe('Service Connectivity Tests', () => {
   beforeAll(() => {
@@ -20,15 +20,17 @@ describe('Service Connectivity Tests', () => {
     });
   });
 
-  describe('Twilio Configuration', () => {
-    test('should validate Twilio configuration', async () => {
-      await expect(testTwilioConfig()).resolves.not.toThrow();
+  describe('Vonage Configuration', () => {
+    test('should validate Vonage configuration', async () => {
+      // Vonage replaces Twilio for SMS/Voice services
+      await expect(testVonageConfig()).resolves.not.toThrow();
     });
   });
 
-  describe('Pusher Configuration', () => {
-    test('should validate Pusher configuration', async () => {
-      await expect(testPusherConfig()).resolves.not.toThrow();
+  describe('Socket.io/Ably Configuration', () => {
+    test('should validate Socket.io/Ably configuration', async () => {
+      // Socket.io with Ably replaces Pusher for real-time messaging
+      await expect(testSocketioAblyConfig()).resolves.not.toThrow();
     });
   });
 
@@ -47,8 +49,8 @@ describe('Service Connectivity Tests', () => {
       // Check for email service
       expect(deps).toHaveProperty('nodemailer');
 
-      // Check for real-time messaging
-      expect(deps).toHaveProperty('pusher');
+      // Check for real-time messaging (Socket.io replaces Pusher)
+      expect(deps).toHaveProperty('socket.io');
 
       // Check for post-quantum cryptography (Web3 related)
       expect(deps).toHaveProperty('@noble/post-quantum');
