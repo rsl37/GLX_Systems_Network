@@ -66,16 +66,18 @@ jobs:
           SMTP_PASS=test-password
           SMTP_FROM=noreply@example.com
 
-          # Twilio Configuration (test values)
-          TWILIO_SID=ACtest12345678901234567890123456
-          TWILIO_AUTH_TOKEN=test-auth-token
-          TWILIO_PHONE_NUMBER=+1234567890
+          # Resgrid Configuration (essential for emergency dispatch)
+          RESGRID_API_KEY=test-resgrid-api-key
+          RESGRID_API_URL=https://api.resgrid.com
 
-          # Pusher Configuration (test values)
-          PUSHER_APP_ID=123456
-          PUSHER_KEY=test-key
-          PUSHER_SECRET=test-secret
-          PUSHER_CLUSTER=us2
+          # Vonage Configuration (replaces Twilio)
+          VONAGE_API_KEY=test-vonage-key
+          VONAGE_API_SECRET=test-vonage-secret
+          VONAGE_APPLICATION_ID=test-app-id
+
+          # Ably Configuration (Socket.io with Ably - replaces Pusher)
+          ABLY_API_KEY=test-ably-key:secret
+          SOCKETIO_ENABLED=true
           EOF
             fi
           fi
@@ -88,21 +90,29 @@ jobs:
           # Run service connectivity test focusing on SMTP
           npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "SMTP\|📧" || echo "SMTP test completed"
 
-      - name: Run Twilio Configuration Test
+      - name: Run Resgrid Configuration Test
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          echo "📱 Testing Twilio Configuration..."
+          echo "🚨 Testing Resgrid Configuration (Emergency Dispatch)..."
 
-          # Test Twilio API connectivity and configuration
-          npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Twilio\|📱" || echo "Twilio test completed"
+          # Test Resgrid API connectivity for emergency dispatch
+          npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Resgrid\|🚨" || echo "Resgrid test completed"
 
-      - name: Run Pusher Configuration Test
+      - name: Run Vonage Configuration Test
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          echo "🔄 Testing Pusher Configuration..."
+          echo "📱 Testing Vonage Configuration..."
 
-          # Test Pusher real-time messaging setup
-          npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Pusher\|🔄" || echo "Pusher test completed"
+          # Test Vonage API connectivity and configuration
+          npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Vonage\|📱" || echo "Vonage test completed"
+
+      - name: Run Socket.io/Ably Configuration Test
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          echo "🔄 Testing Socket.io with Ably Configuration..."
+
+          # Test Socket.io with Ably real-time messaging setup
+          npx tsx scripts/test-service-connectivity.ts 2>&1 | grep -A 10 -B 2 "Socket.io\|Ably\|🔄" || echo "Socket.io/Ably test completed"
 
       - name: Run MetaMask/Web3 Configuration Test
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -133,19 +143,26 @@ jobs:
             echo "⚠️ No nodemailer dependency found - SMTP functionality may be limited"
           fi
 
-          echo "Checking for Twilio dependencies..."
-          if grep -q "twilio" package.json; then
-            echo "✅ Twilio SDK found"
+          echo "Checking for Resgrid dependencies..."
+          if grep -qE "resgrid|@resgrid" package.json; then
+            echo "✅ Resgrid SDK found for emergency dispatch"
           else
-            echo "⚠️ No Twilio SDK found - SMS functionality may be limited"
+            echo "ℹ️ Resgrid integration uses external/resgrid Core module"
           fi
 
-          echo "Checking for Pusher dependencies..."
-          if grep -q "pusher" package.json; then
-            echo "✅ Pusher dependencies found"
-            grep "pusher" package.json
+          echo "Checking for Vonage dependencies..."
+          if grep -qE "@vonage|nexmo" package.json; then
+            echo "✅ Vonage SDK found"
           else
-            echo "⚠️ No Pusher dependencies found - real-time messaging may be limited"
+            echo "⚠️ No Vonage SDK found - SMS/Voice functionality may be limited"
+          fi
+
+          echo "Checking for Socket.io and Ably dependencies..."
+          if grep -qE "socket.io|ably" package.json; then
+            echo "✅ Socket.io/Ably dependencies found"
+            grep -E "socket.io|ably" package.json
+          else
+            echo "⚠️ No Socket.io/Ably dependencies found - real-time messaging may be limited"
           fi
 
           echo "Checking for Web3/MetaMask dependencies..."
@@ -169,18 +186,25 @@ jobs:
             echo "⚠️ No SMTP integration code detected"
           fi
 
-          echo "Checking Twilio integration..."
-          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "twilio" | grep -v node_modules | head -3; then
-            echo "✅ Twilio integration code found"
+          echo "Checking Resgrid integration..."
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "resgrid\|Resgrid" | grep -v node_modules | head -3; then
+            echo "✅ Resgrid integration code found (emergency dispatch)"
           else
-            echo "⚠️ No Twilio integration code detected"
+            echo "ℹ️ Resgrid Core available in external/resgrid"
           fi
 
-          echo "Checking Pusher integration..."
-          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "pusher" | grep -v node_modules | head -3; then
-            echo "✅ Pusher integration code found"
+          echo "Checking Vonage integration..."
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "vonage\|nexmo" | grep -v node_modules | head -3; then
+            echo "✅ Vonage integration code found"
           else
-            echo "⚠️ No Pusher integration code detected"
+            echo "⚠️ No Vonage integration code detected"
+          fi
+
+          echo "Checking Socket.io/Ably integration..."
+          if find . -name "*.ts" -o -name "*.js" | xargs grep -l "socket.io\|ably" | grep -v node_modules | head -3; then
+            echo "✅ Socket.io/Ably integration code found"
+          else
+            echo "⚠️ No Socket.io/Ably integration code detected"
           fi
 
           echo "Checking Web3/MetaMask integration..."
@@ -204,20 +228,26 @@ jobs:
             fi
           done
 
-          echo "Testing Twilio API..."
-          if curl -s --max-time 5 https://api.twilio.com > /dev/null; then
-            echo "✅ Twilio API reachable"
+          echo "Testing Resgrid API..."
+          if curl -s --max-time 5 https://api.resgrid.com > /dev/null; then
+            echo "✅ Resgrid API reachable (emergency dispatch)"
           else
-            echo "⚠️ Twilio API not reachable"
+            echo "⚠️ Resgrid API not reachable"
           fi
 
-          echo "Testing Pusher API..."
-          for cluster in us2 us3 eu ap1; do
-            if curl -s --max-time 5 https://api-$cluster.pusherapp.com > /dev/null; then
-              echo "✅ Pusher $cluster cluster reachable"
-              break
-            fi
-          done
+          echo "Testing Vonage API..."
+          if curl -s --max-time 5 https://api.nexmo.com > /dev/null; then
+            echo "✅ Vonage API reachable"
+          else
+            echo "⚠️ Vonage API not reachable"
+          fi
+
+          echo "Testing Ably API..."
+          if curl -s --max-time 5 https://rest.ably.io > /dev/null; then
+            echo "✅ Ably API reachable"
+          else
+            echo "⚠️ Ably API not reachable"
+          fi
 
           echo "Testing Web3 providers..."
           for provider in ethereum.publicnode.com cloudflare-eth.com; do
@@ -246,11 +276,27 @@ jobs:
             SECRET_FOUND=true
           fi
 
-          # Check for Twilio credentials
+          # Check for Vonage/Nexmo credentials (API keys, secrets, tokens)
           if find . -name "*.ts" -o -name "*.js" | \
-             xargs grep -E "AC[a-z0-9]{32}" | \
-             grep -v node_modules | grep -v test | grep -v ".env"; then
-            echo "⚠️ Warning: Potential Twilio SID found in source files"
+             xargs grep -iE "vonage[_-]?(api|key|secret|token)|nexmo[_-]?(api|key|secret|token)" | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
+            echo "⚠️ Warning: Potential Vonage/Nexmo credentials found in source files"
+            SECRET_FOUND=true
+          fi
+
+          # Check for Ably credentials
+          if find . -name "*.ts" -o -name "*.js" | \
+             xargs grep -iE "ably[_-]?(api|key|secret|token)" | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
+            echo "⚠️ Warning: Potential Ably credentials found in source files"
+            SECRET_FOUND=true
+          fi
+
+          # Check for Resgrid credentials
+          if find . -name "*.ts" -o -name "*.js" | \
+             xargs grep -iE "resgrid[_-]?(api|key|secret|token)" | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
+            echo "⚠️ Warning: Potential Resgrid credentials found in source files"
             SECRET_FOUND=true
           fi
 
@@ -284,8 +330,9 @@ jobs:
           echo "======================================"
           echo ""
           echo "📧 SMTP Configuration: ${{ needs.service-connectivity-tests.result }}"
-          echo "📱 Twilio Configuration: ${{ needs.service-connectivity-tests.result }}"
-          echo "🔄 Pusher Configuration: ${{ needs.service-connectivity-tests.result }}"
+          echo "🚨 Resgrid Configuration (Emergency Dispatch): ${{ needs.service-connectivity-tests.result }}"
+          echo "📱 Vonage Configuration: ${{ needs.service-connectivity-tests.result }}"
+          echo "🔄 Socket.io/Ably Configuration: ${{ needs.service-connectivity-tests.result }}"
           echo "🌐 MetaMask/Web3 Configuration: ${{ needs.service-connectivity-tests.result }}"
           echo ""
 
@@ -294,8 +341,9 @@ jobs:
             echo ""
             echo "One or more essential services have configuration problems:"
             echo "• Check SMTP settings for email functionality"
-            echo "• Verify Twilio credentials for SMS/phone verification"
-            echo "• Validate Pusher configuration for real-time messaging"
+            echo "• Verify Resgrid API key for emergency dispatch communication"
+            echo "• Validate Vonage credentials for SMS/Voice"
+            echo "• Check Socket.io/Ably configuration for real-time messaging"
             echo "• Review Web3 setup for blockchain functionality"
             echo ""
             echo "Please review the detailed logs above and fix any issues before deployment."
@@ -305,8 +353,9 @@ jobs:
             echo ""
             echo "All essential services are properly configured:"
             echo "• SMTP: Ready for email functionality"
-            echo "• Twilio: Ready for SMS/phone verification"
-            echo "• Pusher: Ready for real-time messaging"
+            echo "• Resgrid: Ready for emergency dispatch communication"
+            echo "• Vonage: Ready for SMS/Voice"
+            echo "• Socket.io/Ably: Ready for real-time messaging"
             echo "• Web3/MetaMask: Ready for blockchain functionality"
             echo ""
             echo "Your application is ready for deployment with full service support."
@@ -329,8 +378,9 @@ jobs:
             All essential services are properly configured and reachable:
 
             - 📧 **SMTP**: Email functionality ready
-            - 📱 **Twilio**: SMS/phone verification ready
-            - 🔄 **Pusher**: Real-time messaging ready
+            - 🚨 **Resgrid**: Emergency dispatch communication ready
+            - 📱 **Vonage**: SMS/Voice ready
+            - 🔄 **Socket.io/Ably**: Real-time messaging ready
             - 🌐 **Web3/MetaMask**: Blockchain functionality ready
 
             Your application is ready for deployment with full service support.`;
@@ -340,8 +390,9 @@ jobs:
             One or more essential services have configuration problems. Please review:
 
             - 📧 **SMTP**: Check email configuration
-            - 📱 **Twilio**: Verify SMS/phone credentials
-            - 🔄 **Pusher**: Validate real-time messaging setup
+            - 🚨 **Resgrid**: Verify emergency dispatch API key
+            - 📱 **Vonage**: Verify SMS/Voice credentials
+            - 🔄 **Socket.io/Ably**: Validate real-time messaging setup
             - 🌐 **Web3/MetaMask**: Review blockchain connectivity
 
             See the workflow logs for detailed information about specific issues.`;

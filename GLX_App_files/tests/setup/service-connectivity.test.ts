@@ -4,7 +4,7 @@
  */
 
 import { describe, test, expect, beforeAll } from 'vitest';
-import { testSMTPConfig, testTwilioConfig, testPusherConfig, testWeb3Config } from '../../scripts/test-service-connectivity.js';
+import { testSMTPConfig, testVonageConfig, testAblyConfig, testSocketIoConfig, testWeb3Config } from '../../scripts/test-service-connectivity.js';
 
 describe('Service Connectivity Tests', () => {
   beforeAll(() => {
