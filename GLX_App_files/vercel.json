@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd GLX_App_files && npm install && npm run build",
-  "outputDirectory": "GLX_App_files/dist/public",
-  "installCommand": "cd GLX_App_files && npm install --include=dev",
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist/public",
+  "installCommand": "npm install --include=dev",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -85,7 +85,6 @@
       "production": true
     }
   },
-  "ignoreCommand": "if [[ \"$VERCEL_GIT_COMMIT_REF\" =~ ^copilot/ ]]; then exit 1; fi; exit 0",
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 10

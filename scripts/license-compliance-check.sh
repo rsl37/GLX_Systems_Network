@@ -67,6 +67,9 @@ INCOMPATIBLE_LICENSES=(
     "RSCPL"
 )
 
+# Note: MPL-1.1 and MPL-2.0 moved to REVIEW_REQUIRED as they are weak copyleft licenses
+# that only require modifications to MPL-licensed files to be shared, making them
+# compatible for use as dependencies in proprietary projects (e.g., @vercel/analytics)
 REVIEW_REQUIRED_LICENSES=(
     "Apache-1.1"
     "BSD-4-Clause"

@@ -1,0 +1,55 @@
+# Vercel deployment ignore patterns
+# Exclude files/directories that should not be part of deployments
+
+# Development and documentation files (keep README.md for project info)
+ABOUT_GLX.md
+CHANGELOG.md
+CORS_CONFIGURATION.md
+DEPLOYMENT.md
+DEVELOPMENT_ACTIVITY_HISTORY.md
+DEVELOPMENT_HISTORY_INDEX.md
+DOCUMENTATION_STANDARDS.md
+FISCAL_QUARTER_SUMMARY.md
+GITHUB_ACTIONS_STATUS_FIX.md
+GITHUB_VERCEL_INTEGRATION_GUIDE.md
+GLX_Project_Workspace.md
+HFT-HOFT_Defined.md
+IMPLEMENTATION_VALIDATION.md
+INTELLIGENT_WORKFLOW_DEMO.md
+MCP_SETUP_GUIDE.md
+MONTHLY_DEVELOPMENT_METRICS.md
+OPENSSF_SCORECARD_FIXES.md
+POST_QUANTUM_SECURITY_SUMMARY.md
+PRIVACY_AND_BADGES_IMPLEMENTATION.md
+PROJECT_STRUCTURE.md
+SECURITY.md
+SECURITY_ARCHITECTURE.md
+SECURITY_WORKFLOW_FIX.md
+SERVICE_CONNECTIVITY_CHECKS.md
+STATUS_CHECKS_FIX_GUIDE.md
+THIRD_PARTY_LICENSES.md
+VERCEL_DEPLOYMENT_COMPLETE.md
+whitepaper.md
+
+# Documentation directories
+docs/
+docs-backup/
+screenshots/
+demo and deployment doc guide/
+Legal/
+
+# Test files
+*.test.js
+*.spec.js
+__tests__/
+coverage/
+
+# Temporary and archive files
+tmp/
+temp/
+*.tmp
+*.log
+*.zip
+*.tar.gz
+license-compliance-reports/
+
