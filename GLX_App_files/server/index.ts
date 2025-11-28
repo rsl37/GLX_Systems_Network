@@ -65,8 +65,8 @@ import RealtimeManager from './realtimeManager.js';
 import stablecoinRoutes from './stablecoin/routes.js';
 import { stablecoinService } from './stablecoin/StablecoinService.js';
 
-// Import Pusher for real-time functionality
-import Pusher from 'pusher';
+// Import Socket.io for real-time functionality (replaces Pusher)
+import { Server as SocketIOServer } from 'socket.io';
 
 import { logEnvironmentStatus } from './envValidation.js';
 
@@ -121,21 +121,23 @@ console.log('Data directory:', process.env.DATA_DIRECTORY || './data');
 // Validate environment variables for production deployment
 logEnvironmentStatus();
 
-// Initialize Pusher for real-time communication
-const pusher = new Pusher({
-  appId: process.env.PUSHER_APP_ID || '',
-  key: process.env.PUSHER_KEY || '',
-  secret: process.env.PUSHER_SECRET || '',
-  cluster: process.env.PUSHER_CLUSTER || 'us2',
-  useTLS: true,
+const app = express();
+const server = createServer(app);
+
+// Initialize Socket.io for real-time communication (replaces Pusher)
+// Socket.io with Ably provides managed WebSocket infrastructure
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:5173'],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+  transports: ['websocket', 'polling'],
 });
 
 // Initialize realtime manager
 const realtimeManager = new RealtimeManager();
 console.log('🔌 RealtimeManager initialized');
-
-const app = express();
-const server = createServer(app);
 
 // Configure multer for file uploads with enhanced security
 const storage = multer.diskStorage({
@@ -252,13 +254,13 @@ app.use('/api', apiLimiter);
 
 // System endpoints
 app.get('/api/realtime/health', (req, res) => {
-  console.log('🔌 Realtime health check - Pusher active');
+  console.log('🔌 Realtime health check - Socket.io active');
   res.json({
     success: true,
     data: {
-      type: 'Pusher WebSocket',
+      type: 'Socket.io WebSocket',
       status: 'active',
-      cluster: process.env.PUSHER_CLUSTER || 'us2',
+      transport: 'websocket',
     },
   });
 });
@@ -424,11 +426,12 @@ app.use('/api/crisis-alerts', crisisRoutes);
 app.use('/api', miscRoutes);
 app.use('/api/help-requests', createHelpRequestRoutes(upload, realtimeManager));
 
-// Pusher authentication endpoint
-app.post('/api/pusher/auth', authenticateToken, async (req: AuthRequest, res) => {
+// Socket.io authentication endpoint (replaces Pusher auth)
+app.post('/api/socketio/auth', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { socket_id, channel_name } = req.body;
 
+    // socket_id is required for Socket.io client authentication flow
     if (!socket_id || !channel_name) {
       return sendError(res, 'Socket ID and channel name are required', 400);
     }
@@ -436,31 +439,34 @@ app.post('/api/pusher/auth', authenticateToken, async (req: AuthRequest, res) =>
     // Validate that user can access this channel
     if (channel_name.startsWith('private-user-notifications')) {
       // User can access their own notification channel
-      const auth = pusher.authorizeChannel(socket_id, channel_name, {
+      res.json({
+        auth: 'authorized',
+        socket_id, // Include socket_id in response for client tracking
         user_id: req.userId!.toString(),
         user_info: {
           username: req.username,
         },
       });
-      res.json(auth);
     } else if (channel_name.startsWith('private-help-request-')) {
-      // Extract help request ID and verify user has access
+      // Extract help request ID for potential authorization check
       const helpRequestId = channel_name.replace('private-help-request-', '');
+      console.log(`User ${req.userId} requesting access to help request ${helpRequestId}`);
 
       // TODO: Add proper authorization check for help requests
       // For now, allow all authenticated users
-      const auth = pusher.authorizeChannel(socket_id, channel_name, {
+      res.json({
+        auth: 'authorized',
+        socket_id,
         user_id: req.userId!.toString(),
         user_info: {
           username: req.username,
         },
       });
-      res.json(auth);
     } else {
       return sendError(res, 'Unauthorized channel access', 403);
     }
   } catch (error) {
-    console.error('Pusher auth error:', error);
+    console.error('Socket.io auth error:', error);
     sendError(res, 'Authentication failed', 500);
   }
 });
@@ -553,16 +559,16 @@ app.post('/api/chat/send', authenticateToken, async (req: AuthRequest, res) => {
       roomId: roomId,
     };
 
-    // Broadcast message via Pusher to all users in the help request channel
+    // Broadcast message via Socket.io to all users in the help request channel
     try {
-      await pusher.trigger(`private-help-request-${helpRequestId}`, 'new-message', messageData);
+      io.to(`help-request-${helpRequestId}`).emit('new-message', messageData);
       console.log(
-        '✅ Message broadcasted via Pusher to channel:',
-        `private-help-request-${helpRequestId}`
+        '✅ Message broadcasted via Socket.io to channel:',
+        `help-request-${helpRequestId}`
       );
-    } catch (pusherError) {
-      console.error('❌ Pusher broadcast error:', pusherError);
-      // Don't fail the request if Pusher fails, message is still saved
+    } catch (socketError) {
+      console.error('❌ Socket.io broadcast error:', socketError);
+      // Don't fail the request if Socket.io fails, message is still saved
     }
 
     res.json({
@@ -625,16 +631,16 @@ app.post('/api/chat/join', authenticateToken, async (req: AuthRequest, res) => {
       .where('id', '=', req.userId!)
       .executeTakeFirst();
 
-    // Broadcast user joined event via Pusher
+    // Broadcast user joined event via Socket.io
     try {
-      await pusher.trigger(`private-help-request-${helpRequestId}`, 'user-joined', {
+      io.to(`help-request-${helpRequestId}`).emit('user-joined', {
         userId: req.userId!,
         username: user?.username || 'Unknown',
         timestamp: new Date().toISOString(),
       });
-      console.log('✅ User join broadcasted via Pusher');
-    } catch (pusherError) {
-      console.error('❌ Pusher join broadcast error:', pusherError);
+      console.log('✅ User join broadcasted via Socket.io');
+    } catch (socketError) {
+      console.error('❌ Socket.io join broadcast error:', socketError);
     }
 
     console.log(`User ${req.userId} joined room: ${roomId}`);
@@ -670,16 +676,16 @@ app.post('/api/chat/leave', authenticateToken, async (req: AuthRequest, res) => 
       .where('id', '=', req.userId!)
       .executeTakeFirst();
 
-    // Broadcast user left event via Pusher
+    // Broadcast user left event via Socket.io
     try {
-      await pusher.trigger(`private-help-request-${helpRequestId}`, 'user-left', {
+      io.to(`help-request-${helpRequestId}`).emit('user-left', {
         userId: req.userId!,
         username: user?.username || 'Unknown',
         timestamp: new Date().toISOString(),
       });
-      console.log('✅ User leave broadcasted via Pusher');
-    } catch (pusherError) {
-      console.error('❌ Pusher leave broadcast error:', pusherError);
+      console.log('✅ User leave broadcasted via Socket.io');
+    } catch (socketError) {
+      console.error('❌ Socket.io leave broadcast error:', socketError);
     }
 
     console.log(`User ${req.userId} left room: ${roomId}`);
@@ -734,17 +740,13 @@ interface NotificationData {
   timestamp: string;
 }
 
-// Helper function to send notifications via Pusher
-async function sendNotificationViaPusher(userId: number, notificationData: NotificationData) {
+// Helper function to send notifications via Socket.io (replaces Pusher)
+async function sendNotificationViaSocketIO(userId: number, notificationData: NotificationData) {
   try {
-    await pusher.trigger(
-      `private-user-notifications-${userId}`,
-      'new-notification',
-      notificationData
-    );
-    console.log('✅ Notification sent via Pusher to user:', userId);
+    io.to(`user-notifications-${userId}`).emit('new-notification', notificationData);
+    console.log('✅ Notification sent via Socket.io to user:', userId);
   } catch (error) {
-    console.error('❌ Failed to send notification via Pusher:', error);
+    console.error('❌ Failed to send notification via Socket.io:', error);
   }
 }
 

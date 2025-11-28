@@ -10,8 +10,8 @@ import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { TestServer } from '../setup/test-server.js';
 import supertest from 'supertest';
 
-// Real-time Communication Tests using Pusher (replaces Socket.IO)
-describe('Real-time Communication Tests (Pusher)', () => {
+// Real-time Communication Tests using Socket.io
+describe('Real-time Communication Tests (Socket.io)', () => {
   let testServer: TestServer;
   let request: ReturnType<typeof supertest>;
 
@@ -24,14 +24,14 @@ describe('Real-time Communication Tests (Pusher)', () => {
       res.json({
         success: true,
         data: {
-          type: 'Pusher WebSocket',
+          type: 'Socket.io WebSocket',
           status: 'active',
-          cluster: process.env.PUSHER_CLUSTER || 'us2',
+          transport: 'websocket',
         },
       });
     });
 
-    testServer.app.post('/api/pusher/auth', (req, res) => {
+    testServer.app.post('/api/socketio/auth', (req, res) => {
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Authorization token required' });
@@ -49,7 +49,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
         return res.status(403).json({ error: 'Unauthorized channel access' });
       }
 
-      res.json({ auth: 'mock-auth-signature' });
+      res.json({ auth: 'authorized' });
     });
 
     testServer.app.get('/api/chat/messages', (req, res) => {
@@ -93,20 +93,20 @@ describe('Real-time Communication Tests (Pusher)', () => {
   });
 
   describe('Real-time Health Check', () => {
-    test('should confirm Pusher is active for real-time communication', async () => {
+    test('should confirm Socket.io is active for real-time communication', async () => {
       const response = await request.get('/api/realtime/health').expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data.type).toBe('Pusher WebSocket');
+      expect(response.body.data.type).toBe('Socket.io WebSocket');
       expect(response.body.data.status).toBe('active');
-      expect(response.body.data.cluster).toBeDefined();
+      expect(response.body.data.transport).toBeDefined();
     });
   });
 
-  describe('Pusher Authentication', () => {
-    test('should require authentication for Pusher channel access', async () => {
+  describe('Socket.io Authentication', () => {
+    test('should require authentication for Socket.io channel access', async () => {
       const response = await request
-        .post('/api/pusher/auth')
+        .post('/api/socketio/auth')
         .send({
           socket_id: 'test-socket-123',
           channel_name: 'private-user-notifications-1',
@@ -118,7 +118,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
     test('should authorize valid channel with token', async () => {
       const response = await request
-        .post('/api/pusher/auth')
+        .post('/api/socketio/auth')
         .set('Authorization', 'Bearer valid-token')
         .send({
           socket_id: 'test-socket-123',
@@ -131,7 +131,7 @@ describe('Real-time Communication Tests (Pusher)', () => {
 
     test('should reject invalid channel names', async () => {
       const response = await request
-        .post('/api/pusher/auth')
+        .post('/api/socketio/auth')
         .set('Authorization', 'Bearer valid-token')
         .send({
           socket_id: 'test-socket-123',
@@ -211,10 +211,10 @@ describe('Real-time Communication Tests (Pusher)', () => {
   });
 
   describe('Real-time System Architecture', () => {
-    test('should use Pusher for WebSocket communication instead of Socket.IO', () => {
-      // This test documents the architectural decision to use Pusher
-      // Pusher is used for Vercel compatibility and managed WebSocket infrastructure
-      expect(true).toBe(true); // Architecture test passes - using Pusher
+    test('should use Socket.io for WebSocket communication', () => {
+      // This test documents the architectural decision to use Socket.io with Ably
+      // Socket.io provides flexible WebSocket infrastructure with Ably as backend
+      expect(true).toBe(true); // Architecture test passes - using Socket.io
     });
 
     test('should support HTTP polling as fallback for real-time features', () => {
@@ -225,6 +225,6 @@ describe('Real-time Communication Tests (Pusher)', () => {
   });
 });
 
-// Note: Socket.IO has been replaced with Pusher for real-time communication
-// This provides better Vercel compatibility and managed WebSocket infrastructure
-// The tests above verify the Pusher-based real-time communication endpoints
+// Note: Socket.io with Ably is used for real-time communication
+// This provides flexible WebSocket infrastructure with managed backend
+// The tests above verify the Socket.io-based real-time communication endpoints

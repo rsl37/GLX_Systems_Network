@@ -185,7 +185,7 @@ export async function authenticateToken(
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     req.userId = decoded.userId;
 
-    // Get username for Pusher auth
+    // Get username for Socket.io auth
     try {
       const user = await db
         .selectFrom('users')

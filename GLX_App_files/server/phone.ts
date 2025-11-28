@@ -174,7 +174,7 @@ export async function markPhoneAsVerified(userId: number, phone: string): Promis
 
 /**
  * Sends SMS verification code (mock implementation for testing)
- * In production, this would integrate with SMS service like Twilio
+ * In production, this would integrate with SMS service like Vonage
  */
 export async function sendPhoneVerification(phone: string, code: string): Promise<boolean> {
   try {
@@ -190,15 +190,18 @@ export async function sendPhoneVerification(phone: string, code: string): Promis
       return true;
     }
 
-    // In production, integrate with SMS service
-    // Example Twilio integration:
+    // In production, integrate with Vonage SMS service
+    // Example Vonage integration:
     /*
-    const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+    const vonageClient = new Vonage({
+      apiKey: process.env.VONAGE_API_KEY,
+      apiSecret: process.env.VONAGE_API_SECRET
+    });
 
-    await twilioClient.messages.create({
-      body: `Your GLX verification code is: ${code}. This code expires in 10 minutes.`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phone
+    await vonageClient.sms.send({
+      to: phone,
+      from: process.env.VONAGE_PHONE_NUMBER,
+      text: `Your GLX verification code is: ${code}. This code expires in 10 minutes.`
     });
     */
 

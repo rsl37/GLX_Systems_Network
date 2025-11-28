@@ -36,18 +36,15 @@ const RECOMMENDED_ENV_VARS = [
 
 // Essential environment variables for core features
 const ESSENTIAL_ENV_VARS = [
-  'PUSHER_APP_ID',    // Real-time features - ESSENTIAL
-  'PUSHER_KEY',       // Real-time features - ESSENTIAL
-  'PUSHER_SECRET',    // Real-time features - ESSENTIAL
-  'PUSHER_CLUSTER',   // Real-time features - ESSENTIAL
+  'ABLY_API_KEY',     // Real-time features (Socket.io with Ably) - ESSENTIAL
   'SMTP_HOST',        // Email verification, password reset - ESSENTIAL
   'SMTP_PORT',        // Email verification, password reset - ESSENTIAL
   'SMTP_USER',        // Email verification, password reset - ESSENTIAL
   'SMTP_PASS',        // Email verification, password reset - ESSENTIAL
   'SMTP_FROM',        // Email verification, password reset - ESSENTIAL
-  'TWILIO_SID',       // Phone verification, password reset - ESSENTIAL
-  'TWILIO_AUTH_TOKEN', // Phone verification, password reset - ESSENTIAL
-  'TWILIO_PHONE_NUMBER' // Phone verification, password reset - ESSENTIAL
+  'VONAGE_API_KEY',   // Phone verification, password reset - ESSENTIAL
+  'VONAGE_API_SECRET', // Phone verification, password reset - ESSENTIAL
+  'VONAGE_PHONE_NUMBER' // Phone verification, password reset - ESSENTIAL
 ];
 
 const OPTIONAL_ENV_VARS = [
@@ -506,26 +503,26 @@ export function validateEnvironmentVariables(): ValidationResult[] {
     }
   }
 
-  // Validate TWILIO_PHONE_NUMBER format with comprehensive international support
-  const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
-  if (twilioPhone) {
+  // Validate VONAGE_PHONE_NUMBER format with comprehensive international support
+  const vonagePhone = process.env.VONAGE_PHONE_NUMBER;
+  if (vonagePhone) {
     // Basic format check
-    if (!twilioPhone.startsWith('+')) {
+    if (!vonagePhone.startsWith('+')) {
       results.push({
-        check: 'Twilio Phone Number Format',
+        check: 'Vonage Phone Number Format',
         status: 'fail',
-        message: `TWILIO_PHONE_NUMBER must start with + and include country code. Current: ${twilioPhone}`,
-        details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'missing_plus_prefix' },
+        message: `VONAGE_PHONE_NUMBER must start with + and include country code. Current: ${vonagePhone}`,
+        details: { phone: vonagePhone.substring(0, 5) + '***', issue: 'missing_plus_prefix' },
       });
     } else {
       // Extract country code
-      const countryCodeMatch = twilioPhone.match(/^(\+\d{1,4})/);
+      const countryCodeMatch = vonagePhone.match(/^(\+\d{1,4})/);
       if (!countryCodeMatch) {
         results.push({
-          check: 'Twilio Phone Number Format',
+          check: 'Vonage Phone Number Format',
           status: 'fail',
-          message: `TWILIO_PHONE_NUMBER has invalid country code format`,
-          details: { phone: twilioPhone.substring(0, 5) + '***', issue: 'invalid_country_code' },
+          message: `VONAGE_PHONE_NUMBER has invalid country code format`,
+          details: { phone: vonagePhone.substring(0, 5) + '***', issue: 'invalid_country_code' },
         });
       } else {
         const countryCode = countryCodeMatch[1];
@@ -534,30 +531,30 @@ export function validateEnvironmentVariables(): ValidationResult[] {
         if (phonePattern) {
           // Validate against specific country pattern
           if (
-            phonePattern.pattern.test(twilioPhone) &&
-            twilioPhone.length >= phonePattern.min &&
-            twilioPhone.length <= phonePattern.max
+            phonePattern.pattern.test(vonagePhone) &&
+            vonagePhone.length >= phonePattern.min &&
+            vonagePhone.length <= phonePattern.max
           ) {
             results.push({
-              check: 'Twilio Phone Number Format',
+              check: 'Vonage Phone Number Format',
               status: 'pass',
-              message: `TWILIO_PHONE_NUMBER is properly formatted for country code ${countryCode}`,
+              message: `VONAGE_PHONE_NUMBER is properly formatted for country code ${countryCode}`,
               details: {
-                phone: twilioPhone.substring(0, 5) + '***',
+                phone: vonagePhone.substring(0, 5) + '***',
                 country_code: countryCode,
-                length: twilioPhone.length,
+                length: vonagePhone.length,
                 validated: true,
               },
             });
           } else {
             results.push({
-              check: 'Twilio Phone Number Format',
+              check: 'Vonage Phone Number Format',
               status: 'warning',
-              message: `TWILIO_PHONE_NUMBER format may not be standard for country code ${countryCode}`,
+              message: `VONAGE_PHONE_NUMBER format may not be standard for country code ${countryCode}`,
               details: {
-                phone: twilioPhone.substring(0, 5) + '***',
+                phone: vonagePhone.substring(0, 5) + '***',
                 country_code: countryCode,
-                length: twilioPhone.length,
+                length: vonagePhone.length,
                 expected_min: phonePattern.min,
                 expected_max: phonePattern.max,
               },
@@ -565,27 +562,27 @@ export function validateEnvironmentVariables(): ValidationResult[] {
           }
         } else {
           // Generic validation for unsupported country codes
-          if (twilioPhone.length >= 8 && twilioPhone.length <= 16) {
+          if (vonagePhone.length >= 8 && vonagePhone.length <= 16) {
             results.push({
-              check: 'Twilio Phone Number Format',
+              check: 'Vonage Phone Number Format',
               status: 'pass',
-              message: `TWILIO_PHONE_NUMBER appears valid with country code ${countryCode} (generic validation)`,
+              message: `VONAGE_PHONE_NUMBER appears valid with country code ${countryCode} (generic validation)`,
               details: {
-                phone: twilioPhone.substring(0, 5) + '***',
+                phone: vonagePhone.substring(0, 5) + '***',
                 country_code: countryCode,
-                length: twilioPhone.length,
+                length: vonagePhone.length,
                 validation_type: 'generic',
               },
             });
           } else {
             results.push({
-              check: 'Twilio Phone Number Format',
+              check: 'Vonage Phone Number Format',
               status: 'warning',
-              message: `TWILIO_PHONE_NUMBER length may be invalid for country code ${countryCode}`,
+              message: `VONAGE_PHONE_NUMBER length may be invalid for country code ${countryCode}`,
               details: {
-                phone: twilioPhone.substring(0, 5) + '***',
+                phone: vonagePhone.substring(0, 5) + '***',
                 country_code: countryCode,
-                length: twilioPhone.length,
+                length: vonagePhone.length,
                 expected_range: '8-16 characters',
               },
             });

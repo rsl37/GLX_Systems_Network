@@ -12,8 +12,7 @@
  * Provides low-latency real-time communication for in-app chat,
  * volunteer coordination, and notifications using Socket.io.
  *
- * This complements Pusher for scenarios where self-hosted WebSocket
- * connections are preferred or required.
+ * This is the primary WebSocket provider for real-time messaging.
  */
 
 import { Server as HttpServer } from 'http';

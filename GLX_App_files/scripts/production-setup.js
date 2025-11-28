@@ -133,7 +133,7 @@ try {
 console.log('\n📋 Next Steps:');
 console.log('1. Review and update the .env file with your specific settings:');
 console.log('   - Update SMTP settings for email functionality');
-console.log('   - Update Twilio settings for SMS functionality');
+console.log('   - Update Vonage settings for SMS functionality');
 console.log('   - Update domain URLs to match your deployment');
 console.log('   - Configure DATABASE_URL for PostgreSQL (recommended)');
 console.log('2. Test your production build: npm run build:production');

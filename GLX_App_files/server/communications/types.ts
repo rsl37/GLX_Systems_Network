@@ -10,7 +10,7 @@
  * Hybrid Communication System Types
  *
  * This module defines the interfaces and types for the hybrid communication
- * system that integrates multiple providers: Resgrid, Socket.io, Ably/Firebase, and Twilio.
+ * system that integrates multiple providers: Resgrid, Socket.io, Ably, and Vonage.
  */
 
 // ============================================================================
@@ -21,8 +21,7 @@
  * Supported communication providers
  */
 export type CommunicationProvider =
-  | 'pusher' // Current default provider
-  | 'socketio' // Socket.io for low-latency chat
+  | 'socketio' // Socket.io for low-latency chat (default)
   | 'ably' // Ably for global real-time messaging
   | 'resgrid' // Resgrid for incident/dispatch
   | 'vonage'; // Vonage for SMS/voice escalation

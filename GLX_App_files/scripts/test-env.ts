@@ -25,27 +25,20 @@ console.log('🧪 Testing Environment Variables Configuration\n');
 const requiredVars = ['NODE_ENV', 'PORT', 'JWT_SECRET'];
 
 const essentialVars = [
-  "PUSHER_APP_ID", "PUSHER_KEY", "PUSHER_SECRET", "PUSHER_CLUSTER",  // Real-time features
-  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
-  "SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",    // Email features
-  "TWILIO_SID", "TWILIO_AUTH_TOKEN", "TWILIO_PHONE_NUMBER"            // SMS/Phone features
-  'PUSHER_APP_ID',
-  'PUSHER_KEY',
-  'PUSHER_SECRET',
-  'PUSHER_CLUSTER', // Real-time features
+  'ABLY_API_KEY', // Real-time features (Socket.io with Ably)
   'SMTP_HOST',
   'SMTP_PORT',
   'SMTP_USER',
   'SMTP_PASS',
   'SMTP_FROM', // Email features
-  'TWILIO_SID',
-  'TWILIO_AUTH_TOKEN',
-  'TWILIO_PHONE_NUMBER', // SMS/Phone features
+  'VONAGE_API_KEY',
+  'VONAGE_API_SECRET',
+  'VONAGE_PHONE_NUMBER', // SMS/Phone features
 ];
 
 const recommendedVars = ['CLIENT_ORIGIN', 'DATABASE_URL', 'SOCKET_PATH'];
 
-const optionalVars = [];
+const optionalVars: string[] = [];
 
 console.log('📋 Required Environment Variables:');
 requiredVars.forEach(varName => {
@@ -65,34 +58,14 @@ essentialVars.forEach(varName => {
   let status = '❌';
   let displayValue = 'NOT SET';
 
-  
-  let status = "❌";
-  let displayValue = "NOT SET";
-  
-
-  let status = "❌";
-  let displayValue = "NOT SET";
-
   if (value) {
     if (isPlaceholder) {
       status = '⚠️';
       displayValue = '[PLACEHOLDER - NEEDS REAL VALUE]';
     } else {
-      status = "✅";
-      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
-        ? "[HIDDEN]"
-        : value;
-    }
-  }
-
-      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS") 
-        ? "[HIDDEN]" 
-        : value;
-    }
-  }
-  
-      displayValue = varName.includes("SECRET") || varName.includes("TOKEN") || varName.includes("PASS")
-        ? "[HIDDEN]"
+      status = '✅';
+      displayValue = varName.includes('SECRET') || varName.includes('TOKEN') || varName.includes('PASS')
+        ? '[HIDDEN]'
         : value;
     }
   }
@@ -161,40 +134,7 @@ if (clientOrigin) {
     console.log(`   ❌ CLIENT_ORIGIN: Invalid URL format`);
   }
 } else {
-  console.log(`   ⚠️ CLIENT_ORIGIN: Not set (CORS may use fallback origins)`);
-}
-
-// DATABASE_URL validation
-const databaseUrl = process.env.DATABASE_URL;
-if (databaseUrl) {
-  try {
-    const url = new URL(databaseUrl);
-    if (url.protocol === 'postgres:' || url.protocol === 'postgresql:') {
-      console.log(`   ✅ DATABASE_URL: Valid PostgreSQL URL`);
-    } else {
-      console.log(
-        `   ⚠️ DATABASE_URL: Unexpected protocol ${url.protocol} (expected postgres: or postgresql:)`
-      );
-    }
-  } catch (error) {
-    console.log(`   ❌ DATABASE_URL: Invalid URL format`);
-  }
-} else {
-  console.log(`   ➖ DATABASE_URL: Not set (will use SQLite fallback)`);
-}
-
-// REALTIME_PATH validation
-const realtimePath = process.env.REALTIME_PATH;
-if (realtimePath) {
-  if (realtimePath.startsWith('/') && realtimePath.length > 1) {
-    console.log(`   ✅ REALTIME_PATH: Valid path "${realtimePath}"`);
-  } else {
-    console.log(
-      `   ⚠️ REALTIME_PATH: Should start with / and have additional components (current: "${realtimePath}")`
-    );
-  }
-} else {
-  console.log(`   ➖ REALTIME_PATH: Not set (will use default /api/realtime)`);
+  console.log(`   ⚠️ CLIENT_ORIGIN: Not set`);
 }
 
 console.log('\n📋 Summary:');
@@ -220,9 +160,9 @@ if (setEssential === totalEssential) {
 } else {
   console.log('\n❌ Some essential environment variables are missing.');
   console.log('⚠️  Missing essential variables will cause core features to fail:');
-  console.log('   • PUSHER_* variables: Real-time communication features');
+  console.log('   • ABLY_API_KEY: Real-time communication features (Socket.io with Ably)');
   console.log('   • SMTP_* variables: Email verification and password reset');
-  console.log('   • TWILIO_* variables: Phone verification and SMS');
+  console.log('   • VONAGE_* variables: Phone verification and SMS');
 }
 
 if (setRecommended === totalRecommended) {
@@ -238,6 +178,6 @@ console.log('   1. Copy .env.example to .env');
 console.log('   2. Edit .env with your values');
 console.log('   3. Restart the application');
 console.log('\n🔧 Essential services setup required:');
-console.log('   • Pusher: Create account at https://pusher.com for real-time features');
+console.log('   • Ably: Create account at https://ably.com for real-time features');
 console.log('   • SMTP: Configure email service (Gmail, Outlook, etc.) for email verification');
-console.log('   • Twilio: Create account at https://twilio.com for phone verification');
+console.log('   • Vonage: Create account at https://vonage.com for phone verification');

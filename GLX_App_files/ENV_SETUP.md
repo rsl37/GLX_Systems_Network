@@ -72,8 +72,6 @@ cp .env.example .env
 Then edit `client/.env`:
 
 ```bash
-REACT_APP_PUSHER_KEY=your-pusher-key
-REACT_APP_PUSHER_CLUSTER=us2
 REACT_APP_API_URL=http://localhost:3001/api
 ```
 
@@ -99,9 +97,9 @@ REACT_APP_API_URL=http://localhost:3001/api
 
 | Variable   | Description          | Required For                       |
 | ---------- | -------------------- | ---------------------------------- |
-| `PUSHER_*` | Pusher configuration | Real-time features                 |
+| `ABLY_*`   | Ably configuration   | Real-time features (Socket.io with Ably) |
 | `SMTP_*`   | Email configuration  | Email verification, password reset |
-| `TWILIO_*` | SMS configuration    | Phone verification, 2FA            |
+| `VONAGE_*` | SMS configuration    | Phone verification, 2FA            |
 
 ## Testing Your Configuration
 

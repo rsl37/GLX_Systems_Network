@@ -10,7 +10,7 @@
  * Communication Factory
  *
  * Provides a unified interface for managing hybrid communication providers.
- * Supports modular switching between Pusher, Socket.io, Ably,
+ * Supports modular switching between Socket.io, Ably,
  * Resgrid, and Vonage based on configuration.
  */
 
@@ -133,10 +133,10 @@ export class CommunicationManager {
         }
         break;
 
-      case 'pusher':
+      case 'socketio':
       default:
-        // Pusher is the current default and handled separately in main server
-        console.log('📡 Using Pusher for real-time messaging (default)');
+        // Socket.io is the default real-time messaging provider
+        console.log('📡 Using Socket.io for real-time messaging (default)');
         break;
     }
   }
@@ -350,7 +350,7 @@ export class CommunicationManager {
   }
 
   // ============================================================================
-  // Escalation Methods (Twilio)
+  // Escalation Methods (Vonage)
   // ============================================================================
 
   /**

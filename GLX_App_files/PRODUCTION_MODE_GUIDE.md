@@ -150,9 +150,9 @@ SMTP_FROM=noreply@glxcivicnetwork.me
 ### SMS Service (Configure for phone verification)
 
 ```bash
-TWILIO_SID=your-twilio-account-sid
-TWILIO_AUTH_TOKEN=your-twilio-auth-token
-TWILIO_PHONE_NUMBER=+1234567890
+VONAGE_API_KEY=your-vonage-api-key
+VONAGE_API_SECRET=your-vonage-api-secret
+VONAGE_PHONE_NUMBER=+1234567890
 ```
 
 ## 🚀 Deployment Options
@@ -290,7 +290,7 @@ This validates:
 - [ ] Environment variables configured with secure values
 - [ ] Database setup (PostgreSQL recommended)
 - [ ] SMTP configuration for email notifications
-- [ ] Twilio configuration for SMS verification
+- [ ] Vonage configuration for SMS verification
 - [ ] Domain and CORS settings updated
 - [ ] Security headers verified
 - [ ] SSL/TLS certificates configured
