@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "cd GLX_App_files && npm install && npm run build",
   "outputDirectory": "GLX_App_files/dist/public",
-  "installCommand": "cd GLX_App_files && npm install",
+  "installCommand": "cd GLX_App_files && npm install --include=dev",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -86,8 +86,7 @@
     }
   },
   "functions": {
-    "GLX_App_files/api/**/*": {
-      "runtime": "@vercel/node",
+    "api/**/*.ts": {
       "maxDuration": 10
     }
   },

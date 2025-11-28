@@ -298,21 +298,42 @@ function getDatabaseStrategy(): DatabaseStrategy {
 const strategy = getDatabaseStrategy();
 
 // SQLite Configuration - Best for: Local development, file-based data, lightweight operations, offline support
-const dataDir = process.env.DATA_DIRECTORY || './data';
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
+// In serverless environments (Vercel), use /tmp for writable storage or skip SQLite if PostgreSQL is available
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY === 'true';
+const hasPostgres = !!(process.env.DATABASE_URL || process.env.POSTGRES_URL);
 
+// Skip SQLite initialization in serverless production if PostgreSQL is available
+const skipSqlite = isServerless && hasPostgres && process.env.NODE_ENV === 'production';
+
+let dataDir = process.env.DATA_DIRECTORY || './data';
 let sqliteDb: Database | null = null;
-try {
-  sqliteDb = new Database(path.join(dataDir, 'glx.db'), {
-    verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
-  });
-  console.log('✅ SQLite database initialized successfully.');
-} catch (error) {
-  console.error('❌ Failed to initialize SQLite database:', error.message);
-  console.error('💡 Ensure the data directory is writable and the database file is not corrupted.');
-  process.exit(1); // Exit the application with a failure code
+
+if (!skipSqlite) {
+  // Use /tmp in serverless environments since it's the only writable directory
+  if (isServerless && !process.env.DATA_DIRECTORY) {
+    dataDir = '/tmp/data';
+  }
+
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    sqliteDb = new Database(path.join(dataDir, 'glx.db'), {
+      verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
+    });
+    console.log('✅ SQLite database initialized successfully.');
+  } catch (error) {
+    // In serverless with PostgreSQL available, SQLite failure is non-fatal
+    if (isServerless && hasPostgres) {
+      console.warn('⚠️ SQLite initialization skipped in serverless environment (using PostgreSQL).');
+    } else {
+      console.error('❌ Failed to initialize SQLite database:', (error as Error).message);
+      console.error('💡 Ensure the data directory is writable and the database file is not corrupted.');
+      process.exit(1); // Exit the application with a failure code
+    }
+  }
+} else {
+  console.log('ℹ️ SQLite skipped in serverless production (using PostgreSQL as primary).');
 }
 
 // PostgreSQL Configuration - Best for: Production, complex queries, concurrent operations, scalable data
