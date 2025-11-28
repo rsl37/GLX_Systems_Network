@@ -141,82 +141,18 @@ async function testSMTPConfig(): Promise<void> {
   }
 }
 
-// Test Twilio Configuration
-async function testTwilioConfig(): Promise<void> {
-  console.log("📱 Testing Twilio Configuration...");
-
-  const twilioSid = process.env.TWILIO_SID;
-  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
-  const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
-
-  // Check if all Twilio variables are set
-  if (!twilioSid || !twilioAuthToken || !twilioPhoneNumber) {
-    const missing = [];
-    if (!twilioSid) missing.push("TWILIO_SID");
-    if (!twilioAuthToken) missing.push("TWILIO_AUTH_TOKEN");
-    if (!twilioPhoneNumber) missing.push("TWILIO_PHONE_NUMBER");
-    
-    addResult("Twilio", "❌ FAIL", "Missing required environment variables", 
-      `Missing: ${missing.join(", ")}`);
-    return;
-  }
-
-  // Validate Twilio SID format (should start with AC and be 34 characters)
-  if (!twilioSid.startsWith("AC") || twilioSid.length !== 34) {
-    addResult("Twilio", "❌ FAIL", "Invalid TWILIO_SID format",
-      "Twilio Account SID should start with 'AC' and be 34 characters long");
-    return;
-  }
-
-  // Validate phone number format (should start with +)
-  if (!twilioPhoneNumber.startsWith("+")) {
-    addResult("Twilio", "⚠️ WARNING", "Phone number format may be invalid",
-      "Twilio phone numbers should include country code with + prefix");
-  }
-
-  // Check for placeholder values
-  const placeholders = ["your-", "example", "placeholder", "change-this"];
-  const hasPlaceholders = placeholders.some(p => 
-    twilioSid.toLowerCase().includes(p) || 
-    twilioAuthToken.toLowerCase().includes(p) ||
-    twilioPhoneNumber.toLowerCase().includes(p)
-  );
-
-  if (hasPlaceholders) {
-    addResult("Twilio", "⚠️ WARNING", "Twilio configuration appears to use placeholder values",
-      "Please configure with real Twilio credentials");
-    return;
-  }
-
-  // Test Twilio API connectivity
-  try {
-    const isReachable = await testHttpsConnectivity("api.twilio.com");
-    if (isReachable) {
-      addResult("Twilio", "✅ PASS", "Twilio configuration valid and API reachable");
-    } else {
-      addResult("Twilio", "⚠️ WARNING", "Twilio configuration valid but API connectivity test failed");
-    }
-  } catch (error) {
-    addResult("Twilio", "⚠️ WARNING", "Twilio configuration valid but connectivity test failed");
-  }
-}
-
-// Test Vonage Configuration (replaces Twilio)
+// Test Vonage Configuration (replaces Twilio for SMS/Voice)
 async function testVonageConfig(): Promise<void> {
   console.log("📱 Testing Vonage Configuration...");
 
   const vonageApiKey = process.env.VONAGE_API_KEY;
   const vonageApiSecret = process.env.VONAGE_API_SECRET;
-  const vonageAppId = process.env.VONAGE_APPLICATION_ID;
-  const vonagePrivateKey = process.env.VONAGE_PRIVATE_KEY;
 
-  // Check if Vonage variables are set
+  // Check if required Vonage variables are set
   if (!vonageApiKey || !vonageApiSecret) {
     const missing = [];
     if (!vonageApiKey) missing.push("VONAGE_API_KEY");
     if (!vonageApiSecret) missing.push("VONAGE_API_SECRET");
-    if (!vonageAppId) missing.push("VONAGE_APPLICATION_ID (optional)");
-    if (!vonagePrivateKey) missing.push("VONAGE_PRIVATE_KEY (optional)");
     
     addResult("Vonage", "❌ FAIL", "Missing required environment variables", 
       `Missing: ${missing.join(", ")}`);
@@ -249,71 +185,11 @@ async function testVonageConfig(): Promise<void> {
   }
 }
 
-// Test Pusher Configuration (legacy - may be deprecated)
-async function testPusherConfig(): Promise<void> {
-  console.log("🔄 Testing Pusher Configuration...");
-
-  const pusherAppId = process.env.PUSHER_APP_ID;
-  const pusherKey = process.env.PUSHER_KEY;
-  const pusherSecret = process.env.PUSHER_SECRET;
-  const pusherCluster = process.env.PUSHER_CLUSTER;
-
-  // Check if all Pusher variables are set
-  if (!pusherAppId || !pusherKey || !pusherSecret || !pusherCluster) {
-    const missing = [];
-    if (!pusherAppId) missing.push("PUSHER_APP_ID");
-    if (!pusherKey) missing.push("PUSHER_KEY");
-    if (!pusherSecret) missing.push("PUSHER_SECRET");
-    if (!pusherCluster) missing.push("PUSHER_CLUSTER");
-    
-    addResult("Pusher", "❌ FAIL", "Missing required environment variables", 
-      `Missing: ${missing.join(", ")}`);
-    return;
-  }
-
-  // Validate Pusher App ID (should be numeric)
-  if (!/^\d+$/.test(pusherAppId)) {
-    addResult("Pusher", "❌ FAIL", "Invalid PUSHER_APP_ID format",
-      "Pusher App ID should be numeric");
-    return;
-  }
-
-  // Check for placeholder values
-  const placeholders = ["your-", "example", "placeholder", "change-this"];
-  const hasPlaceholders = placeholders.some(p => 
-    pusherAppId.toLowerCase().includes(p) || 
-    pusherKey.toLowerCase().includes(p) ||
-    pusherSecret.toLowerCase().includes(p) ||
-    pusherCluster.toLowerCase().includes(p)
-  );
-
-  if (hasPlaceholders) {
-    addResult("Pusher", "⚠️ WARNING", "Pusher configuration appears to use placeholder values",
-      "Please configure with real Pusher credentials");
-    return;
-  }
-
-  // Test Pusher API connectivity using cluster
-  const pusherHostname = `api-${pusherCluster}.pusherapp.com`;
-  
-  try {
-    const isReachable = await testHttpsConnectivity(pusherHostname);
-    if (isReachable) {
-      addResult("Pusher", "✅ PASS", "Pusher configuration valid and API reachable");
-    } else {
-      addResult("Pusher", "⚠️ WARNING", "Pusher configuration valid but API connectivity test failed");
-    }
-  } catch (error) {
-    addResult("Pusher", "⚠️ WARNING", "Pusher configuration valid but connectivity test failed");
-  }
-}
-
-// Test Socket.io with Ably Configuration (replaces Pusher)
+// Test Socket.io with Ably Configuration (replaces Pusher for real-time messaging)
 async function testSocketioAblyConfig(): Promise<void> {
   console.log("🔄 Testing Socket.io with Ably Configuration...");
 
   const ablyApiKey = process.env.ABLY_API_KEY;
-  const socketioEnabled = process.env.SOCKETIO_ENABLED;
 
   // Check if Ably API key is set
   if (!ablyApiKey) {
@@ -513,7 +389,5 @@ export {
   testResgridConfig,
   testVonageConfig,
   testSocketioAblyConfig,
-  testTwilioConfig,  // Legacy - kept for backwards compatibility
-  testPusherConfig,  // Legacy - kept for backwards compatibility
   testWeb3Config 
 };

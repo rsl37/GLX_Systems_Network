@@ -281,11 +281,27 @@ jobs:
             SECRET_FOUND=true
           fi
 
-          # Check for Vonage/Nexmo credentials
+          # Check for Vonage/Nexmo credentials (API keys, secrets, tokens)
           if find . -name "*.ts" -o -name "*.js" | \
-             xargs grep -E "nexmo\\.api|vonage\\.api" | \
-             grep -v node_modules | grep -v test | grep -v ".env"; then
-            echo "⚠️ Warning: Potential Vonage credentials found in source files"
+             xargs grep -iE "vonage[_-]?(api|key|secret|token)|nexmo[_-]?(api|key|secret|token)" | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
+            echo "⚠️ Warning: Potential Vonage/Nexmo credentials found in source files"
+            SECRET_FOUND=true
+          fi
+
+          # Check for Ably credentials
+          if find . -name "*.ts" -o -name "*.js" | \
+             xargs grep -iE "ably[_-]?(api|key|secret|token)" | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
+            echo "⚠️ Warning: Potential Ably credentials found in source files"
+            SECRET_FOUND=true
+          fi
+
+          # Check for Resgrid credentials
+          if find . -name "*.ts" -o -name "*.js" | \
+             xargs grep -iE "resgrid[_-]?(api|key|secret|token)" | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
+            echo "⚠️ Warning: Potential Resgrid credentials found in source files"
             SECRET_FOUND=true
           fi
 
