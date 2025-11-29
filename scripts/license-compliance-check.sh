@@ -38,6 +38,7 @@ TIMESTAMP=$(date -u '+%Y%m%d_%H%M%S')
 # License compatibility matrix for PolyForm Shield License 1.0.0
 COMPATIBLE_LICENSES=(
     "MIT"
+    "MIT-0"
     "BSD-2-Clause"
     "BSD-3-Clause"
     "ISC"
@@ -46,6 +47,7 @@ COMPATIBLE_LICENSES=(
     "WTFPL"
     "CC0-1.0"
     "0BSD"
+    "BlueOak-1.0.0"
 )
 
 INCOMPATIBLE_LICENSES=(

@@ -1,11 +1,11 @@
 ---
 title: "Third-Party Licenses"
 description: ""
-lastUpdated: "2025-08-03"
-nextReview: "2025-09-03"
+lastUpdated: "2025-11-29"
+nextReview: "2026-02-28"
 contentType: "legal"
 maintainer: "GLX Development Team"
-version: "1.0.0"
+version: "1.1.0"
 tags: []
 relatedDocs: []
 ---
@@ -195,6 +195,28 @@ npm ls --long
 
 All third-party dependencies use permissive open-source licenses that are compatible with the GLX Civic Networking App's PolyForm Shield License 1.0.0.
 
+### Reviewed Licenses
+
+The following licenses have been reviewed and confirmed compatible with the GLX Civic Networking App:
+
+#### BlueOak-1.0.0 (Blue Oak Model License)
+- **Status**: ✅ Compatible
+- **Packages**: `jackspeak`, `package-json-from-dist`, `path-scurry`
+- **Review Notes**: BlueOak-1.0.0 is a permissive OSI-approved license similar to MIT/Apache. It grants broad rights for use, modification, and distribution with minimal restrictions. It is fully compatible with PolyForm Shield License 1.0.0.
+- **Reference**: https://blueoakcouncil.org/license/1.0.0
+
+#### MPL-2.0 (Mozilla Public License 2.0)
+- **Status**: ✅ Compatible (with conditions)
+- **Packages**: `@vercel/analytics`
+- **Review Notes**: MPL-2.0 is a "weak copyleft" license that allows commercial and proprietary use. It only requires that modifications to MPL-licensed files be released under MPL-2.0. Since we use `@vercel/analytics` as a dependency without modification, it is compatible with our license. The rest of our proprietary codebase is not affected.
+- **Reference**: https://www.mozilla.org/en-US/MPL/2.0/
+
+#### MIT-0 (MIT No Attribution)
+- **Status**: ✅ Compatible
+- **Packages**: `nodemailer`
+- **Review Notes**: MIT-0 is even more permissive than the standard MIT license, removing the attribution requirement. It is fully compatible with PolyForm Shield License 1.0.0.
+- **Reference**: https://opensource.org/license/mit-0
+
 ## Updates
 
 This document should be updated when:
@@ -203,4 +225,4 @@ This document should be updated when:
 - External projects are added or removed
 - License terms of dependencies change
 
-Last updated: January 2025
+Last updated: November 2025
