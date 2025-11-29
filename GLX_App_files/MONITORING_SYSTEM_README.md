@@ -169,7 +169,7 @@ The monitoring system uses a three-level alert system:
 
 The monitoring system includes automated GitHub Actions that:
 
-1. **Run Daily**: Scheduled monitoring at 12 AM GMT-6
+1. <!-- **Run Daily**: Scheduled monitoring at 12 AM GMT-6 - Currently disabled, PR scans only -->
 2. **PR Monitoring**: Automatic analysis on pull requests
 3. **Manual Triggers**: Workflow dispatch for on-demand analysis
 4. **Artifact Upload**: Saves all reports as workflow artifacts

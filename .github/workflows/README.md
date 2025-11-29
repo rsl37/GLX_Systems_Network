@@ -22,7 +22,7 @@ These are essential workflows that maintain code and deployment integrity.
 #### 2. **Security Scan** - `security-scan.yml`
 **Purpose**: Comprehensive security vulnerability detection  
 **Jobs**: CodeQL Analysis, Dependency Scan, Secret Detection, njsscan  
-**Triggers**: Push to main/develop, Pull Requests, Daily schedule (8 PM GMT-6)
+**Triggers**: Push to main/develop, Pull Requests <!-- , Daily schedule (8 PM GMT-6) - Currently disabled, PR scans only -->
 
 #### 3. **Deploy** - `deploy.yml`
 **Purpose**: Preview and production deployments  
@@ -32,7 +32,7 @@ These are essential workflows that maintain code and deployment integrity.
 #### 4. **Quality Gate** - `quality-gate.yml`
 **Purpose**: Quality metrics, performance, accessibility, E2E testing  
 **Jobs**: Code Coverage, Accessibility, Performance, E2E Tests  
-**Triggers**: Push to main, Pull Requests, Weekly schedule
+**Triggers**: Push to main, Pull Requests <!-- , Weekly schedule - Currently disabled, PR scans only -->
 
 ### Tier 2: Specialized Workflows (4 workflows)
 
@@ -44,15 +44,15 @@ Domain-specific workflows for specialized concerns.
 
 #### 6. **License Compliance** - `license-compliance.yml`
 **Purpose**: Ensure license compatibility  
-**Triggers**: Weekly schedule, dependency changes
+**Triggers**: Pull Requests, dependency changes <!-- , Weekly schedule - Currently disabled, PR scans only -->
 
 #### 7. **Service Connectivity** - `service-connectivity-checks.yml`
 **Purpose**: External service integration health  
-**Triggers**: Daily schedule, service config changes
+**Triggers**: Pull Requests, service config changes <!-- , Daily schedule - Currently disabled, PR scans only -->
 
 #### 8. **PAT Security** - `pat-security.yml`
 **Purpose**: PAT token security and validation  
-**Triggers**: Every 6 hours, PAT workflow changes
+**Triggers**: Pull Requests, PAT workflow changes <!-- , Every 6 hours - Currently disabled, PR scans only -->
 
 ### Tier 3: Utility & Maintenance Workflows (4 workflows)
 
@@ -60,11 +60,11 @@ Lightweight workflows for repository housekeeping.
 
 #### 9. **Documentation** - `documentation-validation.yml`
 **Purpose**: Documentation freshness and quality  
-**Triggers**: Monthly schedule, markdown changes
+**Triggers**: Pull Requests, markdown changes <!-- , Monthly schedule - Currently disabled, PR scans only -->
 
 #### 10. **Stale Issues** - `stale.yml`
 **Purpose**: Issue and PR lifecycle management  
-**Triggers**: Daily schedule
+**Triggers**: Manual dispatch <!-- , Daily schedule - Currently disabled -->
 
 #### 11. **Submodule Access** - `secure-submodule-access.yml`
 **Purpose**: Secure submodule operations  
@@ -176,7 +176,7 @@ Configure these status checks in **Settings → Branches → Branch Protection R
 ## Security Configuration
 
 ### Dependabot - `.github/dependabot.yml`
-- Weekly dependency updates (Sundays at 10 PM GMT-6)
+<!-- - Weekly dependency updates (Sundays at 10 PM GMT-6) - Currently disabled, PR scans only -->
 - Grouped updates for production vs development dependencies
 - Security updates for all dependency types
 - GitHub Actions updates to keep workflows current

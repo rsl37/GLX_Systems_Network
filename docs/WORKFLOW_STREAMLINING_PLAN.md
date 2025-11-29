@@ -105,7 +105,7 @@ These are the **essential** workflows that maintain code integrity.
 **Trigger Logic**:
 - Push to `main`, `develop`
 - Pull requests with security-relevant changes
-- Daily schedule (8 PM GMT-6) for full scans
+<!-- - Daily schedule (8 PM GMT-6) for full scans - Currently disabled, PR scans only -->
 
 #### 3. `deploy.yml` - Unified Deployment
 **Consolidates**: `release.yml`, `preview-deploy.yml`, `vercel-integration-check.yml`

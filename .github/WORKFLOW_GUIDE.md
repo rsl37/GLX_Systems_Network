@@ -33,7 +33,7 @@ The workflow system was recently refactored to:
 ### 2. 🔒 Security Scans (Multi-Workflow System)
 
 #### CodeQL Analysis (`codeql.yml`)
-**Triggers:** Push to main/develop, PRs to main, weekly schedule (Tuesdays 1:30 AM)
+**Triggers:** Push to main/develop, PRs to main <!-- , weekly schedule (Tuesdays 1:30 AM) - Currently disabled, PR scans only -->
 **Duration:** ~10-15 minutes
 
 **Features:**
@@ -43,7 +43,7 @@ The workflow system was recently refactored to:
 - **Quantum-Safe Configuration**: Custom CodeQL config for advanced security
 
 #### Security Streamlined (`security-streamlined.yml`)
-**Triggers:** Push/PR to main/develop, daily schedule (8 PM GMT-6)
+**Triggers:** Push/PR to main/develop <!-- , daily schedule (8 PM GMT-6) - Currently disabled, PR scans only -->
 **Duration:** ~15-20 minutes
 
 **Jobs:**
@@ -55,7 +55,7 @@ The workflow system was recently refactored to:
 **Key Features:**
 - Automated security reporting
 - License compliance checking
-- Daily automated scans
+<!-- - Daily automated scans - Currently disabled, PR scans only -->
 - Intelligent change detection
 
 ### 3. 📊 Quality & Performance (`quality.yml`)
@@ -104,7 +104,7 @@ The workflow system was recently refactored to:
 - Health checks and rollback capability
 
 ### 6. 🔍 Workflow Health Monitor (`workflow-monitor.yml`)
-**Triggers:** Daily schedule (12 AM GMT-6), workflow completions
+**Triggers:** Workflow completions <!-- , Daily schedule (12 AM GMT-6) - Currently disabled, PR scans only -->
 **Duration:** ~5 minutes
 
 **Jobs:**
@@ -139,8 +139,8 @@ The workflow system was recently refactored to:
 ### 📋 Dependabot (`dependabot.yml`)
 ```yaml
 # Automated dependency updates
-- Weekly npm dependency updates
-- Weekly GitHub Actions updates
+<!-- - Weekly npm dependency updates - Currently disabled, PR scans only -->
+<!-- - Weekly GitHub Actions updates - Currently disabled, PR scans only -->
 - Grouped updates for related packages
 - Security-focused update prioritization
 ```

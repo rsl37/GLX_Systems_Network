@@ -12,7 +12,7 @@ The GLX Civic Networking App uses the **PolyForm Shield License 1.0.0**, which i
 
 Automated license compliance checking that runs on:
 - Pull requests to main branches
-- Weekly scheduled scans (Saturdays at 9 PM GMT-6)
+<!-- - Weekly scheduled scans (Saturdays at 9 PM GMT-6) - Currently disabled, PR scans only -->
 - Manual workflow dispatch
 
 **Features:**

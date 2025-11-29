@@ -43,7 +43,7 @@ npm run test:services
 The workflow runs automatically on:
 - Push to `main` or `develop` branches
 - Pull requests to `main` branch
-- Daily at 12 AM GMT-6 (scheduled check)
+<!-- - Daily at 12 AM GMT-6 (scheduled check) - Currently disabled, PR scans only -->
 - Manual dispatch (workflow_dispatch)
 
 ## Environment Variables Required
