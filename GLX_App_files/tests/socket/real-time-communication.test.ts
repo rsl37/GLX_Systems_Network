@@ -1,10 +1,17 @@
-/*
- * Copyright © 2025 GLX Civic Networking.
- * Licensed under the PolyForm Shield License 1.0.0.
- * "GLX" and related concepts are inspired by Gatchaman Crowds © Tatsunoko Production.
- * This project is unaffiliated with Tatsunoko Production or the original anime.
+/**
+ * GLX: Connect the World - Civic Networking Platform
+ * 
+ * Copyright (c) 2025 [Your Name/Company]
+ * Licensed under PolyForm Shield License 1.0.0
+ * 
+ * ⚠️  TERMS:
+ * - Commercial use strictly prohibited without written permission from copyright holder
+ * - Forking/derivative works prohibited without written permission
+ * - Violations subject to legal action and damages
+ * 
+ * See LICENSE file in repository root for full terms.
+ * Contact: [your-email@example.com] for licensing inquiries
  */
-
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { TestServer } from '../setup/test-server.js';
