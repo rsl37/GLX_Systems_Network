@@ -186,13 +186,6 @@ export class ProductionMonitoring {
   }
 
   /**
-   * Sentry request handler middleware for Express
-   */
-  getSentryRequestHandler() {
-    return Sentry.expressErrorHandler();
-  }
-
-  /**
    * Capture an exception to Sentry
    */
   captureException(error: Error, context?: Record<string, unknown>): string | null {
@@ -311,10 +304,6 @@ export class ProductionMonitoring {
 export const productionMonitoring = new ProductionMonitoring();
 
 // Export middleware functions
-export function sentryRequestHandler() {
-  return productionMonitoring.getSentryRequestHandler();
-}
-
 export function sentryErrorHandler() {
   return productionMonitoring.getSentryErrorHandler();
 }

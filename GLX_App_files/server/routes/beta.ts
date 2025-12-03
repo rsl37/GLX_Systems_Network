@@ -45,11 +45,13 @@ export interface InviteCode {
 }
 
 /**
- * Generate a unique invite code
+ * Generate a unique invite code with secure entropy
  */
 function generateInviteCode(prefix: string = 'GLX'): string {
-  const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase();
-  return `${prefix}-${randomPart}`;
+  // Use 8 bytes (16 hex chars) for better entropy against brute force
+  const randomPart = crypto.randomBytes(8).toString('hex').toUpperCase();
+  // Format as XXX-XXXX-XXXX-XXXX for readability
+  return `${prefix}-${randomPart.slice(0, 4)}-${randomPart.slice(4, 8)}-${randomPart.slice(8, 12)}`;
 }
 
 /**

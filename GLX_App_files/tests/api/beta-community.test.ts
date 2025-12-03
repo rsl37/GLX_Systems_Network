@@ -65,8 +65,8 @@ describe('Beta User Management API', () => {
         });
       }
 
-      // Mock valid codes
-      const validCodes = ['GLX-TEST1234', 'GLX-VALID001'];
+      // Mock valid codes (new format: XXX-XXXX-XXXX-XXXX)
+      const validCodes = ['GLX-TEST-1234-ABCD', 'GLX-VALI-D001-EFGH'];
 
       if (validCodes.includes(code.toUpperCase())) {
         return res.json({
@@ -138,7 +138,7 @@ describe('Beta User Management API', () => {
     test('should validate a valid invite code', async () => {
       const response = await request(testServer.app)
         .post('/api/beta/invite/validate')
-        .send({ code: 'GLX-TEST1234' })
+        .send({ code: 'GLX-TEST-1234-ABCD' })
         .expect(200);
 
       expect(response.body.success).toBe(true);
