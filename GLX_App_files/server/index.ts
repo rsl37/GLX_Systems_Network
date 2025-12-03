@@ -79,6 +79,15 @@ import {
   logSecurityEvent,
 } from './middleware/securityManager.js';
 
+// Import production monitoring
+import { productionMonitoring, sentryErrorHandler } from './monitoring.js';
+
+// Import beta user management routes
+import betaRoutes, { initializeBetaUserTables } from './routes/beta.js';
+
+// Import community links routes
+import communityRoutes, { initializeCommunityLinksTable } from './routes/community.js';
+
 // Import versioning middleware
 import {
   detectApiVersion,
@@ -417,6 +426,12 @@ app.use('/api/stablecoin', stablecoinRoutes);
 
 // Hybrid Communication System routes
 app.use('/api/communications', communicationsRoutes);
+
+// Beta user management routes (waitlist, invite codes)
+app.use('/api/beta', betaRoutes);
+
+// Community links routes (Discord, Telegram, etc.)
+app.use('/api/community', communityRoutes);
 
 // Mount modular routes with enhanced auth security
 app.use('/api/auth', cors(createAuthCorsConfig()), requirePageVerification, authRoutes);
@@ -982,17 +997,22 @@ app.use(
   })
 );
 
+// Sentry error handler (must be before generic error handler)
+app.use(sentryErrorHandler());
+
 // Global error handler (must be last)
 app.use(errorHandler);
 
 // Graceful shutdown handling
 process.on('SIGTERM', async () => {
   console.log('🔌 SIGTERM received, shutting down gracefully...');
+  await productionMonitoring.shutdown();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   console.log('🔌 SIGINT received, shutting down gracefully...');
+  await productionMonitoring.shutdown();
   process.exit(0);
 });
 
@@ -1058,6 +1078,30 @@ export async function startServer(port: number) {
       console.log('✅ Stablecoin service started successfully');
     } catch (error) {
       console.error('❌ Stablecoin service initialization error:', error);
+    }
+
+    // Initialize beta user management tables (waitlist, invite codes)
+    try {
+      await initializeBetaUserTables();
+      console.log('👥 Beta user management initialized');
+    } catch (error) {
+      console.error('❌ Beta user management initialization error:', error);
+    }
+
+    // Initialize community links table
+    try {
+      await initializeCommunityLinksTable();
+      console.log('🔗 Community links initialized');
+    } catch (error) {
+      console.error('❌ Community links initialization error:', error);
+    }
+
+    // Initialize production monitoring (Sentry + DataDog)
+    try {
+      await productionMonitoring.initialize(app);
+      console.log('📊 Production monitoring initialized');
+    } catch (error) {
+      console.error('❌ Production monitoring initialization error:', error);
     }
 
     if (process.env.NODE_ENV === 'production') {

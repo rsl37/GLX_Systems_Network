@@ -344,4 +344,172 @@ router.get('/price-data', async (req: Request, res: Response) => {
   }
 });
 
+// ============================================================================
+// Mock Test Contract Endpoints (for testing/development)
+// ============================================================================
+
+import { mockCrowdsContract } from './MockTestContract.js';
+
+/**
+ * Get reserve data from mock test contract
+ */
+router.get('/contract/reserve', async (req: Request, res: Response) => {
+  try {
+    const reserveData = await mockCrowdsContract.getReserveData();
+
+    res.json({
+      success: true,
+      data: reserveData,
+      network: mockCrowdsContract.getNetwork(),
+      contract: mockCrowdsContract.getAddress(),
+    });
+  } catch (error) {
+    console.error('Error getting reserve data from contract:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get reserve data from contract',
+    });
+  }
+});
+
+/**
+ * Get contract state
+ */
+router.get('/contract/state', async (req: Request, res: Response) => {
+  try {
+    const state = await mockCrowdsContract.getContractState();
+
+    res.json({
+      success: true,
+      data: state,
+    });
+  } catch (error) {
+    console.error('Error getting contract state:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get contract state',
+    });
+  }
+});
+
+/**
+ * Get reserve health metrics
+ */
+router.get('/contract/health', async (req: Request, res: Response) => {
+  try {
+    const health = await mockCrowdsContract.getReserveHealth();
+
+    res.json({
+      success: true,
+      data: health,
+    });
+  } catch (error) {
+    console.error('Error getting reserve health:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get reserve health',
+    });
+  }
+});
+
+/**
+ * Get reserve assets breakdown
+ */
+router.get('/contract/assets', async (req: Request, res: Response) => {
+  try {
+    const assets = await mockCrowdsContract.getReserveAssets();
+
+    res.json({
+      success: true,
+      data: { assets },
+    });
+  } catch (error) {
+    console.error('Error getting reserve assets:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get reserve assets',
+    });
+  }
+});
+
+/**
+ * Simulate a rebalance operation (test endpoint)
+ */
+router.post(
+  '/contract/simulate/rebalance',
+  authenticateToken,
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          success: false,
+          error: 'Authentication required',
+        });
+        return;
+      }
+
+      const receipt = await mockCrowdsContract.simulateRebalance();
+
+      res.json({
+        success: true,
+        data: {
+          message: 'Rebalance simulation completed',
+          receipt,
+        },
+      });
+    } catch (error) {
+      console.error('Error simulating rebalance:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to simulate rebalance',
+      });
+    }
+  }
+);
+
+/**
+ * Simulate a deposit to reserves (test endpoint)
+ */
+router.post(
+  '/contract/simulate/deposit',
+  authenticateToken,
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          success: false,
+          error: 'Authentication required',
+        });
+        return;
+      }
+
+      const { amount, asset = 'USDC' } = req.body;
+
+      if (typeof amount !== 'number' || amount <= 0) {
+        res.status(400).json({
+          success: false,
+          error: 'Amount must be a positive number',
+        });
+        return;
+      }
+
+      const receipt = await mockCrowdsContract.simulateDeposit(amount, asset);
+
+      res.json({
+        success: true,
+        data: {
+          message: `Simulated deposit of ${amount} ${asset}`,
+          receipt,
+        },
+      });
+    } catch (error) {
+      console.error('Error simulating deposit:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to simulate deposit',
+      });
+    }
+  }
+);
+
 export default router;
