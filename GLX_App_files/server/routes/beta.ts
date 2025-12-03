@@ -137,7 +137,9 @@ router.post('/waitlist', async (req: Request, res: Response): Promise<void> => {
       })
       .execute();
 
-    console.log(`✅ New waitlist signup: ${email}`);
+    // Remove newline/carriage return chars to prevent log injection
+    const emailLogSafe = typeof email === 'string' ? email.replace(/[\r\n]/g, '') : '';
+    console.log(`✅ New waitlist signup: [${emailLogSafe}]`);
 
     sendSuccess(res, {
       message: 'Successfully joined the waitlist!',
