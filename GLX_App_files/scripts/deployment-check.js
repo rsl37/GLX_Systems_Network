@@ -1,3 +1,4 @@
+#!/usr/bin/env tsx
 /**
  * GLX: Connect the World - Civic Networking Platform
  * 
@@ -11,16 +12,6 @@
  * 
  * See LICENSE file in repository root for full terms.
  * Contact: [your-email@example.com] for licensing inquiries
- */
-
-#!/usr/bin/env tsx
-
-/*
- * Copyright (c) 2025 GLX Civic Networking App
- *
- * This software is licensed under the PolyForm Shield License 1.0.0.
- * For the full license text, see LICENSE file in the root directory
- * or visit https://polyformproject.org/licenses/shield/1.0.0
  */
 
 /**

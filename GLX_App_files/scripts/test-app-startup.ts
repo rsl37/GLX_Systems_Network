@@ -1,3 +1,4 @@
+#!/usr/bin/env tsx
 /**
  * GLX: Connect the World - Civic Networking Platform
  * 
