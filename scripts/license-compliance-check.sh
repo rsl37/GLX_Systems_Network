@@ -36,6 +36,9 @@ REPORT_DIR="$PROJECT_ROOT/license-compliance-reports"
 TIMESTAMP=$(date -u '+%Y%m%d_%H%M%S')
 
 # License compatibility matrix for PolyForm Shield License 1.0.0
+# Note: MPL-2.0 has been reviewed and approved - see THIRD_PARTY_LICENSES.md
+# MPL-2.0 is a weak copyleft license that only requires modifications to MPL-licensed
+# files to be released under MPL, making it compatible for use as dependencies
 COMPATIBLE_LICENSES=(
     "MIT"
     "MIT-0"
@@ -48,6 +51,7 @@ COMPATIBLE_LICENSES=(
     "CC0-1.0"
     "0BSD"
     "BlueOak-1.0.0"
+    "MPL-2.0"
 )
 
 INCOMPATIBLE_LICENSES=(
@@ -69,9 +73,8 @@ INCOMPATIBLE_LICENSES=(
     "RSCPL"
 )
 
-# Note: MPL-1.1 and MPL-2.0 moved to REVIEW_REQUIRED as they are weak copyleft licenses
-# that only require modifications to MPL-licensed files to be shared, making them
-# compatible for use as dependencies in proprietary projects (e.g., @vercel/analytics)
+# Note: MPL-1.1 is still in REVIEW_REQUIRED as it may have stricter requirements
+# MPL-2.0 has been reviewed and moved to COMPATIBLE_LICENSES (see THIRD_PARTY_LICENSES.md)
 REVIEW_REQUIRED_LICENSES=(
     "Apache-1.1"
     "BSD-4-Clause"
@@ -79,7 +82,6 @@ REVIEW_REQUIRED_LICENSES=(
     "CC-BY-SA-4.0"
     "LPPL-1.3c"
     "MPL-1.1"
-    "MPL-2.0"
     "MS-PL"
     "MS-RL"
     "OFL-1.1"
