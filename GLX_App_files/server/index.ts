@@ -35,6 +35,7 @@ import miscRoutes from './routes/misc.js';
 import createHelpRequestRoutes from './routes/helpRequests.js';
 import createRealtimeRoutes from './routes/realtime.js';
 import communicationsRoutes from './routes/communications.js';
+import skillsRoutes from './routes/skills.js';
 
 // Import KYC functions (keeping legacy for now)
 import {
@@ -445,6 +446,7 @@ app.use('/api/auth', cors(createAuthCorsConfig()), requirePageVerification, auth
 app.use('/api/user', userRoutes);
 app.use('/api/proposals', governanceRoutes);
 app.use('/api/crisis-alerts', crisisRoutes);
+app.use('/api/skills', skillsRoutes);
 app.use('/api', miscRoutes);
 app.use('/api/help-requests', createHelpRequestRoutes(upload, realtimeManager));
 
