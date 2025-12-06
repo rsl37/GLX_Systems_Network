@@ -278,48 +278,63 @@ jobs:
         run: |
           echo "🔒 Running Service Configuration Security Checks..."
 
-          # Check for hardcoded credentials (basic scan)
+          # Check for hardcoded credentials (refined scan that avoids false positives)
+          # This check looks for actual credential values, not env var names or interfaces
+          # Different services have different key formats, so patterns vary:
+          # - General API keys: 20+ alphanumeric chars (long random strings)
+          # - Vonage: 8+ chars (shorter API keys)
+          # - Ably: Contains colon separator (format: keyname:secret)
+          # - Resgrid: 16+ chars
+          # - SMTP: Any non-empty password value
           echo "Checking for hardcoded service credentials..."
 
           SECRET_FOUND=false
 
-          # Check for hardcoded API keys in TypeScript/JavaScript files
+          # Check for hardcoded API key VALUES (actual secrets assigned, not env var names)
+          # Pattern: looks for assignments of string values that look like API keys (long alphanumeric strings)
+          # Excludes: process.env references, string literals containing env var names, interface declarations
           if find . -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" | \
-             xargs grep -l "api[_-]key\|secret[_-]key\|auth[_-]token" | \
-             grep -v node_modules | grep -v test | grep -v ".env"; then
+             xargs grep -E "(api[_-]?key|secret[_-]?key|auth[_-]?token)\s*[:=]\s*['\"][a-zA-Z0-9_-]{20,}['\"]" 2>/dev/null | \
+             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\.env" | grep -v "// " | grep -v "* "; then
             echo "⚠️ Warning: Potential hardcoded API keys found in source files"
             SECRET_FOUND=true
           fi
 
-          # Check for Vonage/Nexmo credentials (API keys, secrets, tokens)
+          # Check for hardcoded Vonage/Nexmo API keys (actual values assigned, not env var references)
+          # Vonage API keys are typically 8+ alphanumeric chars; secrets are longer
+          # Excludes: string literals containing only env var names (like 'VONAGE_API_KEY')
           if find . -name "*.ts" -o -name "*.js" | \
-             xargs grep -iE "vonage[_-]?(api|key|secret|token)|nexmo[_-]?(api|key|secret|token)" | \
-             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
-            echo "⚠️ Warning: Potential Vonage/Nexmo credentials found in source files"
+             xargs grep -E "(vonage|nexmo)[_-]?(api[_-]?)?(key|secret|token)\s*[:=]\s*['\"][a-zA-Z0-9_-]{8,}['\"]" 2>/dev/null | \
+             grep -vi "process\.env" | grep -v node_modules | grep -v test | grep -v ".env" | \
+             grep -v "// " | grep -vE "'\s*VONAGE_|'\s*NEXMO_" | grep -vE "\"\s*VONAGE_|\"\s*NEXMO_"; then
+            echo "⚠️ Warning: Potential hardcoded Vonage/Nexmo credentials found in source files"
             SECRET_FOUND=true
           fi
 
-          # Check for Ably credentials
+          # Check for hardcoded Ably API keys (actual values with colon separator typical of Ably keys)
           if find . -name "*.ts" -o -name "*.js" | \
-             xargs grep -iE "ably[_-]?(api|key|secret|token)" | \
-             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
-            echo "⚠️ Warning: Potential Ably credentials found in source files"
+             xargs grep -E "ably[_-]?(api[_-]?)?(key|secret|token)\s*[:=]\s*['\"][a-zA-Z0-9_.-]+:[a-zA-Z0-9_-]+['\"]" 2>/dev/null | \
+             grep -vi "process\.env" | grep -v node_modules | grep -v test | grep -v ".env"; then
+            echo "⚠️ Warning: Potential hardcoded Ably credentials found in source files"
             SECRET_FOUND=true
           fi
 
-          # Check for Resgrid credentials
+          # Check for hardcoded Resgrid API keys (actual values, not interface names or env var references)
           if find . -name "*.ts" -o -name "*.js" | \
-             xargs grep -iE "resgrid[_-]?(api|key|secret|token)" | \
-             grep -v node_modules | grep -v test | grep -v ".env" | grep -v "process\\.env"; then
-            echo "⚠️ Warning: Potential Resgrid credentials found in source files"
+             xargs grep -E "resgrid[_-]?(api[_-]?)?(key|secret|token)\s*[:=]\s*['\"][a-zA-Z0-9_-]{16,}['\"]" 2>/dev/null | \
+             grep -vi "process\.env" | grep -v node_modules | grep -v test | grep -v ".env" | \
+             grep -v "interface " | grep -v "type "; then
+            echo "⚠️ Warning: Potential hardcoded Resgrid credentials found in source files"
             SECRET_FOUND=true
           fi
 
-          # Check for email credentials
+          # Check for hardcoded SMTP passwords (actual password values, not variable references)
+          # Excludes: destructuring patterns, function parameters, process.env
           if find . -name "*.ts" -o -name "*.js" | \
-             xargs grep -E "smtp.*password|email.*pass" | \
-             grep -v node_modules | grep -v test | grep -v ".env"; then
-            echo "⚠️ Warning: Potential email credentials found in source files"
+             xargs grep -E "smtp[_-]?pass(word)?\s*[:=]\s*['\"][^'\"]+['\"]" 2>/dev/null | \
+             grep -vi "process\.env" | grep -v node_modules | grep -v test | grep -v ".env" | \
+             grep -v "const {" | grep -v "let {" | grep -v "req\.body"; then
+            echo "⚠️ Warning: Potential hardcoded SMTP credentials found in source files"
             SECRET_FOUND=true
           fi
 
