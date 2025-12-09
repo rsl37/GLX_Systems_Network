@@ -188,7 +188,6 @@ router.get('/match-requests', authenticateToken, apiLimiter, async (req: AuthReq
  */
 router.post('/match-for-request/:id', authenticateToken, apiLimiter, async (req: AuthRequest, res) => {
   try {
-    const userId = validateAuthUser(req.userId);
     const helpRequestId = validateNumericId(req.params.id, 'help request ID');
     const { limit, minScore } = req.body;
 
