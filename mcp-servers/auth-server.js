@@ -24,6 +24,9 @@
  */
 
 const crypto = require('crypto');
+const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
+const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
+const { ListToolsRequestSchema, CallToolRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
 const { validateString, validateId, validateArray } = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
@@ -77,6 +80,156 @@ class JwtAuthServer {
 
     // Token store for demonstration (in production, use a database)
     this.tokenStore = new Map();
+
+    // Initialize MCP Server
+    this.server = new Server({
+      name: 'GLX JWT Authentication MCP Server',
+      version: '1.0.0',
+    }, {
+      capabilities: {
+        tools: {},
+      },
+    });
+
+    this.setupTools();
+  }
+
+  setupTools() {
+    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+      return {
+        tools: [
+          {
+            name: 'generate_access_token',
+            description: 'Generate a short-lived access token for a user',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                userId: {
+                  type: 'string',
+                  description: 'Unique user identifier',
+                },
+                scopes: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Permission scopes (e.g., ["read:civic", "write:database"])',
+                },
+              },
+              required: ['userId'],
+            },
+          },
+          {
+            name: 'generate_refresh_token',
+            description: 'Generate a long-lived refresh token (single-use)',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                userId: {
+                  type: 'string',
+                  description: 'Unique user identifier',
+                },
+              },
+              required: ['userId'],
+            },
+          },
+          {
+            name: 'verify_jwt_token',
+            description: 'Verify and decode a JWT access token',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                token: {
+                  type: 'string',
+                  description: 'JWT token to verify',
+                },
+              },
+              required: ['token'],
+            },
+          },
+          {
+            name: 'refresh_access_token',
+            description: 'Get a new access token using a refresh token',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                refreshToken: {
+                  type: 'string',
+                  description: 'Valid refresh token',
+                },
+              },
+              required: ['refreshToken'],
+            },
+          },
+          {
+            name: 'revoke_token',
+            description: 'Revoke/blacklist a token (access or refresh)',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                token: {
+                  type: 'string',
+                  description: 'Token to revoke',
+                },
+              },
+              required: ['token'],
+            },
+          },
+        ],
+      };
+    });
+
+    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+      const { name, arguments: args } = request.params;
+
+      try {
+        let result;
+        switch (name) {
+          case 'generate_access_token':
+            result = this.generateAccessToken(args.userId, args.scopes || []);
+            break;
+          case 'generate_refresh_token':
+            result = this.generateRefreshToken(args.userId);
+            break;
+          case 'verify_jwt_token':
+            result = this.verifyAccessToken(args.token);
+            break;
+          case 'refresh_access_token':
+            result = this.refreshAccessToken(args.refreshToken);
+            break;
+          case 'revoke_token':
+            this.revokeToken(args.token);
+            result = { success: true, message: 'Token revoked' };
+            break;
+          default:
+            throw new Error(`Unknown tool: ${name}`);
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error: error.message,
+                },
+                null,
+                2
+              ),
+            },
+          ],
+          isError: true,
+        };
+      }
+    });
   }
 
   /**
@@ -242,14 +395,25 @@ class JwtAuthServer {
    * @private
    */
   _signJwt(header, payload) {
-    const headerB64 = Buffer.from(JSON.stringify(header)).toString('base64');
-    const payloadB64 = Buffer.from(JSON.stringify(payload)).toString('base64');
+    const headerB64 = Buffer.from(JSON.stringify(header))
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    const payloadB64 = Buffer.from(JSON.stringify(payload))
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
     const message = `${headerB64}.${payloadB64}`;
 
     const signature = crypto
       .createHmac('sha256', this.config.JWT_SECRET)
       .update(message)
-      .digest('base64');
+      .digest('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
 
     return `${message}.${signature}`;
   }
@@ -270,15 +434,29 @@ class JwtAuthServer {
     const expected = crypto
       .createHmac('sha256', this.config.JWT_SECRET)
       .update(message)
-      .digest('base64');
+      .digest('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+
+    // Ensure both buffers are the same length for timing-safe comparison
+    if (expected.length !== signature.length) {
+      throw new Error('Invalid JWT signature');
+    }
 
     if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature))) {
       throw new Error('Invalid JWT signature');
     }
 
-    // Decode payload
+    // Decode payload (convert base64url back to base64)
+    const base64Payload = payloadB64
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    // Add padding if needed
+    const paddedPayload = base64Payload + '='.repeat((4 - base64Payload.length % 4) % 4);
+    
     const payload = JSON.parse(
-      Buffer.from(payloadB64, 'base64').toString('utf-8')
+      Buffer.from(paddedPayload, 'base64').toString('utf-8')
     );
 
     // Check expiry
@@ -288,117 +466,20 @@ class JwtAuthServer {
 
     return payload;
   }
-}
-
-// MCP Tool Definitions
-const tools = [
-  {
-    name: 'generate_access_token',
-    description: 'Generate a short-lived access token for a user',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        userId: {
-          type: 'string',
-          description: 'Unique user identifier',
-        },
-        scopes: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Permission scopes (e.g., ["read:civic", "write:database"])',
-        },
-      },
-      required: ['userId'],
-    },
-  },
-  {
-    name: 'generate_refresh_token',
-    description: 'Generate a long-lived refresh token (single-use)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        userId: {
-          type: 'string',
-          description: 'Unique user identifier',
-        },
-      },
-      required: ['userId'],
-    },
-  },
-  {
-    name: 'verify_jwt_token',
-    description: 'Verify and decode a JWT access token',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        token: {
-          type: 'string',
-          description: 'JWT token to verify',
-        },
-      },
-      required: ['token'],
-    },
-  },
-  {
-    name: 'refresh_access_token',
-    description: 'Get a new access token using a refresh token',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        refreshToken: {
-          type: 'string',
-          description: 'Valid refresh token',
-        },
-      },
-      required: ['refreshToken'],
-    },
-  },
-  {
-    name: 'revoke_token',
-    description: 'Revoke/blacklist a token (access or refresh)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        token: {
-          type: 'string',
-          description: 'Token to revoke',
-        },
-      },
-      required: ['token'],
-    },
-  },
-];
-
-// Initialize server
-const server = new JwtAuthServer();
-
-// Main tool handler
-function handleToolCall(toolName, toolInput) {
-  switch (toolName) {
-    case 'generate_access_token':
-      return server.generateAccessToken(toolInput.userId, toolInput.scopes || []);
-
-    case 'generate_refresh_token':
-      return server.generateRefreshToken(toolInput.userId);
-
-    case 'verify_jwt_token':
-      return server.verifyAccessToken(toolInput.token);
-
-    case 'refresh_access_token':
-      return server.refreshAccessToken(toolInput.refreshToken);
-
-    case 'revoke_token':
-      server.revokeToken(toolInput.token);
-      return { success: true, message: 'Token revoked' };
-
-    default:
-      throw new Error(`Unknown tool: ${toolName}`);
+  /**
+   * Start the MCP server.
+   */
+  async start() {
+    const transport = new StdioServerTransport();
+    await this.server.connect(transport);
+    this.logger.info('Auth MCP Server started');
   }
 }
 
-// Export for use in MCP framework
-module.exports = {
-  tools,
-  handleToolCall,
-  JwtAuthServer,
-};
+// Start the server if this file is executed directly
+if (require.main === module) {
+  const server = new JwtAuthServer();
+  server.start().catch(console.error);
+}
+
+module.exports = JwtAuthServer;
