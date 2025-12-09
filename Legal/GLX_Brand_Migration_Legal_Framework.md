@@ -1,10 +1,10 @@
 ---
 title: "GLX Brand Migration Legal Framework and Trademark Strategy"
 description: "Comprehensive legal framework for GALAX to GLX brand migration"
-lastUpdated: "2025-08-03"
-nextReview: "2025-09-03"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "legal-documentation"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: ["legal", "trademark", "brand-migration", "ip-strategy"]
 relatedDocs: ["GLX_Attribution_Statement.md", "GLX_Trademark_Filing_Strategy.md"]

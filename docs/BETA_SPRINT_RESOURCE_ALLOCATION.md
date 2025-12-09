@@ -1,3 +1,15 @@
+---
+title: "GLX Civic Network - Beta Sprint Resource Allocation Plan"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "documentation"
+maintainer: "rsl37"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # GLX Civic Network - Beta Sprint Resource Allocation Plan
 
 **Document Version:** 1.0.0  

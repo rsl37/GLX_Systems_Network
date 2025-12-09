@@ -1,10 +1,10 @@
 ---
 title: "GLX Civic Platform - Real-Time Communication Guide"
 description: "Guide for Socket.io and Ably real-time messaging"
-lastUpdated: "2025-11-29"
-nextReview: "2025-12-29"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "guide"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "2.0.0"
 tags: ["realtime", "socket.io", "ably"]
 relatedDocs: []

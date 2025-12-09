@@ -1,10 +1,10 @@
 ---
 title: "GLX Beta Testing Guide"
 description: "Complete guide for GLX Civic Network beta testers"
-lastUpdated: "2025-12-06"
-nextReview: "2026-01-06"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "documentation"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: ["beta", "testing", "guide"]
 relatedDocs: ["BETA_LAUNCH_ROADMAP.md", "BETA_DEPLOYMENT_GUIDE.md"]

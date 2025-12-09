@@ -1,3 +1,15 @@
+---
+title: "Service Connectivity Checks"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "documentation"
+maintainer: "rsl37"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Service Connectivity Checks
 
 This document describes the service connectivity checks implemented for the GLX Civic Networking App. These checks validate the configuration and connectivity of essential services required for the application to function properly.

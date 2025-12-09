@@ -1,10 +1,10 @@
 ---
 title: "GLX Civic Networking App - Complete Vercel Integration Guide"
 description: ""
-lastUpdated: "2025-01-13"
-nextReview: "2025-02-13"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "guide"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -52,9 +52,9 @@ JWT_SECRET=YOUR_SECURE_64_CHARACTER_RANDOM_STRING_HERE
 JWT_REFRESH_SECRET=YOUR_SECURE_64_CHARACTER_REFRESH_STRING_HERE
 
 # CORS Configuration (CRITICAL)
-CLIENT_ORIGIN=https://your-app.vercel.app
-FRONTEND_URL=https://your-app.vercel.app
-TRUSTED_ORIGINS=https://your-app.vercel.app,https://your-custom-domain.com
+CLIENT_ORIGIN=https://glxcivicnetworkingapp.vercel.app
+FRONTEND_URL=https://glxcivicnetworkingapp.vercel.app
+TRUSTED_ORIGINS=https://glxcivicnetworkingapp.vercel.app,https://your-custom-domain.com
 
 # Database (Recommended: PostgreSQL)
 DATABASE_URL=postgres://username:password@host:5432/glx_db
@@ -201,16 +201,16 @@ Run health checks manually:
 npm run vercel:health
 
 # Check specific URL
-node scripts/vercel-health-check.js https://your-app.vercel.app
+node scripts/vercel-health-check.js https://glxcivicnetworkingapp.vercel.app
 ```
 
 ### Monitoring Endpoints
 
 Monitor these endpoints for deployment health:
 
-- `https://your-app.vercel.app/` - Main application
-- `https://your-app.vercel.app/api/health` - API health check
-- `https://your-app.vercel.app/api/realtime/health` - Real-time features
+- `https://glxcivicnetworkingapp.vercel.app/` - Main application
+- `https://glxcivicnetworkingapp.vercel.app/api/health` - API health check
+- `https://glxcivicnetworkingapp.vercel.app/api/realtime/health` - Real-time features
 
 ## 🔧 Troubleshooting Common Issues
 

@@ -1,3 +1,15 @@
+---
+title: "Recommended Hybrid Communication and Dispatch Architecture"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "api-reference"
+maintainer: "rsl37"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Recommended Hybrid Communication and Dispatch Architecture
 
 This document summarizes the recommended hybrid communication and dispatch architecture that integrates various technologies to enhance crisis management and communication. The architecture consists of the following components:

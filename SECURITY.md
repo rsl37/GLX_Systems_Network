@@ -1,10 +1,10 @@
 ---
 title: "Security Policy"
 description: ""
-lastUpdated: "2025-08-03"
-nextReview: "2025-09-03"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "security"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: []
 relatedDocs: []

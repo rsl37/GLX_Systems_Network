@@ -1,7 +1,13 @@
 ---
-name: secure-integrity-agent
-description: Security-first coding assistant with comprehensive integrity guarantees
-applyTo: "**"
+title: "SECURE INTEGRITY CODING DIRECTIVE v2.0"
+description: "Security-first coding assistant with comprehensive integrity guarantees"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "documentation"
+maintainer: "rsl37"
+version: "1.0.0"
+tags: []
+relatedDocs: []
 ---
 
 # SECURE INTEGRITY CODING DIRECTIVE v2.0

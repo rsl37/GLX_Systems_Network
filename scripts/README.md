@@ -1,10 +1,10 @@
 ---
 title: "GLX Civic Networking App - Root Scripts"
 description: "Utility scripts for setup and maintenance"
-lastUpdated: "2025-11-29"
-nextReview: "2025-12-29"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "overview"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: ["scripts", "setup"]
 relatedDocs: []

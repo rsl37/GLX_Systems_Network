@@ -1,10 +1,10 @@
 ---
 title: "GLX Civic Networking App - Vercel Deployment Guide"
 description: ""
-lastUpdated: "2025-08-03"
-nextReview: "2025-09-03"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "deployment"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -67,9 +67,9 @@ PUSHER_SECRET=your-pusher-secret
 PUSHER_CLUSTER=us2
 
 # CORS Configuration (Required)
-CLIENT_ORIGIN=https://your-app-name.vercel.app
-FRONTEND_URL=https://your-app-name.vercel.app
-TRUSTED_ORIGINS=https://your-app-name.vercel.app
+CLIENT_ORIGIN=https://glxcivicnetworkingapp.vercel.app
+FRONTEND_URL=https://glxcivicnetworkingapp.vercel.app
+TRUSTED_ORIGINS=https://glxcivicnetworkingapp.vercel.app
 
 # Optional: Email Configuration
 SMTP_HOST=smtp.gmail.com
@@ -107,9 +107,9 @@ Vercel should automatically use the settings from `vercel.json`:
 
 ### Step 5: Test Deployment
 Once deployed, test these endpoints:
-- `https://your-app.vercel.app/` - Frontend application
-- `https://your-app.vercel.app/api/health` - API health check
-- `https://your-app.vercel.app/api/realtime/health` - Realtime system check
+- `https://glxcivicnetworkingapp.vercel.app/` - Frontend application
+- `https://glxcivicnetworkingapp.vercel.app/api/health` - API health check
+- `https://glxcivicnetworkingapp.vercel.app/api/realtime/health` - Realtime system check
 
 ## 📡 How Real-time Features Work Now
 

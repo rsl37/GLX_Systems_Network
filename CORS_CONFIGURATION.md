@@ -1,3 +1,15 @@
+---
+title: "Configurable CORS Origins"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "documentation"
+maintainer: "rsl37"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Configurable CORS Origins
 
 This document explains the new configurable CORS (Cross-Origin Resource Sharing) system that allows deployment environments to use appropriate origins without code changes.

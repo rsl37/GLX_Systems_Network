@@ -1,7 +1,9 @@
+#!/usr/bin/env node
+
 /**
  * GLX: Connect the World - Civic Networking Platform
  * 
- * Copyright (c) 2025 [Your Name/Company]
+ * Copyright (c) 2025 rsl37
  * Licensed under PolyForm Shield License 1.0.0
  * 
  * ⚠️  TERMS:
@@ -10,10 +12,8 @@
  * - Violations subject to legal action and damages
  * 
  * See LICENSE file in repository root for full terms.
- * Contact: [your-email@example.com] for licensing inquiries
+ * Contact: roselleroberts@pm.me for licensing inquiries
  */
-
-#!/usr/bin/env node
 
 /**
  * Documentation Metadata Manager
@@ -71,7 +71,7 @@ class DocumentationManager {
       nextReview: reviewDate,
       contentType,
       path: relativePath,
-      maintainer: 'GLX Development Team',
+      maintainer: 'rsl37',
       version: '1.0.0'
     };
   }
@@ -126,16 +126,25 @@ class DocumentationManager {
    * Create standardized frontmatter
    */
   createFrontmatter(metadata) {
+    // Helper to format array values
+    const formatValue = (value) => {
+      if (Array.isArray(value)) {
+        if (value.length === 0) return '[]';
+        return '[' + value.map(v => `"${v}"`).join(', ') + ']';
+      }
+      return `"${value}"`;
+    };
+    
     return `---
-title: "${metadata.title}"
-description: ""
-lastUpdated: "${metadata.lastUpdated}"
-nextReview: "${metadata.nextReview}"
-contentType: "${metadata.contentType}"
-maintainer: "${metadata.maintainer}"
-version: "${metadata.version}"
-tags: []
-relatedDocs: []
+title: ${formatValue(metadata.title)}
+description: ${formatValue(metadata.description || '')}
+lastUpdated: ${formatValue(metadata.lastUpdated)}
+nextReview: ${formatValue(metadata.nextReview)}
+contentType: ${formatValue(metadata.contentType)}
+maintainer: ${formatValue(metadata.maintainer)}
+version: ${formatValue(metadata.version)}
+tags: ${formatValue(metadata.tags || [])}
+relatedDocs: ${formatValue(metadata.relatedDocs || [])}
 ---
 
 `;
@@ -159,12 +168,29 @@ relatedDocs: []
           const frontmatterContent = content.slice(4, frontmatterEnd);
           bodyContent = content.slice(frontmatterEnd + 5);
           
-          // Parse existing metadata
+          // Parse existing metadata - handle both simple values and arrays
           const existingMetadata = {};
           frontmatterContent.split('\n').forEach(line => {
-            const match = line.match(/^(\w+):\s*"?([^"]+)"?$/);
-            if (match) {
-              existingMetadata[match[1]] = match[2].replace(/"/g, '');
+            // Match simple values like: key: "value" or key: value
+            const simpleMatch = line.match(/^(\w+):\s*"?([^"\[\]]+)"?$/);
+            if (simpleMatch) {
+              existingMetadata[simpleMatch[1]] = simpleMatch[2].replace(/"/g, '').trim();
+              return;
+            }
+            
+            // Match arrays like: key: ["val1", "val2"] or key: []
+            const arrayMatch = line.match(/^(\w+):\s*\[(.*)\]$/);
+            if (arrayMatch) {
+              const arrayContent = arrayMatch[2].trim();
+              if (arrayContent === '') {
+                existingMetadata[arrayMatch[1]] = [];
+              } else {
+                // Parse array elements
+                const elements = arrayContent.split(',').map(item => {
+                  return item.trim().replace(/^["']|["']$/g, '');
+                });
+                existingMetadata[arrayMatch[1]] = elements;
+              }
             }
           });
           
@@ -177,6 +203,10 @@ relatedDocs: []
           const nextReview = new Date();
           nextReview.setMonth(nextReview.getMonth() + 1);
           metadata.nextReview = nextReview.toISOString().split('T')[0];
+          
+          // Force update maintainer to current value from generateMetadata
+          const freshMetadata = this.generateMetadata(filePath, bodyContent);
+          metadata.maintainer = freshMetadata.maintainer;
         } else {
           metadata = this.generateMetadata(filePath, content);
         }

@@ -1,10 +1,10 @@
 ---
 title: "🔴 URGENT: "Request Failed" Error - Fix Implementation Guide"
 description: ""
-lastUpdated: "2025-08-03"
-nextReview: "2025-09-03"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "guide"
-maintainer: "GLX Development Team"
+maintainer: "rsl37"
 version: "1.0.0"
 tags: []
 relatedDocs: []
@@ -45,7 +45,7 @@ After setting environment variables, redeploy your application in Vercel.
 
 ### Step 4: Test
 
-Visit `https://your-app.vercel.app/api/debug/environment` to verify configuration.
+Visit `https://glxcivicnetworkingapp.vercel.app/api/debug/environment` to verify configuration.
 
 ## 🔍 Detailed Problem Analysis
 
@@ -151,13 +151,13 @@ Manual checklist:
 1. **Check Environment Variables**:
 
    ```bash
-   curl https://your-app.vercel.app/api/debug/environment
+   curl https://glxcivicnetworkingapp.vercel.app/api/debug/environment
    ```
 
 2. **Verify CORS Configuration**:
 
    ```bash
-   curl -H "Origin: https://your-app.vercel.app" https://your-app.vercel.app/api/debug/cors
+   curl -H "Origin: https://glxcivicnetworkingapp.vercel.app" https://glxcivicnetworkingapp.vercel.app/api/debug/cors
    ```
 
 3. **Check Vercel Function Logs**:
