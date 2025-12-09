@@ -145,20 +145,20 @@ router.post('/match-users', authenticateToken, apiLimiter, async (req: AuthReque
  * GET /api/skills/match-requests
  * Find help requests that match the authenticated user's skills
  */
-router.get('/match-requests', authenticateToken, apiLimiter, async (req: AuthRequest, res) => {
+router.post('/match-requests', authenticateToken, apiLimiter, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    const { latitude, longitude, maxDistance, limit, minScore, status } = req.query;
+    const { latitude, longitude, maxDistance, limit, minScore, status } = req.body;
 
     console.log('🔍 Finding matching help requests for user:', userId);
 
     const matches = await findMatchingHelpRequests(userId, {
-      latitude: latitude ? parseFloat(latitude as string) : undefined,
-      longitude: longitude ? parseFloat(longitude as string) : undefined,
-      maxDistance: maxDistance ? parseInt(maxDistance as string) : undefined,
-      limit: limit ? parseInt(limit as string) : 20,
-      minScore: minScore ? parseInt(minScore as string) : 10,
-      status: (status as string) || 'posted'
+      latitude: latitude ? parseFloat(latitude) : undefined,
+      longitude: longitude ? parseFloat(longitude) : undefined,
+      maxDistance: maxDistance ? parseInt(maxDistance) : undefined,
+      limit: limit ? parseInt(limit) : 20,
+      minScore: minScore ? parseInt(minScore) : 10,
+      status: status || 'posted'
     });
 
     console.log(`✅ Found ${matches.length} matching help requests`);
