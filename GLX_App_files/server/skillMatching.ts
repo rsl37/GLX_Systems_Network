@@ -256,7 +256,6 @@ export async function findMatchingUsers(
 ): Promise<SkillMatchResult[]> {
   const {
     excludeUserId,
-    latitude,
     longitude,
     maxDistance = 50,
     limit = 20,
