@@ -82,7 +82,7 @@ jobs:
         id: list-docs
         run: |
           if [ "${{ steps.changes.outputs.docs }}" == "true" ]; then
-            echo "files=${{ steps.changes.outputs.docs_files }}" >> $GITHUB_OUTPUT
+            echo 'files=${{ steps.changes.outputs.docs_files }}' >> $GITHUB_OUTPUT
           else
             echo "files=[]" >> $GITHUB_OUTPUT
           fi
