@@ -1,3 +1,15 @@
+---
+title: "GitHub Status Checks Fix - Implementation Guide"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "guide"
+maintainer: "GLX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # GitHub Status Checks Fix - Implementation Guide
 
 This repository now includes a comprehensive workflow (`comprehensive-checks.yml`) that fixes the stalling status checks issue by providing a consolidated, timeout-protected CI/CD pipeline.

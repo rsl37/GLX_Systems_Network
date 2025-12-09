@@ -1,13 +1,13 @@
 ---
 title: "GLX Attribution Statement and IP Compliance"
-description: "Proper attribution and intellectual property compliance for GLX platform"
-lastUpdated: "2025-08-03"
-nextReview: "2025-09-03"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "legal-compliance"
 maintainer: "GLX Development Team"
 version: "1.0.0"
-tags: ["attribution", "ip-compliance", "legal"]
-relatedDocs: ["GLX_Brand_Migration_Legal_Framework.md"]
+tags: []
+relatedDocs: []
 ---
 
 # GLX Attribution Statement and IP Compliance

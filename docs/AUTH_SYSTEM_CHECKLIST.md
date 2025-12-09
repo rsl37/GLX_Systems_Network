@@ -1,3 +1,15 @@
+---
+title: "Step-by-Step Guide: Checking for a Complete Custom Authentication System"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "documentation"
+maintainer: "GLX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Step-by-Step Guide: Checking for a Complete Custom Authentication System
 
 This guide helps you audit your app's source code to ensure you have all essential parts of a custom authentication system implemented.

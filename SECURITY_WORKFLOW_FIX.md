@@ -1,3 +1,15 @@
+---
+title: "Security Workflow Fix Documentation"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "security"
+maintainer: "GLX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # Security Workflow Fix Documentation
 
 ## Overview

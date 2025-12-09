@@ -1,8 +1,8 @@
 ---
 title: "Third-Party Licenses"
 description: ""
-lastUpdated: "2025-11-29"
-nextReview: "2026-02-28"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "legal"
 maintainer: "GLX Development Team"
 version: "1.1.0"

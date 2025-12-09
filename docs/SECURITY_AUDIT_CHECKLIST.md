@@ -1,3 +1,15 @@
+---
+title: "GLX Civic Network - Security Audit Checklist"
+description: ""
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
+contentType: "security"
+maintainer: "GLX Development Team"
+version: "1.0.0"
+tags: []
+relatedDocs: []
+---
+
 # GLX Civic Network - Security Audit Checklist
 
 **Document Version:** 1.0.0

@@ -1,8 +1,8 @@
 ---
 title: "GLX Civic Networking App - Complete Vercel Integration Guide"
 description: ""
-lastUpdated: "2025-01-13"
-nextReview: "2025-02-13"
+lastUpdated: "2025-12-09"
+nextReview: "2026-01-09"
 contentType: "guide"
 maintainer: "GLX Development Team"
 version: "1.0.0"
