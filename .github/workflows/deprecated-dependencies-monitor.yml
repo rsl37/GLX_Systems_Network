@@ -1,0 +1,182 @@
+---
+name: Deprecated Dependencies Monitor
+
+# This workflow monitors deprecated dependencies and verifies their security status
+# It runs weekly and creates an issue if action is required
+
+on:
+  schedule:
+    # Run weekly on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual triggering
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'GLX_App_files/package.json'
+      - 'pnpm-lock.yaml'
+      - '.pnpmfile.cjs'
+      - 'DEPRECATED_DEPENDENCIES.md'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  check-deprecated-dependencies:
+    name: Check Deprecated Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          cd GLX_App_files
+          npm ci
+          
+      - name: Run deprecated dependencies check
+        id: check
+        run: |
+          chmod +x scripts/check-deprecated-deps.sh
+          ./scripts/check-deprecated-deps.sh > deprecated-check.log 2>&1 || true
+          
+      - name: Upload check results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deprecated-dependencies-check
+          path: deprecated-check.log
+          retention-days: 30
+          
+      - name: Check for new deprecated packages
+        id: verify
+        run: |
+          echo "Checking for deprecated packages..."
+          
+          # Check path-match status
+          PATH_MATCH_STATUS=$(npm view path-match@1.2.4 deprecated 2>/dev/null || echo "")
+          echo "path_match_deprecated=${PATH_MATCH_STATUS}" >> $GITHUB_OUTPUT
+          
+          # Check if @vercel/fun still uses path-match
+          VERCEL_FUN_DEPS=$(npm view @vercel/fun dependencies --json 2>/dev/null || echo "{}")
+          if echo "$VERCEL_FUN_DEPS" | grep -q "path-match"; then
+            echo "vercel_fun_uses_path_match=true" >> $GITHUB_OUTPUT
+          else
+            echo "vercel_fun_uses_path_match=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check for vulnerabilities in path-match
+          VULN_CHECK=$(curl -s "https://api.osv.dev/v1/query" \
+            -H "Content-Type: application/json" \
+            -d '{"package":{"name":"path-match","ecosystem":"npm"},"version":"1.2.4"}' | \
+            jq -r '.vulns // []' 2>/dev/null || echo "[]")
+          
+          if [ "$VULN_CHECK" != "[]" ]; then
+            echo "path_match_has_vulns=true" >> $GITHUB_OUTPUT
+          else
+            echo "path_match_has_vulns=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Check production dependencies
+        id: prod-check
+        run: |
+          cd GLX_App_files
+          if npm ls path-match 2>&1 | grep -q "path-match@"; then
+            echo "path_match_in_production=true" >> $GITHUB_OUTPUT
+            echo "::error::path-match found in production dependencies!"
+          else
+            echo "path_match_in_production=false" >> $GITHUB_OUTPUT
+            echo "::notice::path-match not in production dependencies (expected)"
+          fi
+          
+      - name: Create issue if action required
+        if: |
+          steps.verify.outputs.path_match_has_vulns == 'true' || 
+          steps.prod-check.outputs.path_match_in_production == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🔴 URGENT: Action Required for Deprecated Dependencies';
+            const body = `## Deprecated Dependencies Security Alert
+            
+            The automated dependency monitoring has detected that action is required:
+            
+            ### Critical Issues:
+            ${process.env.PATH_MATCH_HAS_VULNS === 'true' ? '- ⚠️ **Security vulnerabilities found in path-match@1.2.4**' : ''}
+            ${process.env.PATH_MATCH_IN_PROD === 'true' ? '- ⚠️ **path-match found in production dependencies**' : ''}
+            
+            ### Details:
+            - Check Date: ${new Date().toISOString()}
+            - Workflow Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            ### Immediate Actions:
+            1. Review the full check results in the workflow artifacts
+            2. Consult DEPRECATED_DEPENDENCIES.md for current status
+            3. If vulnerabilities exist, investigate alternatives or patches
+            4. Update the security documentation
+            
+            ### Resources:
+            - [OSV Database](https://osv.dev)
+            - [npm Advisory Database](https://www.npmjs.com/advisories)
+            - [Deprecated Dependencies Documentation](./DEPRECATED_DEPENDENCIES.md)
+            
+            **This issue was automatically created by the Deprecated Dependencies Monitor workflow.**
+            `;
+            
+            // Check if similar issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['dependencies', 'security']
+            });
+            
+            const existingIssue = issues.data.find(issue => 
+              issue.title.includes('Deprecated Dependencies')
+            );
+            
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['dependencies', 'security', 'urgent']
+              });
+            }
+        env:
+          PATH_MATCH_HAS_VULNS: ${{ steps.verify.outputs.path_match_has_vulns }}
+          PATH_MATCH_IN_PROD: ${{ steps.prod-check.outputs.path_match_in_production }}
+          
+      - name: Comment on status
+        if: |
+          steps.verify.outputs.path_match_has_vulns == 'false' && 
+          steps.prod-check.outputs.path_match_in_production == 'false'
+        run: |
+          echo "✅ All deprecated dependencies are verified secure"
+          echo "   - path-match@1.2.4: Deprecated but no known vulnerabilities"
+          echo "   - Not in production dependencies"
+          echo "   - Monitoring will continue"
+          
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Deprecated Dependencies Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Check Date:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Status:" >> $GITHUB_STEP_SUMMARY
+          echo "- path-match@1.2.4 deprecated: ${{ steps.verify.outputs.path_match_deprecated != '' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- @vercel/fun uses path-match: ${{ steps.verify.outputs.vercel_fun_uses_path_match }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Known vulnerabilities: ${{ steps.verify.outputs.path_match_has_vulns }}" >> $GITHUB_STEP_SUMMARY
+          echo "- In production deps: ${{ steps.prod-check.outputs.path_match_in_production }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See [DEPRECATED_DEPENDENCIES.md](./DEPRECATED_DEPENDENCIES.md) for full documentation." >> $GITHUB_STEP_SUMMARY
