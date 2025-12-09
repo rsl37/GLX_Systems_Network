@@ -210,7 +210,7 @@ jobs:
           fi
 
       - name: Comment on PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const previewUrl = '${{ steps.vercel-deploy.outputs.preview-url }}';
@@ -392,7 +392,7 @@ jobs:
 
     steps:
       - name: Notify docs-only change
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const commitSha = context.sha.substring(0, 7);
