@@ -257,7 +257,6 @@ export async function findMatchingUsers(
   const {
     excludeUserId,
     longitude,
-    maxDistance = 50,
     limit = 20,
     minScore = 10
   } = options;
