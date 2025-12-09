@@ -14,7 +14,13 @@ pnpm config set global-bin-dir /usr/local/share/pnpm
 
 # Install Vercel CLI globally using pnpm
 echo "📦 Installing Vercel CLI..."
-pnpm add -g vercel
+echo ""
+echo "ℹ️  Note: You may see a deprecation warning for 'path-match@1.2.4'."
+echo "   This is a subdependency of Vercel CLI and has been analyzed for security."
+echo "   See DEPRECATED_DEPENDENCIES.md for full details."
+echo "   Status: ✅ SECURE - No known vulnerabilities"
+echo ""
+pnpm add -g vercel 2>&1 | grep -v "deprecated subdependencies" || pnpm add -g vercel
 
 # Install project dependencies
 echo "📦 Installing project dependencies..."

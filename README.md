@@ -339,6 +339,7 @@ This repository uses secure PAT_TOKEN authentication for enhanced workflow capab
 - [Production Mode Guide](GLX_App_files/PRODUCTION_MODE_GUIDE.md) - Production deployment setup
 - [Deployment Configuration](DEPLOYMENT.md) - Deployment troubleshooting
 - [Security Information](SECURITY.md) - Security policies and reporting
+- [Deprecated Dependencies](DEPRECATED_DEPENDENCIES.md) - Analysis of deprecated dependencies and security verification
 - [PAT Security Guide](docs/PAT_SECURITY_GUIDE.md) - PAT_TOKEN authentication and security
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
 - [Workspace Guide](GLX_Project_Workspace.md) - Development workspace setup
