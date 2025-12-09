@@ -28,7 +28,11 @@ echo "Installed versions:"
 echo "  Node: $(node --version)"
 echo "  npm: $(npm --version)"
 echo "  pnpm: $(pnpm --version)"
-echo "  Vercel CLI: $(vercel --version)"
+if command -v vercel &> /dev/null; then
+  echo "  Vercel CLI: $(vercel --version)"
+else
+  echo "  Vercel CLI: Installation may have failed"
+fi
 echo ""
 echo "You can now use 'vercel' commands in the terminal."
 echo "Run 'vercel --prod' to deploy to production."
