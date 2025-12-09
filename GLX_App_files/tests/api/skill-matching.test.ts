@@ -77,7 +77,7 @@ describe('Skill Matching Service', () => {
     });
 
     test('each category should have skills', () => {
-      for (const [category, skills] of Object.entries(SKILL_CATEGORIES)) {
+      for (const [, skills] of Object.entries(SKILL_CATEGORIES)) {
         expect(skills).toBeInstanceOf(Array);
         expect(skills.length).toBeGreaterThan(0);
       }
