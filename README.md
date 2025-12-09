@@ -26,11 +26,32 @@ relatedDocs: []
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### GitHub Codespaces (Recommended)
+The easiest way to get started is using GitHub Codespaces. The repository includes a pre-configured development container that automatically sets up your environment with all required tools:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/codespaces)
+
+**What's included:**
+- Node.js 20.x pre-installed
+- pnpm package manager configured
+- Vercel CLI ready to use
+- VS Code extensions (ESLint, Prettier, GitHub Copilot)
+- Automatic port forwarding for development
+
+Once the Codespace is created, you can immediately start using:
+```bash
+vercel --prod    # Deploy to production
+npm run build    # Build the application
+npm start        # Start development server
+```
+
+### Local Development
+
+#### Prerequisites
 - Node.js 20.x or later
 - npm or yarn package manager
 
-### Installation
+#### Installation
 ```bash
 # Clone the repository
 git clone https://github.com/rsl37/GLX_Civic_Networking_App.git
