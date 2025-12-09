@@ -1,6 +1,6 @@
 ---
 title: "SECURE INTEGRITY CODING DIRECTIVE v2.0"
-description: ""
+description: "Security-first coding assistant with comprehensive integrity guarantees"
 lastUpdated: "2025-12-09"
 nextReview: "2026-01-09"
 contentType: "documentation"

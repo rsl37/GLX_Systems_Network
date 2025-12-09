@@ -1,13 +1,13 @@
 ---
 title: "GLX Beta FAQ"
-description: ""
+description: "Frequently Asked Questions for GLX Civic Network beta testers"
 lastUpdated: "2025-12-09"
 nextReview: "2026-01-09"
 contentType: "documentation"
 maintainer: "GLX Development Team"
 version: "1.0.0"
-tags: []
-relatedDocs: []
+tags: ["beta", "faq", "support"]
+relatedDocs: ["BETA_TESTING_GUIDE.md", "BETA_LAUNCH_ROADMAP.md"]
 ---
 
 # GLX Beta FAQ

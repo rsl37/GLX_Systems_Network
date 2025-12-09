@@ -1,5 +1,5 @@
 ---
-title: "GLX: Web-3 Civic Networking Platform  "
+title: "GLX: Web-3 Civic Networking Platform"
 description: ""
 lastUpdated: "2025-12-09"
 nextReview: "2026-01-09"
