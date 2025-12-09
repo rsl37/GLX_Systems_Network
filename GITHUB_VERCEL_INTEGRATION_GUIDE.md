@@ -68,7 +68,7 @@ PUSHER_CLUSTER=us2
 # Email Services (Optional but Recommended)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
+SMTP_USER=roselleroberts@pm.me
 SMTP_PASS=your-app-specific-password
 SMTP_FROM=noreply@yourdomain.com
 

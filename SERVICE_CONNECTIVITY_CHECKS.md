@@ -64,7 +64,7 @@ The workflow runs automatically on:
 ```bash
 SMTP_HOST=smtp.gmail.com          # SMTP server hostname
 SMTP_PORT=587                     # SMTP server port (usually 587 or 465)
-SMTP_USER=your-email@gmail.com    # SMTP username/email
+SMTP_USER=roselleroberts@pm.me    # SMTP username/email
 SMTP_PASS=your-app-password       # SMTP password (use app passwords for Gmail)
 SMTP_FROM=noreply@yourapp.com     # From email address
 ```

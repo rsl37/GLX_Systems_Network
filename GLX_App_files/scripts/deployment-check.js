@@ -2,7 +2,7 @@
 /**
  * GLX: Connect the World - Civic Networking Platform
  * 
- * Copyright (c) 2025 [Your Name/Company]
+ * Copyright (c) 2025 rsl37
  * Licensed under PolyForm Shield License 1.0.0
  * 
  * ⚠️  TERMS:
@@ -11,7 +11,7 @@
  * - Violations subject to legal action and damages
  * 
  * See LICENSE file in repository root for full terms.
- * Contact: [your-email@example.com] for licensing inquiries
+ * Contact: roselleroberts@pm.me for licensing inquiries
  */
 
 /**
@@ -190,7 +190,7 @@ Example .env file:
   TRUSTED_ORIGINS=https://glxcivicnetwork.me,https://glx-civic-networking.vercel.app
   SMTP_HOST=smtp.gmail.com
   SMTP_PORT=587
-  SMTP_USER=your-email@gmail.com
+  SMTP_USER=roselleroberts@pm.me
   SMTP_PASS=your-app-password
   SMTP_FROM=GLX Support <noreply@glxcivicnetwork.me>
 
