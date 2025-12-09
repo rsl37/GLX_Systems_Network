@@ -74,7 +74,7 @@ TRUSTED_ORIGINS=https://glxcivicnetworkingapp.vercel.app
 # Optional: Email Configuration
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
+SMTP_USER=roselleroberts@pm.me
 SMTP_PASS=your-app-password
 
 # Optional: Google Maps

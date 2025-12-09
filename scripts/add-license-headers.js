@@ -5,7 +5,7 @@ const glob = require('glob');
 const HEADER = `/**
  * GLX: Connect the World - Civic Networking Platform
  * 
- * Copyright (c) 2025 [Your Name]
+ * Copyright (c) 2025 rsl37
  * Licensed under PolyForm Shield License 1.0.0
  * 
  * ⚠️  UNAUTHORIZED USE PROHIBITED - See LICENSE

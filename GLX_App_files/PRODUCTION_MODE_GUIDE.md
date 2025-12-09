@@ -142,7 +142,7 @@ DATABASE_URL=postgres://user:password@host:port/database
 ```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@domain.com
+SMTP_USER=roselleroberts@pm.me
 SMTP_PASS=your-app-password
 SMTP_FROM=noreply@glxcivicnetwork.me
 ```

@@ -145,7 +145,7 @@ JWT_SECRET=your-super-secure-jwt-secret-key-here
 # Email Configuration (for password reset)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
+SMTP_USER=roselleroberts@pm.me
 SMTP_PASS=your-app-password
 SMTP_FROM=GLX Support <noreply@glxcivicnetwork.me>
 # <!-- Added 2025-07-18 21:40:07: For production, recommend using a transactional email provider (SendGrid, Mailgun, SES) instead of Gmail SMTP for reliability and compliance. -->
