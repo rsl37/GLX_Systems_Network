@@ -28,7 +28,7 @@ const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { ListToolsRequestSchema, CallToolRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
-const { validateString, validateId, validateArray } = require('./lib/input-validator');
+const { validateString, validateArray } = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
 const AUTH_ENV_SCHEMA = {
@@ -212,6 +212,7 @@ class JwtAuthServer {
           ],
         };
       } catch (error) {
+        this.logger.error('Tool execution failed', error, { toolName: name });
         return {
           content: [
             {
@@ -230,6 +231,29 @@ class JwtAuthServer {
         };
       }
     });
+  }
+
+  /**
+   * Validate request origin against allowed origins.
+   * @param {string} origin - Origin to validate
+   * @returns {boolean} True if origin is allowed
+   */
+  validateOrigin(origin) {
+    if (!origin) {
+      this.logger.debug('No origin provided in request');
+      return false;
+    }
+
+    const isAllowed = this.config.ALLOWED_ORIGINS.includes(origin);
+    
+    if (!isAllowed) {
+      this.logger.warn('Origin validation failed', {
+        origin,
+        allowedOrigins: this.config.ALLOWED_ORIGINS,
+      });
+    }
+
+    return isAllowed;
   }
 
   /**
@@ -283,9 +307,10 @@ class JwtAuthServer {
   /**
    * Generate a refresh token (long-lived, single-use).
    * @param {string} userId - User identifier
+   * @param {Array<string>} scopes - Permission scopes to preserve
    * @returns {Object} { refreshToken, expiresIn }
    */
-  generateRefreshToken(userId) {
+  generateRefreshToken(userId, scopes = []) {
     validateString(userId, { required: true, minLength: 1, maxLength: 256 });
 
     const header = {
@@ -300,6 +325,7 @@ class JwtAuthServer {
       iat: now,
       exp: now + this.config.JWT_REFRESH_TOKEN_EXPIRY,
       type: 'refresh',
+      scopes, // Include scopes so they're preserved when refreshing
       tokenId: crypto.randomBytes(16).toString('hex'),
     };
 
@@ -308,6 +334,7 @@ class JwtAuthServer {
 
     this.logger.audit('generate_refresh_token', true, {
       userId,
+      scopeCount: scopes.length,
       expiresIn: this.config.JWT_REFRESH_TOKEN_EXPIRY,
     });
 
@@ -392,9 +419,10 @@ class JwtAuthServer {
       stored.used = true;
 
       // Generate new access token and new refresh token (rotation)
-      const newRefreshToken = this.generateRefreshToken(payload.sub);
+      const scopes = payload.scopes || [];
+      const newRefreshToken = this.generateRefreshToken(payload.sub, scopes);
       return {
-        ...this.generateAccessToken(payload.sub, payload.scopes || []),
+        ...this.generateAccessToken(payload.sub, scopes),
         refreshToken: newRefreshToken.refreshToken,
         refreshTokenExpiresIn: newRefreshToken.expiresIn,
       };
