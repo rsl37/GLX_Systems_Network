@@ -93,6 +93,14 @@ import {
   renamePasskey,
   verifyPasskeyAuthentication,
 } from '../passkey.js';
+import {
+  createSession,
+  getUserSessions,
+  revokeSession,
+  revokeAllUserSessions,
+  getUserSessionStats,
+  extractDeviceInfo,
+} from '../session.js';
 import { db } from '../database.js';
 
 const router = Router();
@@ -178,12 +186,21 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
 
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
+    
+    // Create session
+    const sessionId = createSession(user.id, token, refreshToken, {
+      deviceInfo: extractDeviceInfo(req.headers['user-agent']),
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+    });
+    
     trackUserAction('registration', user.id);
 
     console.log('✅ User registered successfully:', user.id);
     sendSuccess(res, {
       token,
       refreshToken,
+      sessionId,
       userId: user.id,
       emailVerificationRequired: !!email,
       phoneVerificationRequired: !!phone,
@@ -260,6 +277,13 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
 
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
+    
+    // Create session
+    const sessionId = createSession(user.id, token, refreshToken, {
+      deviceInfo: extractDeviceInfo(req.headers['user-agent']),
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+    });
 
     if ((req as any).lockoutKey) {
       recordSuccessfulAttempt((req as any).lockoutKey);
@@ -271,6 +295,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
     sendSuccess(res, {
       token,
       refreshToken,
+      sessionId,
       userId: user.id,
       emailVerified: user.email_verified === 1,
       phoneVerified: user.phone_verified === 1,
@@ -1014,6 +1039,115 @@ router.patch('/passkey/:credentialId', authenticateToken, async (req: AuthReques
     sendSuccess(res, { message: 'Passkey renamed successfully' });
   } catch (error) {
     console.error('❌ Passkey rename error:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Session management endpoints
+
+// Get all active sessions for the current user
+router.get('/sessions', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+
+    const sessions = getUserSessions(userId);
+    
+    // Sanitize session data before sending
+    const sanitizedSessions = sessions.map(session => ({
+      sessionId: session.sessionId,
+      deviceInfo: session.deviceInfo,
+      ipAddress: session.ipAddress,
+      lastActivity: new Date(session.lastActivity).toISOString(),
+      createdAt: new Date(session.createdAt).toISOString(),
+    }));
+
+    sendSuccess(res, { sessions: sanitizedSessions });
+  } catch (error) {
+    console.error('❌ Error fetching sessions:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Get session statistics
+router.get('/sessions/stats', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+
+    const stats = getUserSessionStats(userId);
+
+    sendSuccess(res, {
+      ...stats,
+      lastActivity: new Date(stats.lastActivity).toISOString(),
+    });
+  } catch (error) {
+    console.error('❌ Error fetching session stats:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Revoke a specific session
+router.delete('/sessions/:sessionId', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+    const { sessionId } = req.params;
+
+    if (!sessionId) {
+      return sendError(res, 'Session ID is required', StatusCodes.BAD_REQUEST);
+    }
+
+    // Verify the session belongs to the user
+    const sessions = getUserSessions(userId);
+    const sessionExists = sessions.some(s => s.sessionId === sessionId);
+
+    if (!sessionExists) {
+      return sendError(res, 'Session not found or does not belong to you', StatusCodes.NOT_FOUND);
+    }
+
+    const success = await revokeSession(sessionId);
+
+    if (!success) {
+      return sendError(res, 'Failed to revoke session', StatusCodes.INTERNAL_ERROR);
+    }
+
+    trackUserAction('session_revoked', userId);
+
+    console.log('✅ Session revoked for user:', userId);
+    sendSuccess(res, { message: 'Session revoked successfully' });
+  } catch (error) {
+    console.error('❌ Session revocation error:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Revoke all sessions except the current one
+router.post('/sessions/revoke-all', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+    const { currentSessionId } = req.body;
+
+    const revokedCount = await revokeAllUserSessions(userId, currentSessionId);
+
+    trackUserAction('all_sessions_revoked', userId);
+
+    console.log(`✅ Revoked ${revokedCount} sessions for user:`, userId);
+    sendSuccess(res, {
+      message: `${revokedCount} session(s) revoked successfully`,
+      revokedCount,
+    });
+  } catch (error) {
+    console.error('❌ All sessions revocation error:', error);
     if (error.message === ErrorMessages.INVALID_TOKEN) {
       return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
     }
