@@ -275,7 +275,9 @@ router.post(
         })
         .execute();
 
-      console.log(`✅ Created community link: ${name}`);
+      // Sanitize user input for log safety (remove newlines, wrap in quotes)
+      const sanitizedName = typeof name === 'string' ? name.replace(/\r?\n/g, '') : '';
+      console.log(`✅ Created community link: "${sanitizedName}"`);
 
       sendSuccess(res, {
         message: 'Community link created',
@@ -320,7 +322,7 @@ router.put(
         .where('id', '=', parseInt(id))
         .execute();
 
-      console.log(`✅ Updated community link: ${id}`);
+      console.log(`✅ Updated community link: ${String(id).replace(/\r?\n|\r/g, '')}`);
 
       sendSuccess(res, { message: 'Community link updated' });
     } catch (error) {
@@ -346,7 +348,7 @@ router.delete(
         .where('id', '=', parseInt(id))
         .execute();
 
-      console.log(`✅ Deleted community link: ${String(id).replace(/\r?\n|\r/g, '')}`);
+      console.log(`✅ Deleted community link: ${String(id).replace(/[\x00-\x1F\x7F]/g, '')}`);
 
       sendSuccess(res, { message: 'Community link deleted' });
     } catch (error) {

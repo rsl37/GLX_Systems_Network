@@ -19,7 +19,7 @@ describe('Beta User Management API', () => {
 
     // Setup beta user management endpoints
     testServer.app.post('/api/beta/waitlist', (req, res) => {
-      const { email, name, referralSource } = req.body;
+      const { email, name } = req.body;
 
       if (!email || typeof email !== 'string' || !email.includes('@')) {
         return res.status(400).json({
