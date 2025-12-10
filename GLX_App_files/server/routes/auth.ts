@@ -73,6 +73,16 @@ import {
   recordSuccessfulAttempt,
 } from '../middleware/accountLockout.js';
 import { trackUserAction } from '../middleware/monitoring.js';
+import {
+  createOrLinkOAuthUser,
+  getUserOAuthAccounts,
+  unlinkOAuthAccount,
+  generateOAuthState,
+  storeOAuthState,
+  validateOAuthState,
+  type OAuthProvider,
+  type OAuthAccountData,
+} from '../oauth.js';
 import { db } from '../database.js';
 
 const router = Router();
@@ -666,6 +676,138 @@ router.get('/2fa/status', authenticateToken, async (req: AuthRequest, res) => {
     sendSuccess(res, status);
   } catch (error) {
     console.error('❌ 2FA status error:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// OAuth endpoints
+
+// Initiate OAuth login - generates state and returns authorization URL
+router.post('/oauth/init', authLimiter, async (req, res) => {
+  try {
+    const { provider } = req.body as { provider: OAuthProvider };
+
+    if (!provider || !['google', 'github', 'facebook', 'twitter'].includes(provider)) {
+      return sendError(res, 'Invalid OAuth provider', StatusCodes.BAD_REQUEST);
+    }
+
+    // Generate and store OAuth state for CSRF protection
+    const state = generateOAuthState();
+    storeOAuthState(state);
+
+    console.log(`🔐 OAuth init request for provider: ${provider}`);
+
+    // Return state for client to use in OAuth flow
+    // Client will construct the OAuth URL with appropriate provider configuration
+    sendSuccess(res, {
+      state,
+      provider,
+      message: `OAuth state generated for ${provider}`,
+    });
+  } catch (error) {
+    console.error('❌ OAuth init error:', error);
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// OAuth callback - handles the OAuth provider callback
+router.post('/oauth/callback', authLimiter, async (req, res) => {
+  try {
+    const { provider, code, state, providerData } = req.body as {
+      provider: OAuthProvider;
+      code?: string;
+      state: string;
+      providerData: OAuthAccountData;
+    };
+
+    console.log(`🔐 OAuth callback from provider: ${provider}`);
+
+    // Validate state to prevent CSRF
+    const stateValidation = validateOAuthState(state);
+    if (!stateValidation.valid) {
+      return sendError(res, 'Invalid OAuth state - possible CSRF attack', StatusCodes.UNAUTHORIZED);
+    }
+
+    // Validate provider
+    if (!provider || !['google', 'github', 'facebook', 'twitter'].includes(provider)) {
+      return sendError(res, 'Invalid OAuth provider', StatusCodes.BAD_REQUEST);
+    }
+
+    // Validate provider data
+    if (!providerData || !providerData.providerId) {
+      return sendError(res, 'Missing OAuth provider data', StatusCodes.BAD_REQUEST);
+    }
+
+    // Create or link user from OAuth data
+    const result = await createOrLinkOAuthUser(providerData);
+
+    if (!result) {
+      return sendError(res, 'Failed to authenticate with OAuth provider', StatusCodes.INTERNAL_ERROR);
+    }
+
+    // Generate tokens for the user
+    const token = generateToken(result.userId);
+    const refreshToken = generateRefreshToken(result.userId);
+
+    trackUserAction(result.isNewUser ? 'oauth_registration' : 'oauth_login', result.userId);
+
+    console.log(`✅ OAuth ${result.isNewUser ? 'registration' : 'login'} successful for user:`, result.userId);
+
+    sendSuccess(res, {
+      token,
+      refreshToken,
+      userId: result.userId,
+      isNewUser: result.isNewUser,
+      provider,
+    });
+  } catch (error) {
+    console.error('❌ OAuth callback error:', error);
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Get user's linked OAuth accounts
+router.get('/oauth/accounts', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+
+    const accounts = await getUserOAuthAccounts(userId);
+
+    sendSuccess(res, { accounts });
+  } catch (error) {
+    console.error('❌ Error fetching OAuth accounts:', error);
+    if (error.message === ErrorMessages.INVALID_TOKEN) {
+      return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
+    }
+    sendError(res, ErrorMessages.INTERNAL_ERROR, StatusCodes.INTERNAL_ERROR);
+  }
+});
+
+// Unlink an OAuth account
+router.delete('/oauth/:provider', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const userId = validateAuthUser(req.userId);
+    const provider = req.params.provider as OAuthProvider;
+
+    if (!provider || !['google', 'github', 'facebook', 'twitter'].includes(provider)) {
+      return sendError(res, 'Invalid OAuth provider', StatusCodes.BAD_REQUEST);
+    }
+
+    const success = await unlinkOAuthAccount(userId, provider);
+
+    if (!success) {
+      return sendError(res, `No ${provider} account linked to this user`, StatusCodes.NOT_FOUND);
+    }
+
+    trackUserAction('oauth_unlink', userId);
+
+    console.log(`✅ Unlinked ${provider} account for user:`, userId);
+    sendSuccess(res, { message: `${provider} account unlinked successfully` });
+  } catch (error) {
+    console.error('❌ OAuth unlink error:', error);
     if (error.message === ErrorMessages.INVALID_TOKEN) {
       return sendError(res, ErrorMessages.INVALID_TOKEN, StatusCodes.UNAUTHORIZED);
     }

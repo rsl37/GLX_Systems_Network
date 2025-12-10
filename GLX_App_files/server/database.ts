@@ -703,6 +703,68 @@ async function createAdditionalTables(
     )
     .execute();
 
+  // OAuth accounts table
+  await database.schema
+    .createTable('oauth_accounts')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', col => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade').notNull())
+    .addColumn('provider', 'varchar(50)', col => col.notNull())
+    .addColumn('provider_id', 'varchar(255)', col => col.notNull())
+    .addColumn('provider_email', 'varchar(255)')
+    .addColumn('provider_name', 'varchar(255)')
+    .addColumn('access_token', 'text')
+    .addColumn('refresh_token', 'text')
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .addColumn('updated_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .execute();
+
+  // Passkey credentials table
+  await database.schema
+    .createTable('passkey_credentials')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', col => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade').notNull())
+    .addColumn('credential_id', 'text', col => col.notNull().unique())
+    .addColumn('public_key', 'text', col => col.notNull())
+    .addColumn('counter', 'integer', col => col.notNull().defaultTo(0))
+    .addColumn('device_name', 'varchar(255)')
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .addColumn('last_used_at', isPostgres ? 'timestamp' : 'datetime')
+    .execute();
+
+  // Phone verification tokens table
+  await database.schema
+    .createTable('phone_verification_tokens')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', col => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade').notNull())
+    .addColumn('phone', 'varchar(20)', col => col.notNull())
+    .addColumn('code', 'varchar(10)', col => col.notNull())
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime', col => col.notNull())
+    .addColumn('used_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('attempts', 'integer', col => col.defaultTo(0))
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .execute();
+
   console.log(`✅ Additional ${dbType.toUpperCase()} tables created successfully`);
 }
 
