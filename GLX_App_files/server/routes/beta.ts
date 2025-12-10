@@ -288,7 +288,8 @@ router.post('/invite/use', async (req: Request, res: Response): Promise<void> =>
         .execute();
     }
 
-    console.log(`✅ Invite code used: ${code}`);
+    const sanitizedCode = typeof code === 'string' ? code.replace(/[\r\n]/g, '') : '';
+    console.log(`✅ Invite code used: [user input] ${sanitizedCode}`);
 
     sendSuccess(res, {
       success: true,
