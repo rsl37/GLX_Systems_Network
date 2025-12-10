@@ -15,6 +15,7 @@
 
 import { db } from './database.js';
 import jwt from 'jsonwebtoken';
+import { webcrypto } from 'node:crypto';
 
 /**
  * User session information
@@ -34,7 +35,20 @@ export interface UserSession {
 
 /**
  * Session storage interface
- * For production, this should be Redis or similar distributed cache
+ * 
+ * ⚠️ PRODUCTION NOTE: This in-memory store is suitable for development and single-instance deployments.
+ * For production with multiple server instances or horizontal scaling:
+ * - Implement Redis-based session storage using ioredis or similar
+ * - Or use a database table with indexed queries
+ * - Ensure session data is accessible across all server instances
+ * 
+ * Example Redis implementation:
+ * ```typescript
+ * import Redis from 'ioredis';
+ * const redis = new Redis(process.env.REDIS_URL);
+ * // Store: await redis.setex(`session:${sessionId}`, 604800, JSON.stringify(session));
+ * // Retrieve: const data = await redis.get(`session:${sessionId}`);
+ * ```
  */
 interface SessionData {
   userId: number;
@@ -209,7 +223,7 @@ export function cleanupExpiredSessions(): number {
  * Generate a unique session ID
  */
 function generateSessionId(): string {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(32));
+  const randomBytes = webcrypto.getRandomValues(new Uint8Array(32));
   return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 

@@ -884,7 +884,12 @@ router.post('/passkey/register', authenticateToken, async (req: AuthRequest, res
 
     // Validate challenge
     const storedChallenge = validateChallenge(challenge);
-    if (!storedChallenge || (storedChallenge as any).userId !== userId) {
+    if (!storedChallenge) {
+      return sendError(res, 'Invalid or expired challenge', StatusCodes.UNAUTHORIZED);
+    }
+    
+    // Type guard to check if it's a registration challenge
+    if (!('userId' in storedChallenge) || storedChallenge.userId !== userId) {
       return sendError(res, 'Invalid or expired challenge', StatusCodes.UNAUTHORIZED);
     }
 
