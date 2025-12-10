@@ -372,6 +372,9 @@ class JwtAuthServer {
   refreshAccessToken(refreshToken) {
     validateString(refreshToken, { required: true, minLength: 20 });
 
+    if (this.tokenBlacklist.has(refreshToken)) {
+      throw new Error('Token has been revoked');
+    }
     try {
       const payload = this._verifyJwt(refreshToken);
 
