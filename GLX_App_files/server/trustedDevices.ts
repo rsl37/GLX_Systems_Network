@@ -46,20 +46,15 @@ export function generateDeviceFingerprint(
 ): string {
   const data = `${userAgent || 'unknown'}-${ipAddress || 'unknown'}`;
   
-  // Create a hash of the device data
-  const encoder = new TextEncoder();
-  const dataBuffer = encoder.encode(data);
-  const hashBuffer = webcrypto.subtle.digest('SHA-256', dataBuffer);
+  // Simple hash function for sync operation
+  let hash = 0;
+  for (let i = 0; i < data.length; i++) {
+    const char = data.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
   
-  return hashBuffer.then(hash => {
-    const hashArray = Array.from(new Uint8Array(hash));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }).catch(() => {
-    // Fallback if webcrypto fails
-    return data.split('').reduce((acc, char) => {
-      return ((acc << 5) - acc) + char.charCodeAt(0);
-    }, 0).toString(16);
-  });
+  return Math.abs(hash).toString(16).padStart(8, '0');
 }
 
 /**
