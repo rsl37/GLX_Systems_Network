@@ -14,6 +14,7 @@
  */
 
 import { db } from './database.js';
+import { webcrypto } from 'node:crypto';
 
 /**
  * Passkey credential data structure
@@ -47,7 +48,18 @@ export interface AuthenticationChallenge {
 }
 
 /**
- * In-memory challenge store (for production, use Redis or database)
+ * In-memory challenge store
+ * 
+ * ⚠️ PRODUCTION NOTE: This in-memory store is suitable for development and single-instance deployments.
+ * For production with load balancers or multiple instances:
+ * - Use Redis for distributed challenge storage
+ * - WebAuthn challenges must be accessible across different server instances
+ * - Critical for proper load-balanced authentication flow
+ * 
+ * Example Redis implementation:
+ * ```typescript
+ * await redis.setex(`passkey:challenge:${challenge}`, 300, JSON.stringify(data));
+ * ```
  */
 const challengeStore = new Map<string, RegistrationChallenge | AuthenticationChallenge>();
 
@@ -55,7 +67,7 @@ const challengeStore = new Map<string, RegistrationChallenge | AuthenticationCha
  * Generate a cryptographically secure random challenge
  */
 export function generateChallenge(): string {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(32));
+  const randomBytes = webcrypto.getRandomValues(new Uint8Array(32));
   return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 

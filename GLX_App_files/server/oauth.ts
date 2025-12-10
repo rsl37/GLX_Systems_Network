@@ -14,6 +14,7 @@
  */
 
 import { db } from './database.js';
+import { webcrypto } from 'node:crypto';
 
 /**
  * OAuth provider types
@@ -263,13 +264,23 @@ export async function createOrLinkOAuthUser(
  */
 export function generateOAuthState(): string {
   // Generate cryptographically secure random state
-  const randomBytes = crypto.getRandomValues(new Uint8Array(32));
+  const randomBytes = webcrypto.getRandomValues(new Uint8Array(32));
   return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**
  * Store OAuth state in memory (for production, use Redis or database)
- * This is a simple in-memory store for development
+ * 
+ * ⚠️ PRODUCTION NOTE: This in-memory store is suitable for development and single-instance deployments.
+ * For production with load balancers or multiple instances:
+ * - Use Redis for distributed state storage
+ * - Or store in database with proper indexing
+ * - State must be accessible across all server instances for OAuth callbacks
+ * 
+ * Example Redis implementation:
+ * ```typescript
+ * await redis.setex(`oauth:state:${state}`, 600, JSON.stringify({ timestamp, userId }));
+ * ```
  */
 const oauthStateStore = new Map<string, { timestamp: number; userId?: number }>();
 
