@@ -240,7 +240,15 @@ class JwtAuthServer {
    */
   generateAccessToken(userId, scopes = []) {
     validateString(userId, { required: true, minLength: 1, maxLength: 256 });
-    validateArray(scopes, { maxLength: 50 });
+    validateArray(scopes, { 
+      maxLength: 50,
+      itemValidator: (scope) => validateString(scope, { 
+        required: true, 
+        minLength: 1, 
+        maxLength: 100,
+        pattern: /^[a-z0-9_:]+$/i // Only allow alphanumeric, underscore, colon
+      })
+    });
 
     const header = {
       alg: 'HS256',
