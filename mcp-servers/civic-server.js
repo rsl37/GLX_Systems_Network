@@ -23,6 +23,9 @@ const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const https = require('https');
 // const { URL } = require('url'); // Commented out as not currently used
+const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
+const { validateString, validateId, validateInteger, validateArray } = require('./lib/input-validator');
+const { Logger } = require('./lib/logger');
 
 class CivicMCPServer {
   constructor() {
@@ -33,12 +36,7 @@ class CivicMCPServer {
       capabilities: {
         tools: {},
       },
-      {
-        capabilities: {
-          tools: {},
-        },
-      }
-    );
+    });
 
     this.civicApiKey = process.env.CIVIC_API_KEY;
     this.openDataApiKey = process.env.OPEN_DATA_API_KEY;
@@ -235,6 +233,9 @@ class CivicMCPServer {
   }
 
   async getCivicData({ location, dataType }) {
+    validateString(location, { required: true, minLength: 1, maxLength: 256 });
+    validateString(dataType, { required: true, minLength: 1, maxLength: 100 });
+    
     // Mock implementation - in production, this would call real civic data APIs
     const mockData = {
       demographics: {
@@ -272,6 +273,10 @@ class CivicMCPServer {
   }
 
   async searchLocalServices({ location, serviceType, radius = 10 }) {
+    validateString(location, { required: true, minLength: 1, maxLength: 256 });
+    validateString(serviceType, { required: true, minLength: 1, maxLength: 100 });
+    validateInteger(radius, { required: false, min: 1, max: 1000 });
+    
     // Mock implementation
     const mockServices = {
       health: [
@@ -358,6 +363,11 @@ class CivicMCPServer {
   }
 
   async getCommunityEvents({ location, eventType, _dateRange }) {
+    validateString(location, { required: true, minLength: 1, maxLength: 256 });
+    if (eventType) {
+      validateString(eventType, { required: false, minLength: 1, maxLength: 100 });
+    }
+    
     // Mock implementation
     const mockEvents = [
       {
@@ -398,6 +408,10 @@ class CivicMCPServer {
   }
 
   async reportCivicIssue({ issueType, location, _description, priority, _contactInfo }) {
+    validateString(issueType, { required: true, minLength: 1, maxLength: 100 });
+    validateString(location, { required: true, minLength: 1, maxLength: 256 });
+    validateString(priority, { required: true, minLength: 1, maxLength: 50 });
+    
     // Mock implementation - in production, this would submit to a real civic reporting system
     const issueId = 'ISSUE-' + Date.now();
     // const reportData = { // Commented out as not currently used
@@ -422,6 +436,12 @@ class CivicMCPServer {
   }
 
   async getGovernmentContacts({ location, level, office }) {
+    validateString(location, { required: true, minLength: 1, maxLength: 256 });
+    validateString(level, { required: true, minLength: 1, maxLength: 50 });
+    if (office) {
+      validateString(office, { required: false, minLength: 1, maxLength: 100 });
+    }
+    
     // Mock implementation
     const mockContacts = {
       local: {
@@ -473,6 +493,12 @@ class CivicMCPServer {
   }
 
   async searchNonprofits({ location, cause, radius = 25 }) {
+    validateString(location, { required: true, minLength: 1, maxLength: 256 });
+    if (cause) {
+      validateString(cause, { required: false, minLength: 1, maxLength: 100 });
+    }
+    validateInteger(radius, { required: false, min: 1, max: 1000 });
+    
     // Mock implementation
     const mockNonprofits = [
       {

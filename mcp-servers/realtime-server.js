@@ -23,6 +23,9 @@ const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { createServer } = require('http');
 const jwt = require('jsonwebtoken');
+const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
+const { validateString, validateId, validateInteger, validateArray } = require('./lib/input-validator');
+const { Logger } = require('./lib/logger');
 
 class RealtimeMCPServer {
   constructor() {
@@ -33,12 +36,7 @@ class RealtimeMCPServer {
       capabilities: {
         tools: {},
       },
-      {
-        capabilities: {
-          tools: {},
-        },
-      }
-    );
+    });
 
     this.httpServer = createServer();
     this.activeUsers = new Map();
@@ -203,6 +201,10 @@ class RealtimeMCPServer {
 
   handleSendMessage(args) {
     const { roomId, message, userId } = args;
+    
+    validateString(roomId, { required: true, minLength: 1, maxLength: 256 });
+    validateString(message, { required: true, minLength: 1, maxLength: 10000 });
+    validateInteger(userId, { required: true, min: 1 });
 
     try {
       this.broadcastToRoom(roomId, {
@@ -237,6 +239,9 @@ class RealtimeMCPServer {
 
   handleBroadcastMessage(args) {
     const { message, type } = args;
+    
+    validateString(message, { required: true, minLength: 1, maxLength: 10000 });
+    validateString(type, { required: true, minLength: 1, maxLength: 100 });
 
     try {
       this.broadcastToAll({
