@@ -437,6 +437,13 @@ class JwtAuthServer {
       throw new Error('Invalid JWT format');
     }
 
+    // Decode and validate JWT header
+    const base64Header = headerB64.replace(/-/g, '+').replace(/_/g, '/');
+    const paddedHeader = base64Header + '='.repeat((4 - base64Header.length % 4) % 4);
+    const header = JSON.parse(Buffer.from(paddedHeader, 'base64').toString('utf-8'));
+    if (header.alg !== 'HS256') {
+      throw new Error('Invalid JWT algorithm');
+    }
     // Verify signature
     const message = `${headerB64}.${payloadB64}`;
     const expected = crypto
