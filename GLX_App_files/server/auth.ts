@@ -88,7 +88,16 @@ export function generateToken(userId: number): string {
 }
 
 export async function generateRefreshToken(userId: number): Promise<string> {
-  const token = jwt.sign({ userId, type: 'refresh' }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+  // Add a unique identifier (jti - JWT ID) to prevent token collisions
+  const { webcrypto } = await import('node:crypto');
+  const randomBytes = webcrypto.getRandomValues(new Uint8Array(16));
+  const jti = Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  
+  const token = jwt.sign(
+    { userId, type: 'refresh', jti }, 
+    JWT_REFRESH_SECRET, 
+    { expiresIn: REFRESH_TOKEN_EXPIRY }
+  );
   
   // Store refresh token in database for server-side validation
   try {
