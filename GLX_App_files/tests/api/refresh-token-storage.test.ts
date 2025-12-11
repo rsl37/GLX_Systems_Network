@@ -146,8 +146,8 @@ describe('Refresh Token Server-Side Storage', () => {
 
   test('should reject token not in database', async () => {
     // Create a valid JWT but don't store it in database
-    const jwt = require('jsonwebtoken');
-    const fakeToken = jwt.sign(
+    const jwt = await import('jsonwebtoken');
+    const fakeToken = jwt.default.sign(
       { userId: testUserId, type: 'refresh' },
       process.env.JWT_REFRESH_SECRET || 'test-secret',
       { expiresIn: '7d' }
