@@ -192,7 +192,7 @@ export async function cleanupExpiredBlacklistedTokens(): Promise<number> {
       .where('expires_at', '<', new Date().toISOString())
       .execute();
 
-    const deletedCount = result.reduce((acc, r) => acc + Number(r.numDeletedRows || 0), 0);
+    const deletedCount = getAffectedRowCount(result);
     if (deletedCount > 0) {
       console.log(`🧹 Cleaned up ${deletedCount} expired blacklisted tokens`);
     }
@@ -224,6 +224,16 @@ export async function revokeRefreshToken(token: string, userId: number): Promise
 }
 
 /**
+ * Helper function to normalize affected row counts across different database implementations
+ */
+function getAffectedRowCount(result: any[]): number {
+  return result.reduce((acc, r) => {
+    // PostgreSQL uses numAffectedRows, SQLite uses numChangedRows or numUpdatedRows
+    return acc + Number(r.numAffectedRows || r.numChangedRows || r.numUpdatedRows || r.numDeletedRows || 0);
+  }, 0);
+}
+
+/**
  * Revoke all refresh tokens for a user
  */
 export async function revokeAllRefreshTokensForUser(userId: number): Promise<number> {
@@ -235,7 +245,7 @@ export async function revokeAllRefreshTokensForUser(userId: number): Promise<num
       .where('revoked', '=', 0)
       .execute();
 
-    const revokedCount = result.reduce((acc, r) => acc + Number(r.numUpdatedRows || r.numChangedRows || 0), 0);
+    const revokedCount = getAffectedRowCount(result);
     if (revokedCount > 0) {
       console.log(`✅ Revoked ${revokedCount} refresh tokens for user:`, userId);
     }
@@ -256,7 +266,7 @@ export async function cleanupExpiredRefreshTokens(): Promise<number> {
       .where('expires_at', '<', new Date().toISOString())
       .execute();
 
-    const deletedCount = result.reduce((acc, r) => acc + Number(r.numDeletedRows || 0), 0);
+    const deletedCount = getAffectedRowCount(result);
     if (deletedCount > 0) {
       console.log(`🧹 Cleaned up ${deletedCount} expired refresh tokens`);
     }
