@@ -10,6 +10,7 @@ The GLX authentication system is a comprehensive, production-ready authenticatio
 - **Password-based Authentication**: Bcrypt hashing with configurable salt rounds
 - **JWT Tokens**: Access tokens (15min) and refresh tokens (7 days)
 - **Token Refresh**: Automatic token rotation on refresh for enhanced security
+- **Server-Side Token Storage**: Refresh tokens stored in database for validation
 - **Token Blacklisting**: Immediate token revocation on logout or security events
 
 ### ✅ Multi-Factor Authentication
@@ -35,6 +36,9 @@ The GLX authentication system is a comprehensive, production-ready authenticatio
 - **Replay Attack Prevention**: Counter-based verification for passkeys
 - **Secure Secret Management**: Production/development environment validation
 - **IP Tracking**: Monitor login locations
+- **Server-Side Token Validation**: Refresh tokens validated against database storage
+- **Token Audit Trail**: Track token usage with last_used_at timestamps
+- **Automatic Token Cleanup**: Periodic cleanup of expired tokens
 
 ## API Endpoints
 
@@ -488,8 +492,11 @@ GITHUB_CLIENT_SECRET=your-github-client-secret
 
 - Access tokens: Short-lived (15 minutes)
 - Refresh tokens: Longer-lived (7 days) with automatic rotation
-- Always blacklist tokens on logout
+- All refresh tokens stored server-side in database for validation
+- Tokens include unique JWT IDs (jti) to prevent collisions
+- Always revoke tokens on logout (both from blacklist and refresh_tokens table)
 - Implement token refresh before expiration
+- Periodic cleanup runs hourly to remove expired tokens
 
 ### Password Requirements
 
@@ -543,6 +550,8 @@ For production with multiple server instances:
   - `users.username`
   - `oauth_accounts.provider` + `oauth_accounts.provider_id`
   - `token_blacklist.token`
+  - `refresh_tokens.token` (unique index)
+  - `refresh_tokens.user_id` + `refresh_tokens.revoked`
 
 ## Testing
 
