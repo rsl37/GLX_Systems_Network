@@ -2,20 +2,14 @@
 name: Deprecated Dependencies Monitor
 
 # This workflow monitors deprecated dependencies and verifies their security status
-# It runs monthly (on PRs and via schedule) and creates an issue if action is required
+# It runs monthly via schedule and can be manually triggered
+# Note: Runs on schedule only to avoid duplicating other CI checks
 
 on:
   schedule:
     # Run monthly on the 1st at 9 AM UTC (aligns with repository policy)
     - cron: '0 9 1 * *'
   workflow_dispatch: # Allow manual triggering
-  pull_request:
-    paths:
-      - 'package.json'
-      - 'GLX_App_files/package.json'
-      - 'pnpm-lock.yaml'
-      - '.pnpmfile.cjs'
-      - 'DEPRECATED_DEPENDENCIES.md'
 
 permissions:
   contents: read
