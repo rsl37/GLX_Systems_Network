@@ -4,7 +4,7 @@
   "description": "GLX Civic Network: Connect the World - Root Project",
   "private": true,
   "type": "module",
-  "license": "PolyForm-Shield-1.0.0",
+  "license": "(PolyForm-Shield-1.0.0 OR PolyForm-Noncommercial-1.0.0)",
   "scripts": {
     "setup:env": "cd GLX_App_files && scripts/setup-env.sh",
     "setup:env:root": "scripts/setup-env.sh",
