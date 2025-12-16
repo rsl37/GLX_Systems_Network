@@ -2,8 +2,8 @@
 # /**
 #  * GLX: Connect the World - Civic Networking Platform
 #  * 
-#  * Copyright (c) 2025 [Your Name/Company]
-#  * Licensed under PolyForm Shield License 1.0.0
+#  * Copyright (c) 2025 rsl37
+#  * Dual-licensed under PolyForm Shield 1.0.0 OR PolyForm Noncommercial 1.0.0
 #  * 
 #  * ⚠️  TERMS:
 #  * - Commercial use strictly prohibited without written permission from copyright holder
@@ -11,7 +11,7 @@
 #  * - Violations subject to legal action and damages
 #  * 
 #  * See LICENSE file in repository root for full terms.
-#  * Contact: [your-email@example.com] for licensing inquiries
+#  * Contact: roselleroberts@pm.me for licensing inquiries
 #  */
 
 # GLX Civic Networking App - License Compliance Check Script
@@ -49,7 +49,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPORT_DIR="$PROJECT_ROOT/license-compliance-reports"
 TIMESTAMP=$(date -u '+%Y%m%d_%H%M%S')
 
-# License compatibility matrix for PolyForm Shield License 1.0.0
+# License compatibility matrix for PolyForm Shield License 1.0.0 and PolyForm Noncommercial License 1.0.0
 # Note: MPL-2.0 has been reviewed and approved - see THIRD_PARTY_LICENSES.md
 # MPL-2.0 is a weak copyleft license that only requires modifications to MPL-licensed
 # files to be released under MPL, making it compatible for use as dependencies
@@ -115,7 +115,7 @@ GLX Civic Networking App - License Compliance Report
 
 Report Generated: $(date -u)
 Project Root: $PROJECT_ROOT
-Main License: PolyForm Shield License 1.0.0
+Main License: Dual-licensed under PolyForm Shield License 1.0.0 OR PolyForm Noncommercial License 1.0.0
 
 EOF
 
@@ -232,7 +232,7 @@ scan_npm_dependencies() {
                     
                     # Special handling for main application packages
                     if [[ "$pkg" == "glx-civic-platform@"* || "$pkg" == "glx-civic-networking-app@"* || "$pkg" == "glx-mcp-servers@"* ]]; then
-                        echo "✅ $pkg: PolyForm-Shield-1.0.0 (Main Application)" >> "$MAIN_REPORT"
+                        echo "✅ $pkg: (PolyForm-Shield-1.0.0 OR PolyForm-Noncommercial-1.0.0) (Main Application)" >> "$MAIN_REPORT"
                         ((total++))
                     elif [[ -n "$license_info" && "$license_info" != "null" ]]; then
                         local compatibility=$(check_license_compatibility "$license_info" "$pkg")
@@ -435,7 +435,7 @@ generate_compliance_summary() {
     echo "" >> "$MAIN_REPORT"
     echo "Report completed: $(date -u)" >> "$MAIN_REPORT"
     echo "Project: GLX Civic Networking App" >> "$MAIN_REPORT"
-    echo "Main License: PolyForm Shield License 1.0.0" >> "$MAIN_REPORT"
+    echo "Main License: Dual-licensed under PolyForm Shield License 1.0.0 OR PolyForm Noncommercial License 1.0.0" >> "$MAIN_REPORT"
     echo "" >> "$MAIN_REPORT"
     
     # Count violations and warnings (actual entries, not summary lines)
