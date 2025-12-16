@@ -117,7 +117,9 @@ export async function generateRefreshToken(userId: number): Promise<string> {
       })
       .execute();
     
-    console.log('✅ Refresh token stored in database for user:', userId);
+    // Sanitize userId for log output to prevent log injection/log forgery
+    const sanitizedUserId = String(userId).replace(/[\r\n]/g, '');
+    console.log(`✅ Refresh token stored in database for user: [userId: ${sanitizedUserId}]`);
   } catch (error) {
     console.error('❌ Failed to store refresh token in database:', error);
     throw error;
