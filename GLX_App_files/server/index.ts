@@ -1113,6 +1113,15 @@ export async function startServer(port: number) {
       console.error('❌ Production monitoring initialization error:', error);
     }
 
+    // Start periodic token cleanup task
+    try {
+      const { startTokenCleanupTask } = await import('./cleanup.js');
+      startTokenCleanupTask();
+      console.log('🧹 Periodic token cleanup task started');
+    } catch (error) {
+      console.error('❌ Token cleanup task initialization error:', error);
+    }
+
     if (process.env.NODE_ENV === 'production') {
       console.log('🌐 Setting up static file serving...');
       setupStaticServing(app);

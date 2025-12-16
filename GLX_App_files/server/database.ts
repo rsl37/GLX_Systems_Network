@@ -264,6 +264,15 @@ export interface DatabaseSchema {
     expires_at: string;
     created_at: string;
   };
+  refresh_tokens: {
+    id: number;
+    user_id: number;
+    token: string;
+    expires_at: string;
+    created_at: string;
+    last_used_at: string | null;
+    revoked: number;
+  };
 }
 
 // Hybrid Database Configuration - SQLite for development/lightweight, PostgreSQL for production/heavy operations
@@ -763,6 +772,24 @@ async function createAdditionalTables(
     .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
       col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
     )
+    .execute();
+
+  // Refresh tokens table for server-side token storage
+  await database.schema
+    .createTable('refresh_tokens')
+    .ifNotExists()
+    .addColumn('id', isPostgres ? 'serial' : 'integer', col => {
+      col = col.primaryKey();
+      return isPostgres ? col : col.autoIncrement();
+    })
+    .addColumn('user_id', 'integer', col => col.references('users.id').onDelete('cascade').notNull())
+    .addColumn('token', 'text', col => col.notNull().unique())
+    .addColumn('expires_at', isPostgres ? 'timestamp' : 'datetime', col => col.notNull())
+    .addColumn('created_at', isPostgres ? 'timestamp' : 'datetime', col =>
+      col.defaultTo(isPostgres ? 'now()' : "datetime('now')")
+    )
+    .addColumn('last_used_at', isPostgres ? 'timestamp' : 'datetime')
+    .addColumn('revoked', 'integer', col => col.defaultTo(0))
     .execute();
 
   console.log(`✅ Additional ${dbType.toUpperCase()} tables created successfully`);

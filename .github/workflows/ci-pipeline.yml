@@ -250,6 +250,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [build-and-test]
+    # Only run deployment readiness checks for pull requests
+    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout code

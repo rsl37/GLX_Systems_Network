@@ -154,6 +154,7 @@
     "esbuild": "^0.25.8",
     "undici": "^6.0.0",
     "path-to-regexp": "^8.0.0",
+    "tmp": "^0.2.5",
     "@vercel/node": {
       "undici": "^6.21.3",
       "path-to-regexp": "^8.2.0",

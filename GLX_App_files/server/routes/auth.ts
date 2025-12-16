@@ -192,7 +192,7 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
     }
 
     const token = generateToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const refreshToken = await generateRefreshToken(user.id);
     
     // Create session
     const sessionId = createSession(user.id, token, refreshToken, {
@@ -303,7 +303,7 @@ router.post('/login', authLimiter, accountLockoutMiddleware, validateLogin, asyn
     }
 
     const token = generateToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+    const refreshToken = await generateRefreshToken(user.id);
     
     // Create session
     const sessionId = createSession(user.id, token, refreshToken, {
@@ -763,7 +763,7 @@ router.post('/2fa/verify-login', authLimiter, async (req, res) => {
 
     // Generate tokens after successful 2FA verification
     const token = generateToken(userId);
-    const refreshToken = generateRefreshToken(userId);
+    const refreshToken = await generateRefreshToken(userId);
     
     // Create session
     const sessionId = createSession(userId, token, refreshToken, {
@@ -906,7 +906,7 @@ router.post('/oauth/callback', authLimiter, async (req, res) => {
 
     // Generate tokens for the user
     const token = generateToken(result.userId);
-    const refreshToken = generateRefreshToken(result.userId);
+    const refreshToken = await generateRefreshToken(result.userId);
 
     trackUserAction(result.isNewUser ? 'oauth_registration' : 'oauth_login', result.userId);
 
@@ -1073,7 +1073,7 @@ router.post('/passkey/login', authLimiter, async (req, res) => {
 
     // Generate tokens
     const token = generateToken(result.userId);
-    const refreshToken = generateRefreshToken(result.userId);
+    const refreshToken = await generateRefreshToken(result.userId);
 
     trackUserAction('passkey_login', result.userId);
 

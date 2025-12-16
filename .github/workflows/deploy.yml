@@ -96,16 +96,42 @@ jobs:
               - 'docs/**'
 
   # ==========================================================================
-  # Job 2: Build for Deployment
+  # Job 2: Wait for CI/CD Pipeline (Reuses Build Artifacts)
   # ==========================================================================
-  build:
-    name: Build Application
+  # Note: This job waits for ci-pipeline.yml to complete and reuses its build artifacts
+  # This eliminates duplicate builds and tests across workflows
+  await-ci:
+    name: Await CI/CD Pipeline
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     needs: detect-changes
     if: |
-      needs.detect-changes.outputs.needs_deployment == 'true' ||
-      github.event.inputs.environment != ''
+      github.event_name == 'pull_request' &&
+      needs.detect-changes.outputs.needs_deployment == 'true'
+
+    steps:
+      - name: Wait for CI/CD Pipeline
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: 'Build and Test'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          allowed-conclusions: success
+
+      - name: CI/CD Pipeline Complete
+        run: |
+          echo "✓ CI/CD Pipeline completed successfully"
+          echo "Build artifacts from ci-pipeline.yml will be reused"
+
+  # ==========================================================================
+  # Job 3: Build for Manual Deployment (workflow_dispatch only)
+  # ==========================================================================
+  build-manual:
+    name: Build for Manual Deployment
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout code
@@ -151,13 +177,13 @@ jobs:
           retention-days: 7
 
   # ==========================================================================
-  # Job 3: Preview Deployment (PRs)
+  # Job 4: Preview Deployment (PRs)
   # ==========================================================================
   preview-deploy:
     name: Preview Deployment
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: build
+    needs: await-ci
     if: |
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false
@@ -166,11 +192,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Download build artifacts from CI/CD Pipeline
+        uses: dawidd6/action-download-artifact@v6
         with:
-          name: build-output
+          workflow: ci-pipeline.yml
+          workflow_conclusion: success
+          name: build-artifacts
           path: ${{ env.WORKING_DIRECTORY }}/dist/
+          commit: ${{ github.event.pull_request.head.sha }}
+          check_artifacts: true
+          search_artifacts: true
+          if_no_artifact_found: fail
 
       - name: Check Vercel secrets
         id: check-secrets
@@ -269,13 +301,13 @@ jobs:
             }
 
   # ==========================================================================
-  # Job 4: Production Deployment (Manual)
+  # Job 5: Production Deployment (Manual)
   # ==========================================================================
   production-deploy:
     name: Production Deployment
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: build
+    needs: build-manual
     if: |
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.environment == 'production'
@@ -378,7 +410,7 @@ jobs:
           fi
 
   # ==========================================================================
-  # Job 5: Docs-Only Notification
+  # Job 6: Docs-Only Notification
   # ==========================================================================
   docs-only-skip:
     name: Documentation-Only Change

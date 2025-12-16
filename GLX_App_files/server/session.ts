@@ -161,12 +161,14 @@ export async function revokeSession(sessionId: string): Promise<boolean> {
     return false;
   }
 
-  // Import blacklistToken to revoke tokens
-  const { blacklistToken } = await import('./auth.js');
+  // Import auth functions to revoke tokens
+  const { blacklistToken, revokeRefreshToken } = await import('./auth.js');
   
-  // Blacklist both access and refresh tokens
+  // Blacklist the access token
   await blacklistToken(session.token, session.userId, 'session_revoked');
-  await blacklistToken(session.refreshToken, session.userId, 'session_revoked');
+  
+  // Revoke the refresh token in the database
+  await revokeRefreshToken(session.refreshToken, session.userId);
   
   // Remove session
   sessionStore.delete(sessionId);
