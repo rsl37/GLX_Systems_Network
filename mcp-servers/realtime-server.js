@@ -26,9 +26,7 @@ const jwt = require('jsonwebtoken');
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
 const {
   validateString,
-  validateId,
   validateInteger,
-  validateArray,
 } = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
