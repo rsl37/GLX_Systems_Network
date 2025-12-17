@@ -437,6 +437,8 @@ app.post('/api/verify-page', async (req, res) => {
     const userAgent = req.get('User-Agent') || '';
 
     // Validate required fields
+    // Note: pageContent and checksum are required for client-side validation
+    // but not used in token generation - they're logged for audit purposes
     if (!pageType || !pageContent || !checksum) {
       console.warn('⚠️ Page verification request missing required fields');
       return res.status(400).json({
