@@ -212,9 +212,9 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           echo "🧪 Running Web3 unit tests..."
-          # Find test files, suppress grep failure if no matches found
-          WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" \
-            -o -name "*crypto*.test.*" | grep -v node_modules || true)
+          # Find test files, excluding node_modules directory
+          WEB3_TESTS=$(find . -type f \( -name "*web3*.test.*" -o -name "*blockchain*.test.*" \
+            -o -name "*crypto*.test.*" \) -not -path "*/node_modules/*")
           
           if [ -n "$WEB3_TESTS" ]; then
             echo "✅ Web3 test files found:"
@@ -244,8 +244,7 @@ jobs:
               fi
             fi
           else
-            echo "ℹ️ No dedicated Web3 test files found - skipping unit tests"
-            echo "This is expected if Web3 functionality is tested elsewhere"
+            echo "ℹ️ No dedicated Web3 test files found - skipping unit tests. This is expected if Web3 functionality is tested elsewhere."
           fi
 
   web3-integration:
