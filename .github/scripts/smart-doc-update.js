@@ -64,6 +64,8 @@ class SmartDocumentationUpdater {
     this.logger = new Logger(options.logLevel || process.env.LOG_LEVEL || 'info');
     this.rootPath = options.rootPath || this.findProjectRoot();
     this.dryRun = options.dryRun || false;
+    // Cache for file existence checks to improve performance
+    this.fileExistsCache = new Map();
 
     if (!this.rootPath) {
       throw new Error('Could not determine project root path');
@@ -259,6 +261,26 @@ class SmartDocumentationUpdater {
   }
 
   /**
+   * Check if a file exists with caching for performance
+   */
+  async checkFileExists(filePath) {
+    // Check cache first
+    if (this.fileExistsCache.has(filePath)) {
+      return this.fileExistsCache.get(filePath);
+    }
+    
+    // Perform the actual check
+    try {
+      await fs.access(filePath);
+      this.fileExistsCache.set(filePath, true);
+      return true;
+    } catch {
+      this.fileExistsCache.set(filePath, false);
+      return false;
+    }
+  }
+
+  /**
    * Analyze changed files and determine documentation updates needed
    */
   async analyzeChanges(changedFiles) {
@@ -289,13 +311,10 @@ class SmartDocumentationUpdater {
               try {
                 const fullDocPath = path.resolve(this.rootPath, docPath);
                 
-                // Check if the documentation file exists
-                let fileExists = false;
-                try {
-                  await fs.access(fullDocPath);
-                  fileExists = true;
-                } catch (error) {
-                  // File doesn't exist
+                // Check if the documentation file exists (using cached check for performance)
+                const fileExists = await this.checkFileExists(fullDocPath);
+                
+                if (!fileExists) {
                   this.logger.debug(`Documentation file missing: ${docPath}`);
                 }
                 
