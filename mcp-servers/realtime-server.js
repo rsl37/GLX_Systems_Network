@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
  * GLX: Connect the World - Civic Networking Platform
- * 
+ *
  * Copyright (c) 2025 rsl37
  * Dual-licensed under PolyForm Shield 1.0.0 OR PolyForm Noncommercial 1.0.0
- * 
+ *
  * ⚠️  TERMS:
  * - Commercial use strictly prohibited without written permission from copyright holder
  * - Forking/derivative works prohibited without written permission
  * - Violations subject to legal action and damages
- * 
+ *
  * See LICENSE file in repository root for full terms.
  * Contact: roselleroberts@pm.me for licensing inquiries
  */
@@ -24,19 +24,25 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 const { createServer } = require('http');
 const jwt = require('jsonwebtoken');
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
-const { validateString, validateId, validateInteger, validateArray } = require('./lib/input-validator');
+const {
+  validateString,
+  validateInteger,
+} = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
 class RealtimeMCPServer {
   constructor() {
-    this.server = new Server({
-      name: 'GLX Realtime MCP Server',
-      version: '1.0.0',
-    }, {
-      capabilities: {
-        tools: {},
+    this.server = new Server(
+      {
+        name: 'GLX Realtime MCP Server',
+        version: '1.0.0',
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.httpServer = createServer();
     this.activeUsers = new Map();
@@ -201,7 +207,7 @@ class RealtimeMCPServer {
 
   handleSendMessage(args) {
     const { roomId, message, userId } = args;
-    
+
     validateString(roomId, { required: true, minLength: 1, maxLength: 256 });
     validateString(message, { required: true, minLength: 1, maxLength: 10000 });
     validateInteger(userId, { required: true, min: 1 });
@@ -239,7 +245,7 @@ class RealtimeMCPServer {
 
   handleBroadcastMessage(args) {
     const { message, type } = args;
-    
+
     validateString(message, { required: true, minLength: 1, maxLength: 10000 });
     validateString(type, { required: true, minLength: 1, maxLength: 100 });
 

@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
  * GLX: Connect the World - Civic Networking Platform
- * 
+ *
  * Copyright (c) 2025 rsl37
  * Dual-licensed under PolyForm Shield 1.0.0 OR PolyForm Noncommercial 1.0.0
- * 
+ *
  * ⚠️  TERMS:
  * - Commercial use strictly prohibited without written permission from copyright holder
  * - Forking/derivative works prohibited without written permission
  * - Violations subject to legal action and damages
- * 
+ *
  * See LICENSE file in repository root for full terms.
  * Contact: roselleroberts@pm.me for licensing inquiries
  */
@@ -26,7 +26,10 @@
 const crypto = require('crypto');
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
-const { ListToolsRequestSchema, CallToolRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
+const {
+  ListToolsRequestSchema,
+  CallToolRequestSchema,
+} = require('@modelcontextprotocol/sdk/types.js');
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
 const { validateString, validateArray } = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
@@ -36,7 +39,7 @@ const AUTH_ENV_SCHEMA = {
   JWT_SECRET: {
     type: 'string',
     required: true,
-    validate: (v) => v.length >= 32,
+    validate: v => v.length >= 32,
     validateMsg: 'JWT_SECRET must be at least 32 bytes',
   },
   JWT_ACCESS_TOKEN_EXPIRY: {
@@ -82,14 +85,17 @@ class JwtAuthServer {
     this.tokenStore = new Map();
 
     // Initialize MCP Server
-    this.server = new Server({
-      name: 'GLX JWT Authentication MCP Server',
-      version: '1.0.0',
-    }, {
-      capabilities: {
-        tools: {},
+    this.server = new Server(
+      {
+        name: 'GLX JWT Authentication MCP Server',
+        version: '1.0.0',
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.setupTools();
   }
@@ -177,7 +183,7 @@ class JwtAuthServer {
       };
     });
 
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    this.server.setRequestHandler(CallToolRequestSchema, async request => {
       const { name, arguments: args } = request.params;
 
       try {
@@ -245,7 +251,7 @@ class JwtAuthServer {
     }
 
     const isAllowed = this.config.ALLOWED_ORIGINS.includes(origin);
-    
+
     if (!isAllowed) {
       this.logger.warn('Origin validation failed', {
         origin,
@@ -264,14 +270,15 @@ class JwtAuthServer {
    */
   generateAccessToken(userId, scopes = []) {
     validateString(userId, { required: true, minLength: 1, maxLength: 256 });
-    validateArray(scopes, { 
+    validateArray(scopes, {
       maxLength: 50,
-      itemValidator: (scope) => validateString(scope, { 
-        required: true, 
-        minLength: 1, 
-        maxLength: 100,
-        pattern: /^[a-z0-9_:]+$/i // Only allow alphanumeric, underscore, colon
-      })
+      itemValidator: scope =>
+        validateString(scope, {
+          required: true,
+          minLength: 1,
+          maxLength: 100,
+          pattern: /^[a-z0-9_:]+$/i, // Only allow alphanumeric, underscore, colon
+        }),
     });
 
     const header = {
@@ -475,7 +482,7 @@ class JwtAuthServer {
 
     // Decode and validate JWT header
     const base64Header = headerB64.replace(/-/g, '+').replace(/_/g, '/');
-    const paddedHeader = base64Header + '='.repeat((4 - base64Header.length % 4) % 4);
+    const paddedHeader = base64Header + '='.repeat((4 - (base64Header.length % 4)) % 4);
     const header = JSON.parse(Buffer.from(paddedHeader, 'base64').toString('utf-8'));
     if (header.alg !== 'HS256') {
       throw new Error('Invalid JWT algorithm');
@@ -500,15 +507,11 @@ class JwtAuthServer {
     }
 
     // Decode payload (convert base64url back to base64)
-    const base64Payload = payloadB64
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
+    const base64Payload = payloadB64.replace(/-/g, '+').replace(/_/g, '/');
     // Add padding if needed
-    const paddedPayload = base64Payload + '='.repeat((4 - base64Payload.length % 4) % 4);
-    
-    const payload = JSON.parse(
-      Buffer.from(paddedPayload, 'base64').toString('utf-8')
-    );
+    const paddedPayload = base64Payload + '='.repeat((4 - (base64Payload.length % 4)) % 4);
+
+    const payload = JSON.parse(Buffer.from(paddedPayload, 'base64').toString('utf-8'));
 
     // Check expiry
     if (payload.exp < Math.floor(Date.now() / 1000)) {

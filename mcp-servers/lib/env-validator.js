@@ -48,9 +48,7 @@ function validateEnv(schema, env = process.env) {
 
     // Check required
     if (config.required && !value) {
-      errors.push(
-        `Missing required environment variable: ${key}`
-      );
+      errors.push(`Missing required environment variable: ${key}`);
       continue;
     }
 
@@ -92,17 +90,13 @@ function validateEnv(schema, env = process.env) {
 
     // Enum validation
     if (config.enum && !config.enum.includes(parsed)) {
-      errors.push(
-        `${key} must be one of [${config.enum.join(', ')}], got ${parsed}`
-      );
+      errors.push(`${key} must be one of [${config.enum.join(', ')}], got ${parsed}`);
       continue;
     }
 
     // Custom validator
     if (config.validate && !config.validate(parsed)) {
-      errors.push(
-        `${key} failed custom validation: ${config.validateMsg || ''}`
-      );
+      errors.push(`${key} failed custom validation: ${config.validateMsg || ''}`);
       continue;
     }
 
@@ -110,9 +104,7 @@ function validateEnv(schema, env = process.env) {
   }
 
   if (errors.length > 0) {
-    throw new Error(
-      `Environment validation failed:\n${errors.join('\n')}`
-    );
+    throw new Error(`Environment validation failed:\n${errors.join('\n')}`);
   }
 
   return validated;
@@ -125,11 +117,7 @@ function validateEnv(schema, env = process.env) {
  */
 function hashSecretForLogging(secret) {
   if (!secret || secret.length === 0) return '(empty)';
-  const hash = crypto
-    .createHash('sha256')
-    .update(secret)
-    .digest('hex')
-    .substring(0, 8);
+  const hash = crypto.createHash('sha256').update(secret).digest('hex').substring(0, 8);
   return `${secret.substring(0, 4)}...${hash}`;
 }
 

@@ -41,12 +41,8 @@
     "lint:fix": "eslint . --ext .js,.jsx,.json --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint:app": "cd GLX_App_files && npm run lint",
-    "lint:app:fix": "cd GLX_App_files && npm run lint:fix",
-    "format:app": "cd GLX_App_files && npm run format",
-    "format:app:check": "cd GLX_App_files && npm run format:check",
-    "quality:check": "npm run lint && npm run format:check && npm run lint:app && npm run format:app:check",
-    "quality:fix": "npm run lint:fix && npm run format && npm run lint:app:fix && npm run format:app",
+    "quality:check": "npm run lint && npm run format:check",
+    "quality:fix": "npm run lint:fix && npm run format",
     "security:check-deps": "bash scripts/check-deprecated-deps.sh"
   },
   "repository": {

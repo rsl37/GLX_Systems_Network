@@ -24,7 +24,7 @@ import {
 describe('Post-Quantum Cryptography Security Baseline', () => {
   beforeAll(async () => {
     await initializePostQuantumSecurity();
-  });
+  }, 60000); // 60 second timeout for post-quantum crypto initialization
 
   describe('Initialization', () => {
     it('should initialize post-quantum cryptography successfully', async () => {

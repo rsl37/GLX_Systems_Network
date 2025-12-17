@@ -17,7 +17,7 @@ const DB_ENV_SCHEMA = {
   DATABASE_URL: {
     type: 'string',
     required: true,
-    validate: (v) => v.startsWith('postgres://') || v.startsWith('postgresql://'),
+    validate: v => v.startsWith('postgres://') || v.startsWith('postgresql://'),
     validateMsg: 'DATABASE_URL must be a valid PostgreSQL connection string',
   },
   DB_MAX_CONNECTIONS: {
@@ -44,36 +44,36 @@ const DB_ENV_SCHEMA = {
 // Prepared query definitions (whitelist of allowed queries)
 const PREPARED_QUERIES = {
   // Read operations
-  'get_user_by_id': {
+  get_user_by_id: {
     text: 'SELECT id, username, email, created_at FROM users WHERE id = $1 LIMIT 1',
     readOnly: true,
     minScopes: ['read:users'],
   },
-  'list_users': {
+  list_users: {
     text: 'SELECT id, username, email, created_at FROM users LIMIT $1 OFFSET $2',
     readOnly: true,
     minScopes: ['read:users'],
   },
-  'get_civic_issue': {
+  get_civic_issue: {
     text: 'SELECT id, title, description, status, created_at FROM civic_issues WHERE id = $1 LIMIT 1',
     readOnly: true,
     minScopes: ['read:civic'],
   },
-  'list_civic_issues': {
+  list_civic_issues: {
     text: 'SELECT id, title, status, created_at FROM civic_issues WHERE status = $1 LIMIT $2 OFFSET $3',
     readOnly: true,
     minScopes: ['read:civic'],
   },
 
   // Write operations
-  'create_civic_issue': {
+  create_civic_issue: {
     text: `INSERT INTO civic_issues (title, description, user_id, created_at)
            VALUES ($1, $2, $3, NOW())
            RETURNING id, created_at`,
     readOnly: false,
     minScopes: ['write:civic'],
   },
-  'update_issue_status': {
+  update_issue_status: {
     text: `UPDATE civic_issues SET status = $1, updated_at = NOW()
            WHERE id = $2
            RETURNING id, status, updated_at`,
@@ -253,11 +253,7 @@ async function handleToolCall(toolName, toolInput, authContext = null) {
   switch (toolName) {
     case 'read_query':
     case 'write_query':
-      return await server.executeQuery(
-        toolInput.queryName,
-        toolInput.params || [],
-        authContext
-      );
+      return await server.executeQuery(toolInput.queryName, toolInput.params || [], authContext);
 
     case 'list_queries':
       return server.listAvailableQueries(authContext);
