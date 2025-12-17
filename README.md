@@ -365,7 +365,17 @@ This repository uses secure PAT_TOKEN authentication for enhanced workflow capab
 
 ## 📄 License
 
-This project is licensed under the PolyForm Shield License 1.0.0 - see the [LICENSE](LICENSE) file for details.
+This project is dual-licensed. You may choose either license for your use:
+
+1. **PolyForm Shield License 1.0.0** - A noncompete license that allows use except for competing products
+   - See [LICENSE](LICENSE) file for full text
+   - Visit https://polyformproject.org/licenses/shield/1.0.0
+
+2. **PolyForm Noncommercial License 1.0.0** - Allows noncommercial use without noncompete restrictions
+   - See [LICENSE-NONCOMMERCIAL](LICENSE-NONCOMMERCIAL) file for full text
+   - Visit https://polyformproject.org/licenses/noncommercial/1.0.0
+
+For commercial use that competes with GLX, please contact the project maintainers.
 
 ---
 

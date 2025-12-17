@@ -187,13 +187,16 @@ npm ls --long
 
 ## License Compliance
 
-- **GLX Civic Networking App**: PolyForm Shield License 1.0.0
+- **GLX Civic Networking App**: Dual-licensed under:
+  - PolyForm Shield License 1.0.0 (see LICENSE file)
+  - PolyForm Noncommercial License 1.0.0 (see LICENSE-NONCOMMERCIAL file)
+  - Users may choose either license for their use
 - **Most NPM Dependencies**: MIT License (permissive)
 - **External Resgrid Project**: Apache License 2.0 (permissive)
 - **Some Build Tools**: Apache-2.0 License (permissive)
 - **Database/System Libraries**: Various permissive licenses (MIT, BSD)
 
-All third-party dependencies use permissive open-source licenses that are compatible with the GLX Civic Networking App's PolyForm Shield License 1.0.0.
+All third-party dependencies use permissive open-source licenses that are compatible with the GLX Civic Networking App's dual licensing structure.
 
 ### Reviewed Licenses
 

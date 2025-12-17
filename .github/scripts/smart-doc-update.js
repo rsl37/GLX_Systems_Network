@@ -4,7 +4,7 @@
  * GLX: Connect the World - Civic Networking Platform
  * 
  * Copyright (c) 2025 rsl37
- * Licensed under PolyForm Shield License 1.0.0
+ * Dual-licensed under PolyForm Shield 1.0.0 OR PolyForm Noncommercial 1.0.0
  * 
  * ⚠️  TERMS:
  * - Commercial use strictly prohibited without written permission from copyright holder
