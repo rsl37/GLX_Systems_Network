@@ -61,7 +61,7 @@ jobs:
           ./scripts/check-deprecated-deps.sh > deprecated-check.log 2>&1 || true
           
       - name: Upload check results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: deprecated-dependencies-check
