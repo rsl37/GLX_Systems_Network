@@ -211,23 +211,40 @@ jobs:
       - name: Run Web3 Unit Tests (if available)
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
+          set +e  # Temporarily disable exit on error to handle test results gracefully
           echo "🧪 Running Web3 unit tests..."
           WEB3_TESTS=$(find . -name "*web3*.test.*" -o -name "*blockchain*.test.*" \
-            -o -name "*crypto*.test.*" | grep -v node_modules || true)
-          if [ -n "$WEB3_TESTS" ]; then
+            -o -name "*crypto*.test.*" | grep -v node_modules)
+          FIND_EXIT=$?
+          set -e  # Re-enable exit on error
+          
+          if [ $FIND_EXIT -eq 0 ] && [ -n "$WEB3_TESTS" ]; then
             echo "✅ Web3 test files found:"
             echo "$WEB3_TESTS"
+            set +e  # Allow test commands to fail without stopping the workflow
             if grep -q '"test:web3"' package.json; then
-              npm run test:web3 || true
-              echo "Web3 tests completed"
+              npm run test:web3
+              TEST_EXIT=$?
+              if [ $TEST_EXIT -eq 0 ]; then
+                echo "✅ Web3 tests passed"
+              else
+                echo "❌ Web3 tests failed with exit code $TEST_EXIT"
+                exit $TEST_EXIT
+              fi
             else
-              npm test -- --grep "web3|blockchain|crypto" || true
-              echo "Tests completed"
+              npm test -- --grep "web3|blockchain|crypto"
+              TEST_EXIT=$?
+              if [ $TEST_EXIT -eq 0 ]; then
+                echo "✅ Tests passed"
+              else
+                echo "❌ Tests failed with exit code $TEST_EXIT"
+                exit $TEST_EXIT
+              fi
             fi
+            set -e
           else
-            echo "⚠️ No dedicated Web3 test files found - running all tests"
-            npm test || true
-            echo "Tests completed"
+            echo "ℹ️ No dedicated Web3 test files found - skipping unit tests"
+            echo "This is expected if Web3 functionality is tested elsewhere"
           fi
 
   web3-integration:
