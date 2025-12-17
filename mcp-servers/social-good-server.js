@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
  * GLX: Connect the World - Civic Networking Platform
- * 
+ *
  * Copyright (c) 2025 rsl37
  * Dual-licensed under PolyForm Shield 1.0.0 OR PolyForm Noncommercial 1.0.0
- * 
+ *
  * ⚠️  TERMS:
  * - Commercial use strictly prohibited without written permission from copyright holder
  * - Forking/derivative works prohibited without written permission
  * - Violations subject to legal action and damages
- * 
+ *
  * See LICENSE file in repository root for full terms.
  * Contact: roselleroberts@pm.me for licensing inquiries
  */
@@ -23,19 +23,26 @@ const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 // const https = require('https'); // Commented out as not currently used
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
-const { validateString, validateId, validateInteger, validateArray } = require('./lib/input-validator');
+const {
+  validateString,
+  validateInteger,
+  validateArray,
+} = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
 class SocialGoodMCPServer {
   constructor() {
-    this.server = new Server({
-      name: 'GLX Social Good MCP Server',
-      version: '1.0.0',
-    }, {
-      capabilities: {
-        tools: {},
+    this.server = new Server(
+      {
+        name: 'GLX Social Good MCP Server',
+        version: '1.0.0',
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.volunteerApiKey = process.env.VOLUNTEER_API_KEY;
     this.charityApiKey = process.env.CHARITY_API_KEY;
@@ -265,7 +272,7 @@ class SocialGoodMCPServer {
       validateString(timeCommitment, { required: false, minLength: 1, maxLength: 100 });
     }
     validateInteger(radius, { required: false, min: 1, max: 1000 });
-    
+
     // Mock implementation - in production, integrate with VolunteerMatch, JustServe, or similar APIs
     const mockOpportunities = [
       {
@@ -361,7 +368,7 @@ class SocialGoodMCPServer {
     if (ein) {
       validateString(ein, { required: false, minLength: 1, maxLength: 50 });
     }
-    
+
     // Mock implementation - in production, integrate with Charity Navigator, GuideStar, or IRS APIs
     const mockCharityData = {
       name: charityName || 'Community Action Network',
@@ -418,7 +425,7 @@ class SocialGoodMCPServer {
     validateString(location, { required: true, minLength: 1, maxLength: 256 });
     validateInteger(radius, { required: false, min: 1, max: 1000 });
     validateArray(services, { required: false, maxLength: 100 });
-    
+
     // Mock implementation
     const mockFoodBanks = [
       {
@@ -496,7 +503,7 @@ class SocialGoodMCPServer {
   async getDisasterReliefInfo({ location, disasterType, _needType }) {
     validateString(location, { required: true, minLength: 1, maxLength: 256 });
     validateString(disasterType, { required: true, minLength: 1, maxLength: 100 });
-    
+
     // Mock implementation
     const mockReliefInfo = {
       location,
@@ -568,7 +575,7 @@ class SocialGoodMCPServer {
     validateString(location, { required: true, minLength: 1, maxLength: 256 });
     validateString(resourceType, { required: true, minLength: 1, maxLength: 100 });
     validateInteger(radius, { required: false, min: 1, max: 1000 });
-    
+
     // Mock implementation
     const mockResources = {
       housing: [
@@ -659,7 +666,7 @@ class SocialGoodMCPServer {
     if (estimatedPeopleAffected !== undefined) {
       validateInteger(estimatedPeopleAffected, { required: false, min: 1, max: 1000000000 });
     }
-    
+
     // Mock implementation - in production, this would integrate with community need tracking systems
     const needId = 'NEED-' + Date.now();
     const reportData = {

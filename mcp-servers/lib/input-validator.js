@@ -32,15 +32,11 @@ function validateString(value, rules = {}) {
   }
 
   if (value.length < minLength) {
-    throw new Error(
-      `String length ${value.length} < minimum ${minLength}`
-    );
+    throw new Error(`String length ${value.length} < minimum ${minLength}`);
   }
 
   if (value.length > maxLength) {
-    throw new Error(
-      `String length ${value.length} > maximum ${maxLength}`
-    );
+    throw new Error(`String length ${value.length} > maximum ${maxLength}`);
   }
 
   if (pattern && !pattern.test(value)) {
@@ -48,13 +44,9 @@ function validateString(value, rules = {}) {
   }
 
   if (allowedChars) {
-    const disallowed = value
-      .split('')
-      .find((char) => !allowedChars.test(char));
+    const disallowed = value.split('').find(char => !allowedChars.test(char));
     if (disallowed) {
-      throw new Error(
-        `String contains disallowed character: "${disallowed}"`
-      );
+      throw new Error(`String contains disallowed character: "${disallowed}"`);
     }
   }
 
@@ -152,9 +144,7 @@ function validateUrl(value, rules = {}) {
   try {
     const url = new URL(urlStr);
     if (!allowedProtocols.includes(url.protocol.replace(':', ''))) {
-      throw new Error(
-        `URL protocol not allowed. Expected: ${allowedProtocols.join(', ')}`
-      );
+      throw new Error(`URL protocol not allowed. Expected: ${allowedProtocols.join(', ')}`);
     }
     return url;
   } catch (err) {
@@ -177,15 +167,11 @@ function validateArray(value, rules = {}) {
   }
 
   if (value.length < minLength) {
-    throw new Error(
-      `Array length ${value.length} < minimum ${minLength}`
-    );
+    throw new Error(`Array length ${value.length} < minimum ${minLength}`);
   }
 
   if (value.length > maxLength) {
-    throw new Error(
-      `Array length ${value.length} > maximum ${maxLength}`
-    );
+    throw new Error(`Array length ${value.length} > maximum ${maxLength}`);
   }
 
   if (itemValidator) {

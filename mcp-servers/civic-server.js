@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
  * GLX: Connect the World - Civic Networking Platform
- * 
+ *
  * Copyright (c) 2025 rsl37
  * Dual-licensed under PolyForm Shield 1.0.0 OR PolyForm Noncommercial 1.0.0
- * 
+ *
  * ⚠️  TERMS:
  * - Commercial use strictly prohibited without written permission from copyright holder
  * - Forking/derivative works prohibited without written permission
  * - Violations subject to legal action and damages
- * 
+ *
  * See LICENSE file in repository root for full terms.
  * Contact: roselleroberts@pm.me for licensing inquiries
  */
@@ -24,19 +24,25 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 const https = require('https');
 // const { URL } = require('url'); // Commented out as not currently used
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
-const { validateString, validateId, validateInteger, validateArray } = require('./lib/input-validator');
+const {
+  validateString,
+  validateInteger,
+} = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
 class CivicMCPServer {
   constructor() {
-    this.server = new Server({
-      name: 'GLX Civic Data MCP Server',
-      version: '1.0.0',
-    }, {
-      capabilities: {
-        tools: {},
+    this.server = new Server(
+      {
+        name: 'GLX Civic Data MCP Server',
+        version: '1.0.0',
       },
-    });
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
 
     this.civicApiKey = process.env.CIVIC_API_KEY;
     this.openDataApiKey = process.env.OPEN_DATA_API_KEY;
@@ -235,7 +241,7 @@ class CivicMCPServer {
   async getCivicData({ location, dataType }) {
     validateString(location, { required: true, minLength: 1, maxLength: 256 });
     validateString(dataType, { required: true, minLength: 1, maxLength: 100 });
-    
+
     // Mock implementation - in production, this would call real civic data APIs
     const mockData = {
       demographics: {
@@ -276,7 +282,7 @@ class CivicMCPServer {
     validateString(location, { required: true, minLength: 1, maxLength: 256 });
     validateString(serviceType, { required: true, minLength: 1, maxLength: 100 });
     validateInteger(radius, { required: false, min: 1, max: 1000 });
-    
+
     // Mock implementation
     const mockServices = {
       health: [
@@ -367,7 +373,7 @@ class CivicMCPServer {
     if (eventType) {
       validateString(eventType, { required: false, minLength: 1, maxLength: 100 });
     }
-    
+
     // Mock implementation
     const mockEvents = [
       {
@@ -411,7 +417,7 @@ class CivicMCPServer {
     validateString(issueType, { required: true, minLength: 1, maxLength: 100 });
     validateString(location, { required: true, minLength: 1, maxLength: 256 });
     validateString(priority, { required: true, minLength: 1, maxLength: 50 });
-    
+
     // Mock implementation - in production, this would submit to a real civic reporting system
     const issueId = 'ISSUE-' + Date.now();
     // const reportData = { // Commented out as not currently used
@@ -441,7 +447,7 @@ class CivicMCPServer {
     if (office) {
       validateString(office, { required: false, minLength: 1, maxLength: 100 });
     }
-    
+
     // Mock implementation
     const mockContacts = {
       local: {
@@ -498,7 +504,7 @@ class CivicMCPServer {
       validateString(cause, { required: false, minLength: 1, maxLength: 100 });
     }
     validateInteger(radius, { required: false, min: 1, max: 1000 });
-    
+
     // Mock implementation
     const mockNonprofits = [
       {

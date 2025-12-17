@@ -45,7 +45,7 @@ class AuthContext {
       required = new Permission(required);
     }
 
-    return this.scopes.some((granted) => {
+    return this.scopes.some(granted => {
       if (typeof granted === 'string') {
         granted = new Permission(granted);
       }
@@ -97,27 +97,17 @@ function extractAuthContext(headers = {}, jwtSecret = null) {
   try {
     // Simplified JWT parsing (in production, use 'jsonwebtoken' library)
     const [headerB64, payloadB64, signature] = token.split('.');
-    const payload = JSON.parse(
-      Buffer.from(payloadB64, 'base64').toString('utf-8')
-    );
+    const payload = JSON.parse(Buffer.from(payloadB64, 'base64').toString('utf-8'));
 
     // Verify signature
-    const verified = verifyJwtSignature(
-      `${headerB64}.${payloadB64}`,
-      signature,
-      jwtSecret
-    );
+    const verified = verifyJwtSignature(`${headerB64}.${payloadB64}`, signature, jwtSecret);
     if (!verified) {
       throw new Error('Invalid JWT signature');
     }
 
     // Extract claims
     const { sub, scopes = [] } = payload;
-    const tokenHash = crypto
-      .createHash('sha256')
-      .update(token)
-      .digest('hex')
-      .substring(0, 8);
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex').substring(0, 8);
 
     return new AuthContext(sub, scopes, tokenHash);
   } catch (err) {

@@ -1,7 +1,7 @@
 {
   "name": "GLX Civic Networking App",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bullseye",
-  
+
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "latest"
@@ -19,12 +19,7 @@
       "settings": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "eslint.validate": [
-          "javascript",
-          "javascriptreact",
-          "typescript",
-          "typescriptreact"
-        ]
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
       }
     }
   },
