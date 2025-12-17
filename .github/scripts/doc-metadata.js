@@ -43,6 +43,8 @@ class DocumentationManager {
       'screenshots',
       'license-compliance-reports'
     ];
+    // Cache for file existence checks to avoid redundant fs.access calls
+    this.fileExistsCache = new Map();
   }
 
   /**
@@ -268,6 +270,26 @@ relatedDocs: ${formatValue(metadata.relatedDocs || [])}
   }
 
   /**
+   * Check if a file exists (with caching for performance)
+   */
+  async checkFileExists(filePath) {
+    // Check cache first
+    if (this.fileExistsCache.has(filePath)) {
+      return this.fileExistsCache.get(filePath);
+    }
+    
+    // Perform the actual check
+    try {
+      await fs.access(filePath);
+      this.fileExistsCache.set(filePath, true);
+      return true;
+    } catch {
+      this.fileExistsCache.set(filePath, false);
+      return false;
+    }
+  }
+
+  /**
    * Validate documentation best practices
    */
   async validateDocumentation(filePath) {
@@ -302,17 +324,33 @@ relatedDocs: ${formatValue(metadata.relatedDocs || [])}
         }
       }
       
-      // Check for broken relative links
+      // Check for broken relative links (optimized with batching and caching)
       const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+      const linksToCheck = [];
       let match;
+      
+      // First, collect all relative links
       while ((match = linkPattern.exec(content)) !== null) {
         const linkPath = match[2];
         if (linkPath.startsWith('./') || linkPath.startsWith('../')) {
           const fullLinkPath = path.resolve(path.dirname(filePath), linkPath);
-          try {
-            await fs.access(fullLinkPath);
-          } catch {
-            issues.push(`Broken relative link: ${linkPath}`);
+          linksToCheck.push({ original: linkPath, full: fullLinkPath });
+        }
+      }
+      
+      // Then check all links in parallel using Promise.all
+      if (linksToCheck.length > 0) {
+        const linkCheckResults = await Promise.all(
+          linksToCheck.map(async ({ original, full }) => ({
+            original,
+            exists: await this.checkFileExists(full)
+          }))
+        );
+        
+        // Add issues for broken links
+        for (const { original, exists } of linkCheckResults) {
+          if (!exists) {
+            issues.push(`Broken relative link: ${original}`);
           }
         }
       }
