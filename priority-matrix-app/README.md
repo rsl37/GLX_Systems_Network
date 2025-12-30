@@ -489,15 +489,16 @@ See LICENSE files for details.
 
 ### Validated Use Cases
 
-**Delta Airlines Interest**: Positive feedback on ATC monitoring capabilities
-**Logistics Movers**: Strong interest in real-time tracking and optimization
+**Interstate Movers**: Positive response from movers that logistically move goods across and between states on monitoring capabilities
+**PM Professional**: Positive feedback on COFM (Chain of Functional Monitoring) concept, intent, and graph
+**Data Analytics Professional**: Positive response on COFM and System Network Monitor capabilities
 **Supply Chain**: Demonstrated benefits for transparency and fraud prevention
 
 ### Next Steps
 
-1. Pilot deployment with logistics partners
+1. Pilot deployment with interstate moving partners
 2. Integration with existing supply chain systems
-3. Expansion of ATC monitoring features
+3. Collaboration with PM and analytics professionals
 4. Custom dashboard development for specific industries
 
 ---
