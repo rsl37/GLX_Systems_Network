@@ -103,7 +103,7 @@ The GLX platform's successful implementation of distributed systems provides a p
 ### Industry Recognition
 
 - ✅ **Interstate Movers**: Positive response on monitoring capabilities from movers that logistically move goods across and between states
-- ✅ **PM Professional**: Positive feedback on COFM (Chain of Functional Monitoring) concept, intent, and graph from leading PM professional
+- ✅ **PM Professional**: Positive feedback on COFM (Complexly Organized Flexibly Manageable) concept, intent, and graph from leading PM professional
 - ✅ **Data Analytics Professional**: Positive response on COFM and System Network Monitor from data analytics expert
 - ✅ **Architecture Validation**: Proven patterns applicable to critical infrastructure
 

@@ -490,7 +490,7 @@ See LICENSE files for details.
 ### Validated Use Cases
 
 **Interstate Movers**: Positive response from movers that logistically move goods across and between states on monitoring capabilities
-**PM Professional**: Positive feedback on COFM (Chain of Functional Monitoring) concept, intent, and graph
+**PM Professional**: Positive feedback on COFM (Complexly Organized Flexibly Manageable) concept, intent, and graph
 **Data Analytics Professional**: Positive response on COFM and System Network Monitor capabilities
 **Supply Chain**: Demonstrated benefits for transparency and fraud prevention
 

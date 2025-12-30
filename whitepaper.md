@@ -431,7 +431,7 @@ Positive response to monitoring capabilities from movers that logistically move 
 - Supply chain transparency
 
 **PM Professional (Informal Feedback):**
-Positive response on COFM (Chain of Functional Monitoring) concept:
+Positive response on COFM (Complexly Organized Flexibly Manageable) concept:
 - COFM concept and intent validation
 - Graph-based monitoring approach
 - System architecture design
