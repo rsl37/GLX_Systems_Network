@@ -23,11 +23,7 @@ const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 // const https = require('https'); // Commented out as not currently used
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
-const {
-  validateString,
-  validateInteger,
-  validateArray,
-} = require('./lib/input-validator');
+const { validateString, validateInteger, validateArray } = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
 class SocialGoodMCPServer {

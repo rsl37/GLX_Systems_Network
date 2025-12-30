@@ -1,6 +1,6 @@
 /**
  * GLX Systems Network Monitoring Platform
- * 
+ *
  * Real-time monitoring for Supply Chain, Air Traffic Control, and Logistics
  *
  * Copyright (c) 2025 rsl37
@@ -30,7 +30,7 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    service: 'Systems Network Monitoring Platform'
+    service: 'Systems Network Monitoring Platform',
   });
 });
 
@@ -202,34 +202,34 @@ app.get('/api/v1/status', (req, res) => {
         status: 'operational',
         activeShipments: 1234,
         warehouses: 124,
-        alerts: { critical: 2, warning: 8 }
+        alerts: { critical: 2, warning: 8 },
       },
       atc: {
         status: 'operational',
         activeFlights: 326,
         nextHourDepartures: 42,
         nextHourArrivals: 38,
-        conflictsDetected: 0
+        conflictsDetected: 0,
       },
       logistics: {
         status: 'operational',
         activeVehicles: 892,
         todayDeliveries: 2847,
-        efficiency: 94.2
-      }
+        efficiency: 94.2,
+      },
     },
     performance: {
       responseTime: '<100ms',
       uptime: '99.9%',
-      throughput: '10,000+ concurrent sessions'
+      throughput: '10,000+ concurrent sessions',
     },
     security: {
       score: '130/100',
       encryption: 'post-quantum',
       authentication: 'multi-factor',
-      auditTrail: 'blockchain-secured'
+      auditTrail: 'blockchain-secured',
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -243,24 +243,24 @@ app.get('/api/v1/supply-chain', (req, res) => {
       inTransit: 847,
       warehouses: {
         total: 124,
-        capacityUtilization: 89
+        capacityUtilization: 89,
       },
       alerts: {
         critical: 2,
         warning: 8,
-        info: 15
+        info: 15,
       },
       performance: {
         onTimeDeliveryRate: 94.2,
         accuracy: 99.2,
-        costPerUnit: -8 // negative indicates savings
-      }
+        costPerUnit: -8, // negative indicates savings
+      },
     },
     recentEvents: [
       { type: 'departure', id: 'SH-9847', timestamp: new Date().toISOString() },
       { type: 'warehouse_check', warehouse: 'TX-07', status: 'complete' },
-      { type: 'optimization', route: '447', savings: 12 }
-    ]
+      { type: 'optimization', route: '447', savings: 12 },
+    ],
   });
 });
 
@@ -275,19 +275,19 @@ app.get('/api/v1/atc', (req, res) => {
       nextHourArrivals: 38,
       conflicts: {
         detected: 0,
-        resolved: 3
+        resolved: 3,
       },
       systemHealth: {
         radar: 'normal',
         communications: 'normal',
-        dataProcessing: 'normal'
-      }
+        dataProcessing: 'normal',
+      },
     },
     recentUpdates: [
       { type: 'flight_plan', flight: 'UAL550', status: 'filed' },
       { type: 'clearance', flight: 'DAL789', status: 'granted' },
-      { type: 'weather', sector: 7, advisory: 'moderate turbulence' }
-    ]
+      { type: 'weather', sector: 7, advisory: 'moderate turbulence' },
+    ],
   });
 });
 
@@ -300,32 +300,32 @@ app.get('/api/v1/logistics', (req, res) => {
       vehicles: {
         active: 892,
         available: 78,
-        utilization: 87
+        utilization: 87,
       },
       routes: {
         optimized: 47,
-        inProgress: 124
+        inProgress: 124,
       },
       deliveries: {
         today: 2847,
         pending: 156,
-        completionRate: 94.2
+        completionRate: 94.2,
       },
       efficiency: {
         overall: 94.2,
-        trend: 2.3 // positive indicates improvement
+        trend: 2.3, // positive indicates improvement
       },
       costAnalysis: {
         fuel: -12, // negative indicates savings
         labor: 0, // on budget
-        total: -8.4
-      }
+        total: -8.4,
+      },
     },
     activeOperations: [
       { route: 'LG-447', completion: 94, eta: '2 hours' },
       { event: 'driver_break', vehicle: 'V-892', scheduled: true },
-      { notification: 'customer_notification', status: 'sent' }
-    ]
+      { notification: 'customer_notification', status: 'sent' },
+    ],
   });
 });
 
@@ -336,18 +336,18 @@ app.get('/api/v1/analytics', (req, res) => {
     performance: {
       averageResponseTime: 87, // milliseconds
       throughput: 12547, // requests processed
-      errorRate: 0.03 // percentage
+      errorRate: 0.03, // percentage
     },
     efficiency: {
       supplyChain: { improvement: 15.3 },
       atc: { improvement: 8.7 },
-      logistics: { improvement: 12.1 }
+      logistics: { improvement: 12.1 },
     },
     security: {
       threatsDetected: 0,
       threatsMitigated: 5,
-      auditTrailEntries: 48921
-    }
+      auditTrailEntries: 48921,
+    },
   });
 });
 

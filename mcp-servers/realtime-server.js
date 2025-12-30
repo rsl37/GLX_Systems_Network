@@ -24,10 +24,7 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 const { createServer } = require('http');
 const jwt = require('jsonwebtoken');
 const { validateEnv, BASE_ENV_SCHEMA, hashSecretForLogging } = require('./lib/env-validator');
-const {
-  validateString,
-  validateInteger,
-} = require('./lib/input-validator');
+const { validateString, validateInteger } = require('./lib/input-validator');
 const { Logger } = require('./lib/logger');
 
 class RealtimeMCPServer {
