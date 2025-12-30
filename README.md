@@ -462,7 +462,7 @@ The GLX platform demonstrates tangible benefits of distributed blockchain system
 - **Post-Quantum Cryptography**: NIST-standard ML-KEM, ML-DSA, SLH-DSA
 - **Security Score**: 130/100 (exceeds traditional measures by 30%)
 - **Threat Detection**: <5 second response time, <1% false positive rate
-- **Zero Successful Attacks**: During entire production deployment
+- **Zero Successful Attacks**: During production deployment period (Q2-Q4 2025, monitored continuously)
 
 ### Real-World Applications
 

@@ -13,6 +13,8 @@
  *
  * See LICENSE file in repository root for full terms.
  * Contact: roselleroberts@pm.me for licensing inquiries
+ *
+ * Originally part of GLX: Connect the World - Civic Networking Platform
  */
 
 import express from 'express';
@@ -165,8 +167,8 @@ app.get('/', (req, res) => {
             <div class="link-grid">
               <a href="/health">Health Status</a>
               <a href="/api/v1/status">API Status</a>
-              <a href="../PORTFOLIO_CASE_STUDY.md">Portfolio Case Study</a>
-              <a href="../README.md">Documentation</a>
+              <a href="https://github.com/rsl37/GLX_Civic_Networking_App/blob/main/PORTFOLIO_CASE_STUDY.md">Portfolio Case Study</a>
+              <a href="https://github.com/rsl37/GLX_Civic_Networking_App#readme">Documentation</a>
             </div>
           </div>
 
