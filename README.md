@@ -31,12 +31,14 @@ Enable **distributive management** of civic engagement through decentralized coo
 
 GLX synthesizes insights from multiple disciplines:
 - **Governance**: Post-Westphalian coordination ("Farewell to Westphalia")
-- **Sustainability**: Systems thinking, LCAs, ecosystem keystone holons
+- **Sustainability**: Systems thinking, LCAs, urban planning, triple bottom line (People/Planet/Profit)
 - **Management**: Project management, supply chain systems, organizational development
 - **Technology**: Blockchain, tokenization, distributed systems
 - **Cultural**: GALAX coordination system ("Gatchaman Crowds")
 
 This multidisciplinary approach creates **domain-agnostic coordination infrastructure** that works across civic, economic, and social contexts.
+
+**Personal Motivation**: Born from observing the gap between childhood ideals of cohesive communities and adult reality of fractured, inefficient systems. GLX addresses preventable coordination failures through transparency, accountability, and distributed infrastructure. Core belief: **black swans can become gray swans** with sufficient foresight and proactive coordination.
 
 ### What GLX Does
 
