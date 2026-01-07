@@ -27,6 +27,17 @@ relatedDocs: ["ABOUT_GLX.md", "GLX_ARCHITECTURE_CASE_STUDY.md", "CMPLX_FORK_STRA
 
 Enable **distributive management** of civic engagement through decentralized coordination systems, addressing the governance challenges outlined in "Farewell to Westphalia" - where traditional centralized models struggle with complex, multi-stakeholder coordination at scale.
 
+### Intellectual Foundations
+
+GLX synthesizes insights from multiple disciplines:
+- **Governance**: Post-Westphalian coordination ("Farewell to Westphalia")
+- **Sustainability**: Systems thinking, LCAs, ecosystem keystone holons
+- **Management**: Project management, supply chain systems, organizational development
+- **Technology**: Blockchain, tokenization, distributed systems
+- **Cultural**: GALAX coordination system ("Gatchaman Crowds")
+
+This multidisciplinary approach creates **domain-agnostic coordination infrastructure** that works across civic, economic, and social contexts.
+
 ### What GLX Does
 
 - **Real-time community coordination** via WebSocket infrastructure
