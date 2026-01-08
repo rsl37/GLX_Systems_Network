@@ -85,7 +85,7 @@ GLX was born from observing the gap between childhood ideals of cohesive communi
 - **Distributed resilience** - No single point of failure
 - **Democratic governance** - Collective decision-making at scale
 
-**Core philosophy**: Black swans can become gray swans with sufficient foresight and proactive coordination.
+**Core philosophy** (shared with CMPLX): Black swans can become gray swans with sufficient foresight and proactive coordination.
 
 See [GLX_ARCHITECTURE_CASE_STUDY.md](GLX_ARCHITECTURE_CASE_STUDY.md#personal-motivation-from-childhood-ideals-to-systems-reality) for full context.
 
@@ -124,7 +124,11 @@ When ready, **CMPLX** (Complexity Made Legible and Actionable) will apply GLX's 
 
 **Mission**: CMPLX serves as an intermediary transforming illegible chaos into actionable clarity, easing immense pressure and stress while increasing productivity and decreasing burnout.
 
-**Core Philosophy** (shared with GLX): **Those who live together help each other** - whether locally or globally. CMPLX applies this to professional coordination, enabling teams under pressure to coordinate effectively.
+**Core Philosophy**:
+- **GLX**: "Those who **live together** help each other" - broadly across civic life (local to global, nested at every scale)
+- **CMPLX**: "Those who **work together** help each other" - specifically for on-the-job professional teamwork and task completion
+
+Both share the mutual aid principle, but GLX addresses full civic context while CMPLX focuses on professional coordination within operational teams.
 
 **Implementation**:
 - **Separate repository** with clear branding

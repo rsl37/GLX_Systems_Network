@@ -29,7 +29,9 @@ CMPLX serves as an intermediary transforming illegible operational chaos into ac
 
 ### Core Philosophy
 
-**"Those who live together help each other"** - This principle, shared with GLX, drives CMPLX's design. In professional contexts, "living together" means working within the same operational ecosystem. CMPLX enables teams under pressure to coordinate effectively, supporting each other through better infrastructure.
+**"Those who work together help each other"** - This principle adapts GLX's mutual aid philosophy to professional contexts. While GLX addresses those who **live together** across civic life (local to global), CMPLX focuses on those who **work together** within operational teams.
+
+CMPLX enables teams under pressure to coordinate effectively on-the-job, supporting each other through better infrastructure for task completion and team coordination.
 
 ### Specialized Focus Areas
 
