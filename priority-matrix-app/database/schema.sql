@@ -202,7 +202,30 @@ CREATE TABLE IF NOT EXISTS performance_metrics (
     recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Realtime connections tracking
+CREATE TABLE IF NOT EXISTS realtime_connections (
+    connection_id VARCHAR(255) PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    user_email VARCHAR(255),
+    connected_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_heartbeat TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    disconnected_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Room members for realtime messaging
+CREATE TABLE IF NOT EXISTS room_members (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    room_id VARCHAR(255) NOT NULL,
+    user_id UUID REFERENCES users(id),
+    joined_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(room_id, user_id)
+);
+
 -- Indexes for performance
+CREATE INDEX idx_realtime_connections_user ON realtime_connections(user_id, disconnected_at);
+CREATE INDEX idx_realtime_connections_heartbeat ON realtime_connections(last_heartbeat) WHERE disconnected_at IS NULL;
+CREATE INDEX idx_room_members_room ON room_members(room_id);
+CREATE INDEX idx_room_members_user ON room_members(user_id);
 CREATE INDEX idx_blockchain_blocks_hash ON blockchain_blocks(block_hash);
 CREATE INDEX idx_blockchain_blocks_index ON blockchain_blocks(block_index);
 CREATE INDEX idx_blockchain_transactions_hash ON blockchain_transactions(transaction_hash);
