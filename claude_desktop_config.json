@@ -1,0 +1,95 @@
+{
+  "mcpServers": {
+    "civic-networking": {
+      "command": "node",
+      "args": ["mcp-servers/civic-server.js"],
+      "description": "Civic data and government services integration for GLX networking",
+      "env": {
+        "CIVIC_API_KEY": "${CLAUDE_MCP_CIVIC_API_KEY}",
+        "OPEN_DATA_API_KEY": "${CLAUDE_MCP_OPEN_DATA_KEY}"
+      }
+    },
+    "auth-service": {
+      "command": "node",
+      "args": ["mcp-servers/auth-server.js"],
+      "description": "JWT authentication and authorization for GLX platform",
+      "env": {
+        "JWT_SECRET": "${CLAUDE_MCP_JWT_SECRET}",
+        "SESSION_SECRET": "${CLAUDE_MCP_SESSION_SECRET}"
+      }
+    },
+    "database": {
+      "command": "node",
+      "args": ["mcp-servers/database-server.js"],
+      "description": "PostgreSQL database operations for GLX",
+      "env": {
+        "DATABASE_URL": "${CLAUDE_MCP_DATABASE_URL}",
+        "DB_SSL_ENABLED": "true"
+      }
+    },
+    "blockchain": {
+      "command": "node",
+      "args": ["mcp-servers/blockchain-server.js"],
+      "description": "Ethereum blockchain integration for Web3 features",
+      "env": {
+        "ETH_PRIVATE_KEY": "${CLAUDE_MCP_ETH_PRIVATE_KEY}",
+        "ETH_NETWORK": "mainnet",
+        "INFURA_PROJECT_ID": "${CLAUDE_MCP_INFURA_PROJECT_ID}"
+      }
+    },
+    "realtime": {
+      "command": "node",
+      "args": ["mcp-servers/realtime-server.js"],
+      "description": "Real-time SSE communication for notifications and updates",
+      "env": {
+        "REALTIME_SECRET": "${CLAUDE_MCP_REALTIME_SECRET}"
+      }
+    },
+    "social-good": {
+      "command": "node",
+      "args": ["mcp-servers/social-good-server.js"],
+      "description": "Social good and community services integration",
+      "env": {
+        "VOLUNTEER_API_KEY": "${CLAUDE_MCP_VOLUNTEER_KEY}",
+        "CHARITY_API_KEY": "${CLAUDE_MCP_CHARITY_KEY}"
+      }
+    },
+    "notifications": {
+      "command": "node",
+      "args": ["mcp-servers/notification-server.js"],
+      "description": "Multi-channel notification system (email, SMS, push)",
+      "env": {
+        "EMAIL_API_KEY": "${CLAUDE_MCP_EMAIL_KEY}",
+        "SMS_API_KEY": "${CLAUDE_MCP_SMS_KEY}",
+        "PUSH_API_KEY": "${CLAUDE_MCP_PUSH_KEY}"
+      }
+    },
+    "analytics": {
+      "command": "node",
+      "args": ["mcp-servers/analytics-server.js"],
+      "description": "Platform analytics and metrics tracking",
+      "env": {
+        "ANALYTICS_API_KEY": "${CLAUDE_MCP_ANALYTICS_KEY}"
+      }
+    },
+    "maps": {
+      "command": "node",
+      "args": ["mcp-servers/maps-server.js"],
+      "description": "Location services and mapping integration",
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "${CLAUDE_MCP_GOOGLE_MAPS_API_KEY}"
+      }
+    },
+    "github": {
+      "command": "node",
+      "args": ["mcp-servers/github-server.js"],
+      "description": "GitHub integration for repository management",
+      "env": {
+        "GITHUB_TOKEN": "${CLAUDE_MCP_GITHUB_TOKEN}",
+        "GITHUB_OWNER": "rsl37",
+        "GITHUB_REPO": "GLX_Systems_Network"
+      }
+    }
+  },
+  "globalShortcut": "CommandOrControl+Shift+Space"
+}

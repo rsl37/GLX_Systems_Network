@@ -71,6 +71,7 @@ The easiest way to get started is using GitHub Codespaces. The repository includ
 - pnpm package manager configured
 - Vercel CLI ready to use
 - VS Code extensions (ESLint, Prettier, GitHub Copilot)
+- AI coding assistants (GitHub Copilot for inline completion, Claude Code for complex tasks)
 - Automatic port forwarding for development
 
 Once the Codespace is created, you can immediately start using:
@@ -278,7 +279,7 @@ GLX_App_files/
 - **🧪 Comprehensive Testing**: Unit, integration, security, and E2E tests with Vitest and Playwright
 - **📊 Monitoring**: Real-time performance monitoring and health checks
 - **🚀 CI/CD Ready**: Automated workflows and Vercel deployment
-- **🤖 MCP Integration**: GitHub Copilot integration with custom civic networking tools
+- **🤖 MCP Integration**: GitHub Copilot & Claude Code integration with custom civic networking tools
 
 ---
 
@@ -298,7 +299,7 @@ GLX_App_files/
 - ✅ **Post-Quantum Security** - NIST-standard quantum-resistant cryptography
 - ✅ **Production Deployment** - Automated setup, Vercel deployment, monitoring
 - ✅ **WebSocket Security** - Rate limiting, CSWSH protection, message validation
-- ✅ **AI/MCP Integration** - GitHub Copilot tools, prompt injection protection
+- ✅ **AI/MCP Integration** - GitHub Copilot & Claude Code tools, prompt injection protection
 
 ### 🚧 Current Development (Q3 2025)
 
@@ -378,7 +379,8 @@ This repository uses secure PAT_TOKEN authentication for enhanced workflow capab
 - [PAT Security Guide](docs/PAT_SECURITY_GUIDE.md) - PAT_TOKEN authentication and security
 - [Privacy & Badges](PRIVACY_AND_BADGES_IMPLEMENTATION.md) - Implementation details
 - [Workspace Guide](GLX_Project_Workspace.md) - Development workspace setup
-- [MCP Setup Guide](MCP_SETUP_GUIDE.md) - GitHub Copilot MCP configuration
+- [MCP Setup Guide](MCP_SETUP_GUIDE.md) - GitHub Copilot & Claude Code MCP configuration
+- [AI Tools Guide](AI_TOOLS_GUIDE.md) - When to use GitHub Copilot vs Claude Code
 
 ### Development History & Planning
 - [Development Activity History](DEVELOPMENT_ACTIVITY_HISTORY.md) - Complete development timeline organized by month

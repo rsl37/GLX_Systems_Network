@@ -12,11 +12,15 @@ relatedDocs: []
 
 # GLX MCP Configuration Setup Guide
 
-This repository now includes a complete Model Context Protocol (MCP) configuration for GitHub Copilot, specifically designed for the GLX Civic Networking App.
+This repository includes Model Context Protocol (MCP) configurations for both **GitHub Copilot** and **Claude Code**, specifically designed for the GLX Civic Networking App.
+
+> **Note**: This guide covers GitHub Copilot MCP setup. For Claude Code setup and guidance on when to use each tool, see [AI_TOOLS_GUIDE.md](AI_TOOLS_GUIDE.md).
 
 ## 🎯 Overview
 
-The MCP configuration transforms GitHub Copilot into a civic networking development assistant that understands your Web3-enabled platform's architecture and can help build features that strengthen community connections.
+The MCP configurations transform both AI assistants into civic networking development assistants that understand your Web3-enabled platform's architecture:
+- **GitHub Copilot**: Real-time inline code completion and quick edits
+- **Claude Code**: Complex reasoning, multi-file operations, and architecture decisions
 
 ## 📁 Files Added
 

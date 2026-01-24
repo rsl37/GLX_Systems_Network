@@ -9,6 +9,7 @@ This directory contains the configuration for GitHub Codespaces and VS Code Dev 
 - **Vercel CLI**: Command-line interface for Vercel deployment
 - **GitHub CLI**: Command-line interface for GitHub
 - **VS Code Extensions**: ESLint, Prettier, GitHub Copilot
+- **AI Coding Assistants**: GitHub Copilot (inline), Claude Code (complex tasks)
 
 ## Automatic Setup
 
