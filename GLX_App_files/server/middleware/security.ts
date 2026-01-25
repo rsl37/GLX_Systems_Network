@@ -162,12 +162,9 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
   // that needs to modify read-only Express request properties.
   // Alternative approaches like Object.assign(req.query, sanitizedQuery) won't work because
   // the property descriptor prevents direct modification of individual keys.
-  // Note: Express req.query might be read-only. Instead of modifying it,
-  // we'll validate input and continue processing if it's safe
   if (req.query && Object.keys(req.query).length > 0) {
     try {
       const sanitized = sanitizeObject(req.query);
-      // If sanitization changed anything significant, we might want to block
       const original = JSON.stringify(req.query);
       const sanitizedStr = JSON.stringify(sanitized);
       if (original !== sanitizedStr) {
@@ -177,6 +174,8 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
           ip: req.ip,
         });
       }
+      // SECURITY FIX: Actually apply the sanitized values
+      req.query = sanitized;
     } catch (error) {
       console.error('❌ Query sanitization error:', error);
     }
@@ -195,6 +194,8 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
           ip: req.ip,
         });
       }
+      // SECURITY FIX: Actually apply the sanitized values
+      req.params = sanitized;
     } catch (error) {
       console.error('❌ Route params sanitization error:', error);
     }
