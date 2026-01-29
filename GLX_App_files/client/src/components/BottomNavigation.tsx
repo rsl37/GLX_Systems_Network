@@ -108,13 +108,6 @@ export const BottomNavigation = React.memo(() => {
         description: 'View and report emergency situations',
       },
       {
-        path: '/systems-monitor',
-        icon: Network,
-        label: 'Monitor',
-        ariaLabel: 'Navigate to systems monitor section',
-        description: 'Monitor supply chain and ATC network systems',
-      },
-      {
         path: '/governance',
         icon: Vote,
         label: 'Gov',
