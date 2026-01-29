@@ -120,7 +120,7 @@
     "speakeasy": "^2.0.0",
     "tailwind-merge": "3.3.1",
     "tailwindcss-animate": "1.0.7",
-    "undici": "^6.0.0",
+    "undici": "^6.23.0",
     "viem": "^2.44.4",
     "wagmi": "^2.12.0"
   },
@@ -179,18 +179,25 @@
     "rimraf": "^5.0.0",
     "uuid": "^10.0.0",
     "esbuild": "^0.25.8",
-    "undici": "^6.0.0",
     "path-to-regexp": "^8.0.0",
     "tmp": "^0.2.5",
+    "diff": "^5.2.0",
+    "tar": "^7.5.7",
+    "lodash-es": "^4.17.22",
+    "qs": "^6.14.1",
     "@vercel/node": {
-      "undici": "^6.21.3",
+      "undici": "^6.23.0",
       "path-to-regexp": "^8.2.0",
       "esbuild": "^0.25.8"
     }
   },
   "resolutions": {
     "esbuild": "^0.25.8",
-    "undici": "^6.21.3",
-    "path-to-regexp": "^8.2.0"
+    "undici": "^6.23.0",
+    "path-to-regexp": "^8.2.0",
+    "diff": "^5.2.0",
+    "tar": "^7.5.7",
+    "lodash-es": "^4.17.22",
+    "qs": "^6.14.1"
   }
 }
