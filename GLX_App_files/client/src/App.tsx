@@ -61,6 +61,9 @@ const StablecoinPage = React.lazy(() =>
 const AdminPage = React.lazy(() =>
   import('./pages/AdminPage').then(module => ({ default: module.AdminPage }))
 );
+const SystemsMonitorPage = React.lazy(() =>
+  import('./pages/SystemsMonitorPage').then(module => ({ default: module.SystemsMonitorPage }))
+);
 
 // Loading component
 const LoadingSpinner = () => (
@@ -149,6 +152,14 @@ function AppContent() {
                 element={
                   <ProtectedRoute>
                     <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='/systems-monitor'
+                element={
+                  <ProtectedRoute>
+                    <SystemsMonitorPage />
                   </ProtectedRoute>
                 }
               />

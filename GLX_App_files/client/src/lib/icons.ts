@@ -20,7 +20,7 @@
 export { Check, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Search } from 'lucide-react';
 
 // Navigation icons
-export { Home, HandHeart, AlertTriangle, Vote, User, DollarSign } from 'lucide-react';
+export { Home, HandHeart, AlertTriangle, Vote, User, DollarSign, Network } from 'lucide-react';
 
 // Action icons
 export { Send, MessageCircle, Loader2, AlertCircle, RefreshCw, Mail } from 'lucide-react';

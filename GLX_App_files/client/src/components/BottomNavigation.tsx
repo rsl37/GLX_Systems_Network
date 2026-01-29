@@ -15,8 +15,7 @@
 
 import * as React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, HandHeart, AlertTriangle, Vote, User } from '@/lib/icons';
-import { Home, HandHeart, AlertTriangle, Vote, User } from '@/lib/icons';
+import { Home, HandHeart, AlertTriangle, Network, Vote, User } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 
 // Lazy load motion for better initial performance
@@ -107,6 +106,13 @@ export const BottomNavigation = React.memo(() => {
         label: 'Crisis',
         ariaLabel: 'Navigate to crisis alerts section',
         description: 'View and report emergency situations',
+      },
+      {
+        path: '/systems-monitor',
+        icon: Network,
+        label: 'Monitor',
+        ariaLabel: 'Navigate to systems monitor section',
+        description: 'Monitor supply chain and ATC network systems',
       },
       {
         path: '/governance',
