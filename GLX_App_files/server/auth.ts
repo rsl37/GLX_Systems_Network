@@ -15,11 +15,15 @@
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { db } from './database.js';
 import { Request, Response, NextFunction } from 'express';
 import { validateJWTSecret } from './config/security.js';
 
 // Secure JWT secret configuration with validation
+// SECURITY FIX: Generate random secrets instead of using hardcoded defaults
+let generatedJWTSecret: string | null = null;
+
 function getSecureJWTSecret(): string {
   const secret = process.env.JWT_SECRET;
   const isProduction = process.env.NODE_ENV === 'production';
@@ -28,8 +32,15 @@ function getSecureJWTSecret(): string {
     if (isProduction) {
       throw new Error('JWT_SECRET environment variable is required in production');
     }
-    console.warn('⚠️ JWT_SECRET not set - using insecure default for development');
-    return 'insecure-dev-secret-change-in-production-32chars-minimum';
+
+    // Generate a cryptographically secure random secret for development
+    // This is still insecure (not persisted) but better than a known value
+    if (!generatedJWTSecret) {
+      generatedJWTSecret = crypto.randomBytes(32).toString('hex');
+      console.warn('⚠️ JWT_SECRET not set - generated random secret for this session');
+      console.warn('⚠️ Tokens will NOT be valid across server restarts!');
+    }
+    return generatedJWTSecret;
   }
 
   // Validate secret strength
@@ -45,6 +56,9 @@ function getSecureJWTSecret(): string {
   return secret;
 }
 
+// SECURITY FIX: Generate random refresh secret instead of using hardcoded default
+let generatedRefreshSecret: string | null = null;
+
 function getSecureJWTRefreshSecret(): string {
   const secret = process.env.JWT_REFRESH_SECRET;
   const isProduction = process.env.NODE_ENV === 'production';
@@ -53,8 +67,14 @@ function getSecureJWTRefreshSecret(): string {
     if (isProduction) {
       throw new Error('JWT_REFRESH_SECRET environment variable is required in production');
     }
-    console.warn('⚠️ JWT_REFRESH_SECRET not set - using insecure default for development');
-    return 'insecure-dev-refresh-secret-change-in-production-32chars-minimum';
+
+    // Generate a cryptographically secure random secret for development
+    if (!generatedRefreshSecret) {
+      generatedRefreshSecret = crypto.randomBytes(32).toString('hex');
+      console.warn('⚠️ JWT_REFRESH_SECRET not set - generated random secret for this session');
+      console.warn('⚠️ Refresh tokens will NOT be valid across server restarts!');
+    }
+    return generatedRefreshSecret;
   }
 
   // Validate secret strength
@@ -180,7 +200,9 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
     return !!blacklistedToken;
   } catch (error) {
     console.error('❌ Error checking token blacklist:', error);
-    return false;
+    // SECURITY FIX: Fail-secure instead of fail-open
+    // If we can't check the blacklist, reject the token to be safe
+    throw new Error('Unable to verify token status - access denied for security');
   }
 }
 

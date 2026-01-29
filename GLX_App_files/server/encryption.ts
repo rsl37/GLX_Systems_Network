@@ -24,12 +24,24 @@ const TAG_LENGTH = 16; // 128 bits
 const SALT_LENGTH = 32; // 256 bits
 
 // Environment variable for master encryption key
+// SECURITY FIX: Fail-fast in production if master key is not set
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (!process.env.ENCRYPTION_MASTER_KEY && isProduction) {
+  throw new Error(
+    'ENCRYPTION_MASTER_KEY environment variable is required in production. ' +
+    'All encrypted data will be unrecoverable without it. ' +
+    'Generate a secure key: openssl rand -hex 32'
+  );
+}
+
 const MASTER_KEY =
   process.env.ENCRYPTION_MASTER_KEY || crypto.randomBytes(KEY_LENGTH).toString('hex');
 
 if (!process.env.ENCRYPTION_MASTER_KEY) {
   console.warn(
-    '⚠️ ENCRYPTION_MASTER_KEY not set in environment. Using random key (data will not persist across restarts)'
+    '⚠️ ENCRYPTION_MASTER_KEY not set - using random key for development. ' +
+    'Data will NOT persist across restarts!'
   );
 }
 

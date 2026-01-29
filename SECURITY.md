@@ -25,10 +25,11 @@ GLX implements comprehensive, enterprise-grade security measures designed to pro
 - **KYC Document Verification**: Secure document upload and validation
 
 ### Cryptographic Security
-- **Post-Quantum Cryptography**: NIST-standard algorithms (ML-KEM, ML-DSA, SLH-DSA)
-- **JWT Security**: Secure token management with refresh capabilities
+- **Standard Cryptography**: Industry-standard AES-256-GCM, bcrypt password hashing, JWT with HMAC-SHA256
+- **JWT Security**: Secure token management with refresh capabilities and blacklist support
 - **Data Encryption**: AES-256-GCM for sensitive data storage
-- **Quantum-Safe Level**: 130/100 security score with future-proof protection
+- **Password Hashing**: bcrypt with cost factor of 12 for secure password storage
+- **Note**: Post-quantum cryptography (ML-KEM, ML-DSA, SLH-DSA) is planned for future implementation
 
 ### Real-time Security
 - **WebSocket Security**: WSS encryption, rate limiting, CSWH protection
@@ -146,7 +147,7 @@ Our security workflows provide comprehensive protection through multiple layers:
 GLX follows industry-standard security practices:
 - **OWASP Top 10**: Protection against common web vulnerabilities
 - **NIST Cybersecurity Framework**: Comprehensive security management
-- **Post-Quantum Readiness**: Quantum-resistant cryptography implementation
+- **Industry-Standard Cryptography**: AES-256, bcrypt, JWT with proven security track records
 - **Zero-Trust Architecture**: Verify everything, trust nothing approach
 
 ## 🔧 Security Testing

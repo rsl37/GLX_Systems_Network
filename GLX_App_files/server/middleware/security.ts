@@ -15,6 +15,7 @@
 
 import helmet from 'helmet';
 import { Request, Response, NextFunction } from 'express';
+import rateLimit from 'express-rate-limit';
 
 /**
  * Security Middleware Module
@@ -42,6 +43,63 @@ import { Request, Response, NextFunction } from 'express';
  * 2. It sanitizes all nested properties recursively
  * 3. It maintains Express's security model while allowing necessary sanitization
  */
+
+/**
+ * Rate Limiting Configurations
+ * Protects against brute force and DoS attacks
+ */
+
+// Strict rate limiter for authentication endpoints (login, register, password reset)
+export const authRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Max 5 requests per window
+  message: 'Too many authentication attempts. Please try again in 15 minutes.',
+  standardHeaders: true, // Return rate limit info in RateLimit-* headers
+  legacyHeaders: false, // Disable X-RateLimit-* headers
+  skipSuccessfulRequests: false, // Count all requests
+  handler: (req, res) => {
+    console.warn('🚨 Rate limit exceeded for authentication:', {
+      ip: req.ip,
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+    res.status(429).json({
+      error: 'Too many requests',
+      message: 'Too many authentication attempts. Please try again in 15 minutes.',
+      retryAfter: 900, // 15 minutes in seconds
+    });
+  },
+});
+
+// Moderate rate limiter for general API endpoints
+export const apiRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Max 100 requests per window
+  message: 'Too many requests. Please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Aggressive rate limiter for email verification endpoints
+export const emailRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // Max 3 emails per hour
+  message: 'Too many verification emails requested. Please try again in 1 hour.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    console.warn('🚨 Rate limit exceeded for email verification:', {
+      ip: req.ip,
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+    res.status(429).json({
+      error: 'Too many requests',
+      message: 'Too many verification emails requested. Please check your inbox or try again in 1 hour.',
+      retryAfter: 3600, // 1 hour in seconds
+    });
+  },
+});
 
 // Configure Helmet security headers
 export const securityHeaders = helmet({
@@ -462,8 +520,11 @@ export const corsConfig = {
           isTest,
           timestamp: new Date().toISOString(),
         });
-        // In test environment, don't throw errors - just log and allow
-        if (isTest) {
+        // SECURITY FIX: Removed automatic test mode bypass to prevent security vulnerability
+        // Test mode should use CORS_TEST_ORIGINS environment variable instead
+        // If you need to allow all origins in test, set ALLOW_INSECURE_CORS_IN_TEST=true
+        if (isTest && process.env.ALLOW_INSECURE_CORS_IN_TEST === 'true') {
+          console.warn('⚠️ INSECURE: Allowing all origins in test mode due to ALLOW_INSECURE_CORS_IN_TEST flag');
           return callback(null, true);
         }
         callback(new Error('Not allowed by CORS'));
