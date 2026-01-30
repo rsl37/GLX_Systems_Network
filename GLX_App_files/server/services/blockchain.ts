@@ -14,6 +14,18 @@ import {
   pqcVerify,
 } from '../encryption.js';
 
+export interface UserReputation {
+  civicScore: number;
+  taskCompletionRate: number;
+  totalTasksCompleted: number;
+  totalTasksAssigned: number;
+  endorsements: number;
+  crisisContributions: number;
+  governanceVotes: number;
+  lastUpdated: number;
+  isVerified: boolean;
+}
+
 // Contract addresses (set via environment variables)
 const HFT_ADDRESS = process.env.HFT_CONTRACT_ADDRESS || '';
 const COLLATERAL_MANAGER_ADDRESS = process.env.COLLATERAL_MANAGER_ADDRESS || '';
@@ -174,7 +186,7 @@ export async function recordTaskCompletion(
 /**
  * Get user's on-chain reputation
  */
-export async function getUserReputation(userAddress: string): Promise<any> {
+export async function getUserReputation(userAddress: string): Promise<UserReputation | null> {
   try {
     const reputation = getReputationContract();
     const data = await reputation.getReputation(userAddress);
