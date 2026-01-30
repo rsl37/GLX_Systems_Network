@@ -60,7 +60,7 @@ describe("HFT Token", function () {
 
     it("Should grant admin role to deployer", async function () {
       const DEFAULT_ADMIN_ROLE = ethers.ZeroHash;
-      expect(await hft.hasRole(DEFAULT_ADMIN_ROLE, owner.address)).to.be.true;
+      expect(await hft.hasRole(DEFAULT_ADMIN_ROLE, owner.address)).to.equal(true);
     });
   });
 
@@ -144,7 +144,10 @@ describe("HFT Token", function () {
     it("Should update crisis level", async function () {
       const CRISIS_RESPONDER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("CRISIS_RESPONDER_ROLE"));
 
-      // Owner has crisis responder role by default
+      // Verify owner has crisis responder role
+      expect(await hft.hasRole(CRISIS_RESPONDER_ROLE, owner.address)).to.equal(true);
+
+      // Owner can update crisis level
       await hft.updateCrisisLevel(2); // MEDIUM
 
       expect(await hft.currentCrisisLevel()).to.equal(2);
@@ -153,7 +156,7 @@ describe("HFT Token", function () {
     it("Should auto-pause on critical crisis", async function () {
       await hft.updateCrisisLevel(4); // CRITICAL
 
-      expect(await hft.paused()).to.be.true;
+      expect(await hft.paused()).to.equal(true);
     });
 
     it("Should prevent transfers when paused", async function () {
