@@ -79,7 +79,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: hashFiles('GLX_App_files/coverage/**') != ''
         with:
           name: coverage-report
@@ -155,7 +155,7 @@ jobs:
         run: kill $APP_PID 2>/dev/null || true
 
       - name: Upload accessibility results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: hashFiles('GLX_App_files/accessibility-results.json') != ''
         with:
           name: accessibility-results
@@ -329,7 +329,7 @@ jobs:
         run: kill $APP_PID 2>/dev/null || true
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: e2e-results
