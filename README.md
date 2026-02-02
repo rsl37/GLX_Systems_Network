@@ -1,33 +1,61 @@
 ---
-title: "GLX: Connect the World - Web3 Civic Networking Platform"
-description: ""
-lastUpdated: "2025-12-09"
-nextReview: "2026-01-09"
+title: "GLX: Open-Source Civic Networking Platform"
+description: "Distributed blockchain architecture for community coordination and civic engagement"
+lastUpdated: "2026-01-07"
+nextReview: "2026-04-07"
 contentType: "overview"
 maintainer: "rsl37"
-version: "1.0.0"
-tags: []
-relatedDocs: []
+version: "2.0.0"
+tags: ["civic-tech", "open-source", "distributed-systems", "blockchain", "community"]
+relatedDocs: ["ABOUT_GLX.md", "GLX_ARCHITECTURE_CASE_STUDY.md", "CMPLX_FORK_STRATEGY.md"]
 ---
 
-# GLX: Portfolio Case Study & Systems Monitoring Platform
+# GLX: Open-Source Civic Networking Platform
 
 [![CI/CD Pipeline](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/main.yml)
 [![Security Checks](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Security%20Scan/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/security-streamlined.yml)
 [![Code Quality](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Quality%20%26%20Performance/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/quality.yml)
 [![Workflow Health](https://github.com/rsl37/GLX_Civic_Networking_App/workflows/Workflow%20Health%20Monitor/badge.svg)](https://github.com/rsl37/GLX_Civic_Networking_App/actions/workflows/workflow-monitor.yml)
 [![Codecov](https://codecov.io/gh/rsl37/GLX_Civic_Networking_App/branch/main/graph/badge.svg)](https://codecov.io/gh/rsl37/GLX_Civic_Networking_App)
+[![License](https://img.shields.io/badge/License-Open%20Source-blue.svg)](LICENSE)
 
 ## 🎯 Project Overview
 
-**GLX** serves dual purposes:
+**GLX** (Global Link Exchange) is an **open-source civic networking platform** that demonstrates practical implementation of distributed blockchain architecture for **community coordination and democratic participation**.
 
-1. **Portfolio Case Study**: Demonstrates efficiency and security gains from managing through distributed blockchain systems
-2. **Systems Monitoring Platform**: Network monitoring for supply chain, Air Traffic Control (ATC), and logistics systems
+### Mission
 
-Originally developed as a Web3-enabled civic networking platform, GLX now provides valuable insights and proven architecture for building next-generation monitoring systems for critical infrastructure.
+Enable **distributive management** of civic engagement through decentralized coordination systems, addressing the governance challenges outlined in "Farewell to Westphalia" - where traditional centralized models struggle with complex, multi-stakeholder coordination at scale.
 
-📘 **[View Complete Portfolio Case Study](PORTFOLIO_CASE_STUDY.md)** - Comprehensive analysis of blockchain efficiency and security gains
+### Intellectual Foundations
+
+GLX synthesizes insights from multiple disciplines:
+- **Governance**: Post-Westphalian coordination ("Farewell to Westphalia")
+- **Sustainability**: Systems thinking, LCAs, urban planning, triple bottom line (People/Planet/Profit)
+- **Management**: Project management, supply chain systems, organizational development
+- **Technology**: Blockchain, tokenization, distributed systems
+- **Cultural**: GALAX coordination system ("Gatchaman Crowds")
+
+This multidisciplinary approach creates **domain-agnostic coordination infrastructure** that works across civic, economic, and social contexts.
+
+**Personal Motivation**: Born from observing the gap between childhood ideals of cohesive communities and adult reality of fractured, inefficient systems. GLX addresses preventable coordination failures through transparency, accountability, and distributed infrastructure. Core belief: **black swans can become gray swans** with sufficient foresight and proactive coordination.
+
+### What GLX Does
+
+- **Real-time community coordination** via WebSocket infrastructure
+- **Democratic governance** through blockchain-based voting and proposals
+- **Transparent decision-making** with immutable audit trails
+- **Post-quantum security** for long-term data protection
+- **Scalable architecture** supporting thousands of concurrent users
+
+### Purpose
+
+1. **Civic Platform**: Production-ready tool for community organization and coordination
+2. **Educational Resource**: Reference implementation of distributed systems architecture
+3. **Research Foundation**: Proof-of-concept for **CMPLX**, our planned enterprise fork
+
+📘 **[Read Architecture Case Study](GLX_ARCHITECTURE_CASE_STUDY.md)** - Comprehensive technical analysis  
+🏢 **[View CMPLX Fork Strategy](CMPLX_FORK_STRATEGY.md)** - Commercial applications of GLX architecture
 
 ---
 
