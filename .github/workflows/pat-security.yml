@@ -230,7 +230,7 @@ jobs:
           echo "- Monitor token usage in audit logs" >> $GITHUB_STEP_SUMMARY
 
       - name: Report status
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const patConfigured = '${{ needs.token-check.outputs.pat_configured }}' === 'true';

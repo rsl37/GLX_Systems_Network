@@ -120,7 +120,7 @@ jobs:
         if: >
           failure() && steps.license-check.outputs.violations == 'true' &&
           github.event_name == 'schedule'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -177,7 +177,7 @@ jobs:
 
       - name: Comment on PR with license status
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');

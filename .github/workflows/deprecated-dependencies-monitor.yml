@@ -124,7 +124,7 @@ jobs:
         if: |
           steps.verify.outputs.path_match_has_vulns == 'true' || 
           steps.prod-check.outputs.path_match_in_production == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = '🔴 URGENT: Action Required for Deprecated Dependencies';
