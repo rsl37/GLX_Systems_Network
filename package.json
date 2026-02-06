@@ -4,7 +4,7 @@
   "description": "GLX: Open-source civic networking platform with distributed blockchain architecture",
   "private": true,
   "type": "module",
-  "license": "MIT",
+  "license": "(PolyForm-Shield-1.0.0 OR PolyForm-Noncommercial-1.0.0)",
   "scripts": {
     "setup:env": "cd GLX_App_files && scripts/setup-env.sh",
     "setup:env:root": "scripts/setup-env.sh",
