@@ -24,7 +24,7 @@ import compression from 'compression';
 import { setupStaticServing } from './static-serve.js';
 import { db } from './database.js';
 import { authenticateToken, AuthRequest } from './auth.js';
-import { sendSuccess, sendError } from './utils/responseHelpers.js';
+import { sendSuccess, sendError, getParamAsString } from './utils/responseHelpers.js';
 
 // Import modular routes
 import authRoutes from './routes/auth.js';
@@ -665,7 +665,7 @@ app.post('/api/chat/send', authenticateToken, async (req: AuthRequest, res) => {
 
 app.get('/api/chat/:helpRequestId/messages', authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const helpRequestId = parseInt(req.params.helpRequestId);
+    const helpRequestId = parseInt(getParamAsString(req.params.helpRequestId));
 
     if (isNaN(helpRequestId)) {
       return sendError(res, 'Invalid help request ID', 400);
@@ -947,7 +947,7 @@ app.post(
         return sendError(res, 'Invalid status', 400);
       }
 
-      const success = await updateKYCStatus(parseInt(verificationId), status, notes);
+      const success = await updateKYCStatus(parseInt(getParamAsString(verificationId)), status, notes);
 
       if (!success) {
         return sendError(res, 'Failed to update status', 400);

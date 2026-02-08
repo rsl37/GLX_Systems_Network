@@ -468,7 +468,7 @@ export function hybridPQCEncrypt(data: string, recipientPQCPublicKey: string): s
     const tag = cipher.getAuthTag();
 
     // Step 5: Package everything together
-    const package = {
+    const dataPackage = {
       version: 1,
       kemCiphertext,
       iv: iv.toString('base64'),
@@ -477,7 +477,7 @@ export function hybridPQCEncrypt(data: string, recipientPQCPublicKey: string): s
       ciphertext: encrypted,
     };
 
-    return Buffer.from(JSON.stringify(package)).toString('base64');
+    return Buffer.from(JSON.stringify(dataPackage)).toString('base64');
   } catch (error) {
     console.error('❌ Hybrid PQC encryption failed:', error);
     throw new Error('Failed to encrypt with post-quantum cryptography');
@@ -495,14 +495,14 @@ export function hybridPQCDecrypt(encryptedPackage: string, recipientPQCSecretKey
   try {
     // Step 1: Unpackage the encrypted data
     const packageBuffer = Buffer.from(encryptedPackage, 'base64');
-    const package = JSON.parse(packageBuffer.toString('utf8'));
+    const dataPackage = JSON.parse(packageBuffer.toString('utf8'));
 
-    if (package.version !== 1) {
+    if (dataPackage.version !== 1) {
       throw new Error('Unsupported PQC package version');
     }
 
     // Step 2: Decapsulate PQC shared secret
-    const pqcSecret = pqcDecapsulate(package.kemCiphertext, recipientPQCSecretKey);
+    const pqcSecret = pqcDecapsulate(dataPackage.kemCiphertext, recipientPQCSecretKey);
 
     // Step 3: Recover classical key (Note: In actual implementation, this would be included in package)
     // For this simplified version, we derive it from PQC secret
@@ -520,15 +520,15 @@ export function hybridPQCDecrypt(encryptedPackage: string, recipientPQCSecretKey
       .subarray(0, KEY_LENGTH);
 
     // Step 5: Decrypt with AES-256-GCM
-    const iv = Buffer.from(package.iv, 'base64');
-    const tag = Buffer.from(package.tag, 'base64');
-    const aad = Buffer.from(package.aad, 'base64');
+    const iv = Buffer.from(dataPackage.iv, 'base64');
+    const tag = Buffer.from(dataPackage.tag, 'base64');
+    const aad = Buffer.from(dataPackage.aad, 'base64');
 
     const decipher = crypto.createDecipheriv(ALGORITHM, hybridKey, iv);
     decipher.setAAD(aad);
     decipher.setAuthTag(tag);
 
-    let decrypted = decipher.update(package.ciphertext, 'hex', 'utf8');
+    let decrypted = decipher.update(dataPackage.ciphertext, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
 
     return decrypted;

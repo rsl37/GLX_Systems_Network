@@ -21,6 +21,7 @@ import {
   validateAuthUser,
   StatusCodes,
   ErrorMessages,
+  getParamAsString,
 } from '../utils/responseHelpers.js';
 import { 
   hashPassword, 
@@ -1119,7 +1120,7 @@ router.get('/passkey/list', authenticateToken, async (req: AuthRequest, res) => 
 router.delete('/passkey/:credentialId', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    const { credentialId } = req.params;
+    const credentialId = getParamAsString(req.params.credentialId);
 
     if (!credentialId) {
       return sendError(res, 'Credential ID is required', StatusCodes.BAD_REQUEST);
@@ -1148,7 +1149,7 @@ router.delete('/passkey/:credentialId', authenticateToken, async (req: AuthReque
 router.patch('/passkey/:credentialId', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    const { credentialId } = req.params;
+    const credentialId = getParamAsString(req.params.credentialId);
     const { deviceName } = req.body;
 
     if (!credentialId || !deviceName) {
@@ -1224,7 +1225,7 @@ router.get('/sessions/stats', authenticateToken, async (req: AuthRequest, res) =
 router.delete('/sessions/:sessionId', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    const { sessionId } = req.params;
+    const sessionId = getParamAsString(req.params.sessionId);
 
     if (!sessionId) {
       return sendError(res, 'Session ID is required', StatusCodes.BAD_REQUEST);
@@ -1314,7 +1315,7 @@ router.get('/trusted-devices', authenticateToken, async (req: AuthRequest, res) 
 router.delete('/trusted-devices/:deviceId', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const userId = validateAuthUser(req.userId);
-    const { deviceId } = req.params;
+    const deviceId = getParamAsString(req.params.deviceId);
 
     if (!deviceId) {
       return sendError(res, 'Device ID is required', StatusCodes.BAD_REQUEST);
