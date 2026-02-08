@@ -299,7 +299,7 @@ router.put(
   authenticateToken,
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getParamAsString(req.params.id);
       const { platform, name, url, description, iconUrl, memberCount, isPrimary, isActive, displayOrder } = req.body;
 
       const updateData: Record<string, unknown> = {
@@ -341,7 +341,7 @@ router.delete(
   authenticateToken,
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getParamAsString(req.params.id);
 
       await db
         .deleteFrom('community_links' as any)
@@ -367,7 +367,7 @@ router.post(
   authenticateToken,
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getParamAsString(req.params.id);
       const { memberCount } = req.body;
 
       if (typeof memberCount !== 'number') {

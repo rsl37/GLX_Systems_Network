@@ -19,7 +19,7 @@ import {
   sendSuccess,
   sendError,
   validateAuthUser,
-  validateNumericId,
+  getNumericParamId,
   StatusCodes,
   ErrorMessages,
 } from '../utils/responseHelpers.js';
@@ -30,7 +30,7 @@ const router = Router();
 // Chat messages endpoint
 router.get('/chat/:helpRequestId/messages', authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const helpRequestId = validateNumericId(req.params.helpRequestId, 'help request ID');
+    const helpRequestId = getNumericParamId(req.params.helpRequestId, 'help request ID');
 
     console.log('💬 Fetching chat messages:', {
       helpRequestId,

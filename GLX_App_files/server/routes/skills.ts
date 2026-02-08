@@ -21,7 +21,7 @@ import {
   sendSuccess,
   sendError,
   validateAuthUser,
-  validateNumericId,
+  getNumericParamId,
   StatusCodes,
   ErrorMessages,
 } from '../utils/responseHelpers.js';
@@ -188,7 +188,7 @@ router.post('/match-requests', authenticateToken, apiLimiter, async (req: AuthRe
  */
 router.post('/match-for-request/:id', authenticateToken, apiLimiter, async (req: AuthRequest, res) => {
   try {
-    const helpRequestId = validateNumericId(req.params.id, 'help request ID');
+    const helpRequestId = getNumericParamId(req.params.id, 'help request ID');
     const { limit, minScore } = req.body;
 
     console.log('🔍 Finding matching users for help request:', helpRequestId);

@@ -19,7 +19,7 @@ import {
   sendSuccess,
   sendError,
   validateAuthUser,
-  validateNumericId,
+  getNumericParamId,
   createPaginationMeta,
   StatusCodes,
   ErrorMessages,
@@ -264,7 +264,7 @@ export function createHelpRequestRoutes(upload: any, realtimeManager: RealtimeMa
   router.post('/:id/offer-help', authenticateToken, async (req: AuthRequest, res) => {
     try {
       const userId = validateAuthUser(req.userId);
-      const helpRequestId = validateNumericId(req.params.id, 'help request ID');
+      const helpRequestId = getNumericParamId(req.params.id, 'help request ID');
 
       console.log('🤝 Offering help:', { helpRequestId, helperId: userId });
 
