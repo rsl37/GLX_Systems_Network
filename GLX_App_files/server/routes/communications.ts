@@ -24,7 +24,7 @@
 
 import { Router } from 'express';
 import { authenticateToken, AuthRequest } from '../auth.js';
-import { sendSuccess, sendError } from '../utils/responseHelpers.js';
+import { sendSuccess, sendError, getParamAsString } from '../utils/responseHelpers.js';
 import { communicationManager, loadConfigFromEnv } from '../communications/index.js';
 import type {
   Incident,
@@ -206,7 +206,7 @@ router.get('/incidents/:id', authenticateToken, async (req: AuthRequest, res) =>
   try {
     await ensureInitialized();
 
-    const { id } = req.params;
+    const id = getParamAsString(req.params.id);
     const incident = await communicationManager.getIncident(id);
 
     if (!incident) {
@@ -228,7 +228,7 @@ router.patch('/incidents/:id', authenticateToken, async (req: AuthRequest, res) 
   try {
     await ensureInitialized();
 
-    const { id } = req.params;
+    const id = getParamAsString(req.params.id);
     const updates: Partial<Incident> = {};
 
     // Only include allowed fields
@@ -264,7 +264,7 @@ router.post('/incidents/:id/dispatch', authenticateToken, async (req: AuthReques
   try {
     await ensureInitialized();
 
-    const { id } = req.params;
+    const id = getParamAsString(req.params.id);
     const { unitIds, priority, instructions } = req.body;
 
     if (!unitIds || !Array.isArray(unitIds) || unitIds.length === 0) {
@@ -335,7 +335,7 @@ router.patch('/units/:id/status', authenticateToken, async (req: AuthRequest, re
   try {
     await ensureInitialized();
 
-    const { id } = req.params;
+    const id = getParamAsString(req.params.id);
     const { status } = req.body;
 
     const validStatuses: UnitStatus[] = [

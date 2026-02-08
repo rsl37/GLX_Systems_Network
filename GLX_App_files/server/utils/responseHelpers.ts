@@ -125,6 +125,24 @@ export function validateNumericId(id: string, paramName: string = 'ID'): number 
 }
 
 /**
+ * Safely extract string value from route/query parameter that could be string or string[]
+ */
+export function getParamAsString(param: string | string[] | undefined): string {
+  if (Array.isArray(param)) {
+    return param[0] || '';
+  }
+  return param || '';
+}
+
+/**
+ * Extract and validate numeric ID from route parameter that could be string or string[]
+ */
+export function getNumericParamId(param: string | string[] | undefined, paramName: string = 'ID'): number {
+  const stringValue = getParamAsString(param);
+  return validateNumericId(stringValue, paramName);
+}
+
+/**
  * Create pagination metadata
  */
 export function createPaginationMeta(

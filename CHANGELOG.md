@@ -17,6 +17,11 @@ All notable changes to the GLX Civic Networking App will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- License compliance: Corrected root `package.json` license field from "MIT" to dual-license format "(PolyForm-Shield-1.0.0 OR PolyForm-Noncommercial-1.0.0)" to accurately reflect the actual project licenses
+
 ## [0.2.1] - 2025-08-02
 
 ### Added

@@ -19,7 +19,7 @@ import {
   sendSuccess,
   sendError,
   validateAuthUser,
-  validateNumericId,
+  getNumericParamId,
   StatusCodes,
   ErrorMessages,
 } from '../utils/responseHelpers.js';
@@ -129,7 +129,7 @@ router.post(
   validateVote,
   async (req: AuthRequest, res) => {
     try {
-      const proposalId = validateNumericId(req.params.id, 'proposal ID');
+      const proposalId = getNumericParamId(req.params.id, 'proposal ID');
       const { vote_type } = req.body;
       const userId = validateAuthUser(req.userId);
 
