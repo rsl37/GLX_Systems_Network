@@ -16,6 +16,8 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,6 +55,7 @@ interface AccountSettingsProps {
 
 export function AccountSettings({ trigger }: AccountSettingsProps) {
   const { user, refreshUser } = useAuth();
+  const { address } = useAccount();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -74,6 +77,13 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
     walletAddress: user?.wallet_address || '',
   });
 
+  // Sync wallet address from connected wallet
+  React.useEffect(() => {
+    if (address && address !== walletForm.walletAddress) {
+      setWalletForm({ walletAddress: address });
+    }
+  }, [address]);
+
   // Privacy settings state
   const [privacySettings, setPrivacySettings] = useState({
     showEmail: false,
@@ -93,20 +103,7 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
     setSuccess('');
   };
 
-  const connectWallet = async () => {
-    try {
-      if (typeof window.ethereum !== 'undefined') {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts.length > 0) {
-          setWalletForm({ walletAddress: accounts[0] });
-        }
-      } else {
-        setError('MetaMask not detected. Please install MetaMask to connect a wallet.');
-      }
-    } catch (err) {
-      setError('Failed to connect wallet');
-    }
-  };
+  // Remove the old connectWallet function - now handled by RainbowKit
 
   const handleUpdateEmail = async () => {
     if (!emailForm.email.trim()) {
@@ -660,13 +657,17 @@ export function AccountSettings({ trigger }: AccountSettingsProps) {
                       id='wallet'
                       value={walletForm.walletAddress}
                       onChange={e => setWalletForm({ walletAddress: e.target.value })}
-                      placeholder='Enter wallet address or connect MetaMask'
+                      placeholder='Enter wallet address or connect wallet'
                       className='flex-1 font-mono text-sm'
                     />
-                    <Button type='button' variant='outline' onClick={connectWallet}>
-                      <Wallet className='h-4 w-4 mr-2' />
-                      Connect
-                    </Button>
+                    <ConnectButton.Custom>
+                      {({ openConnectModal }) => (
+                        <Button type='button' variant='outline' onClick={openConnectModal}>
+                          <Wallet className='h-4 w-4 mr-2' />
+                          Connect
+                        </Button>
+                      )}
+                    </ConnectButton.Custom>
                   </div>
                 </div>
 

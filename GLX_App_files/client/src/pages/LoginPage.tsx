@@ -14,10 +14,12 @@
  */
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { usePageVerification } from '../hooks/usePageVerification';
+import { useAccount, useConnect } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,6 +40,14 @@ export function LoginPage() {
   const { login, loginWithWallet } = useAuth();
   const { verificationToken, isVerifying, verificationError } = usePageVerification('login');
   const navigate = useNavigate();
+  const { address, isConnected } = useAccount();
+
+  // Auto-login when wallet is connected
+  useEffect(() => {
+    if (isConnected && address && !isLoading) {
+      handleWalletLogin(address);
+    }
+  }, [isConnected, address]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +81,7 @@ export function LoginPage() {
     }
   };
 
-  const handleWalletLogin = async () => {
+  const handleWalletLogin = async (walletAddress: string) => {
     setError('');
     setIsLoading(true);
 
@@ -81,39 +91,16 @@ export function LoginPage() {
         throw new Error(`Security verification failed: ${verificationError}`);
       }
 
-      if (typeof window.ethereum !== 'undefined') {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts.length > 0) {
-          await loginWithWallet(accounts[0], verificationToken);
-          navigate('/dashboard');
-        } else {
-          setError(
-            'No wallet accounts available. Please unlock your MetaMask wallet and try again.'
-          );
-        }
-      } else {
-        setError(
-          'MetaMask wallet not detected. Please install MetaMask browser extension to continue.'
-        );
-      }
+      await loginWithWallet(walletAddress, verificationToken);
+      navigate('/dashboard');
     } catch (err) {
-      // Handle specific wallet errors
+      // Handle wallet login errors
       if (err instanceof Error) {
-        if (err.message.includes('User rejected')) {
-          setError(
-            'Wallet connection was denied. Please approve the connection request in MetaMask.'
-          );
-        } else if (err.message.includes('wallet_requestPermissions')) {
-          setError('MetaMask permissions denied. Please approve wallet access to continue.');
-        } else {
-          setError(err.message);
-        }
+        setError(err.message);
       } else if (typeof err === 'string') {
         setError(err);
       } else {
-        setError(
-          'Failed to connect to your wallet. Please check your MetaMask connection and try again.'
-        );
+        setError('Failed to connect to your wallet. Please try again.');
       }
     } finally {
       setIsLoading(false);
@@ -283,19 +270,73 @@ export function LoginPage() {
                 <span className='w-full border-t border-gray-300' />
               </div>
               <div className='relative flex justify-center text-xs uppercase'>
-                <span className='bg-white px-2 text-gray-500'>Or</span>
+                <span className='bg-white px-2 text-gray-500'>Or connect with wallet</span>
               </div>
             </div>
 
-            <Button
-              variant='outline'
-              className='w-full glx-button-accent'
-              onClick={handleWalletLogin}
-              disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
-            >
-              <Wallet className='h-4 w-4 mr-2' />
-              Connect MetaMask
-            </Button>
+            {/* RainbowKit Connect Button - Supports MetaMask, WalletConnect, and more */}
+            <div className='flex justify-center'>
+              <ConnectButton.Custom>
+                {({
+                  account,
+                  chain,
+                  openAccountModal,
+                  openChainModal,
+                  openConnectModal,
+                  authenticationStatus,
+                  mounted,
+                }) => {
+                  const ready = mounted && authenticationStatus !== 'loading';
+                  const connected =
+                    ready &&
+                    account &&
+                    chain &&
+                    (!authenticationStatus || authenticationStatus === 'authenticated');
+
+                  return (
+                    <div
+                      {...(!ready && {
+                        'aria-hidden': true,
+                        style: {
+                          opacity: 0,
+                          pointerEvents: 'none',
+                          userSelect: 'none',
+                        },
+                      })}
+                      className='w-full'
+                    >
+                      {(() => {
+                        if (!connected) {
+                          return (
+                            <Button
+                              onClick={openConnectModal}
+                              variant='outline'
+                              className='w-full glx-button-accent'
+                              disabled={isLoading || (process.env.NODE_ENV === 'production' && !verificationToken)}
+                            >
+                              <Wallet className='h-4 w-4 mr-2' />
+                              Connect Wallet
+                            </Button>
+                          );
+                        }
+
+                        return (
+                          <div className='flex gap-2'>
+                            <Button
+                              onClick={openAccountModal}
+                              variant='outline'
+                              className='flex-1'
+                            >
+                              {account.displayName}
+                            </Button>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  );
+                }}
+              </ConnectButton.Custom>
+            </div>
 
             <div className='text-center text-sm'>
               <span className='text-gray-600'>Don't have an account? </span>
