@@ -15,7 +15,7 @@ import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import { db } from '../database.js';
 import { authenticateToken, AuthRequest } from '../auth.js';
-import { sendSuccess, sendError } from '../utils/responseHelpers.js';
+import { sendSuccess, sendError, getParamAsString } from '../utils/responseHelpers.js';
 import { sql } from 'kysely';
 
 const router = Router();
@@ -402,7 +402,7 @@ router.post(
   authenticateToken,
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = getParamAsString(req.params.id);
       const { expiresInDays = 7 } = req.body;
 
       // Get waitlist entry
